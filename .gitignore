@@ -1,0 +1,8 @@
+# Temporary LaTeX files
+*.aux
+*.bbl
+*.blg
+*.toc
+
+# Log files (also generated with LaTeX)
+*.log
