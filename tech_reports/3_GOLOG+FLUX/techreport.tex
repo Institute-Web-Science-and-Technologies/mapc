@@ -1,0 +1,53 @@
+\documentclass{../template/llncs}
+%
+\usepackage{url}
+\RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
+\usepackage{amsmath} % use equations
+\RequirePackage[utf8]{inputenc} % support Umlauts and special characters
+\usepackage{microtype} % use space more efficiently and hyphenate smarter: all in all looks a lot sexier
+\usepackage{listings} % allow source code environments
+% Define a listing style for FLUX code
+\lstdefinestyle{flux} {
+  frame=L,
+  xleftmargin=\parindent,
+  basicstyle=\footnotesize\ttfamily,
+  breakatwhitespace=true,
+  numbers=left,
+  escapechar=\%,
+  numberstyle=\tiny,
+  numberblanklines=false,
+  captionpos=b,
+  emph={perform, poss, state\_update, main\_loop, init},
+  emphstyle=\textbf,
+}
+%
+\title{Logic Programming}
+\subtitle{Introducing GOLOG and FLUX}
+\titlerunning{logprog}
+\author{Michael Ruster}
+\institute{University Koblenz-Landau}
+\tocauthor{ }
+%
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+\input{content/introduction.tex}
+
+\section{Situation Calculus}\label{sitCalc}
+\input{content/sitCalc.tex}
+
+\section{GOLOG}\label{golog}
+\input{content/golog.tex}
+
+\section{FLUX}\label{flux}
+\input{content/flux.tex}
+
+\section{Conclusion}\label{conclusion}
+\input{content/conclusion.tex}
+
+\bibliographystyle{../template/splncs03}
+\clearpage
+\bibliography{content/sources.bib}
+\end{document}

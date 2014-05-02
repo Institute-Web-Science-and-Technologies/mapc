@@ -1,0 +1,28 @@
+GOLOG is a language for logic programming introduced by Levesque et~al.~\cite{levesque_golog:_1997}. It builds on the situation calculus. To allow high-level programming, GOLOG adds complex actions like loops, conditions, tests and non-deterministic elements. As an example, a GOLOG program should have a robot pouring other agents coffee until everybody does have coffee. After that, the robot should sing and terminate. Such a program would reuse the fluent in (\ref{f_hasCoffee}), the action precondition axioms in (\ref{a_possPourCoffee}), (\ref{a_possSing}), the successor state axiom in (\ref{a_sucStateAxiom}) and extend them with the two procedures given in (\ref{p_control}) and (\ref{p_pourSOCoffee}):
+\begin{equation}\label{p_control}
+  \begin{split}
+    \textbf{proc}\ \texttt{control}\ [&\textbf{while}\ (\exists p) \neg\textit{hasCoffee}(p) \\
+    &\textbf{do}\ \texttt{pourSOCoffee}(p)\ \textbf{endWhile}]; \\
+    \textit{sing}&\ \textbf{endProc}.
+  \end{split}
+\end{equation}
+\begin{equation}\label{p_pourSOCoffee}
+  \begin{split}
+    \textbf{proc}\ \texttt{pourSOCoffee}\ (\boldsymbol{\pi} p)\ [ &\neg\textit{hasCoffee}(p)\textbf{?}; \\
+    &\textit{pourCoffee}(p)]\ \textbf{endProc}.
+  \end{split}
+\end{equation}
+The control procedure in (\ref{p_control}) can be seen as a main method. It loops as long as there exist agents without coffee and tells the robot to pour coffee to some agent lacking coffee. In the end, the robot sings. Equation (\ref{p_pourSOCoffee}) allows the robot to non-deterministically choose an agent $p$ to pour coffee to by using the $\pi$-operator. The $?$-operator is similar to the \texttt{if}-operator in other programming languages like Java. Due to the non-determinsmic operator, there can be two different resulting situations like shown in (\ref{ex_situations}) with the initial configuration given in (\ref{ex_gologConfiguration}):
+\begin{equation}\label{ex_gologConfiguration}
+  \neg\textit{hasCoffee}(p,s_0) \Leftrightarrow p=\textrm{Miriam} \vee p=\textrm{Sergey}.
+\end{equation}
+\begin{equation}\label{ex_situations}
+  \begin{split}
+    s=\textit{do}\Big(\textit{sing},\textit{do}\big(&\textit{pourCoffee}(\textrm{Miriam}),
+      \textit{do}(\textit{pourCoffee}(\textrm{Sergey}),s_0)\big)\Big),
+\\  s=\textit{do}\Big(\textit{sing},\textit{do}\big(&\textit{pourCoffee}(\textrm{Sergey}),
+      \textit{do}(\textit{pourCoffee}(\textrm{Miriam}),s_0)\big)\Big)
+  \end{split}
+\end{equation}
+
+Levesque et~al.~\cite{levesque_golog:_1997} highlight some problems with GOLOG. These make it unsuitable for a multiple agent-based scenario like the Mars-scenario of the MAPC\footnote{\url{https://multiagentcontest.org/}, online -- last accessed 01.05.2014, 16:00.} without considerable modifications and extensions. One problem is that complete knowledge is assumed in the initial situation. This is obviously not the case for scenarios with unknown worlds that get explored by agents. The second problem is that GOLOG does neither offer a solution for internal nor external reactions of agents on sensed actions. A third problem is that exogenous actions say actions out of the agent's control cannot be handled. These could e.g. be actions in control of nature like sudden rain, which are assumed not to be caused by an agent. A fourth problem is highlighted by Thielscher~\cite{thielscher_flux:_2005} and arises from GOLOG being \emph{regression-based}. This means that for deciding whether an action is executable is only possible after looking at all previous actions and how they might have affected the world. As a result, reasoning takes exponentially longer over time and hence GOLOG does not scale.

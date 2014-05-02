@@ -1,0 +1,41 @@
+\lstset{style=flux} % activate flux syntax highlighting in listings
+FLUX was introduced by Thielscher~\cite{thielscher_flux:_2005} and offers solutions for the problems of GOLOG presented before. This is done by using the \emph{fluent calculus} instead of the situation calculus. Both are similar but the fluent calculus adds \emph{states}. A state $z$ is a set of fluents $f_1,\cdots,f_n$. In FLUX, it is denoted as $z = f_1 \circ \ldots \circ f_n$. In every situation there always exists only one state with which the current properties of the world are described. Yet, the world can be in the same state in multiple situations. For representing agent knowledge which can be incomplete, FLUX uses \emph{knowledge state}. These are denoted through $\textit{KState}(s,z)$ meaning that an agent knows that $z$ holds in $s$.
+
+The frame problem is solved through \emph{state update axioms}~\cite{thielscher_situation_1999}. They define the effects of an action as the difference between the state before and after the action. This is modelled with $\vartheta^-$ for negative and $\vartheta^+$ for positive effects. Both are simply macros for finite states. Due to using states, reasoning is linear in the size of the state representation. This is called being \emph{regression-based} and therefore FLUX can outperform GOLOG \cite{thielscher_flux:_2005}.
+
+Disjunctive and negative state knowledge is modelled through constraints. FLUX uses a constraint solver To simplify these constraints until they are solvable. This is done by using \emph{constraint handling rules} introduced by Frühwirth~\cite{fruhwirth_theory_1998}. Their general form is shown in (\ref{chr}). It consists of one or multiple heads $H_m$, zero or more guards $G_k$ and one or multiple bodies $B_n$.
+\begin{equation}\label{chr}
+  H_1,\ldots,H_m\Leftrightarrow G_1,\ldots,G_k \mid B_1,\ldots,B_n
+\end{equation}
+The general mechanism is that if the guard can be derived, parts of the constraint matching the head will be replaced by the body and hence get simplified. This constraint solver builds the kernel say the foundation of FLUX programs. The domain encodings are built on top of this. Included are the initial knowledge state(s), domain constraints, as well as the action precondition and state update axioms. The final part of a FLUX program is the programmer defined intended agent behaviour called strategy. As a trivial example program, the previous example implemented in GOLOG will be transferred to FLUX in Prolog:
+\begin{lstlisting}[caption={Defintion of the \texttt{sing}-action.}, label=lst_sing]
+  perform(sing, []).
+  poss(sing, Z) :- all_holds(hasCoffee(_), Z).%\label{l_possSing}%
+  state_update(Z, sing, Z, []).%\label{l_supSing}%
+\end{lstlisting}
+Listing~\ref{lst_sing} shows the definition of the \texttt{sing}-action. Empty arrays could be replaced by sensed information that could then effect the outcome of the methods. As this is a trivial example, no sensed information is assumed. Line~\ref{l_possSing} is the precondition that singing is only possible in a state where every agent has coffee. As singing should not alter any fluents, the state \texttt{Z} in line~\ref{l_supSing} is not modified and returned as \texttt{Z}.
+\begin{lstlisting}[firstnumber=4, caption={Definition of the \texttt{pourCoffee}-action}, label=lst_pourCoffee]
+  perform(pourCoffee(P), []).
+  poss(pourCoffee(P), Z) :-
+       member(P,[miriam,sergey]),%\label{l_memberP}%
+       not_holds(hasCoffee(P), Z).
+  state_update(Z1, pourCoffee(P), Z2, []) :-
+       update(Z1, [hasCoffee(P)], [], Z2).%\label{l_updateZ}%
+\end{lstlisting}
+In Listing~\ref{lst_pourCoffee} the \texttt{pourCoffee}-action is defined similarly. Line~\ref{l_memberP} ensures that Prolog will only look for agents that actually exist instead of iterating over memory addresses. The action must modify the state by adding \texttt{hasCoffee(P)} to the state as it is done in line~\ref{l_updateZ}. The empty array after it corresponds to $\vartheta^-$, which is empty in this case.
+\begin{lstlisting}[firstnumber=10, caption={Main method which either tells the robot to sing or to pour coffee.}, label=lst_main]
+  main_loop(Z) :-
+    poss(sing, Z)
+      -> execute(sing, Z, Z);
+    poss(pourCoffee(P), Z)
+      -> execute(pourCoffee(P), Z, Z1),
+         main_loop(Z1);
+    false.%\label{l_false}%
+\end{lstlisting}
+Listing~\ref{lst_main} models the main method and thus is similar to (\ref{p_control}). When singing is possible, the robot will do so and terminate. Else, it will pour someone a coffee and call the main loop again. Line~\ref{l_false} ensures that Prolog will return \texttt{No} if neither of the both actions get triggered at some point.
+\begin{lstlisting}[firstnumber=17, caption={Initial configuration.}, label=lst_init]
+  init(Z0) :-
+         not_holds(hasCoffee(miriam), Z0),
+         not_holds(hasCoffee(sergey), Z0).
+\end{lstlisting}
+The initial configuration in listing~\ref{lst_init} is comparable to (\ref{ex_gologConfiguration}) but due to Prolog interpreting from top to bottom, the result will only be \texttt{Z = [hasCoffee(sergey), hasCoffee(miriam)]}.

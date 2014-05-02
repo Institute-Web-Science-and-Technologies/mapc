@@ -1,0 +1,34 @@
+The situation calculus was introduced by McCarthy and Hayes~\cite{mccarthy_philosophical_1969}. It is mainly a fist-order logic but also encodes a dynamic world through second order logic \cite{levesque_golog:_1997}. The situation calculus consists of the three first-order terms \emph{fluents}, \emph{actions} and \emph{situations}. Fluents model properties of the world. Actions may change fluents and hence may modify the world. Every action is ``logged'' in the situation. Therefore, a situation is a history of actions up to a certain point in time starting from the initial situation $s_0$. Due to the initial situation modelling the situation before any action has been executed, there can only be one initial situation.
+
+Fluents can be evaluated to return a result. As they are situation dependent, the evaluation result may change over time. Fluents are distinguished in \emph{relational fluents} and \emph{functional fluents}. Relational fluents can hold in situations. Their evaluation hence may return either true or false. An example is given in (\ref{f_hasCoffee}) with $p$ being an agent and $s$ a situation.
+\begin{equation}\label{f_hasCoffee}
+  \textit{hasCoffee}(p,s)
+\end{equation}
+Functional fluents return values instead. A fluent $\textit{location}(p,s)$ may return the coordinates $(x,y)$ as an example.
+
+Actions also depend on situations. The reason for this is that actions might not always be executable. Instead, it is possible that certain actions need specific fluents to hold which are modified by actions. Describing when an action is executable is done with \emph{action precondition axioms}. This is expressed by the predicate $\textit{Poss}(a,s)$ with $a$ being an action. As a recurring example, let us think of the ability to pour coffee to an agent $p$. This must only be possible when $p$ does not already have coffee. Equation~(\ref{a_possPourCoffee}) illustrates how this can be formalised.
+\begin{equation}\label{a_possPourCoffee}
+  \textit{Poss}(\textit{pourCoffee}(p),s) \Leftrightarrow \neg \textit{hasCoffee}(p,s)
+\end{equation}
+
+As mentioned before, the execution of action must always alter the situation: $\textit{do}(a,s) \rightarrow s'$. Its effects on the world say fluents are described with \emph{action effect axioms}. Equation~(\ref{a_effectPourCoffee}) shows how pouring a coffee to $p$ will result in $p$ having coffee afterwards.
+\begin{equation}\label{a_effectPourCoffee}
+  \textit{Poss}(\textit{pourCoffee}(p),s) \rightarrow \textit{hasCoffee}\big(p,\textit{do}(\textit{pourCoffee}(p),s)\big)
+\end{equation}
+In (\ref{a_effectPourCoffee}), it is unclear whether other fluents stay unaffected. For example, reasoning about $location(p,s')$ would not be possible, with $\textit{do}(\textit{pourCoffee}(p,s)) \rightarrow s'$. With this arises the so called called \emph{frame problem}. Defining for every fluent how every action may or may not affect is only a theoretical solution. The reason for that is that the resulting complexity of $\mathcal{O}(A*F)$ would be too high even in most small worlds. A feasible solution to this problem was proposed by Reiter~\cite{reiter_frame_1991}. His approach was to define every effect of allactions only once. Thus Reiter reduced the complexity to $\mathcal{O}(A*E)$. This solution is known as the \emph{successor state axiom} shown in (\ref{sucStateAxiom}).
+\begin{equation}\label{sucStateAxiom}
+  \mathit{Poss}(a,s)\rightarrow \big[\mathit{F}(\mathit{do}(a,s)) \Leftrightarrow\gamma_\mathit{F}^+(a,s)\vee\mathit{F}(s)\wedge\neg\gamma_\mathit{F}^-(a,s)\big]
+\end{equation}
+$\mathit{F}(\mathit{do}(a,s))$ means that the fluent $F$ will be true after exectuing the action $a$. The first part of the disjunction is $\gamma_\mathit{F}^+(a,s)$ and expresses that the action made the fluent true. $\mathit{F}(s)\wedge\neg\gamma_\mathit{F}^-(a,s)$ as the second part expresses that the fluent had been true before and the action had no influence on it. For a reasonable example, there needs to be a second action which does not influence (\ref{f_hasCoffee}). Therefore, the $sing(s)$ action will be introduced which has no effect on any fluents and can be executed anytime as shown in (\ref{a_possSing}).
+\begin{equation}\label{a_possSing}
+  \mathit{Poss}(\mathit{sing}) \Leftrightarrow \top
+\end{equation}
+Given (\ref{f_hasCoffee}), (\ref{a_possPourCoffee}) and (\ref{a_possSing}) an example can be compiled like in (\ref{a_sucStateAxiom}):
+\begin{equation}\label{a_sucStateAxiom}
+  \begin{split}
+    \mathrm{Poss}(a,s)\rightarrow \big[&\mathrm{hasCoffee}(p,\mathrm{do}(a,s))
+\\    &\Leftrightarrow [a=\mathrm{pourCoffee}(p)]
+\\    &\vee\ [\mathrm{hasCoffee}(p,s) \wedge a\neq \mathrm{pourCoffee}(p)]\big]
+  \end{split}
+\end{equation}
+Equation (\ref{a_sucStateAxiom}) then formalises that an agent $p$ may only have coffee if it was poured coffee or if it already had coffee and the action was not to pour $p$ a coffee.
