@@ -32,7 +32,7 @@ In Listing~\ref{lst_pourCoffee} the \texttt{pourCoffee}-action is defined simila
          main_loop(Z1);
     false.%\label{l_false}%
 \end{lstlisting}
-Listing~\ref{lst_main} models the main method and thus is similar to (\ref{p_control}). When singing is possible, the robot will do so and terminate. Else, it will pour someone a coffee and call the main loop again. Line~\ref{l_false} ensures that Prolog will return \texttt{No} if neither of the both actions get triggered at some point.
+Listing~\ref{lst_main} models the main method and thus is similar to (\ref{p_main}). When singing is possible, the robot will do so and terminate. Else, it will pour someone a coffee and call the main loop again. Line~\ref{l_false} ensures that Prolog will return \texttt{No} if neither of the both actions get triggered at some point.
 \begin{lstlisting}[firstnumber=17, caption={Initial configuration.}, label=lst_init]
   init(Z0) :-
          not_holds(hasCoffee(miriam), Z0),
