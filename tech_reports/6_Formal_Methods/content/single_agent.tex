@@ -1,0 +1,57 @@
+For modeling intelligent agents quite often used so-called BDI concept. BDI here stands for three cognitive specifications of agents: beliefs, desires, intensions. To model logic of these specifications we will need to introduce several modal operators: $Bel$ for beliefs, $Des$ for desires, $Int$ for intensions and $K_h$ for know how. Considering these operators, for example, the mental state of an agent who desires to win the lottery and intends to buy a lottery ticket sometime, but does not believe that he will ever win can be represented by the following formula: $DesAFwin \land IntEFbuy \land \neg BelAFwin$. For simplification in future we will consider only those desires which are mutually consistent. Such desires are usually called goals.
+
+It is important to note several important properties of intensions, which should be maintained by all agents\cite{Singh_92}:
+\begin{enumerate}
+  \item Satisfiability: $xIntp\rightarrow EFp$. This means that if $p$ is intended by $x$, then it occurs eventually on some path. Intension following this condition is assumed satisfiable.
+  \item Temporal consistency: $(xIntp \land xIntq)\rightarrow xInt(Fp \land Fq)$. This requires that if an agent intends $p$ and intends $q$, then it  (implicitly) intends achieving them in some undetermined temporal order: $p$ before $q$, $q$ before $p$, or both simultaneously.
+  \item Persistence does not entail success: $EG((xIntp) \land \neg p)$ is satisfiable. This is quite intuitive: just because an agent persists with an intention does not mean that it will succeed.
+  \item Persist while succeeding. This constraint requires that agents desist from revising their intentions as long as they are able to proceed properly.
+\end{enumerate}
+
+The introduced above concepts may be used in each of two roles of formal methods introduced earlier. There are two mostly used reasoning techniques to decide agent's actions: theorem proving and model checking. The first one is more complex in terms of calculations, when the second one is more practical, but it requires additional inputs, though it does not prove to be a problem in several cases.
+
+Considering the practical implementation, the architecture of abstract BDI-interpreter can be described as follows. The inputs to the system are called events, and are received via an event queue. Events can be external or internal for the system. Based on its current state and input events the system selects and executes options, corresponding to some plans. The interpreter continually performs the following: determines available options, deliberates to commit some options, updates its state and executes chosen atomic actions, after that it updates the event queue and eliminates the options which already achieved or no longer possible.
+%
+\begin{lstlisting}
+BDI-Interpreter
+initialize_state();
+do
+    options := option-generator(event-queue, B, G, I);
+    selected-options := deliberate(options, B, G, I);
+    update-intentions(selected-options, I);
+    execute(I);
+    get-new-external-events();
+    drop-successful-attitudes(B, G, I);
+    drop-impossible-attitudes(B, G, I);
+until quit.
+\end{lstlisting}
+
+As was mentioned above options are usually represented by plans. Plans consist of of the name or type, the body usually specified by a plan graph, invocation condition (triggering event), precondition specifying when it may be selected and add list with delete list, specifying which atomic propositions to be believed after successful plan execution. Intentions in this case may be represented as hierarchically related plans.
+
+Getting back to the algorithm and assuming plans as options, the option generator may look like the following.
+Given a set of trigger events from the event queue, the option generator iterates through the plan library and returns those plans whose invocation condition
+matches the trigger event and whose preconditions are believed by the agent.
+%
+\begin{lstlisting}[mathescape]
+option-generator(trigger-events, B, G ,I)
+options := {};
+for trigger-event $\in$ trigger-events do
+    for plan $\in$ plan-library do
+        if matches(invocation(plan, trigger-event) then
+            if provable(precondition(plan), B) then
+                options := options $\cup$ plan;
+return options.
+\end{lstlisting}
+
+Deliberation of options should conform with the execution time constraints, therefor under certain circumstances random choice might be appropriate. Sometimes lengthy deliberation becomes possible by introducing metalevel plans into plan library, which form intentions towards some particular plans.
+%
+\begin{lstlisting}[mathescape]
+deliberate(options)
+if length(options) $\leq$ 1 then return options;
+else metalevel-options :=
+            option-generator(b-add(option-set(options)));
+    selected-options := deliberate(metalevel-options);
+    if null(selected-options) then
+        return random-choice(options);
+    else return selected-options.
+\end{lstlisting}

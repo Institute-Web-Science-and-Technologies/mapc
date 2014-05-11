@@ -1,0 +1,13 @@
+Coordination is one of the core functionalities needed by multiagent systems. Especially when different agents autonomous and have different roles and possible actions. 
+
+One of the approaches developed by Singh \cite{Singh_97} represents each agent as a small skeleton, which includes only the events or
+transitions made by the agent that are significant for coordination. The core of the architecture is the idea that agents should have limited knowledge about designs of other agents. This limited knowledge is called a significant events of the agent. Events can be of the four main types:
+\begin{itemize}
+  \item flexible, which can be delayed or omitted,
+  \item inevitable, which can be only delayed,
+  \item immediate, which agent willing to perform immediately,
+  \item triggerable, which the agent performs based on external events.
+\end{itemize}
+These events are organized into skeletons that characterize the coordination behavior of agents. The coordination service is independent of the exact skeletons or events used by agents in a multiagent system.
+
+To specify coordinations a variant of linear-time temporal language with some restrictions is used. For that purpose two temporal operators are introduced: $\cdot$ - before operator, and $\bigodot$ - the operator of concatenation of two time traces, first of which is finite. Such special logic allows a variety of different relationships to be captured. 

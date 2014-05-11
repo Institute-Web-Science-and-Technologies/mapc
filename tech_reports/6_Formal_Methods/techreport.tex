@@ -1,0 +1,39 @@
+\documentclass{../template/llncs}
+%
+\usepackage{url}
+\RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
+\usepackage{amsmath} % use equations
+\RequirePackage[utf8]{inputenc} % support Umlauts and special characters
+\usepackage{microtype} % use space more efficiently and hyphenate smarter: all in all looks a lot sexier
+\usepackage{listings} % allow source code environments
+\usepackage{latexsym} % allows special symbols
+\usepackage{graphicx} % enebles figures
+\graphicspath{ {content/images/} }
+%
+\title{Formal Methods for multi-agent systems}
+\author{Sergey Dedukh}
+\institute{University of Koblenz and Landau}
+\tocauthor{ }
+%
+\begin{document}
+\maketitle
+
+\section{Introduction and motivation}
+\input{content/introduction.tex}
+
+\section{Theoretical background}
+\input{content/theoretical_background.tex}
+
+\section{Formal methods for a single agent}
+\input{content/single_agent.tex}
+
+\section{Formal methods for multiple agents}
+\input{content/multiple_agents.tex}
+
+\section{Conclusion}
+\input{content/conclusion.tex}
+
+\bibliographystyle{../template/splncs03}
+%\clearpage
+\bibliography{content/sources}
+\end{document}
