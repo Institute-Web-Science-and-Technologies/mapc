@@ -1,0 +1,88 @@
+Definition der Beliefs:
+
+Gesamte Steps:
+	steps(x)
+	
+Gesamte Kanten im Spiel:
+	totalEdges(x)
+	
+Gesamte Knoten im Spiel:
+	totalVertices(x)
+
+Gegnerisches Team:
+	enemyTeam(x)
+	
+Aktueller Step:
+	step(x)
+
+Rolle:
+	role(x)
+	
+Score:
+	score(x)
+	
+Zone-Score:
+	zoneScore(x)
+	
+Zones-Score:
+	zonesScore(x)
+	
+Last-Step-Score:
+	lastStepScore(x)
+
+Position:
+	position(vertex, agent, role)
+	
+Geld:
+	money(x)
+	
+Stärke:
+	strength(x)
+	
+Leben:
+	health(x)
+	
+Maximales Leben:
+	maxHealth(x)
+
+Energie:
+	energy(x)
+
+Maximale Energy:
+	maxEnergy(x)
+	
+Sichtweite:
+	visRange(x)
+
+Knoten:
+	vertex(x, y),  x = Name, y = Wert, -1 für unbekannte Werte
+
+Kanten:
+	edge(x,y,z), x,y = Namen der Knoten, z = kosten, 11 für unbekannte Kosten
+
+Laufziel:
+	goto(x,y), x = Zielknoten, y = Agentenname
+	
+Laufziel für zoning2-Phase:
+	zone(x,y), x = Zielknoten, y = Agentenname
+	
+Sichtbare Agenten:
+	visibleEntity(a,x,y,z,s), a = Agentenname, für den der andere Agent sichtbar ist, x = Agentenname, y = Vertexname, z = Agententeam, s = Status
+	
+Inspizierte Agenten:
+	inspectedEntity(a,b,c,d,e,f,g,h,i,j), a = Agentenname, b = Team, c = Agentenrolle, d = Position, rest = ???
+	
+Braucht Repair:
+	needRepair(x,y), x = kaputter Agent, y = Position von kaputtem Agent
+	
+Geht zu Repair:
+	gotoRepair(x,y), x = Repairer, y = kaputter Agent
+	
+Reperatur kommt (hat der kaputte Agent):
+	repairComing(x), x = Repairer
+	
+Ward-Agent:
+	wardAgent(x), x = Agentenname vom Sentinel, der Ward spielt
+	
+Ward-Agent fertig gebaut:
+	wardDone(), dient dazu, damit die Agenten wissen, dass das Geld ab jetzt für was anderes verwendet werden kann
