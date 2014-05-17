@@ -6,3 +6,7 @@
 
 # Log files (also generated with LaTeX)
 *.log
+
+# Java binaries
+*.class
+bin/
