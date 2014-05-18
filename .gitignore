@@ -10,3 +10,9 @@
 # Java binaries
 *.class
 bin/
+
+# Added by NetBeans (binaries and machine-specific files)
+/implementation/beenutsFW/trunk/beenutsFW/nbproject/private/
+/implementation/beenutsFW/beenutsFW/nbproject/private/
+/implementation/beenutsFW/trunk/nbproject/private/
+/implementation/beenutsFW/build/
