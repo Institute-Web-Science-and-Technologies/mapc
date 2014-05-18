@@ -1,0 +1,47 @@
+<xmlfile>
+<!-- sample apc configuration, configname and id must be given -->
+<apcconfig id="master_cfg">
+
+	<!-- enable (true) or disable (false) server for incoming connections, default is false -->
+	<apcserver enable="true" port="20400"/>
+	
+	<!-- apr module to load -->
+	<apr class="net.sf.beenuts.apr.MassimRelay"/>
+	
+	<!-- list of agents. only agents matching local apc id are instantiated -->
+	<agents>
+		<agent name="Alice" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Bob" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Charlie" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Dave" class="test.ucapc.TestAgent" apc="apc2"/>
+		<agent name="Eve" class="test.ucapc.TestAgent" apc="apc2"/>
+		<agent name="Fran" class="test.ucapc.TestAgent" apc="apc2"/>		
+	</agents>
+	
+	<!--  yellow pages configuration is loaded from yp.xml by defautt, or from this file -->
+	<yp file="yp.xml"/>
+	
+</apcconfig>
+<apcconfig id="slave_cfg">
+
+	<!-- this apc does not support incoming connections -->
+	<apcserver enable="false" port="0"/>
+	
+	<!-- apr module to load -->
+	<apr class="net.sf.beenuts.apr.MassimRelay"/>
+	
+	<!-- connect to another apc directly -->
+	<connect_to apc="apc1" host="localhost" port="20400" />
+	
+	<!--  lists of agents -->
+	<agents>
+		<!-- each agent entry consists of: name, class, apc -->
+		<agent name="Alice" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Bob" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Charlie" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Dave" class="test.ucapc.TestAgent" apc="apc2"/>
+		<agent name="Eve" class="test.ucapc.TestAgent" apc="apc2"/>
+		<agent name="Fran" class="test.ucapc.TestAgent" apc="apc2"/>
+	</agents> 
+</apcconfig>
+</xmlfile>

@@ -1,0 +1,25 @@
+<xmlfile>
+<!-- sample apc configuration, for mtrr scheduler testing -->
+<apcconfig id="cfg1">
+
+	<!-- enable (true) or disable (false) server for incoming connections, default is false -->
+	<apcserver enable="false" port="20400"/>
+	
+	<!-- apr module to load -->
+	<apr class="test.simplesimulation.SimpleSimulation"/>
+	
+	<!-- scheduler configuration, STRR is loaded by default -->
+	<scheduler class="net.sf.beenuts.apc.MtrrScheduler" maxConcurrency="3" timeFrame="100"/>
+	
+	<!-- list of agents. only agents matching local apc id are instantiated -->
+	<agents>
+		<agent name="Alice" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Bob" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Charlie" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Dave" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Eve" class="test.ucapc.TestAgent" apc="apc1"/>
+		<agent name="Fran" class="test.ucapc.TestAgent" apc="apc1"/>		
+	</agents>
+	
+</apcconfig>
+</xmlfile>

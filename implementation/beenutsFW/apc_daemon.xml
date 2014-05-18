@@ -1,0 +1,4 @@
+<apc_daemon>
+	<configserver port="20201" />
+	<yellowpages ip="127.0.0.1" port="20200" maxagents="16" group="defaultGroup"/>
+</apc_daemon>

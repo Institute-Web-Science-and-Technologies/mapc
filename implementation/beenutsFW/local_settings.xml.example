@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local_settings>
+	<!-- local configuration file. it is used for the configuration of
+		machine-dependant settings usually not covered by an apc config. -->
+	<!-- you should make a copy of this file, replace dummy entries and
+		rename this file to local_settings.xml -->
+		
+	<!-- dlv binary -->
+	<config key="dlv" value="path.to.dlv.binary" />
+	
+	
+</local_settings>
