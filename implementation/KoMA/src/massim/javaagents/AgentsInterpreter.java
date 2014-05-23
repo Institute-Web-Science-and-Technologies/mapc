@@ -35,7 +35,6 @@ import apltk.interpreter.data.Belief;
 import apltk.interpreter.data.Coalition;
 import apltk.interpreter.data.Event;
 import apltk.interpreter.data.Goal;
-import apltk.interpreter.data.LogicBelief;
 import apltk.interpreter.data.Message;
 import apltk.interpreter.data.Percept;
 import apltk.interpreter.data.Plan;

@@ -534,8 +534,8 @@ public class APSCCFrame extends JFrame implements ConnectionHandler, YellowPages
 		return lstServer;
 	}
 
-	private DefaultListModel serverListModel;
-	public DefaultListModel getServerListModel() {
+	private DefaultListModel<APCEntry> serverListModel;
+	public DefaultListModel<APCEntry> getServerListModel() {
 		return serverListModel;
 	}
 	
@@ -551,10 +551,10 @@ public class APSCCFrame extends JFrame implements ConnectionHandler, YellowPages
 	
 	private JButton btnEditAgent;
 	
-	private JList lstAgents;
+	private JList<APEntry> lstAgents;
 	
-	private DefaultListModel agentListModel;
-	public DefaultListModel getAgentListModel() {
+	private DefaultListModel<APEntry> agentListModel;
+	public DefaultListModel<APEntry> getAgentListModel() {
 		return agentListModel;
 	}
 	
