@@ -77,8 +77,6 @@ public class SimpleSentinelAgent extends Agent {
 	private void handlePercepts() {
 
 		String position = null;
-		Vector<String> neighbors = new Vector<String>();
-		
 		// check percepts
 		Collection<Percept> percepts = getAllPercepts();
 		//if ( gatherSpecimens ) processSpecimens(percepts);

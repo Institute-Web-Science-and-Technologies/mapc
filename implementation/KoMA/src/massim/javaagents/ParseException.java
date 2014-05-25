@@ -8,6 +8,7 @@ package massim.javaagents;
  */
 public class ParseException extends Exception {
 
+	private static final long serialVersionUID = -864274828082979708L;
 	private String path="";
 	
 	public ParseException(String message) {

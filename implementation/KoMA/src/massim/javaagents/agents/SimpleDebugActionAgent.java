@@ -1,14 +1,11 @@
 package massim.javaagents.agents;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Vector;
 
 import massim.javaagents.Agent;
 import apltk.interpreter.data.LogicBelief;
-import apltk.interpreter.data.LogicGoal;
 import eis.iilang.Action;
 import eis.iilang.Percept;
 

@@ -205,7 +205,8 @@ public class BeenutsAgentProcessCluster implements AgentProcessCluster {
 			if (host.equalsIgnoreCase(uniqueName)) {
 				
 				this.state.localAgents.add(agName);
-								
+				
+				/*				
 				AgentArchitecture agImpl = null;
 				try {
 					agImpl = (AgentArchitecture) Class.forName(config.agentClass.get(agName)).newInstance();
@@ -215,9 +216,8 @@ public class BeenutsAgentProcessCluster implements AgentProcessCluster {
 							"Agent class: "+config.agentClass.get(agName));
 					System.exit(0);
 				}
-				
-				BeenutsAgentProcess ag = new BeenutsAgentProcess(apr, agName,sched,agImpl);								
-				/*
+
+				BeenutsAgentProcess ag = new BeenutsAgentProcess(apr, agName,sched,agImpl);
 				ag.setAgentArchitecture(agImpl);
 				agImpl.init(ag);
 				*/

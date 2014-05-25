@@ -21,8 +21,8 @@ public class YellowPagesConnector implements ConnectionHandler {
 	 * @author Tim Janus
 	 */
 	public interface YellowPagesView {
-		JList getServerList();
-		DefaultListModel getServerListModel();
+		JList<APCEntry> getServerList();
+		DefaultListModel<APCEntry> getServerListModel();
 	}
 	
 	public YellowPagesConnector(String ip, short port, YellowPagesView view) {
