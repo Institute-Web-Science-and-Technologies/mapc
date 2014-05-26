@@ -1,0 +1,21 @@
+MAS mako {
+
+	infrastructure: Centralised
+
+	environment: eis.EISEnvironment
+	
+	agents:
+	    explorer #6;
+        repairer #6;
+        saboteur #4;
+        sentinel #6;
+        inspector #6;
+		
+	classpath:
+        "lib/moise.jar";
+        "lib/cartago.jar";
+        "lib/c4jason.jar";
+
+	aslSourcePath:
+		"src/asl";
+}

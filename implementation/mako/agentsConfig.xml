@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<javaAgentsConfig>
+<agentsConfig>
   <agents>
     <agent name="agentA1" entity="connectionA1" class="massim.javaagents.agents.SimpleExplorerAgent" team="A"/>
     <agent name="agentA2" entity="connectionA2" class="massim.javaagents.agents.SimpleExplorerAgent" team="A"/>
@@ -59,4 +59,4 @@
     <agent name="agentB27" entity="connectionB27" class="massim.javaagents.agents.SimpleInspectorAgent" team="B"/>
     <agent name="agentB28" entity="connectionB28" class="massim.javaagents.agents.SimpleInspectorAgent" team="B"/>
   </agents>
-</javaAgentsConfig>
+</agentsConfig>
