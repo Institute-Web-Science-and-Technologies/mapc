@@ -1,11 +1,7 @@
-// Agent sample_agent in project mako
+{ include("base.agent.asl") }
 
 /* Initial beliefs and rules */
 
 /* Initial goals */
 
-!start.
-
 /* Plans */
-
-+!start : true <- .print("hello world.").
