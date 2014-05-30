@@ -1,9 +1,6 @@
 package eis;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jason.environment.Environment;
 import c4jason.CartagoEnvironment;
 import eis.exceptions.ManagementException;

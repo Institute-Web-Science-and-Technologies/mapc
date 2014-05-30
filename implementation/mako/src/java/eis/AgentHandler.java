@@ -21,7 +21,7 @@ import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 
 public class AgentHandler implements AgentListener{
-	private Logger logger = Logger.getLogger("AgentHandler");
+	private static final Logger logger = Logger.getLogger(AgentHandler.class.getCanonicalName());
 	private EnvironmentInterfaceStandard environmentInterface;
 	private String configPath = "agentsConfig.xml";
 	private HashMap<String, Agent> agents = new HashMap<String, Agent>();

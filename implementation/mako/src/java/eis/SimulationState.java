@@ -28,7 +28,7 @@ public class SimulationState {
 	private static Numeral money;
 	private static Numeral ranking;
 
-	private static Logger logger = Logger.getLogger("SimulationState");	
+	private static final Logger logger = Logger.getLogger(SimulationState.class.getCanonicalName());
 	
 	public static Numeral getStep() {
 		return step;

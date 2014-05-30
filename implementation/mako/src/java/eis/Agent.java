@@ -32,7 +32,7 @@ public class Agent implements AgentListener {
 	private Identifier position;
 	private Numeral visualRange;
 	
-	Logger logger = Logger.getLogger("Agent");	
+	private static final Logger logger = Logger.getLogger(Agent.class.getCanonicalName());	
 	
 	public String getName() {
 		return name;

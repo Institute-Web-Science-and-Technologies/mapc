@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 
 public class LoggerHandler {
 	public static void setLoggerVars() {
-		Logger.getLogger("SimulationState").setLevel(Level.WARNING);;
-		Logger.getLogger("Agent").setLevel(Level.WARNING);
+		Logger.getLogger(SimulationState.class.getCanonicalName()).setLevel(Level.WARNING);;
+		Logger.getLogger(Agent.class.getCanonicalName()).setLevel(Level.WARNING);
 		//Logger.getLogger("AgentHandler").setLevel(Level.WARNING);
 	}
 
