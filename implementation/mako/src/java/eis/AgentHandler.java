@@ -1,6 +1,7 @@
 package eis;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.LinkedList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,8 +13,13 @@ import org.w3c.dom.NodeList;
 
 import eis.exceptions.AgentException;
 import eis.exceptions.RelationException;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
+import eis.iilang.Parameter;
+import eis.iilang.Percept;
+import eis.iilang.TruthValue;
 
-public class AgentHandler {
+public class AgentHandler implements AgentListener{
 	private EnvironmentInterfaceStandard environmentInterface;
 	private String configPath = "agentsConfig.xml";
 	private LinkedList<Agent> agents = new LinkedList<Agent>();
@@ -68,7 +74,7 @@ public class AgentHandler {
 						agent.setTeam(team);
 						agent.setType(type);
 						agents.add(agent);
-						agent.print();
+						//agent.print();
 					}
 				}
 			}
@@ -78,13 +84,70 @@ public class AgentHandler {
 	public void initAgents(String[] args) {
 		for (Agent agent: agents) {
 			try {
+				// tell server which agents are there
 				environmentInterface.registerAgent(agent.getName());
-				environmentInterface.associateEntity(agent.getName(),agent.getEntity());
+				
+				// tell server which agent is connected to which entity
+				environmentInterface.associateEntity(agent.getName(), agent.getEntity());
+				
+				// listener for local percepts from the server
+				environmentInterface.attachAgentListener(agent.getName(), agent);
+				
+				// listener for global percepts from the server
+				environmentInterface.attachAgentListener(agent.getName(), this);
 			} catch (AgentException e) {
 				e.printStackTrace();
 			} catch (RelationException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void handlePercept(String agentName, Percept percept) {
+		updateSimulationState(percept);		
+	}
+
+	public void handlePercept(String agentName, Collection<Percept> percepts) {
+		for (Percept percept : percepts) {
+			updateSimulationState(percept);
+		}
+		
+	}
+
+	private void updateSimulationState(Percept percept) {
+		Parameter parameter = null;
+		if (percept.getParameters().size() > 0) { 
+		  parameter = percept.getParameters().getFirst();
+		}
+		switch (percept.getName())
+		{
+			case "step": SimulationState.setStep((Numeral)parameter);
+			break;
+			case "steps": SimulationState.setMaxSteps((Numeral) parameter);
+			break;
+			case "timestamp": SimulationState.setLastTimeStamp((Numeral) parameter);
+			break;
+			case "deadline": SimulationState.setDeadline((Numeral) parameter);
+			break;
+			case "bye": SimulationState.setIsTournamentOver(new TruthValue(true));
+			break;
+			case "edges": SimulationState.setEdgeCount((Numeral) parameter);
+			break;
+			case "vertices": SimulationState.setVerticesCount((Numeral) parameter);
+			break;
+			case "id": SimulationState.setId((Identifier) parameter);
+			break;
+			case "lastStepScore": SimulationState.setLastStepScore((Numeral) parameter);
+			break;
+			case "score": SimulationState.setScore((Numeral) parameter);
+			break;
+			case "achievement": SimulationState.addAchievement((Identifier) parameter);
+			break;
+			case "money": SimulationState.setMoney((Numeral) parameter);
+			break;
+			case "ranking": SimulationState.setRanking((Numeral) parameter);
+			break;
+		}
+		
 	}
 }

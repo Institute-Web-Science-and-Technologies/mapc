@@ -1,11 +1,34 @@
 package eis;
 
-public class Agent {
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
+import eis.iilang.Parameter;
+import eis.iilang.Percept;
+
+public class Agent implements AgentListener {
 
 	private String name;
 	private String team;
 	private String entity;
 	private String type;
+	
+	private Numeral health;
+	private Numeral maxHealth;
+	
+	private Numeral strength;
+	
+	private Numeral energy;
+	private Numeral maxEnergy;
+	private Numeral maxEnergyDisabled;
+	
+	private Identifier position;
+	private Numeral visualRange;
+	
+	Logger logger = Logger.getLogger("Agent");	
 	
 	public String getName() {
 		return name;
@@ -31,7 +54,113 @@ public class Agent {
 	public void setType(String type) {
 		this.type = type;
 	}
+	public Numeral getHealth() {
+		return health;
+	}
+	public void setHealth(Numeral health) {
+		logger.info(name +": Health = " +health);
+		this.health = health;
+	}
+	public Numeral getMaxHealth() {
+		return maxHealth;
+	}
+	public boolean isDisabled() {
+		return this.health == new Numeral(0);
+	}
+	public void setMaxHealth(Numeral maxHealth) {
+		logger.info(name +": MaxHealth = " +maxHealth);
+		this.maxHealth = maxHealth;
+	}
+	public Numeral getStrength() {
+		return strength;
+	}
+	public void setStrength(Numeral strength) {
+		logger.info(name +": Stength = " +strength);
+		this.strength = strength;
+	}
+	public Numeral getEnergy() {
+		return energy;
+	}
+	public void setEnergy(Numeral energy) {		
+		logger.info(name +": Energy = " +energy);
+		this.energy = energy;
+	}
+	public Numeral getMaxEnergy() {
+		return maxEnergy;
+	}
+	public void setMaxEnergy(Numeral maxEnergy) {
+		logger.info(name +": MaxEnergy = " +maxEnergy);
+		this.maxEnergy = maxEnergy;
+	}
+	public Numeral getMaxEnergyDisabled() {		
+		return maxEnergyDisabled;
+	}
+	public void setMaxEnergyDisabled(Numeral maxEnergyDisabled) {
+		logger.info(name +": MaxEnergyDisabled = " +maxEnergyDisabled);
+		this.maxEnergyDisabled = maxEnergyDisabled;
+	}
+	public Identifier getPosition() {
+		return position;
+	}
+	public void setPosition(Identifier position) {
+		logger.info(name +": Position = " +position);
+		this.position = position;
+	}
+	public Numeral getVisualRange() {
+		return visualRange;
+	}
+	public void setVisualRange(Numeral visualRange) {
+		logger.info(name +": VisualRange = " +visualRange);
+		this.visualRange = visualRange;
+	}
 	public void print() {
 		System.out.println("[" +team +"]Name: " + name + " Entity: " +entity + " Type: " + type);
+	}
+	
+	public void handlePercept(String agentName, Percept percept) {
+		// TODO Auto-generated method stub
+		System.out.println("Percept: "+percept.getName() + " - Source: " + percept.getSource());
+		for (Parameter param : percept.getParameters()) {
+			System.out.println(" -" +param.toString());
+		}
+		System.out.println("-----------------------------------------------");
+		updateAgentState(percept);
+	}
+
+	public void handlePercept(String agentName, Collection<Percept> percepts) {
+		for (Percept percept : percepts) {
+			updateAgentState(percept);
+		}
+	}
+	
+	private void updateAgentState(Percept percept) {			
+		// update agents values
+		Parameter parameter = null;
+		if (percept.getParameters().size() > 0) { 
+		  parameter = percept.getParameters().getFirst();
+		}
+		else
+		{
+			logger.info(percept.getName());
+		}
+		switch (percept.getName())
+		{
+			case "health": this.setHealth((Numeral) parameter);
+			break;
+			case "maxHealth": this.setMaxHealth((Numeral) parameter);
+			break;
+			case "energy": this.setEnergy((Numeral) parameter);
+			break;
+			case "maxEnergy": this.setMaxEnergy((Numeral) parameter);
+			break;
+			case "maxEnergyDisabled": this.setMaxEnergyDisabled((Numeral) parameter);
+			break;
+			case "strength": this.setStrength((Numeral) parameter);
+			break;
+			case "visRange": this.setVisualRange((Numeral) parameter);
+			break;
+			case "position": this.setPosition((Identifier) parameter);
+			break;
+		}
 	}
 }

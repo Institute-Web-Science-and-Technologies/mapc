@@ -1,6 +1,8 @@
 package eis;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jason.environment.Environment;
 import c4jason.CartagoEnvironment;
@@ -17,6 +19,9 @@ public class EISEnvironment extends Environment {
 	 */
 	@Override
 	public void init(String[] args) {
+		// set logger vars
+		LoggerHandler.setLoggerVars();
+		
 		// init EISMASSIM environment
 		try {
 			ei = EILoader.fromClassName("massim.eismassim.EnvironmentInterface");
