@@ -1,9 +1,11 @@
 package eis;
 
 import java.util.Collection;
-import java.util.logging.Level;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
+import eis.exceptions.ActException;
+import eis.iilang.Action;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;
@@ -11,6 +13,8 @@ import eis.iilang.Percept;
 
 public class Agent implements AgentListener {
 
+	private EnvironmentInterfaceStandard environmentInterface;
+	
 	private String name;
 	private String team;
 	private String entity;
@@ -113,6 +117,12 @@ public class Agent implements AgentListener {
 		logger.info(name +": VisualRange = " +visualRange);
 		this.visualRange = visualRange;
 	}
+	public EnvironmentInterfaceStandard getEnvironmentInterface() {
+		return environmentInterface;
+	}
+	public void setEnvironmentInterface(EnvironmentInterfaceStandard environmentInterface) {
+		this.environmentInterface = environmentInterface;
+	}
 	public void print() {
 		System.out.println("[" +team +"]Name: " + name + " Entity: " +entity + " Type: " + type);
 	}
@@ -163,4 +173,15 @@ public class Agent implements AgentListener {
 			break;
 		}
 	}
+	
+	// HashMap<Identifier, Action> activeActions = new HashMap<Identifier, Action>();
+	
+	public void doAction(Action action) {
+		try {
+			environmentInterface.performAction(this.name, action);			
+		} catch (ActException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
