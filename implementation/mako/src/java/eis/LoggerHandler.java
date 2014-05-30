@@ -7,6 +7,7 @@ public class LoggerHandler {
 	public static void setLoggerVars() {
 		Logger.getLogger("SimulationState").setLevel(Level.WARNING);;
 		Logger.getLogger("Agent").setLevel(Level.WARNING);
+		//Logger.getLogger("AgentHandler").setLevel(Level.WARNING);
 	}
 
 }

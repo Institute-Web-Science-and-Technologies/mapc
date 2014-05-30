@@ -2,7 +2,8 @@ package eis;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -20,9 +21,10 @@ import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 
 public class AgentHandler implements AgentListener{
+	private Logger logger = Logger.getLogger("AgentHandler");
 	private EnvironmentInterfaceStandard environmentInterface;
 	private String configPath = "agentsConfig.xml";
-	private LinkedList<Agent> agents = new LinkedList<Agent>();
+	private HashMap<String, Agent> agents = new HashMap<String, Agent>();
 
 	public AgentHandler(EnvironmentInterfaceStandard ei) {
 		environmentInterface = ei;
@@ -73,7 +75,8 @@ public class AgentHandler implements AgentListener{
 						agent.setEntity(entity);
 						agent.setTeam(team);
 						agent.setType(type);
-						agents.add(agent);
+						agent.setEnvironmentInterface(environmentInterface);
+						agents.put(name, agent);
 						//agent.print();
 					}
 				}
@@ -82,7 +85,7 @@ public class AgentHandler implements AgentListener{
 	}
 
 	public void initAgents(String[] args) {
-		for (Agent agent: agents) {
+		for (Agent agent: agents.values()) {
 			try {
 				// tell server which agents are there
 				environmentInterface.registerAgent(agent.getName());
@@ -111,7 +114,6 @@ public class AgentHandler implements AgentListener{
 		for (Percept percept : percepts) {
 			updateSimulationState(percept);
 		}
-		
 	}
 
 	private void updateSimulationState(Percept percept) {
@@ -149,5 +151,9 @@ public class AgentHandler implements AgentListener{
 			break;
 		}
 		
+	}
+
+	public Agent getAgent(String agentName)	{
+		return agents.get(agentName);
 	}
 }
