@@ -5,7 +5,6 @@ MAS mako {
 	environment: eis.EISEnvironment
 	
 	agents:
-		baseAgent;
 	    explorer #6;
         repairer #6;
         saboteur #4;
