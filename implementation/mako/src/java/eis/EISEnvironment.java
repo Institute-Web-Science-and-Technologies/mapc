@@ -65,10 +65,12 @@ public class EISEnvironment extends Environment {
 	      System.out.println(agName+": i wanna recharge");
 	      Action recharge = new Action("recharge");
 	      try {
-			ei.performAction(agName, recharge);
+			ei.performAction("agentA1", recharge);
+			System.out.println("AgentA1 recharges");
 		} catch (ActException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("performAction failed");
 		}
 	      return true;
 	    } else {
