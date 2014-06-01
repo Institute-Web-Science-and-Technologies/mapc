@@ -1,6 +1,8 @@
 package eis;
 
 import java.io.IOException;
+
+import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import c4jason.CartagoEnvironment;
 import eis.exceptions.ManagementException;
@@ -54,4 +56,15 @@ public class EISEnvironment extends Environment {
 			}
 		}
 	}
+	
+	@Override
+	  public boolean executeAction(String agName, Structure action) {
+	    if (action.getFunctor().equals("recharge")) {
+	      
+	      return true;
+	    } else {
+	      //logger.info("executing: "+action+", but not implemented!");
+	      return false;
+	    }
+	  }
 }
