@@ -3,7 +3,6 @@ package eis;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -21,7 +20,6 @@ import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 
 public class AgentHandler implements AgentListener{
-	private static final Logger logger = Logger.getLogger(AgentHandler.class.getCanonicalName());
 	private EnvironmentInterfaceStandard environmentInterface;
 	private String configPath = "agentsConfig.xml";
 	private HashMap<String, Agent> agents = new HashMap<String, Agent>();

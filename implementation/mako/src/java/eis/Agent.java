@@ -1,7 +1,6 @@
 package eis;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 import eis.exceptions.ActException;
@@ -173,8 +172,6 @@ public class Agent implements AgentListener {
 			break;
 		}
 	}
-	
-	// HashMap<Identifier, Action> activeActions = new HashMap<Identifier, Action>();
 	
 	public void doAction(Action action) {
 		try {
