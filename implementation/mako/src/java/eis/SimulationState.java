@@ -1,134 +1,174 @@
+/*
+ * @author Artur Daudrich
+ * @author Michael Sewell
+ */
 package eis;
 
 import java.util.HashSet;
-import java.util.logging.Logger;
 
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.TruthValue;
 
 public class SimulationState {
-	private static Numeral step;
-	private static Numeral maxSteps;
-	
-	private static Numeral lastTimeStamp;
-	private static Numeral deadline;
-	private static TruthValue isTournamentOver;
-		
-	private static Numeral edgeCount;
-	private static Numeral verticesCount;
-	private static Identifier id;
-	
-	private static Numeral lastStepScore;
-	private static Numeral predictedStepScore;	
-	private static Numeral score;
-	private static HashSet<Identifier> achievements = new HashSet<Identifier>();
-	
-	private static Numeral money;
-	private static Numeral ranking;
+	private Numeral step;
+	private Numeral maxSteps;
 
-	private static final Logger logger = Logger.getLogger(SimulationState.class.getCanonicalName());
+	private Numeral lastTimeStamp;
+	private Numeral deadline;
+	private TruthValue isTournamentOver;
+
+	private Numeral edgeCount;
+	private Numeral verticesCount;
+	private Identifier id;
+
+	private Numeral lastStepScore;
+	private Numeral predictedStepScore;
+	private Numeral score;
+	private HashSet<Identifier> achievements = new HashSet<Identifier>();
+
+	private Numeral money;
+	private Numeral ranking;
+
+	private AgentLogger logger = new AgentLogger(SimulationState.class.getCanonicalName());
+
+	private static SimulationState instance = null;
 	
-	public static Numeral getStep() {
+    private SimulationState() {
+    	
+    }
+    
+    public static SimulationState getInstance() {
+        if (instance == null) {
+            instance = new SimulationState();
+        }
+        return instance;
+    }
+	
+	public Numeral getStep() {
 		return step;
 	}
-	public static void setStep(Numeral step) {
-		logger.info("Step = " +step);
-		SimulationState.step = step;
+
+	public void setStep(Numeral step) {
+		logger.info("Step = " + step);
+		this.step = step;
 	}
-	public static Numeral getMaxSteps() {
+
+	public Numeral getMaxSteps() {
 		return maxSteps;
 	}
-	public static void setMaxSteps(Numeral maxSteps) {
-		logger.info("MaxSteps = " +maxSteps);
-		SimulationState.maxSteps = maxSteps;
+
+	public void setMaxSteps(Numeral maxSteps) {
+		logger.info("MaxSteps = " + maxSteps);
+		this.maxSteps = maxSteps;
 	}
-	public static Numeral getLastTimeStamp() {
+
+	public Numeral getLastTimeStamp() {
 		return lastTimeStamp;
 	}
-	public static void setLastTimeStamp(Numeral lastTimeStamp) {
-		logger.info("TimeStamp = " +lastTimeStamp);
-		SimulationState.lastTimeStamp = lastTimeStamp;
+
+	public void setLastTimeStamp(Numeral lastTimeStamp) {
+		logger.info("TimeStamp = " + lastTimeStamp);
+		this.lastTimeStamp = lastTimeStamp;
 	}
-	public static Numeral getDeadline() {
+
+	public Numeral getDeadline() {
 		return deadline;
 	}
-	public static void setDeadline(Numeral deadline) {
-		logger.info("Deadline = " +deadline);
-		SimulationState.deadline = deadline;
+
+	public void setDeadline(Numeral deadline) {
+		logger.info("Deadline = " + deadline);
+		this.deadline = deadline;
 	}
-	public static TruthValue getIsTournamentOver() {
+
+	public TruthValue getIsTournamentOver() {
 		return isTournamentOver;
 	}
-	public static void setIsTournamentOver(TruthValue isTournamentOver) {
+
+	public void setIsTournamentOver(TruthValue isTournamentOver) {
 		logger.info("Tournament is over.");
-		SimulationState.isTournamentOver = isTournamentOver;
+		this.isTournamentOver = isTournamentOver;
 	}
-	public static Numeral getEdgeCount() {
+
+	public Numeral getEdgeCount() {
 		return edgeCount;
 	}
-	public static void setEdgeCount(Numeral edgeCount) {
-		logger.info("EdgeCount = " +edgeCount);
-		SimulationState.edgeCount = edgeCount;
+
+	public void setEdgeCount(Numeral edgeCount) {
+		logger.info("EdgeCount = " + edgeCount);
+		this.edgeCount = edgeCount;
 	}
-	public static Numeral getVerticesCount() {
+
+	public Numeral getVerticesCount() {
 		return verticesCount;
 	}
-	public static void setVerticesCount(Numeral verticesCount) {
-		logger.info("VerticesCount = " +verticesCount);
-		SimulationState.verticesCount = verticesCount;
+
+	public void setVerticesCount(Numeral verticesCount) {
+		logger.info("VerticesCount = " + verticesCount);
+		this.verticesCount = verticesCount;
 	}
-	public static Identifier getId() {
+
+	public Identifier getId() {
 		return id;
 	}
-	public static void setId(Identifier id) {
-		logger.info("Id = " +id);
-		SimulationState.id = id;
+
+	public void setId(Identifier id) {
+		logger.info("Id = " + id);
+		this.id = id;
 	}
-	public static Numeral getLastStepScore() {
+
+	public Numeral getLastStepScore() {
 		return lastStepScore;
 	}
-	public static void setLastStepScore(Numeral lastStepScore) {
-		logger.info("LastStepScore = " +lastStepScore);
-		SimulationState.lastStepScore = lastStepScore;
+
+	public void setLastStepScore(Numeral lastStepScore) {
+		logger.info("LastStepScore = " + lastStepScore);
+		this.lastStepScore = lastStepScore;
 	}
-	public static Numeral getPredictedStepScore() {
+
+	public Numeral getPredictedStepScore() {
 		return predictedStepScore;
 	}
-	public static void setPredictedStepScore(Numeral predictedStepScore) {
-		logger.info("PredictedStepScore = " +predictedStepScore);
-		SimulationState.predictedStepScore = predictedStepScore;
+
+	public void setPredictedStepScore(Numeral predictedStepScore) {
+		logger.info("PredictedStepScore = " + predictedStepScore);
+		this.predictedStepScore = predictedStepScore;
 	}
-	public static Numeral getScore() {
+
+	public Numeral getScore() {
 		return score;
 	}
-	public static void setScore(Numeral score) {
-		logger.info("Score = " +score);
-		SimulationState.score = score;
+
+	public void setScore(Numeral score) {
+		logger.info("Score = " + score);
+		this.score = score;
 	}
-	public static Numeral getMoney() {
+
+	public Numeral getMoney() {
 		return money;
 	}
-	public static void setMoney(Numeral money) {
-		logger.info("Money = " +money);
-		SimulationState.money = money;
+
+	public void setMoney(Numeral money) {
+		logger.info("Money = " + money);
+		this.money = money;
 	}
-	public static Numeral getRanking() {
+
+	public Numeral getRanking() {
 		return ranking;
 	}
-	public static void setRanking(Numeral ranking) {
-		logger.info("Ranking = " +ranking);
-		SimulationState.ranking = ranking;
+
+	public void setRanking(Numeral ranking) {
+		logger.info("Ranking = " + ranking);
+		this.ranking = ranking;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static HashSet<Identifier> getAchievements()
-	{
+	public HashSet<Identifier> getAchievements() {
 		return (HashSet<Identifier>) achievements.clone();
 	}
-	
-	public static boolean addAchievement(Identifier achievement) {
-		logger.info("new Achievement: " +achievement);
+
+	public boolean addAchievement(Identifier achievement) {
+		logger.info("new Achievement: " + achievement);
 		return achievements.add(achievement);
 	}
 }

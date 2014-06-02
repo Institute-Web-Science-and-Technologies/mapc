@@ -1,3 +1,7 @@
+/*
+ * @author Artur Daudrich
+ * @author Michael Sewell
+ */
 package eis;
 
 import java.io.File;
@@ -65,14 +69,14 @@ public class AgentHandler implements AgentListener{
 						String name = e.getAttribute("name");
 						String entity = e.getAttribute("entity");
 						String team = e.getAttribute("team");
-						String type = e.getAttribute("class");
+						String type = e.getAttribute("type");
 
 						// add to agents
 						Agent agent = new Agent();
 						agent.setName(name);
 						agent.setEntity(entity);
 						agent.setTeam(team);
-						agent.setType(type);
+						agent.setInternalName(type);
 						agent.setEnvironmentInterface(environmentInterface);
 						agents.put(name, agent);
 						//agent.print();
@@ -121,31 +125,31 @@ public class AgentHandler implements AgentListener{
 		}
 		switch (percept.getName())
 		{
-			case "step": SimulationState.setStep((Numeral)parameter);
+			case "step": SimulationState.getInstance().setStep((Numeral)parameter);
 			break;
-			case "steps": SimulationState.setMaxSteps((Numeral) parameter);
+			case "steps": SimulationState.getInstance().setMaxSteps((Numeral) parameter);
 			break;
-			case "timestamp": SimulationState.setLastTimeStamp((Numeral) parameter);
+			case "timestamp": SimulationState.getInstance().setLastTimeStamp((Numeral) parameter);
 			break;
-			case "deadline": SimulationState.setDeadline((Numeral) parameter);
+			case "deadline": SimulationState.getInstance().setDeadline((Numeral) parameter);
 			break;
-			case "bye": SimulationState.setIsTournamentOver(new TruthValue(true));
+			case "bye": SimulationState.getInstance().setIsTournamentOver(new TruthValue(true));
 			break;
-			case "edges": SimulationState.setEdgeCount((Numeral) parameter);
+			case "edges": SimulationState.getInstance().setEdgeCount((Numeral) parameter);
 			break;
-			case "vertices": SimulationState.setVerticesCount((Numeral) parameter);
+			case "vertices": SimulationState.getInstance().setVerticesCount((Numeral) parameter);
 			break;
-			case "id": SimulationState.setId((Identifier) parameter);
+			case "id": SimulationState.getInstance().setId((Identifier) parameter);
 			break;
-			case "lastStepScore": SimulationState.setLastStepScore((Numeral) parameter);
+			case "lastStepScore": SimulationState.getInstance().setLastStepScore((Numeral) parameter);
 			break;
-			case "score": SimulationState.setScore((Numeral) parameter);
+			case "score": SimulationState.getInstance().setScore((Numeral) parameter);
 			break;
-			case "achievement": SimulationState.addAchievement((Identifier) parameter);
+			case "achievement": SimulationState.getInstance().addAchievement((Identifier) parameter);
 			break;
-			case "money": SimulationState.setMoney((Numeral) parameter);
+			case "money": SimulationState.getInstance().setMoney((Numeral) parameter);
 			break;
-			case "ranking": SimulationState.setRanking((Numeral) parameter);
+			case "ranking": SimulationState.getInstance().setRanking((Numeral) parameter);
 			break;
 		}
 		

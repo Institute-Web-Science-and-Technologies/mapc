@@ -1,3 +1,7 @@
+/*
+ * @author Artur Daudrich
+ * @author Michael Sewell
+ */
 package eis;
 
 import eis.iilang.Action;
