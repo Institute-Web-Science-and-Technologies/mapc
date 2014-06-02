@@ -16,6 +16,8 @@ public class EISEnvironment extends Environment {
 	private EnvironmentInterfaceStandard ei;
 	private CartagoEnvironment cartagoEnvironment;
 	private AgentHandler agentHandler;
+	
+	private AgentLogger logger = new AgentLogger(this.getClass().getCanonicalName());
 
 	/*
 	 * jason lifecycle: init -> user-init -> compile -> run -> user-end
@@ -62,8 +64,7 @@ public class EISEnvironment extends Environment {
 	  public boolean executeAction(String agName, Structure action) {
 	    if (action.getFunctor().equals("recharge")) {
 	    	agentHandler.getAgent(agName).doAction(ActionHandler.recharge());
-	    	System.out.println(agName+": i wanna recharge");
-	      
+	    	logger.info(agName+": i wanna recharge");
 	  }
 	    return true;
 	}

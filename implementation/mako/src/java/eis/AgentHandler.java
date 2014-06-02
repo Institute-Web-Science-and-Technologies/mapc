@@ -69,16 +69,16 @@ public class AgentHandler implements AgentListener{
 						String name = e.getAttribute("name");
 						String entity = e.getAttribute("entity");
 						String team = e.getAttribute("team");
-						String type = e.getAttribute("type");
+						String internalName = e.getAttribute("internalName");
 
 						// add to agents
 						Agent agent = new Agent();
 						agent.setName(name);
 						agent.setEntity(entity);
 						agent.setTeam(team);
-						agent.setInternalName(type);
+						agent.setInternalName(internalName);
 						agent.setEnvironmentInterface(environmentInterface);
-						agents.put(name, agent);
+						agents.put(internalName, agent);
 						//agent.print();
 					}
 				}
