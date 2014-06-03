@@ -23,7 +23,7 @@ import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 
-public class AgentHandler implements AgentListener{
+public class AgentHandler implements AgentListener {
 	private EnvironmentInterfaceStandard environmentInterface;
 	private String configPath = "agentsConfig.xml";
 	private HashMap<String, Agent> agents = new HashMap<String, Agent>();
@@ -60,7 +60,7 @@ public class AgentHandler implements AgentListener{
 				NodeList rootChildChildren = rootChild.getChildNodes();
 				for (int b = 0; b < rootChildChildren.getLength(); b++) {
 
-					// parse the entites list
+					// parse the entities list
 					Node rootChildChild = rootChildChildren.item(b);
 					if (rootChildChild.getNodeName().equalsIgnoreCase("agent")) {
 
@@ -79,7 +79,7 @@ public class AgentHandler implements AgentListener{
 						agent.setInternalName(internalName);
 						agent.setEnvironmentInterface(environmentInterface);
 						agents.put(internalName, agent);
-						//agent.print();
+						// agent.print();
 					}
 				}
 			}
@@ -87,17 +87,19 @@ public class AgentHandler implements AgentListener{
 	}
 
 	public void initAgents(String[] args) {
-		for (Agent agent: agents.values()) {
+		for (Agent agent : agents.values()) {
 			try {
 				// tell server which agents are there
 				environmentInterface.registerAgent(agent.getName());
-				
+
 				// tell server which agent is connected to which entity
-				environmentInterface.associateEntity(agent.getName(), agent.getEntity());
-				
+				environmentInterface.associateEntity(agent.getName(),
+						agent.getEntity());
+
 				// listener for local percepts from the server
-				environmentInterface.attachAgentListener(agent.getName(), agent);
-				
+				environmentInterface
+						.attachAgentListener(agent.getName(), agent);
+
 				// listener for global percepts from the server
 				environmentInterface.attachAgentListener(agent.getName(), this);
 			} catch (AgentException e) {
@@ -109,7 +111,7 @@ public class AgentHandler implements AgentListener{
 	}
 
 	public void handlePercept(String agentName, Percept percept) {
-		updateSimulationState(percept);		
+		updateSimulationState(percept);
 	}
 
 	public void handlePercept(String agentName, Collection<Percept> percepts) {
@@ -120,42 +122,90 @@ public class AgentHandler implements AgentListener{
 
 	private void updateSimulationState(Percept percept) {
 		Parameter parameter = null;
-		if (percept.getParameters().size() > 0) { 
-		  parameter = percept.getParameters().getFirst();
+		if (percept.getParameters().size() > 0) {
+			parameter = percept.getParameters().getFirst();
 		}
-		switch (percept.getName())
-		{
-			case "step": SimulationState.getInstance().setStep((Numeral)parameter);
+		switch (percept.getName()) {
+		case "step":
+			SimulationState.getInstance().setStep((Numeral) parameter);
 			break;
-			case "steps": SimulationState.getInstance().setMaxSteps((Numeral) parameter);
+		case "steps":
+			SimulationState.getInstance().setMaxSteps((Numeral) parameter);
 			break;
-			case "timestamp": SimulationState.getInstance().setLastTimeStamp((Numeral) parameter);
+		case "timestamp":
+			SimulationState.getInstance().setLastTimeStamp((Numeral) parameter);
 			break;
-			case "deadline": SimulationState.getInstance().setDeadline((Numeral) parameter);
+		case "deadline":
+			SimulationState.getInstance().setDeadline((Numeral) parameter);
 			break;
-			case "bye": SimulationState.getInstance().setIsTournamentOver(new TruthValue(true));
+		case "bye":
+			SimulationState.getInstance().setIsTournamentOver(
+					new TruthValue(true));
 			break;
-			case "edges": SimulationState.getInstance().setEdgeCount((Numeral) parameter);
+		case "id":
+			SimulationState.getInstance().setId((Identifier) parameter);
 			break;
-			case "vertices": SimulationState.getInstance().setVerticesCount((Numeral) parameter);
+		case "lastStepScore":
+			SimulationState.getInstance().setLastStepScore((Numeral) parameter);
 			break;
-			case "id": SimulationState.getInstance().setId((Identifier) parameter);
+		case "score":
+			SimulationState.getInstance().setScore((Numeral) parameter);
 			break;
-			case "lastStepScore": SimulationState.getInstance().setLastStepScore((Numeral) parameter);
+		case "achievement":
+			SimulationState.getInstance()
+					.addAchievement((Identifier) parameter);
 			break;
-			case "score": SimulationState.getInstance().setScore((Numeral) parameter);
+		case "money":
+			SimulationState.getInstance().setMoney((Numeral) parameter);
 			break;
-			case "achievement": SimulationState.getInstance().addAchievement((Identifier) parameter);
+		case "ranking":
+			SimulationState.getInstance().setRanking((Numeral) parameter);
 			break;
-			case "money": SimulationState.getInstance().setMoney((Numeral) parameter);
+		case "visibleVertex":
+			/*
+			 * visibleVertex(<Identifier>,<Identifier>) denotes a visible
+			 * vertex, represented by its name and the team that occupies it.
+			 */
+			// TODO send this information to our central map
 			break;
-			case "ranking": SimulationState.getInstance().setRanking((Numeral) parameter);
+		case "visibleEdge":
+			/*
+			 * visibleEdge(<Identifier>,<Identifier>) represents a visible edge,
+			 * denoted by its two adjacent vertices.
+			 */
+			// TODO send this information to our central map
+			break;
+		case "visibleEntity":
+			/*
+			 * visibleEntity(<Identifier>,<Identifier>,<Identifier>,<Identifier>)
+			 * denotes a visible vehicle. The first identifier represents the
+			 * vehicle’s name, the second one the vertex it is standing on, the
+			 * third its team and the fourth and final one indicates whether the
+			 * entity is disabled or not.
+			 */
+			// TODO send this information to our central map
+			break;
+		case "position":
+			/*
+			 * position(<Identifier>) indicates the current position of the
+			 * vehicle. The identifier is the vertex’s name.
+			 */
+			// TODO send this information to our central map
+			break;
+		case "edges":
+			SimulationState.getInstance().setEdgeCount((Numeral) parameter);
+			// TODO use this to construct our graph. This is the number of
+			// edges in the currently running simulation.
+			break;
+		case "vertices":
+			SimulationState.getInstance().setVerticesCount((Numeral) parameter);
+			// TODO use this to construct our graph. This is the number of
+			// vertices in the currently running simulation.
 			break;
 		}
-		
 	}
 
-	public Agent getAgent(String agentName)	{
+	public Agent getAgent(String agentName) {
 		return agents.get(agentName);
 	}
 }

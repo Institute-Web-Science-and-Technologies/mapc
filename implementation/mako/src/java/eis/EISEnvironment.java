@@ -66,8 +66,8 @@ public class EISEnvironment extends Environment {
 	@Override
 	public boolean executeAction(String agName, Structure action) {
 		if (action.getFunctor().equals("recharge")) {
-			boolean actionResult = agentHandler.getAgent(agName).doAction(
-					ActionHandler.RECHARGE);
+			Agent agent = agentHandler.getAgent(agName);
+			boolean actionResult = agent.doAction(ActionHandler.recharge());
 			if (actionResult)
 				logger.info(agName + "I recharged");
 			else
