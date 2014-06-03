@@ -13,17 +13,21 @@ import eis.exceptions.ManagementException;
 
 public class EISEnvironment extends Environment {
 
+	public static String NAME = EISEnvironment.class.getName();
 	private EnvironmentInterfaceStandard ei;
 	private CartagoEnvironment cartagoEnvironment;
 	private AgentHandler agentHandler;
 	
-	private AgentLogger logger = new AgentLogger(this.getClass().getCanonicalName());
+	private AgentLogger logger = new AgentLogger(EISEnvironment.NAME);
 
 	/*
 	 * jason lifecycle: init -> user-init -> compile -> run -> user-end
 	 */
 	@Override
 	public void init(String[] args) {
+		// logger
+		logger.setVisible(false);
+		
 		// init EISMASSIM environment
 		try {
 			ei = EILoader.fromClassName("massim.eismassim.EnvironmentInterface");

@@ -34,7 +34,7 @@ public class Agent implements AgentListener {
 	private Identifier position;
 	private Numeral visualRange;
 
-	private AgentLogger logger = new AgentLogger(this.getClass().getCanonicalName());
+	private AgentLogger logger;
 
 	public String getName() {
 		return name;
@@ -65,6 +65,7 @@ public class Agent implements AgentListener {
 	}
 
 	public void setInternalName(String type) {
+		logger = new AgentLogger(type);
 		this.internalName = type;
 	}
 
