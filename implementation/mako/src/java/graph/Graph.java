@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import eis.Agent;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 
 /**
  * This class represents global graph accessible by all agents. Implements
@@ -25,61 +27,20 @@ public class Graph implements IGraph {
     private int amountEdges;
 
     @Override
-    public synchronized void addVertex(String vertexID) {
+    public synchronized void addVertex(Identifier vertexID) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public synchronized void updateVertexValue(String vertexID, int value) {
+    public synchronized void updateVertexValue(Identifier vertexID,
+            Numeral value) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public synchronized void addEdge(String vertexS, String vertexD) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public synchronized void updateEdgeWeight(String vertexID, int weight) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public List<String> getShortestPath(String vertexS, String vertexD) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getNeighborhood(String vertexV, int depth) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public int getVertexValue(String vertexID) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getEdgeWeight(String vertexS, String vertexD) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean existsPath(String vertexS, String vertexD) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public synchronized void addEnemyPosition(String vertexID, Agent a) {
+    public synchronized void addEdge(Identifier vertexA, Identifier vertexB) {
         // TODO Auto-generated method stub
 
     }
@@ -91,33 +52,77 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public synchronized void updateEnemyPosition(String newVertexID, Agent a) {
+    public synchronized void updateEdgeWeight(Identifier vertexID,
+            Numeral weight) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public HashMap<Agent, Integer> getCloseEnemiesDistance(String vertexID,
+    public List<Identifier> getShortestPath(Identifier vertexS,
+            Identifier vertexD) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Identifier> getNeighborhood(Identifier vertexV, int depth) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getVertexValue(Identifier vertexID) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getEdgeWeight(Identifier vertexS, Identifier vertexD) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean existsPath(Identifier vertexS, Identifier vertexD) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public synchronized void addEnemyPosition(Identifier vertexID, Agent a) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public synchronized void updateEnemyPosition(Identifier newVertexID, Agent a) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public HashMap<Agent, Integer> getCloseEnemiesDistance(Identifier vertexID,
             int depth) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public HashMap<Agent, Vertex> getCloseEnemies(String vertexID, int depth) {
+    public HashMap<Agent, Vertex> getCloseEnemies(Identifier vertexID, int depth) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public HashMap<Agent, Vertex> getCloseEnemySaboteurs(String vertexID,
+    public HashMap<Agent, Vertex> getCloseEnemySaboteurs(Identifier vertexID,
             int depth) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public HashMap<Agent, Vertex> getCloseEnemyRepairers(String vertexID,
+    public HashMap<Agent, Vertex> getCloseEnemyRepairers(Identifier vertexID,
             int depth) {
         // TODO Auto-generated method stub
         return null;

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import eis.Agent;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 
 /**
  * This interface models a Graph structure. Vertices from the outside are
@@ -15,29 +17,30 @@ import eis.Agent;
  */
 public interface IGraph {
 
-    public void addVertex(String vertexID);
+    public void addVertex(Identifier vertexID);
 
-    public void updateVertexValue(String vertexID, int value);
+    public void updateVertexValue(Identifier vertexID, Numeral value);
 
-    public void addEdge(String vertexS, String vertexD);
+    public void addEdge(Identifier vertexA, Identifier vertexB);
 
-    public void updateEdgeWeight(String vertexID, int weight);
+    public void updateEdgeWeight(Identifier vertexID, Numeral weight);
 
-    public List<String> getShortestPath(String vertexS, String vertexD);
+    public List<Identifier> getShortestPath(Identifier vertexS,
+            Identifier vertexD);
 
-    public List<String> getNeighborhood(String vertexV, int depth);
+    public List<Identifier> getNeighborhood(Identifier vertexV, int depth);
 
-    public int getVertexValue(String vertexID);
+    public int getVertexValue(Identifier vertexID);
 
-    public int getEdgeWeight(String vertexS, String vertexD);
+    public int getEdgeWeight(Identifier vertexS, Identifier vertexD);
 
-    public boolean existsPath(String vertexS, String vertexD);
+    public boolean existsPath(Identifier vertexS, Identifier vertexD);
 
-    public void addEnemyPosition(String vertexID, Agent a);
+    public void addEnemyPosition(Identifier vertexID, Agent a);
 
     public void removeEnemyPosition(Agent a);
 
-    public void updateEnemyPosition(String newVertexID, Agent a);
+    public void updateEnemyPosition(Identifier newVertexID, Agent a);
 
     /**
      * Get distances of close enemies within the "depth" range from the vertex
@@ -45,7 +48,7 @@ public interface IGraph {
      * 
      * @return
      */
-    public HashMap<Agent, Integer> getCloseEnemiesDistance(String vertexID,
+    public HashMap<Agent, Integer> getCloseEnemiesDistance(Identifier vertexID,
             int depth);
 
     /**
@@ -54,7 +57,7 @@ public interface IGraph {
      * 
      * @return
      */
-    public HashMap<Agent, Vertex> getCloseEnemies(String vertexID, int depth);
+    public HashMap<Agent, Vertex> getCloseEnemies(Identifier vertexID, int depth);
 
     /**
      * Get vertices of close enemy Saboteurs within the "depth" range from the
@@ -62,7 +65,7 @@ public interface IGraph {
      * 
      * @return
      */
-    public HashMap<Agent, Vertex> getCloseEnemySaboteurs(String vertexID,
+    public HashMap<Agent, Vertex> getCloseEnemySaboteurs(Identifier vertexID,
             int depth);
 
     /**
@@ -71,6 +74,6 @@ public interface IGraph {
      * 
      * @return
      */
-    public HashMap<Agent, Vertex> getCloseEnemyRepairers(String vertexID,
+    public HashMap<Agent, Vertex> getCloseEnemyRepairers(Identifier vertexID,
             int depth);
 }
