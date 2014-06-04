@@ -212,11 +212,12 @@ public class Agent implements AgentListener {
 		}
 	}
 
-	public void doAction(Action action) {
+	public boolean doAction(Action action) {
 		try {
 			environmentInterface.performAction(this.name, action);
+			return true;
 		} catch (ActException e) {
-			e.printStackTrace();
+			return false;
 		}
 	}
 

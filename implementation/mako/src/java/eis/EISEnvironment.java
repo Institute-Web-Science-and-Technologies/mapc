@@ -4,10 +4,11 @@
  */
 package eis;
 
-import java.io.IOException;
-
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
+
+import java.io.IOException;
+
 import c4jason.CartagoEnvironment;
 import eis.exceptions.ManagementException;
 
@@ -17,7 +18,7 @@ public class EISEnvironment extends Environment {
 	private EnvironmentInterfaceStandard ei;
 	private CartagoEnvironment cartagoEnvironment;
 	private AgentHandler agentHandler;
-	
+
 	private AgentLogger logger = new AgentLogger(EISEnvironment.NAME);
 
 	/*
@@ -27,10 +28,11 @@ public class EISEnvironment extends Environment {
 	public void init(String[] args) {
 		// logger
 		logger.setVisible(false);
-		
+
 		// init EISMASSIM environment
 		try {
-			ei = EILoader.fromClassName("massim.eismassim.EnvironmentInterface");
+			ei = EILoader
+					.fromClassName("massim.eismassim.EnvironmentInterface");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -63,13 +65,17 @@ public class EISEnvironment extends Environment {
 			}
 		}
 	}
-	
+
 	@Override
-	  public boolean executeAction(String agName, Structure action) {
-	    if (action.getFunctor().equals("recharge")) {
-	    	agentHandler.getAgent(agName).doAction(ActionHandler.recharge());
-	    	logger.info(agName+": i wanna recharge");
-	  }
-	    return true;
+	public boolean executeAction(String agName, Structure action) {
+		if (action.getFunctor().equals("recharge")) {
+			Agent agent = agentHandler.getAgent(agName);
+			boolean actionResult = agent.doAction(ActionHandler.recharge());
+			if (actionResult)
+				logger.info(agName + "I recharged");
+			else
+				logger.info(agName + "I cannot recharge");
+		}
+		return true;
 	}
 }
