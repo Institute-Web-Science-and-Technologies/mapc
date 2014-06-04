@@ -8,5 +8,5 @@ package graph;
  * @author Michael Ruster
  */
 public enum TeamEnum {
-	TEAMA, TEAMB, NONE;
+    TEAMA, TEAMB, NONE;
 }

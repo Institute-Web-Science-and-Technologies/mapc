@@ -1,7 +1,3 @@
-/*
- * @author Artur Daudrich
- * @author Michael Sewell
- */
 package eis;
 
 import java.util.Collection;
@@ -13,6 +9,10 @@ import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
 
+/**
+ * @author Artur Daudrich
+ * @author Michael Sewell
+ */
 public class Agent implements AgentListener {
 
 	private EnvironmentInterfaceStandard environmentInterface;
@@ -208,6 +208,30 @@ public class Agent implements AgentListener {
 			break;
 		case "position":
 			this.setPosition((Identifier) parameter);
+			break;
+		case "visibleVertex":
+			/*
+			 * visibleVertex(<Identifier>,<Identifier>) denotes a visible
+			 * vertex, represented by its name and the team that occupies it.
+			 */
+			// TODO send this information to our central map
+			break;
+		case "visibleEdge":
+			/*
+			 * visibleEdge(<Identifier>,<Identifier>) represents a visible edge,
+			 * denoted by its two adjacent vertices.
+			 */
+			// TODO send this information to our central map
+			break;
+		case "visibleEntity":
+			/*
+			 * visibleEntity(<Identifier>,<Identifier>,<Identifier>,<Identifier>)
+			 * denotes a visible vehicle. The first identifier represents the
+			 * vehicle's name, the second one the vertex it is standing on, the
+			 * third its team and the fourth and final one indicates whether the
+			 * entity is disabled or not.
+			 */
+			// TODO send this information to our central map
 			break;
 		}
 	}
