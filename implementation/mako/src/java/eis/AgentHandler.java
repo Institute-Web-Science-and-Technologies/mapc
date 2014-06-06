@@ -18,6 +18,7 @@ import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import eis.iilang.TruthValue;
+import graph.Graph;
 
 /**
  * The AgentHandler class deals with several things regarding the team's agents.
@@ -39,11 +40,9 @@ public class AgentHandler implements AgentListener {
 
     private EnvironmentInterfaceStandard environmentInterface;
     private String configPath = "agentsConfig.xml";
-    private HashMap<String, Agent> agents = new HashMap<String, Agent>(); // keep
-                                                                          // track
-                                                                          // of
-                                                                          // our
-                                                                          // agents
+
+    // keep track of our agents
+    private HashMap<String, Agent> agents = new HashMap<String, Agent>();
 
     public AgentHandler(EnvironmentInterfaceStandard ei) {
         // logger
@@ -186,9 +185,14 @@ public class AgentHandler implements AgentListener {
         case "timestamp":
             SimulationState.getInstance().setLastTimeStamp((Numeral) parameter);
             break;
+        /*
+         * deadline(<Numeral>) indicates the deadline for sending a valid
+         * action-message to the server in Unix-time.
+         */
         case "deadline":
             SimulationState.getInstance().setDeadline((Numeral) parameter);
             break;
+        /* bye indicates that the tournament is over. */
         case "bye":
             SimulationState.getInstance().setIsTournamentOver(new TruthValue(true));
             break;
@@ -201,6 +205,7 @@ public class AgentHandler implements AgentListener {
         case "score":
             SimulationState.getInstance().setScore((Numeral) parameter);
             break;
+        /* achievement(<Identifier>) denotes an achievement. */
         case "achievement":
             SimulationState.getInstance().addAchievement((Identifier) parameter);
             break;
@@ -210,15 +215,69 @@ public class AgentHandler implements AgentListener {
         case "ranking":
             SimulationState.getInstance().setRanking((Numeral) parameter);
             break;
+        /*
+         * edges(<Numeral>) represents the number of edges of the current
+         * simulation.
+         */
         case "edges":
             SimulationState.getInstance().setEdgeCount((Numeral) parameter);
             // TODO use this to construct our graph. This is the number of
             // edges in the currently running simulation.
             break;
+        /*
+         * vertices(<Numeral>) represents the number of vertices of the current
+         * simulation.
+         */
         case "vertices":
             SimulationState.getInstance().setVerticesCount((Numeral) parameter);
             // TODO use this to construct our graph. This is the number of
             // vertices in the currently running simulation.
+            break;
+        /*
+         * probedVertex(<Identifier>,<Numeral>) denotes the value of a probed
+         * vertex. The identifier is the vertex’s name and the numeral is its
+         * value.
+         */
+        case "probedVertex":
+            break;
+        /*
+         * visibleVertex(<Identifier>,<Identifier>) denotes a visible vertex,
+         * represented by its name and the team that occupies it.
+         */
+        case "visibleVertex":
+            Identifier vertexId = (Identifier) percept.getParameters().get(0);
+            // Identifier teamId = (Identifier) percept.getParameters().get(1);
+            Graph.getInstance().addVertex(vertexId);
+            // Graph.getInstance().addVertex(vertexId, teamId);
+            break;
+        /*
+         * surveyedEdge(<Identifier>,<Identifier>,<Numeral>) indicates the
+         * weight of a surveyed edge. The identifiers represent the adjacent
+         * vertices and the numeral denotes the weight of the edge.
+         */
+        case "surveyedEdge":
+            break;
+        /*
+         * visibleEdge(<Identifier>,<Identifier>) represents a visible edge,
+         * denoted by its two adjacent vertices.
+         */
+        case "visibleEdge":
+            Identifier vertexA = (Identifier) percept.getParameters().get(0);
+            Identifier vertexB = (Identifier) percept.getParameters().get(1);
+            Graph.getInstance().addEdge(vertexA, vertexB);
+            break;
+        /*
+         * visibleEntity(<Identifier>,<Identifier>,<Identifier>,<Identifier>)
+         * denotes a visible vehicle. The first identifier represents the
+         * vehicle's name, the second one the vertex it is standing on, the
+         * third its team and the fourth and final one indicates whether the
+         * entity is disabled or not.
+         */
+        case "visibleEntity":
+            Identifier vehicleName = (Identifier) percept.getParameters().get(0);
+            Identifier vertexName = (Identifier) percept.getParameters().get(1);
+            Identifier teamName = (Identifier) percept.getParameters().get(2);
+            Identifier isDisabled = (Identifier) percept.getParameters().get(3);
             break;
         }
     }
