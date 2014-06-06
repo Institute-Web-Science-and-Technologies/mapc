@@ -17,6 +17,19 @@ import eis.iilang.Numeral;
  * @author Michael Ruster
  */
 public class Graph implements IGraph {
+
+    private static Graph instance = null;
+
+    private Graph() {
+    }
+
+    public static Graph getInstance() {
+        if (instance == null) {
+            instance = new Graph();
+        }
+        return instance;
+    }
+
     /**
      * The Integer maps the vertex id for faster querying.
      */
@@ -96,7 +109,8 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public synchronized void updateEnemyPosition(Identifier newVertexID, Agent a) {
+    public synchronized void
+            updateEnemyPosition(Identifier newVertexID, Agent a) {
         // TODO Auto-generated method stub
 
     }
@@ -109,7 +123,8 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public HashMap<Agent, Vertex> getCloseEnemies(Identifier vertexID, int depth) {
+    public HashMap<Agent, Vertex>
+            getCloseEnemies(Identifier vertexID, int depth) {
         // TODO Auto-generated method stub
         return null;
     }
