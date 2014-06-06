@@ -20,19 +20,32 @@ import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 
 /**
+ * The AgentHandler class deals with several things regarding the team's agents.
+ * It is a vital process that runs in the background of the simulation. It
+ * initializes the agents and registers them with the server. It watches for
+ * percepts from the server and handles those that aren't agent-specific, such
+ * as the team's score. It also provides utility functions and interfaces for
+ * communicating with Jason and the graph generation.
+ * 
+ * 
  * @author Artur Daudrich
  * @author Michael Sewell
  */
 public class AgentHandler implements AgentListener {
 
+    // Set up the AgentHandler's logger for debugging purposes.
     public static String NAME = AgentHandler.class.getName();
     AgentLogger logger = new AgentLogger(AgentHandler.NAME);
+
     private EnvironmentInterfaceStandard environmentInterface;
     private String configPath = "agentsConfig.xml";
-    private HashMap<String, Agent> agents = new HashMap<String, Agent>();
+    private HashMap<String, Agent> agents = new HashMap<String, Agent>(); // keep
+                                                                          // track
+                                                                          // of
+                                                                          // our
+                                                                          // agents
 
-    public AgentHandler(
-            EnvironmentInterfaceStandard ei) {
+    public AgentHandler(EnvironmentInterfaceStandard ei) {
         // logger
         logger.setVisible(false);
 
@@ -41,6 +54,11 @@ public class AgentHandler implements AgentListener {
         createAgents();
     }
 
+    /**
+     * Create the agents according to the specification given in the agents' XML
+     * configuration file. Created agents are added to the internal agents
+     * HashMap.
+     */
     private void createAgents() {
         File configFile = new File(configPath);
 
@@ -93,6 +111,14 @@ public class AgentHandler implements AgentListener {
         }
     }
 
+    /**
+     * This function is called when the AgentHandler is initialized. It is a
+     * helper function that registers the agents with the server. It also sets
+     * up the agents so that they are registered as listeners with the server
+     * and will receive percepts related to them.
+     * 
+     * @param args
+     */
     public void initAgents(String[] args) {
         for (Agent agent : agents.values()) {
             try {
@@ -115,16 +141,36 @@ public class AgentHandler implements AgentListener {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see eis.AgentListener#handlePercept(java.lang.String,
+     * eis.iilang.Percept)
+     */
     public void handlePercept(String agentName, Percept percept) {
         updateSimulationState(percept);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see eis.AgentListener#handlePercept(java.lang.String,
+     * java.util.Collection)
+     */
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         for (Percept percept : percepts) {
             updateSimulationState(percept);
         }
     }
 
+    /**
+     * When the AgentHandler receives a new percept from the server, this method
+     * is called. It extracts the information from the percepts and saves them
+     * in the relevant Java classes' attributes.
+     * 
+     * @param percept
+     *            the percept that information will be extracted from.
+     */
     private void updateSimulationState(Percept percept) {
         Parameter parameter = null;
         if (percept.getParameters().size() > 0) {
