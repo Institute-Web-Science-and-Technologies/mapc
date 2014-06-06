@@ -1,6 +1,7 @@
 package eis;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 import eis.exceptions.ActException;
 import eis.iilang.Action;
@@ -34,7 +35,20 @@ public class Agent implements AgentListener {
     private Identifier position;
     private Numeral visualRange;
 
+    private Identifier lastActionResult;
+    private Identifier lastActionParam;
+    private Identifier lastAction;
+
     private AgentLogger logger;
+
+    public EnvironmentInterfaceStandard getEnvironmentInterface() {
+        return environmentInterface;
+    }
+
+    public void setEnvironmentInterface(
+            EnvironmentInterfaceStandard environmentInterface) {
+        this.environmentInterface = environmentInterface;
+    }
 
     public String getName() {
         return name;
@@ -73,9 +87,12 @@ public class Agent implements AgentListener {
         return health;
     }
 
-    public void setHealth(Numeral health) {
-        logger.info("Health: " + this.health + " -> " + health);
-        this.health = health;
+    public void setHealth(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.health)) {
+            logger.info("Health: " + this.health + " -> " + newValue);
+            this.health = newValue;
+        }
     }
 
     public Numeral getMaxHealth() {
@@ -86,85 +103,128 @@ public class Agent implements AgentListener {
         return this.health == new Numeral(0);
     }
 
-    public void setMaxHealth(Numeral maxHealth) {
-        logger.info("MaxHealth: " + maxHealth);
-        this.maxHealth = maxHealth;
+    public void setMaxHealth(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.maxHealth)) {
+            logger.info("MaxHealth: " + newValue);
+            this.maxHealth = newValue;
+        }
     }
 
     public Numeral getStrength() {
         return strength;
     }
 
-    public void setStrength(Numeral strength) {
-        logger.info("Stength: " + strength);
-        this.strength = strength;
+    public void setStrength(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.strength)) {
+            logger.info("Stength: " + newValue);
+            this.strength = newValue;
+        }
     }
 
     public Numeral getEnergy() {
         return energy;
     }
 
-    public void setEnergy(Numeral energy) {
-        logger.info("Energy: " + this.energy + " -> " + energy);
-        this.energy = energy;
+    public void setEnergy(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.energy)) {
+            logger.info("Energy: " + this.energy + " -> " + newValue);
+            this.energy = newValue;
+        }
     }
 
     public Numeral getMaxEnergy() {
         return maxEnergy;
     }
 
-    public void setMaxEnergy(Numeral maxEnergy) {
-        logger.info("MaxEnergy: " + maxEnergy);
-        this.maxEnergy = maxEnergy;
+    public void setMaxEnergy(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.maxEnergy)) {
+            logger.info("MaxEnergy: " + newValue);
+            this.maxEnergy = newValue;
+        }
     }
 
     public Numeral getMaxEnergyDisabled() {
         return maxEnergyDisabled;
     }
 
-    public void setMaxEnergyDisabled(Numeral maxEnergyDisabled) {
-        logger.info(name + ": MaxEnergyDisabled = " + maxEnergyDisabled);
-        this.maxEnergyDisabled = maxEnergyDisabled;
+    public void setMaxEnergyDisabled(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.maxEnergyDisabled)) {
+            logger.info("MaxEnergy when disabled: " + newValue);
+            this.maxEnergyDisabled = newValue;
+        }
     }
 
     public Identifier getPosition() {
         return position;
     }
 
-    public void setPosition(Identifier position) {
-        logger.info(name + ": Position = " + position);
-        this.position = position;
+    public void setPosition(LinkedList<Parameter> parameters) {
+        Identifier newValue = (Identifier) parameters.get(0);
+        if (!newValue.equals(this.position)) {
+            logger.info("Position: " + newValue);
+            this.position = newValue;
+        }
     }
 
     public Numeral getVisualRange() {
         return visualRange;
     }
 
-    public void setVisualRange(Numeral visualRange) {
-        logger.info("VisualRange: " + visualRange);
-        this.visualRange = visualRange;
+    public void setVisualRange(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.visualRange)) {
+            logger.info("VisualRange: " + newValue);
+            this.visualRange = newValue;
+        }
     }
 
-    public EnvironmentInterfaceStandard getEnvironmentInterface() {
-        return environmentInterface;
+    private void setLastActionResult(LinkedList<Parameter> parameters) {
+        Identifier newValue = (Identifier) parameters.get(0);
+        if (!newValue.equals(this.lastActionResult)) {
+            logger.info("Result of last action: " + newValue);
+            this.lastActionResult = newValue;
+        }
     }
 
-    public void setEnvironmentInterface(
-            EnvironmentInterfaceStandard environmentInterface) {
-        this.environmentInterface = environmentInterface;
+    public Identifier getLastActionResult() {
+        return lastActionResult;
+    }
+
+    private void setLastActionParam(LinkedList<Parameter> parameters) {
+        Identifier newValue = (Identifier) parameters.get(0);
+        if (!newValue.equals(this.lastActionParam)) {
+            logger.info("Parameter of last action: " + newValue);
+            this.lastActionParam = newValue;
+        }
+    }
+
+    public Identifier getLastActionParam() {
+        return lastActionParam;
+    }
+
+    private void setLastAction(LinkedList<Parameter> parameters) {
+        Identifier newValue = (Identifier) parameters.get(0);
+        if (!newValue.equals(this.lastAction)) {
+            logger.info("Last action: " + newValue);
+            this.lastAction = newValue;
+        }
+    }
+
+    public Identifier getLastAction() {
+        return lastAction;
     }
 
     public void print() {
-        System.out.println("[" + team + "]Name: " + name + " Entity: " + entity + " Type: " + internalName);
+        logger.info("[" + team + "]Name: " + name + " Entity: " + entity + " Type: " + internalName);
     }
 
     public void handlePercept(String agentName, Percept percept) {
-        // TODO Auto-generated method stub
-        System.out.println("Percept: " + percept.getName() + " - Source: " + percept.getSource());
-        for (Parameter param : percept.getParameters()) {
-            System.out.println(" -" + param.toString());
-        }
-        System.out.println("-----------------------------------------------");
+        logger.info("single percept");
         updateAgentState(percept);
     }
 
@@ -176,60 +236,80 @@ public class Agent implements AgentListener {
 
     private void updateAgentState(Percept percept) {
         // update agents values
-        Parameter parameter = null;
-        if (percept.getParameters().size() > 0) {
-            parameter = percept.getParameters().getFirst();
-        } else {
-            logger.info(percept.getName());
-        }
+        logger.info(percept.getName());
+
         switch (percept.getName()) {
+        /* health(<Numeral>) indicates the current health of the vehicle. */
         case "health":
-            this.setHealth((Numeral) parameter);
+            this.setHealth(percept.getParameters());
             break;
+        /*
+         * maxHealth(<Numeral>) represents the maximum health the vehicle can
+         * have.
+         */
         case "maxHealth":
-            this.setMaxHealth((Numeral) parameter);
+            this.setMaxHealth(percept.getParameters());
             break;
+        /*
+         * energy(<Numeral>) denotes the current amount of energy of the
+         * vehicle.
+         */
         case "energy":
-            this.setEnergy((Numeral) parameter);
+            this.setEnergy(percept.getParameters());
             break;
+        /*
+         * maxEnergy(<Numeral>) denotes the maximum amount of energy the
+         * vehicle. can have
+         */
         case "maxEnergy":
-            this.setMaxEnergy((Numeral) parameter);
+            this.setMaxEnergy(percept.getParameters());
             break;
+        /*
+         * maxEnergyDisabled(<Numeral>) denotes the maximum amount of energy the
+         * vehicle can have, when it is disabled.
+         */
         case "maxEnergyDisabled":
-            this.setMaxEnergyDisabled((Numeral) parameter);
+            this.setMaxEnergyDisabled(percept.getParameters());
             break;
+        /* strength(<Numeral>) represents the current strength of the vehicle. */
         case "strength":
-            this.setStrength((Numeral) parameter);
+            this.setStrength(percept.getParameters());
             break;
+        /*
+         * visRange(<Numeral>) denotes the current visibility-range of the
+         * vehicle.
+         */
         case "visRange":
-            this.setVisualRange((Numeral) parameter);
+            this.setVisualRange(percept.getParameters());
             break;
+        /*
+         * position(<Identifier>) indicates the current position of the vehicle.
+         * The identifier is the vertex’s name.
+         */
         case "position":
-            this.setPosition((Identifier) parameter);
+            this.setPosition(percept.getParameters());
+            // Graph.getInstance().addPosition(this.getPosition(), this);
             break;
-        case "visibleVertex":
-            /*
-             * visibleVertex(<Identifier>,<Identifier>) denotes a visible
-             * vertex, represented by its name and the team that occupies it.
-             */
-            // TODO send this information to our central map
+        /*
+         * lastAction(<Identifier>) indicates the last action that was sent to
+         * the server.
+         */
+        case "lastAction":
+            this.setLastAction(percept.getParameters());
             break;
-        case "visibleEdge":
-            /*
-             * visibleEdge(<Identifier>,<Identifier>) represents a visible edge,
-             * denoted by its two adjacent vertices.
-             */
-            // TODO send this information to our central map
+        /*
+         * lastActionParam(<Identifier>) indicates the parameter of the last ac-
+         * tion that was sent to the server.
+         */
+        case "lastActionParam":
+            this.setLastActionParam(percept.getParameters());
             break;
-        case "visibleEntity":
-            /*
-             * visibleEntity(<Identifier>,<Identifier>,<Identifier>,<Identifier>)
-             * denotes a visible vehicle. The first identifier represents the
-             * vehicle's name, the second one the vertex it is standing on, the
-             * third its team and the fourth and final one indicates whether the
-             * entity is disabled or not.
-             */
-            // TODO send this information to our central map
+        /*
+         * lastActionResult(<Identifier>) indicates the outcome of the last
+         * action.
+         */
+        case "lastActionResult":
+            this.setLastActionResult(percept.getParameters());
             break;
         }
     }
