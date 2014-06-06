@@ -44,7 +44,7 @@ public class AgentHandler implements AgentListener {
 
     public AgentHandler(EnvironmentInterfaceStandard ei) {
         // logger
-        logger.setVisible(false);
+        logger.setVisible(true);
 
         // create agents
         environmentInterface = ei;
@@ -169,6 +169,7 @@ public class AgentHandler implements AgentListener {
      *            the percept that information will be extracted from.
      */
     private void updateSimulationState(Percept percept) {
+        logger.info(percept.toString());
         switch (percept.getName()) {
         // step(<Numeral>) represents the current step of the current
         // simulation.

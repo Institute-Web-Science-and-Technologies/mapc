@@ -235,8 +235,8 @@ public class Agent implements AgentListener {
     }
 
     private void updateAgentState(Percept percept) {
+        logger.info(percept.toString());
         // update agents values
-        logger.info(percept.getName());
 
         switch (percept.getName()) {
         /* health(<Numeral>) indicates the current health of the vehicle. */
