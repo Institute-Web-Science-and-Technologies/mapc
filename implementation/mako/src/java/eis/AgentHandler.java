@@ -14,8 +14,6 @@ import org.w3c.dom.NodeList;
 import eis.exceptions.AgentException;
 import eis.exceptions.RelationException;
 import eis.iilang.Identifier;
-import eis.iilang.Numeral;
-import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 import graph.Graph;
@@ -171,32 +169,28 @@ public class AgentHandler implements AgentListener {
      *            the percept that information will be extracted from.
      */
     private void updateSimulationState(Percept percept) {
-        Parameter parameter = null;
-        if (percept.getParameters().size() > 0) {
-            parameter = percept.getParameters().getFirst();
-        }
         switch (percept.getName()) {
         // step(<Numeral>) represents the current step of the current
         // simulation.
         case "step":
-            SimulationState.getInstance().setStep((Numeral) parameter);
+            SimulationState.getInstance().setStep(percept.getParameters());
             break;
         // steps(<Numeral>) represents the overall number of steps of the
         // current simulation.
         case "steps":
-            SimulationState.getInstance().setMaxSteps((Numeral) parameter);
+            SimulationState.getInstance().setMaxSteps(percept.getParameters());
             break;
         // timestamp(<Numeral>) represents the moment in time, when the last
         // message was sent by the server, again in Unix-time.
         case "timestamp":
-            SimulationState.getInstance().setLastTimeStamp((Numeral) parameter);
+            SimulationState.getInstance().setLastTimeStamp(percept.getParameters());
             break;
         /*
          * deadline(<Numeral>) indicates the deadline for sending a valid
          * action-message to the server in Unix-time.
          */
         case "deadline":
-            SimulationState.getInstance().setDeadline((Numeral) parameter);
+            SimulationState.getInstance().setDeadline(percept.getParameters());
             break;
         /* bye indicates that the tournament is over. */
         case "bye":
@@ -204,38 +198,38 @@ public class AgentHandler implements AgentListener {
             break;
         // id(<Identifier>): indicates the identifier of the current simulation.
         case "id":
-            SimulationState.getInstance().setId((Identifier) parameter);
+            SimulationState.getInstance().setId(percept.getParameters());
             break;
         // lastStepScore(<Numeral>) indicates the score of the vehicle's team in
         // the last step of the current simulation.
         case "lastStepScore":
-            SimulationState.getInstance().setLastStepScore((Numeral) parameter);
+            SimulationState.getInstance().setLastStepScore(percept.getParameters());
             break;
         // score(<Numeral>) represents is the overall score of the vehicle's
         // team.
         case "score":
-            SimulationState.getInstance().setScore((Numeral) parameter);
+            SimulationState.getInstance().setScore(percept.getParameters());
             break;
         /* achievement(<Identifier>) denotes an achievement. */
         case "achievement":
-            SimulationState.getInstance().addAchievement((Identifier) parameter);
+            SimulationState.getInstance().addAchievement(percept.getParameters());
             break;
         // money(<Numeral>) denotes the amount of money available to the
         // vehicle's team.
         case "money":
-            SimulationState.getInstance().setMoney((Numeral) parameter);
+            SimulationState.getInstance().setMoney(percept.getParameters());
             break;
         // ranking(<Numeral>) indicates the outcome of the simulation for the
         // vehicle's team, that is its ranking.
         case "ranking":
-            SimulationState.getInstance().setRanking((Numeral) parameter);
+            SimulationState.getInstance().setRanking(percept.getParameters());
             break;
         /*
          * edges(<Numeral>) represents the number of edges of the current
          * simulation.
          */
         case "edges":
-            SimulationState.getInstance().setEdgeCount((Numeral) parameter);
+            SimulationState.getInstance().setEdgeCount(percept.getParameters());
             // TODO use this to construct our graph. This is the number of
             // edges in the currently running simulation.
             break;
@@ -244,7 +238,7 @@ public class AgentHandler implements AgentListener {
          * simulation.
          */
         case "vertices":
-            SimulationState.getInstance().setVerticesCount((Numeral) parameter);
+            SimulationState.getInstance().setVerticesCount(percept.getParameters());
             // TODO use this to construct our graph. This is the number of
             // vertices in the currently running simulation.
             break;

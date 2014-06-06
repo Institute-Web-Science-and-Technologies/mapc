@@ -1,9 +1,11 @@
 package eis;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
+import eis.iilang.Parameter;
 import eis.iilang.TruthValue;
 
 /**
@@ -30,12 +32,12 @@ public class SimulationState {
     private Numeral money;
     private Numeral ranking;
 
-    private AgentLogger logger = new AgentLogger(SimulationState.class.getCanonicalName());
+    public static String NAME = SimulationState.class.getName();
+    AgentLogger logger = new AgentLogger(SimulationState.NAME);
 
     private static SimulationState instance = null;
 
     private SimulationState() {
-
     }
 
     public static SimulationState getInstance() {
@@ -49,36 +51,48 @@ public class SimulationState {
         return step;
     }
 
-    public void setStep(Numeral step) {
-        logger.info("Step = " + step);
-        this.step = step;
+    public void setStep(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.step)) {
+            logger.info("Step:" + step + "->" + newValue);
+            this.step = newValue;
+        }
     }
 
     public Numeral getMaxSteps() {
         return maxSteps;
     }
 
-    public void setMaxSteps(Numeral maxSteps) {
-        logger.info("MaxSteps = " + maxSteps);
-        this.maxSteps = maxSteps;
+    public void setMaxSteps(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.maxSteps)) {
+            logger.info("Max Steps:" + maxSteps + "->" + newValue);
+            this.maxSteps = newValue;
+        }
     }
 
     public Numeral getLastTimeStamp() {
         return lastTimeStamp;
     }
 
-    public void setLastTimeStamp(Numeral lastTimeStamp) {
-        logger.info("TimeStamp = " + lastTimeStamp);
-        this.lastTimeStamp = lastTimeStamp;
+    public void setLastTimeStamp(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.lastTimeStamp)) {
+            logger.info("Last Timestamp:" + this.lastTimeStamp + "->" + newValue);
+            this.lastTimeStamp = newValue;
+        }
     }
 
     public Numeral getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Numeral deadline) {
-        logger.info("Deadline = " + deadline);
-        this.deadline = deadline;
+    public void setDeadline(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.deadline)) {
+            logger.info("Deadline:" + this.deadline + "->" + newValue);
+            this.deadline = newValue;
+        }
     }
 
     public TruthValue getIsTournamentOver() {
@@ -94,72 +108,95 @@ public class SimulationState {
         return edgeCount;
     }
 
-    public void setEdgeCount(Numeral edgeCount) {
-        logger.info("EdgeCount = " + edgeCount);
-        this.edgeCount = edgeCount;
+    public void setEdgeCount(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.deadline)) {
+            logger.info("Number of edges:" + this.edgeCount + "->" + newValue);
+            this.edgeCount = newValue;
+        }
     }
 
     public Numeral getVerticesCount() {
         return verticesCount;
     }
 
-    public void setVerticesCount(Numeral verticesCount) {
-        logger.info("VerticesCount = " + verticesCount);
-        this.verticesCount = verticesCount;
+    public void setVerticesCount(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.verticesCount)) {
+            logger.info("Number of vertices:" + this.verticesCount + "->" + newValue);
+            this.verticesCount = newValue;
+        }
     }
 
     public Identifier getId() {
         return id;
     }
 
-    public void setId(Identifier id) {
-        logger.info("Id = " + id);
-        this.id = id;
+    public void setId(LinkedList<Parameter> parameters) {
+        Identifier newValue = (Identifier) parameters.get(0);
+        if (!newValue.equals(this.id)) {
+            logger.info("id:" + this.id + "->" + newValue);
+            this.id = newValue;
+        }
     }
 
     public Numeral getLastStepScore() {
         return lastStepScore;
     }
 
-    public void setLastStepScore(Numeral lastStepScore) {
-        logger.info("LastStepScore = " + lastStepScore);
-        this.lastStepScore = lastStepScore;
+    public void setLastStepScore(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.lastStepScore)) {
+            logger.info("Score of last step:" + this.lastStepScore + "->" + newValue);
+            this.lastStepScore = newValue;
+        }
     }
 
     public Numeral getPredictedStepScore() {
         return predictedStepScore;
     }
 
-    public void setPredictedStepScore(Numeral predictedStepScore) {
-        logger.info("PredictedStepScore = " + predictedStepScore);
-        this.predictedStepScore = predictedStepScore;
+    public void setPredictedStepScore(Numeral newValue) {
+        if (!newValue.equals(this.predictedStepScore)) {
+            logger.info("Predicted score of next step: " + newValue);
+            this.predictedStepScore = newValue;
+        }
     }
 
     public Numeral getScore() {
         return score;
     }
 
-    public void setScore(Numeral score) {
-        logger.info("Score = " + score);
-        this.score = score;
+    public void setScore(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.score)) {
+            logger.info("Score:" + this.score + "->" + newValue);
+            this.score = newValue;
+        }
     }
 
     public Numeral getMoney() {
         return money;
     }
 
-    public void setMoney(Numeral money) {
-        logger.info("Money = " + money);
-        this.money = money;
+    public void setMoney(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.score)) {
+            logger.info("Money:" + this.money + "->" + newValue);
+            this.money = newValue;
+        }
     }
 
     public Numeral getRanking() {
         return ranking;
     }
 
-    public void setRanking(Numeral ranking) {
-        logger.info("Ranking = " + ranking);
-        this.ranking = ranking;
+    public void setRanking(LinkedList<Parameter> parameters) {
+        Numeral newValue = (Numeral) parameters.get(0);
+        if (!newValue.equals(this.ranking)) {
+            logger.info("Ranking:" + this.ranking + "->" + newValue);
+            this.ranking = newValue;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -167,8 +204,12 @@ public class SimulationState {
         return (HashSet<Identifier>) achievements.clone();
     }
 
-    public boolean addAchievement(Identifier achievement) {
-        logger.info("new Achievement: " + achievement);
-        return achievements.add(achievement);
+    public boolean addAchievement(LinkedList<Parameter> parameters) {
+        Identifier newValue = (Identifier) parameters.get(0);
+        if (!achievements.contains(newValue)) {
+            logger.info("new Achievement: " + newValue);
+            return achievements.add(newValue);
+        }
+        return false;
     }
 }
