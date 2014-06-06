@@ -3,6 +3,8 @@ package graph;
 import java.util.HashSet;
 
 import eis.Agent;
+import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 
 /**
  * This class models a vertex of a graph.
@@ -13,27 +15,28 @@ import eis.Agent;
  */
 public class Vertex {
 
-    private String id;
-    private int value = 1;
+    private Identifier id;
+    private Numeral value;
     private boolean isVisited = false;
     private boolean isProbed = false;
     private HashSet<Agent> teamAgents;
     private HashSet<Agent> enemyAgents;
     private TeamEnum zoneTeam;
 
-    Vertex(String id) {
+    Vertex(Identifier id) {
         this.id = id;
+        this.value = new Numeral(1);
     }
 
-    public String getId() {
+    public Identifier getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Identifier id) {
         this.id = id;
     }
 
-    public int getValue() {
+    public Numeral getValue() {
         return value;
     }
 
@@ -41,7 +44,7 @@ public class Vertex {
         return zoneTeam;
     }
 
-    public void setValue(int value) {
+    public void setValue(Numeral value) {
         this.value = value;
     }
 

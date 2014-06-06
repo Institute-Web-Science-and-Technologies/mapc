@@ -23,7 +23,12 @@ public class Graph implements IGraph {
     private Graph() {
     }
 
-    public static Graph getInstance() {
+    /**
+     * Thread-safe singleton pattern.
+     * 
+     * @return existing instance or create an instance of {@code Graph}.
+     */
+    public synchronized static Graph getInstance() {
         if (instance == null) {
             instance = new Graph();
         }
@@ -33,7 +38,7 @@ public class Graph implements IGraph {
     /**
      * The Integer maps the vertex id for faster querying.
      */
-    private HashMap<Integer, Vertex> vertices;
+    private HashMap<Numeral, Vertex> vertices;
     private HashSet<Edge> edges;
 
     private int amountVertices;
@@ -54,6 +59,7 @@ public class Graph implements IGraph {
 
     @Override
     public synchronized void addEdge(Identifier vertexA, Identifier vertexB) {
+
         // TODO Auto-generated method stub
 
     }
