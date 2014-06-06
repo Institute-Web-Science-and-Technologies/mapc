@@ -176,12 +176,18 @@ public class AgentHandler implements AgentListener {
             parameter = percept.getParameters().getFirst();
         }
         switch (percept.getName()) {
+        // step(<Numeral>) represents the current step of the current
+        // simulation.
         case "step":
             SimulationState.getInstance().setStep((Numeral) parameter);
             break;
+        // steps(<Numeral>) represents the overall number of steps of the
+        // current simulation.
         case "steps":
             SimulationState.getInstance().setMaxSteps((Numeral) parameter);
             break;
+        // timestamp(<Numeral>) represents the moment in time, when the last
+        // message was sent by the server, again in Unix-time.
         case "timestamp":
             SimulationState.getInstance().setLastTimeStamp((Numeral) parameter);
             break;
@@ -196,12 +202,17 @@ public class AgentHandler implements AgentListener {
         case "bye":
             SimulationState.getInstance().setIsTournamentOver(new TruthValue(true));
             break;
+        // id(<Identifier>): indicates the identifier of the current simulation.
         case "id":
             SimulationState.getInstance().setId((Identifier) parameter);
             break;
+        // lastStepScore(<Numeral>) indicates the score of the vehicle's team in
+        // the last step of the current simulation.
         case "lastStepScore":
             SimulationState.getInstance().setLastStepScore((Numeral) parameter);
             break;
+        // score(<Numeral>) represents is the overall score of the vehicle's
+        // team.
         case "score":
             SimulationState.getInstance().setScore((Numeral) parameter);
             break;
@@ -209,9 +220,13 @@ public class AgentHandler implements AgentListener {
         case "achievement":
             SimulationState.getInstance().addAchievement((Identifier) parameter);
             break;
+        // money(<Numeral>) denotes the amount of money available to the
+        // vehicle's team.
         case "money":
             SimulationState.getInstance().setMoney((Numeral) parameter);
             break;
+        // ranking(<Numeral>) indicates the outcome of the simulation for the
+        // vehicle's team, that is its ranking.
         case "ranking":
             SimulationState.getInstance().setRanking((Numeral) parameter);
             break;
@@ -235,10 +250,11 @@ public class AgentHandler implements AgentListener {
             break;
         /*
          * probedVertex(<Identifier>,<Numeral>) denotes the value of a probed
-         * vertex. The identifier is the vertex’s name and the numeral is its
+         * vertex. The identifier is the vertex' name and the numeral is its
          * value.
          */
         case "probedVertex":
+            // TODO implement this
             break;
         /*
          * visibleVertex(<Identifier>,<Identifier>) denotes a visible vertex,
@@ -274,6 +290,7 @@ public class AgentHandler implements AgentListener {
          * entity is disabled or not.
          */
         case "visibleEntity":
+            // TODO Where do we save this information?
             Identifier vehicleName = (Identifier) percept.getParameters().get(0);
             Identifier vertexName = (Identifier) percept.getParameters().get(1);
             Identifier teamName = (Identifier) percept.getParameters().get(2);
@@ -282,6 +299,13 @@ public class AgentHandler implements AgentListener {
         }
     }
 
+    /**
+     * Helper function that retrieves an Agent object by its name.
+     * 
+     * @param agentName
+     *            the name of the agent to be retrieved.
+     * @return the Agent object with the given agentName.
+     */
     public Agent getAgent(String agentName) {
         return agents.get(agentName);
     }
