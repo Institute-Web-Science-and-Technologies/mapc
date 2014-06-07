@@ -1,7 +1,6 @@
 package graph;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import eis.Agent;
@@ -38,8 +37,7 @@ public class Graph implements IGraph {
     /**
      * The Integer maps the vertex id for faster querying.
      */
-    private HashMap<Numeral, Vertex> vertices;
-    private HashSet<Edge> edges;
+    private HashMap<Identifier, Vertex> vertices;
 
     private int amountVertices;
     private int amountEdges;
@@ -57,20 +55,15 @@ public class Graph implements IGraph {
 
     }
 
+    /**
+     * This method simply calls {@code addEdge} with {@code null} weight.
+     * 
+     * @see #addEdge(Identifier, Identifier, Numeral)
+     */
     @Override
-    public synchronized void addEdge(Identifier vertexA, Identifier vertexB) {
-        Edge edge = new Edge(vertexA, vertexB);
-        // a test for duplicates is not needed as this is edges are a set:
-        edges.add(edge);
-
-        Vertex vertex = vertices.get(vertexA);
-        if (vertex == null) {
-            addVertex(vertexA);
-        }
-        vertex = vertices.get(vertexB);
-        if (vertex == null) {
-            addVertex(vertexB);
-        }
+    public synchronized void
+            addEdge(Identifier vertexAID, Identifier vertexBID) {
+        this.addEdge(vertexAID, vertexBID, null);
     }
 
     @Override
@@ -79,16 +72,45 @@ public class Graph implements IGraph {
 
     }
 
+    /**
+     * This method adds an edge between {@code vertexAID} and {@code vertexBID}
+     * with the given {@code weight}. It also creates said vertices if needed.
+     * 
+     * @see #getVertexOrCreateIt(Identifier)
+     */
     @Override
-    public synchronized void updateEdgeWeight(Identifier vertexID,
-            Numeral weight) {
-        // TODO Auto-generated method stub
+    public synchronized void addEdge(Identifier vertexAID,
+            Identifier vertexBID, Numeral weight) {
+        if (!vertexAID.equals(vertexBID)) {
+            Vertex vertexA = this.getVertexOrCreateIt(vertexAID);
+            vertexA.addEdge(vertexBID, weight);
 
+            Vertex vertexB = this.getVertexOrCreateIt(vertexBID);
+            vertexB.addEdge(vertexAID, weight);
+        }
+    }
+
+    /**
+     * 
+     * @param vertexID
+     *            which identifies a Vertex in {@code vertices} or is the
+     *            identifier for a newly created one.
+     * @return Vertex that is identified by {@code vertexID} in {@code vertices}
+     *         or creates a new one with {@code value} 1 in {@code vertices} and
+     *         returns that one.
+     */
+    private Vertex getVertexOrCreateIt(Identifier vertexID) {
+        Vertex vertex = vertices.get(vertexID);
+        if (vertex == null) {
+            vertex = new Vertex(vertexID);
+            vertices.put(vertexID, vertex);
+        }
+        return vertex;
     }
 
     @Override
-    public List<Identifier> getShortestPath(Identifier vertexS,
-            Identifier vertexD) {
+    public List<Identifier> getShortestPath(Identifier vertexSID,
+            Identifier vertexDID) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -109,10 +131,17 @@ public class Graph implements IGraph {
         }
     }
 
+    /**
+     * @return {@code null} if such an edge, vertexS or vertexD does not exist.
+     *         Else return the edge weight.
+     */
     @Override
     public Numeral getEdgeWeight(Identifier vertexSID, Identifier vertexDID) {
-        // TODO Auto-generated method stub
-        return null;
+        Vertex vertex = vertices.get(vertexSID);
+        if (vertex == null) {
+            return null;
+        }
+        return vertex.getEdgeWeight(vertexDID);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import eis.Agent;
@@ -21,6 +22,7 @@ public class Vertex {
     private boolean isProbed = false;
     private HashSet<Agent> teamAgents;
     private HashSet<Agent> enemyAgents;
+    private HashMap<Identifier, Numeral> edges;
     private TeamEnum zoneTeam;
 
     Vertex(Identifier id) {
@@ -86,5 +88,38 @@ public class Vertex {
 
     public TeamEnum getOccupyingTeam() {
         return null;
+    }
+
+    public HashMap<Identifier, Numeral> getEdges() {
+        return edges;
+    }
+
+    public void setEdges(HashMap<Identifier, Numeral> edges) {
+        this.edges = edges;
+    }
+
+    /**
+     * Adds an edge if {@code vertexDID} is not this Vertex because edges may
+     * not span from a Vertex to itself. If such an edge already existed, the
+     * overwrites its value.
+     * 
+     * @param vertexDID
+     *            destination ID of a Vertex to which an edge should be spanned.
+     *            It may not be this Vertex's ID.
+     * @param weight
+     *            can be {@code null}. Then, the weight will be set high (1000)
+     *            to simulate high costs for travelling unknown edges.
+     */
+    public void addEdge(Identifier vertexDID, Numeral weight) {
+        if (!(vertexDID.equals(this.id))) {
+            if (weight == null) {
+                weight = new Numeral(1000);
+            }
+            edges.put(vertexDID, weight);
+        }
+    }
+
+    public Numeral getEdgeWeight(Identifier vertexDID) {
+        return edges.get(vertexDID);
     }
 }

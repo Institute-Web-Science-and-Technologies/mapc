@@ -23,8 +23,11 @@ public interface IGraph {
 
     /**
      * This method adds an edge iff there is not such an edge already while
-     * disregarding weights. If a Vertex identified by {@code vertexAID} or
-     * {@code vertexBID} does not exist yet, then it must be also added.
+     * disregarding weights. Hence, a predefined weight of high value will be
+     * assigned to edge. This should make travelling unknown edges too expensive
+     * for agents to prefer them travelling known edges. If a Vertex identified
+     * by {@code vertexAID} or {@code vertexBID} does not exist yet, then they
+     * will be created first.
      * 
      * @param vertexA
      *            identifier for first Vertex.
@@ -33,7 +36,20 @@ public interface IGraph {
      */
     public void addEdge(Identifier vertexAID, Identifier vertexBID);
 
-    public void updateEdgeWeight(Identifier vertexID, Numeral weight);
+    /**
+     * This method adds an edge iff there is not such an edge already with given
+     * {@code weight}. If a Vertex identified by {@code vertexAID} or
+     * {@code vertexBID} does not exist yet, then they will be created first.
+     * 
+     * @param vertexA
+     *            identifier for first Vertex.
+     * @param vertexB
+     *            identifier for second Vertex.while disregarding weights
+     * @param weight
+     *            weight for the edge.
+     */
+    public void addEdge(Identifier vertexAID, Identifier vertexBID,
+            Numeral weight);
 
     public List<Identifier> getShortestPath(Identifier vertexS,
             Identifier vertexD);
@@ -49,7 +65,7 @@ public interface IGraph {
      */
     public Numeral getVertexValue(Identifier vertexID);
 
-    public Numeral getEdgeWeight(Identifier vertexSID, Identifier vertexDID);
+    public Numeral getEdgeWeight(Identifier vertexAID, Identifier vertexBID);
 
     public boolean existsPath(Identifier vertexSID, Identifier vertexDID);
 
