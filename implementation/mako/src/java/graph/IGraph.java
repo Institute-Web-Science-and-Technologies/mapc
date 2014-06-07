@@ -21,7 +21,17 @@ public interface IGraph {
 
     public void updateVertexValue(Identifier vertexID, Numeral value);
 
-    public void addEdge(Identifier vertexA, Identifier vertexB);
+    /**
+     * This method adds an edge iff there is not such an edge already while
+     * disregarding weights. If a Vertex identified by {@code vertexAID} or
+     * {@code vertexBID} does not exist yet, then it must be also added.
+     * 
+     * @param vertexA
+     *            identifier for first Vertex.
+     * @param vertexB
+     *            identifier for second Vertex.
+     */
+    public void addEdge(Identifier vertexAID, Identifier vertexBID);
 
     public void updateEdgeWeight(Identifier vertexID, Numeral weight);
 
@@ -30,11 +40,18 @@ public interface IGraph {
 
     public List<Identifier> getNeighborhood(Identifier vertexV, int depth);
 
-    public int getVertexValue(Identifier vertexID);
+    /**
+     * 
+     * @param vertexID
+     *            Vertex identifier for a vertex that must be known.
+     * @return value of Vertex or {@code null} if the ID is not associated with
+     *         a known Vertex.
+     */
+    public Numeral getVertexValue(Identifier vertexID);
 
-    public int getEdgeWeight(Identifier vertexS, Identifier vertexD);
+    public Numeral getEdgeWeight(Identifier vertexSID, Identifier vertexDID);
 
-    public boolean existsPath(Identifier vertexS, Identifier vertexD);
+    public boolean existsPath(Identifier vertexSID, Identifier vertexDID);
 
     public void addEnemyPosition(Identifier vertexID, Agent a);
 
@@ -57,7 +74,8 @@ public interface IGraph {
      * 
      * @return
      */
-    public HashMap<Agent, Vertex> getCloseEnemies(Identifier vertexID, int depth);
+    public HashMap<Agent, Vertex>
+            getCloseEnemies(Identifier vertexID, int depth);
 
     /**
      * Get vertices of close enemy Saboteurs within the "depth" range from the

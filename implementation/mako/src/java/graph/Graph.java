@@ -59,9 +59,18 @@ public class Graph implements IGraph {
 
     @Override
     public synchronized void addEdge(Identifier vertexA, Identifier vertexB) {
+        Edge edge = new Edge(vertexA, vertexB);
+        // a test for duplicates is not needed as this is edges are a set:
+        edges.add(edge);
 
-        // TODO Auto-generated method stub
-
+        Vertex vertex = vertices.get(vertexA);
+        if (vertex == null) {
+            addVertex(vertexA);
+        }
+        vertex = vertices.get(vertexB);
+        if (vertex == null) {
+            addVertex(vertexB);
+        }
     }
 
     @Override
@@ -91,19 +100,23 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public int getVertexValue(Identifier vertexID) {
-        // TODO Auto-generated method stub
-        return 0;
+    public Numeral getVertexValue(Identifier vertexID) {
+        Vertex vertex = vertices.get(vertexID);
+        if (vertex == null) {
+            return null;
+        } else {
+            return vertex.getValue();
+        }
     }
 
     @Override
-    public int getEdgeWeight(Identifier vertexS, Identifier vertexD) {
+    public Numeral getEdgeWeight(Identifier vertexSID, Identifier vertexDID) {
         // TODO Auto-generated method stub
-        return 0;
+        return null;
     }
 
     @Override
-    public boolean existsPath(Identifier vertexS, Identifier vertexD) {
+    public boolean existsPath(Identifier vertexSID, Identifier vertexDID) {
         // TODO Auto-generated method stub
         return false;
     }
