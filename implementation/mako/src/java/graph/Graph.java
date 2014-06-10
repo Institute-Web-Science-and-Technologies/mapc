@@ -37,15 +37,22 @@ public class Graph implements IGraph {
     /**
      * The Integer maps the vertex id for faster querying.
      */
-    private HashMap<Identifier, Vertex> vertices;
+    private HashMap<Identifier, Vertex> vertices = new HashMap<>();
 
     private int amountVertices;
     private int amountEdges;
 
     @Override
     public synchronized void addVertex(Identifier vertexID) {
-        // TODO Auto-generated method stub
+        Vertex vertex = getVertexOrCreateIt(vertexID);
+        vertices.put(vertexID, vertex);
+    }
 
+    @Override
+    public void addVertex(Identifier vertexID, Identifier teamID) {
+        Vertex vertex = getVertexOrCreateIt(vertexID);
+        vertex.setZoneTeam(teamID);
+        vertices.put(vertexID, vertex);
     }
 
     @Override
@@ -102,8 +109,7 @@ public class Graph implements IGraph {
     private Vertex getVertexOrCreateIt(Identifier vertexID) {
         Vertex vertex = vertices.get(vertexID);
         if (vertex == null) {
-            vertex = new Vertex(vertexID);
-            vertices.put(vertexID, vertex);
+            vertex = vertices.put(vertexID, new Vertex(vertexID));
         }
         return vertex;
     }
