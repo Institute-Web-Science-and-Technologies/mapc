@@ -105,11 +105,63 @@ public interface IGraph {
 
     public boolean existsPath(Identifier vertexSID, Identifier vertexDID);
 
-    public void addEnemyPosition(Identifier vertexID, Agent a);
+    /**
+     * Updates enemy agent's position on the graph. If the agent does not exist
+     * on the map, it is created.
+     * 
+     * @param agent
+     *            {@link Identifier} of an agent to add.
+     * @param vertexID
+     *            {@link Identifier} of a vertex where the agent is situated.
+     */
+    public void updateEnemyPosition(Identifier agent, Identifier vertexID);
 
-    public void removeEnemyPosition(Agent a);
+    /**
+     * Remove enemy agent's position from the map.
+     * 
+     * @param agent
+     *            {@link Identifier} of the agent to remove.
+     */
+    public void removeEnemyPosition(Identifier agent);
 
-    public void updateEnemyPosition(Identifier newVertexID, Agent a);
+    /**
+     * Updates out team agent's position on the graph. If the agent does not
+     * exist on the map, it is created.
+     * 
+     * @param agent
+     *            {@link Identifier} of an agent to add.
+     * @param vertexID
+     *            {@link Identifier} of a vertex where the agent is situated.
+     */
+    public void updateTeamAgentPosition(Identifier agent, Identifier vertexID);
+
+    /**
+     * Query for one enemy agent's position on the map.
+     * 
+     * @param agent
+     *            {@link Identifier} of an agent.
+     * @return {@link Identifier} of a vertex where the agent is situated.
+     *         Returns null if agent doesn't exist on the map.
+     */
+    public Identifier getEnemyPosition(Identifier agent);
+
+    /**
+     * Query for all enemy agents' positions on the map.
+     * 
+     * @return {@link HashMap} of pairs ({@link Identifier} of an agent,
+     *         {@link Identifier} of a vertex).
+     */
+    public HashMap<Identifier, Identifier> getEnemyPositions();
+
+    /**
+     * Query for one our team agent's position on the map.
+     * 
+     * @param agent
+     *            {@link Identifier} of an agent.
+     * @return {@link Identifier} of a vertex where the agent is situated.
+     *         Returns null if agent doesn't exist on the map.
+     */
+    public Identifier getTeamAgentPosition(Identifier agent);
 
     /**
      * Get distances of close enemies within the "depth" range from the vertex
@@ -145,4 +197,5 @@ public interface IGraph {
      */
     public HashMap<Agent, Vertex> getCloseEnemyRepairers(Identifier vertexID,
             int depth);
+
 }

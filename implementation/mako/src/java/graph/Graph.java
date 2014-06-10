@@ -43,7 +43,17 @@ public class Graph implements IGraph {
     private int globalVerticesAmount;
     private int globalEdgesAmount;
     private Identifier ourTeam = new Identifier("none");
-    private HashMap<Identifier, Agent> enemyAgents = new HashMap<>();
+
+    /**
+     * {@link HashMap} of pairs ({@link Identifier} of an agent,
+     * {@link Identifier} of a vertex).
+     */
+    private HashMap<Identifier, Identifier> teamAgentsPositions = new HashMap<>();
+    /**
+     * {@link HashMap} of pairs ({@link Identifier} of an agent,
+     * {@link Identifier} of a vertex).
+     */
+    private HashMap<Identifier, Identifier> enemyAgentsPositions = new HashMap<>();
 
     /**
      * Helper function, which casts {@code Numeral} to {@code int}.
@@ -108,12 +118,6 @@ public class Graph implements IGraph {
     @Override
     public synchronized void addEdge(Identifier vertexAID, Identifier vertexBID) {
         this.addEdge(vertexAID, vertexBID, null);
-    }
-
-    @Override
-    public synchronized void removeEnemyPosition(Agent a) {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -230,15 +234,35 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public synchronized void addEnemyPosition(Identifier vertexID, Agent a) {
-        // TODO Auto-generated method stub
-
+    public synchronized void updateTeamAgentPosition(Identifier agent,
+            Identifier vertexID) {
+        this.teamAgentsPositions.put(agent, vertexID);
     }
 
     @Override
-    public synchronized void updateEnemyPosition(Identifier newVertexID, Agent a) {
-        // TODO Auto-generated method stub
+    public synchronized void updateEnemyPosition(Identifier agent,
+            Identifier vertexID) {
+        this.enemyAgentsPositions.put(agent, vertexID);
+    }
 
+    @Override
+    public synchronized void removeEnemyPosition(Identifier agent) {
+        this.enemyAgentsPositions.remove(agent);
+    }
+
+    @Override
+    public Identifier getEnemyPosition(Identifier agent) {
+        return this.enemyAgentsPositions.get(agent);
+    }
+
+    @Override
+    public HashMap<Identifier, Identifier> getEnemyPositions() {
+        return this.enemyAgentsPositions;
+    }
+
+    @Override
+    public Identifier getTeamAgentPosition(Identifier agent) {
+        return this.teamAgentsPositions.get(agent);
     }
 
     @Override
