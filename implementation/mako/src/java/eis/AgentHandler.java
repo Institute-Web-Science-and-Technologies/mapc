@@ -172,130 +172,152 @@ public class AgentHandler implements AgentListener {
          * step(<Numeral>) represents the current step of the current
          * simulation.
          */
-        case "step":
+        case "step": {
             SimulationState.getInstance().setStep(percept.getParameters());
             break;
+        }
         /**
          * steps(<Numeral>) represents the overall number of steps of the
          * current simulation.
          */
-        case "steps":
+        case "steps": {
             SimulationState.getInstance().setMaxSteps(percept.getParameters());
             break;
+        }
         /**
          * timestamp(<Numeral>) represents the moment in time, when the last
          * message was sent by the server, again in Unix-time.
          */
-        case "timestamp":
+        case "timestamp": {
             SimulationState.getInstance().setLastTimeStamp(percept.getParameters());
             break;
+        }
         /**
          * deadline(<Numeral>) indicates the deadline for sending a valid
          * action-message to the server in Unix-time.
          */
-        case "deadline":
+        case "deadline": {
             SimulationState.getInstance().setDeadline(percept.getParameters());
             break;
+        }
         /** bye indicates that the tournament is over. */
-        case "bye":
+        case "bye": {
             SimulationState.getInstance().setIsTournamentOver(new TruthValue(true));
             break;
+        }
         /**
          * id(<Identifier>): indicates the identifier of the current simulation.
          */
-        case "id":
+        case "id": {
             SimulationState.getInstance().setId(percept.getParameters());
             break;
+        }
         /**
          * lastStepScore(<Numeral>) indicates the score of the vehicle's team in
          * the last step of the current simulation.
          */
-        case "lastStepScore":
+        case "lastStepScore": {
             SimulationState.getInstance().setLastStepScore(percept.getParameters());
             break;
+        }
         /**
          * score(<Numeral>) represents is the overall score of the vehicle's
          * team.
          */
-        case "score":
+        case "score": {
             SimulationState.getInstance().setScore(percept.getParameters());
             break;
+        }
         /** achievement(<Identifier>) denotes an achievement. */
-        case "achievement":
+        case "achievement": {
             SimulationState.getInstance().addAchievement(percept.getParameters());
             break;
+        }
         /**
          * money(<Numeral>) denotes the amount of money available to the
          * vehicle's team.
          */
-        case "money":
+        case "money": {
             SimulationState.getInstance().setMoney(percept.getParameters());
             break;
+        }
         /**
          * ranking(<Numeral>) indicates the outcome of the simulation for the
          * vehicle's team, that is its ranking.
          */
-        case "ranking":
+        case "ranking": {
             SimulationState.getInstance().setRanking(percept.getParameters());
             break;
+        }
         /**
          * edges(<Numeral>) represents the number of edges of the current
          * simulation.
          */
-        case "edges":
+        case "edges": {
             SimulationState.getInstance().setEdgeCount(percept.getParameters());
             Numeral edgesAmount = (Numeral) percept.getParameters().get(0);
+
             Graph.getInstance().setGlobalEdgesAmount(edgesAmount);
             break;
-
+        }
         /**
          * vertices(<Numeral>) represents the number of vertices of the current
          * simulation.
          */
-        case "vertices":
+        case "vertices": {
             SimulationState.getInstance().setVerticesCount(percept.getParameters());
             Numeral verticesAmount = (Numeral) percept.getParameters().get(0);
+
             Graph.getInstance().setGlobalVerticesAmount(verticesAmount);
             break;
+        }
         /**
          * probedVertex(<Identifier>,<Numeral>) denotes the value of a probed
          * vertex. The identifier is the vertex' name and the numeral is its
          * value.
          */
-        case "probedVertex":
-            // TODO implement this
+        case "probedVertex": {
+            Identifier vertexID = (Identifier) percept.getParameters().get(0);
+            Numeral value = (Numeral) percept.getParameters().get(1);
+
+            Graph.getInstance().updateVertexValue(vertexID, value);
             break;
+        }
         /**
          * visibleVertex(<Identifier>,<Identifier>) denotes a visible vertex,
          * represented by its name and the team that occupies it.
          */
-        case "visibleVertex":
+        case "visibleVertex": {
             Identifier vertexID = (Identifier) percept.getParameters().get(0);
             Identifier teamID = (Identifier) percept.getParameters().get(1);
 
             Graph.getInstance().addVertex(vertexID, teamID);
             break;
+        }
         /**
          * surveyedEdge(<Identifier>,<Identifier>,<Numeral>) indicates the
          * weight of a surveyed edge. The identifiers represent the adjacent
          * vertices and the numeral denotes the weight of the edge.
          */
-        case "surveyedEdge":
+        case "surveyedEdge": {
             Identifier vertexAID = (Identifier) percept.getParameters().get(0);
             Identifier vertexBID = (Identifier) percept.getParameters().get(1);
             Numeral weight = (Numeral) percept.getParameters().get(2);
 
             Graph.getInstance().addEdge(vertexAID, vertexBID, weight);
             break;
+        }
         /**
          * visibleEdge(<Identifier>,<Identifier>) represents a visible edge,
          * denoted by its two adjacent vertices.
          */
-        case "visibleEdge":
+        case "visibleEdge": {
             Identifier vertexA = (Identifier) percept.getParameters().get(0);
             Identifier vertexB = (Identifier) percept.getParameters().get(1);
+
             Graph.getInstance().addEdge(vertexA, vertexB);
             break;
+        }
         /**
          * visibleEntity(<Identifier>,<Identifier>,<Identifier>,<Identifier>)
          * denotes a visible vehicle. The first identifier represents the
@@ -303,13 +325,17 @@ public class AgentHandler implements AgentListener {
          * third its team and the fourth and final one indicates whether the
          * entity is disabled or not.
          */
-        case "visibleEntity":
+        case "visibleEntity": {
             // TODO Where do we save this information?
             Identifier vehicleName = (Identifier) percept.getParameters().get(0);
             Identifier vertexName = (Identifier) percept.getParameters().get(1);
             Identifier teamName = (Identifier) percept.getParameters().get(2);
             Identifier isDisabled = (Identifier) percept.getParameters().get(3);
+
+            // TODO find out whether teamName belongs to our or the other team
+            Graph.getInstance().updateEnemyPosition(vehicleName, vertexName);
             break;
+        }
         }
     }
 

@@ -9,6 +9,7 @@ import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
+import graph.Graph;
 
 /**
  * @author Artur Daudrich
@@ -239,72 +240,74 @@ public class Agent implements AgentListener {
         // update agents values
 
         switch (percept.getName()) {
-        /* health(<Numeral>) indicates the current health of the vehicle. */
+        /** health(<Numeral>) indicates the current health of the vehicle. */
         case "health":
             this.setHealth(percept.getParameters());
             break;
-        /*
+        /**
          * maxHealth(<Numeral>) represents the maximum health the vehicle can
          * have.
          */
         case "maxHealth":
             this.setMaxHealth(percept.getParameters());
             break;
-        /*
+        /**
          * energy(<Numeral>) denotes the current amount of energy of the
          * vehicle.
          */
         case "energy":
             this.setEnergy(percept.getParameters());
             break;
-        /*
+        /**
          * maxEnergy(<Numeral>) denotes the maximum amount of energy the
          * vehicle. can have
          */
         case "maxEnergy":
             this.setMaxEnergy(percept.getParameters());
             break;
-        /*
+        /**
          * maxEnergyDisabled(<Numeral>) denotes the maximum amount of energy the
          * vehicle can have, when it is disabled.
          */
         case "maxEnergyDisabled":
             this.setMaxEnergyDisabled(percept.getParameters());
             break;
-        /* strength(<Numeral>) represents the current strength of the vehicle. */
+        /** strength(<Numeral>) represents the current strength of the vehicle. */
         case "strength":
             this.setStrength(percept.getParameters());
             break;
-        /*
+        /**
          * visRange(<Numeral>) denotes the current visibility-range of the
          * vehicle.
          */
         case "visRange":
             this.setVisualRange(percept.getParameters());
             break;
-        /*
+        /**
          * position(<Identifier>) indicates the current position of the vehicle.
          * The identifier is the vertex’s name.
          */
         case "position":
             this.setPosition(percept.getParameters());
-            // Graph.getInstance().addPosition(this.getPosition(), this);
+
+            // TODO: do we use the name or the internal name?
+            Graph.getInstance().updateTeamAgentPosition(new Identifier(this.name), this.getPosition());
             break;
-        /*
+        /**
          * lastAction(<Identifier>) indicates the last action that was sent to
          * the server.
          */
         case "lastAction":
             this.setLastAction(percept.getParameters());
             break;
-        /*
+        /**
          * lastActionParam(<Identifier>) indicates the parameter of the last ac-
          * tion that was sent to the server.
          */
         case "lastActionParam":
             this.setLastActionParam(percept.getParameters());
             break;
-        /*
+        /**
          * lastActionResult(<Identifier>) indicates the outcome of the last
          * action.
          */
