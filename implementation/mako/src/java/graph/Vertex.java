@@ -34,10 +34,6 @@ public class Vertex {
         return id;
     }
 
-    public void setId(Identifier id) {
-        this.id = id;
-    }
-
     public Numeral getValue() {
         return value;
     }
@@ -48,6 +44,7 @@ public class Vertex {
 
     public void setValue(Numeral value) {
         this.value = value;
+        this.isProbed = true;
     }
 
     public boolean isVisited() {
@@ -60,10 +57,6 @@ public class Vertex {
 
     public boolean isProbed() {
         return isProbed;
-    }
-
-    public void setProbed(boolean isProbed) {
-        this.isProbed = isProbed;
     }
 
     public HashSet<Agent> getTeamAgents() {
@@ -84,10 +77,6 @@ public class Vertex {
 
     public void setZoneTeam(TeamEnum zoneTeam) {
         this.zoneTeam = zoneTeam;
-    }
-
-    public TeamEnum getOccupyingTeam() {
-        return null;
     }
 
     public HashMap<Identifier, Numeral> getEdges() {

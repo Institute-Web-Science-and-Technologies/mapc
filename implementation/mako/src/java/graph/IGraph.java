@@ -17,6 +17,21 @@ import eis.iilang.Numeral;
  */
 public interface IGraph {
 
+    /**
+     * Set global parameters of the graph - amount of Vertices and amount of
+     * Edges
+     * 
+     * @param amountVertices
+     *            amount of Vertices
+     * @param amountEdges
+     *            amount of Edges
+     */
+    public void setGlobalAmounts(Numeral amountVertices, Numeral amountEdges);
+
+    public Identifier getOurTeam();
+
+    public void setOurTeam(Identifier ourTeam);
+
     public void addVertex(Identifier vertexID);
 
     public void updateVertexValue(Identifier vertexID, Numeral value);

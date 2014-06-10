@@ -39,8 +39,50 @@ public class Graph implements IGraph {
      */
     private HashMap<Identifier, Vertex> vertices;
 
-    private int amountVertices;
-    private int amountEdges;
+    private int amountVertices = 1000;
+    private int amountEdges = 10000;
+    private Identifier ourTeam = new Identifier("none");
+
+    /**
+     * Helper function - converts Numeral to integer
+     * 
+     * @param val
+     *            value in numeral format
+     * @return value of the numeral or -1 of something went wrong
+     */
+    private int Numeral2Int(Numeral val) {
+        try {
+            return Integer.valueOf(val.toString());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Set global parameters of the graph - amount of Vertices and amount of
+     * Edges
+     * 
+     * @param amountVertices
+     *            amount of Vertices
+     * @param amountEdges
+     *            amount of Edges
+     */
+    @Override
+    public synchronized void setGlobalAmounts(Numeral amountVertices,
+            Numeral amountEdges) {
+        this.amountVertices = this.Numeral2Int(amountVertices);
+        this.amountEdges = this.Numeral2Int(amountEdges);
+    }
+
+    @Override
+    public Identifier getOurTeam() {
+        return ourTeam;
+    }
+
+    @Override
+    public void setOurTeam(Identifier ourTeam) {
+        this.ourTeam = ourTeam;
+    }
 
     @Override
     public synchronized void addVertex(Identifier vertexID) {
@@ -51,8 +93,7 @@ public class Graph implements IGraph {
     @Override
     public synchronized void updateVertexValue(Identifier vertexID,
             Numeral value) {
-        // TODO Auto-generated method stub
-
+        this.getVertexOrCreateIt(vertexID).setValue(value);
     }
 
     /**
