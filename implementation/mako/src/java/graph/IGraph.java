@@ -71,7 +71,21 @@ public interface IGraph {
     public List<Identifier> getShortestPath(Identifier vertexS,
             Identifier vertexD);
 
-    public List<Identifier> getNeighborhood(Identifier vertexV, int depth);
+    /**
+     * Function returns neighborhood of a current vertex with a given depth.
+     * Uses Breadth First Search. Adds initial value to the result with depth =
+     * 0.
+     * 
+     * @param vertexV
+     *            Starting vertex.
+     * @param depth
+     *            Depth of search.
+     * @return if vertexV exists in the graph and depth > 0 returns a HashMap<
+     *         {@link Identifier} and {@link Integer}> of pairs (VertexID,
+     *         depth). Otherwise returns null.
+     */
+    public HashMap<Identifier, Integer> getNeighborhood(Identifier vertexV,
+            int depth);
 
     /**
      * 
