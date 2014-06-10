@@ -18,11 +18,11 @@ public class Vertex {
 
     private Identifier id;
     private Numeral value;
-    private boolean isVisited = false;
-    private boolean isProbed = false;
+    private boolean isVisited;
+    private boolean isProbed;
     private HashSet<Agent> teamAgents;
     private HashSet<Agent> enemyAgents;
-    private HashMap<Identifier, Numeral> edges = new HashMap<>();
+    private HashMap<Identifier, Numeral> edges;
     /**
      * The returned values can be A, B or none.
      */
@@ -31,6 +31,9 @@ public class Vertex {
     Vertex(Identifier id) {
         this.id = id;
         this.value = new Numeral(1);
+        this.edges = new HashMap<>();
+        this.isVisited = false;
+        this.isProbed = false;
     }
 
     public Identifier getId() {

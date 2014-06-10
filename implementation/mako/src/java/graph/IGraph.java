@@ -18,15 +18,20 @@ import eis.iilang.Numeral;
 public interface IGraph {
 
     /**
-     * Set global parameters of the graph - amount of Vertices and amount of
-     * Edges
+     * Set the amount of vertices for the current simulation.
      * 
      * @param amountVertices
      *            amount of Vertices
+     */
+    public void setGlobalVerticesAmount(Numeral verticesAmount);
+
+    /**
+     * Set the amount of edges for the current simulation.
+     * 
      * @param amountEdges
      *            amount of Edges
      */
-    public void setGlobalAmounts(Numeral amountVertices, Numeral amountEdges);
+    public void setGlobalEdgesAmount(Numeral edgesAmount);
 
     public Identifier getOurTeam();
 
@@ -107,8 +112,7 @@ public interface IGraph {
      * 
      * @return
      */
-    public HashMap<Agent, Vertex>
-            getCloseEnemies(Identifier vertexID, int depth);
+    public HashMap<Agent, Vertex> getCloseEnemies(Identifier vertexID, int depth);
 
     /**
      * Get vertices of close enemy Saboteurs within the "depth" range from the

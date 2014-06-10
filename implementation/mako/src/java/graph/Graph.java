@@ -9,7 +9,7 @@ import eis.iilang.Numeral;
 
 /**
  * This class represents global graph accessible by all agents. Implements
- * IGraph interface.
+ * {@code IGraph} interface.
  * 
  * @author Sergey Dedukh
  * @author Miriam Koelle
@@ -39,16 +39,17 @@ public class Graph implements IGraph {
      */
     private HashMap<Identifier, Vertex> vertices = new HashMap<>();
 
-    private int amountVertices = 1000;
-    private int amountEdges = 10000;
+    private int globalVerticesAmount;
+    private int globalEdgesAmount;
     private Identifier ourTeam = new Identifier("none");
 
     /**
-     * Helper function - converts Numeral to integer
+     * Helper function, which casts {@code Numeral} to {@code int}.
      * 
      * @param val
-     *            value in numeral format
-     * @return value of the numeral or -1 of something went wrong
+     *            value in {@code Numeral} format
+     * @return value of the {@code Numeral} or {@code -1} if casting was not
+     *         possible.
      */
     private int Numeral2Int(Numeral val) {
         try {
@@ -58,20 +59,14 @@ public class Graph implements IGraph {
         }
     }
 
-    /**
-     * Set global parameters of the graph - amount of Vertices and amount of
-     * Edges
-     * 
-     * @param amountVertices
-     *            amount of Vertices
-     * @param amountEdges
-     *            amount of Edges
-     */
     @Override
-    public synchronized void setGlobalAmounts(Numeral amountVertices,
-            Numeral amountEdges) {
-        this.amountVertices = this.Numeral2Int(amountVertices);
-        this.amountEdges = this.Numeral2Int(amountEdges);
+    public synchronized void setGlobalVerticesAmount(Numeral verticesAmount) {
+        this.globalVerticesAmount = this.Numeral2Int(verticesAmount);
+    }
+
+    @Override
+    public synchronized void setGlobalEdgesAmount(Numeral edgesAmount) {
+        this.globalEdgesAmount = this.Numeral2Int(edgesAmount);
     }
 
     @Override
@@ -109,8 +104,7 @@ public class Graph implements IGraph {
      * @see #addEdge(Identifier, Identifier, Numeral)
      */
     @Override
-    public synchronized void
-            addEdge(Identifier vertexAID, Identifier vertexBID) {
+    public synchronized void addEdge(Identifier vertexAID, Identifier vertexBID) {
         this.addEdge(vertexAID, vertexBID, null);
     }
 
@@ -150,7 +144,8 @@ public class Graph implements IGraph {
     private Vertex getVertexOrCreateIt(Identifier vertexID) {
         Vertex vertex = vertices.get(vertexID);
         if (vertex == null) {
-            vertex = vertices.put(vertexID, new Vertex(vertexID));
+            vertex = new Vertex(vertexID);
+            vertices.put(vertexID, vertex);
         }
         return vertex;
     }
@@ -204,8 +199,7 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public synchronized void
-            updateEnemyPosition(Identifier newVertexID, Agent a) {
+    public synchronized void updateEnemyPosition(Identifier newVertexID, Agent a) {
         // TODO Auto-generated method stub
 
     }
@@ -218,8 +212,7 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public HashMap<Agent, Vertex>
-            getCloseEnemies(Identifier vertexID, int depth) {
+    public HashMap<Agent, Vertex> getCloseEnemies(Identifier vertexID, int depth) {
         // TODO Auto-generated method stub
         return null;
     }

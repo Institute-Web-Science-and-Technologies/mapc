@@ -14,6 +14,7 @@ import org.w3c.dom.NodeList;
 import eis.exceptions.AgentException;
 import eis.exceptions.RelationException;
 import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 import eis.iilang.Percept;
 import eis.iilang.TruthValue;
 import graph.Graph;
@@ -138,21 +139,17 @@ public class AgentHandler implements AgentListener {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see eis.AgentListener#handlePercept(java.lang.String,
-     * eis.iilang.Percept)
+     *      eis.iilang.Percept)
      */
     public void handlePercept(String agentName, Percept percept) {
         updateSimulationState(percept);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see eis.AgentListener#handlePercept(java.lang.String,
-     * java.util.Collection)
+     *      java.util.Collection)
      */
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         for (Percept percept : percepts) {
@@ -171,79 +168,96 @@ public class AgentHandler implements AgentListener {
     private void updateSimulationState(Percept percept) {
         logger.info(percept.toString());
         switch (percept.getName()) {
-        // step(<Numeral>) represents the current step of the current
-        // simulation.
+        /**
+         * step(<Numeral>) represents the current step of the current
+         * simulation.
+         */
         case "step":
             SimulationState.getInstance().setStep(percept.getParameters());
             break;
-        // steps(<Numeral>) represents the overall number of steps of the
-        // current simulation.
+        /**
+         * steps(<Numeral>) represents the overall number of steps of the
+         * current simulation.
+         */
         case "steps":
             SimulationState.getInstance().setMaxSteps(percept.getParameters());
             break;
-        // timestamp(<Numeral>) represents the moment in time, when the last
-        // message was sent by the server, again in Unix-time.
+        /**
+         * timestamp(<Numeral>) represents the moment in time, when the last
+         * message was sent by the server, again in Unix-time.
+         */
         case "timestamp":
             SimulationState.getInstance().setLastTimeStamp(percept.getParameters());
             break;
-        /*
+        /**
          * deadline(<Numeral>) indicates the deadline for sending a valid
          * action-message to the server in Unix-time.
          */
         case "deadline":
             SimulationState.getInstance().setDeadline(percept.getParameters());
             break;
-        /* bye indicates that the tournament is over. */
+        /** bye indicates that the tournament is over. */
         case "bye":
             SimulationState.getInstance().setIsTournamentOver(new TruthValue(true));
             break;
-        // id(<Identifier>): indicates the identifier of the current simulation.
+        /**
+         * id(<Identifier>): indicates the identifier of the current simulation.
+         */
         case "id":
             SimulationState.getInstance().setId(percept.getParameters());
             break;
-        // lastStepScore(<Numeral>) indicates the score of the vehicle's team in
-        // the last step of the current simulation.
+        /**
+         * lastStepScore(<Numeral>) indicates the score of the vehicle's team in
+         * the last step of the current simulation.
+         */
         case "lastStepScore":
             SimulationState.getInstance().setLastStepScore(percept.getParameters());
             break;
-        // score(<Numeral>) represents is the overall score of the vehicle's
-        // team.
+        /**
+         * score(<Numeral>) represents is the overall score of the vehicle's
+         * team.
+         */
         case "score":
             SimulationState.getInstance().setScore(percept.getParameters());
             break;
-        /* achievement(<Identifier>) denotes an achievement. */
+        /** achievement(<Identifier>) denotes an achievement. */
         case "achievement":
             SimulationState.getInstance().addAchievement(percept.getParameters());
             break;
-        // money(<Numeral>) denotes the amount of money available to the
-        // vehicle's team.
+        /**
+         * money(<Numeral>) denotes the amount of money available to the
+         * vehicle's team.
+         */
         case "money":
             SimulationState.getInstance().setMoney(percept.getParameters());
             break;
-        // ranking(<Numeral>) indicates the outcome of the simulation for the
-        // vehicle's team, that is its ranking.
+        /**
+         * ranking(<Numeral>) indicates the outcome of the simulation for the
+         * vehicle's team, that is its ranking.
+         */
         case "ranking":
             SimulationState.getInstance().setRanking(percept.getParameters());
             break;
-        /*
+        /**
          * edges(<Numeral>) represents the number of edges of the current
          * simulation.
          */
         case "edges":
             SimulationState.getInstance().setEdgeCount(percept.getParameters());
-            // TODO use this to construct our graph. This is the number of
-            // edges in the currently running simulation.
+            Numeral edgesAmount = (Numeral) percept.getParameters().get(0);
+            Graph.getInstance().setGlobalEdgesAmount(edgesAmount);
             break;
-        /*
+
+        /**
          * vertices(<Numeral>) represents the number of vertices of the current
          * simulation.
          */
         case "vertices":
             SimulationState.getInstance().setVerticesCount(percept.getParameters());
-            // TODO use this to construct our graph. This is the number of
-            // vertices in the currently running simulation.
+            Numeral verticesAmount = (Numeral) percept.getParameters().get(0);
+            Graph.getInstance().setGlobalVerticesAmount(verticesAmount);
             break;
-        /*
+        /**
          * probedVertex(<Identifier>,<Numeral>) denotes the value of a probed
          * vertex. The identifier is the vertex' name and the numeral is its
          * value.
@@ -251,24 +265,29 @@ public class AgentHandler implements AgentListener {
         case "probedVertex":
             // TODO implement this
             break;
-        /*
+        /**
          * visibleVertex(<Identifier>,<Identifier>) denotes a visible vertex,
          * represented by its name and the team that occupies it.
          */
         case "visibleVertex":
-            Identifier vertexId = (Identifier) percept.getParameters().get(0);
-            Identifier teamId = (Identifier) percept.getParameters().get(1);
+            Identifier vertexID = (Identifier) percept.getParameters().get(0);
+            Identifier teamID = (Identifier) percept.getParameters().get(1);
 
-            Graph.getInstance().addVertex(vertexId, teamId);
+            Graph.getInstance().addVertex(vertexID, teamID);
             break;
-        /*
+        /**
          * surveyedEdge(<Identifier>,<Identifier>,<Numeral>) indicates the
          * weight of a surveyed edge. The identifiers represent the adjacent
          * vertices and the numeral denotes the weight of the edge.
          */
         case "surveyedEdge":
+            Identifier vertexAID = (Identifier) percept.getParameters().get(0);
+            Identifier vertexBID = (Identifier) percept.getParameters().get(1);
+            Numeral weight = (Numeral) percept.getParameters().get(2);
+
+            Graph.getInstance().addEdge(vertexAID, vertexBID, weight);
             break;
-        /*
+        /**
          * visibleEdge(<Identifier>,<Identifier>) represents a visible edge,
          * denoted by its two adjacent vertices.
          */
@@ -277,7 +296,7 @@ public class AgentHandler implements AgentListener {
             Identifier vertexB = (Identifier) percept.getParameters().get(1);
             Graph.getInstance().addEdge(vertexA, vertexB);
             break;
-        /*
+        /**
          * visibleEntity(<Identifier>,<Identifier>,<Identifier>,<Identifier>)
          * denotes a visible vehicle. The first identifier represents the
          * vehicle's name, the second one the vertex it is standing on, the
