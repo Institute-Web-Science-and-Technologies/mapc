@@ -22,8 +22,11 @@ public class Vertex {
     private boolean isProbed = false;
     private HashSet<Agent> teamAgents;
     private HashSet<Agent> enemyAgents;
-    private HashMap<Identifier, Numeral> edges;
-    private TeamEnum zoneTeam;
+    private HashMap<Identifier, Numeral> edges = new HashMap<>();
+    /**
+     * The returned values can be A, B or none.
+     */
+    private Identifier zoneTeam;
 
     Vertex(Identifier id) {
         this.id = id;
@@ -38,7 +41,7 @@ public class Vertex {
         return value;
     }
 
-    public TeamEnum getZoneTeam() {
+    public Identifier getZoneTeam() {
         return zoneTeam;
     }
 
@@ -75,7 +78,7 @@ public class Vertex {
         this.enemyAgents = enemyAgents;
     }
 
-    public void setZoneTeam(TeamEnum zoneTeam) {
+    public void setZoneTeam(Identifier zoneTeam) {
         this.zoneTeam = zoneTeam;
     }
 

@@ -257,9 +257,9 @@ public class AgentHandler implements AgentListener {
          */
         case "visibleVertex":
             Identifier vertexId = (Identifier) percept.getParameters().get(0);
-            // Identifier teamId = (Identifier) percept.getParameters().get(1);
-            Graph.getInstance().addVertex(vertexId);
-            // Graph.getInstance().addVertex(vertexId, teamId);
+            Identifier teamId = (Identifier) percept.getParameters().get(1);
+
+            Graph.getInstance().addVertex(vertexId, teamId);
             break;
         /*
          * surveyedEdge(<Identifier>,<Identifier>,<Numeral>) indicates the

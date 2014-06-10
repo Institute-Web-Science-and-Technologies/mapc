@@ -34,6 +34,8 @@ public interface IGraph {
 
     public void addVertex(Identifier vertexID);
 
+    public void addVertex(Identifier vertexID, Identifier teamID);
+
     public void updateVertexValue(Identifier vertexID, Numeral value);
 
     /**
