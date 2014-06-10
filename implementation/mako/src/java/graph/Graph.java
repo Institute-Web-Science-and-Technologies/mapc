@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import eis.Agent;
@@ -42,6 +43,7 @@ public class Graph implements IGraph {
     private int globalVerticesAmount;
     private int globalEdgesAmount;
     private Identifier ourTeam = new Identifier("none");
+    private HashMap<Identifier, Agent> enemyAgents = new HashMap<>();
 
     /**
      * Helper function, which casts {@code Numeral} to {@code int}.
@@ -157,10 +159,45 @@ public class Graph implements IGraph {
         return null;
     }
 
+    /**
+     * Function returns neighborhood of a current vertex with a given depth.
+     * Uses Breadth First Search. Adds initial value to the result with depth =
+     * 0.
+     * 
+     * @param vertexV
+     *            Starting vertex.
+     * @param depth
+     *            Depth of search.
+     * @return if vertexV exists in the graph and depth > 0 returns a HashMap<
+     *         {@link Identifier} and {@link Integer}> of pairs (VertexID,
+     *         depth). Otherwise returns null.
+     */
     @Override
-    public List<Identifier> getNeighborhood(Identifier vertexV, int depth) {
-        // TODO Auto-generated method stub
-        return null;
+    public HashMap<Identifier, Integer> getNeighborhood(Identifier vertexV,
+            int depth) {
+        // Check depth
+        if (depth < 0)
+            return null;
+        // Check if the vertex exists
+        if (this.vertices.get(vertexV) == null)
+            return null;
+
+        HashMap<Identifier, Integer> result = new HashMap<>();
+        result.put(vertexV, 0);
+
+        HashSet<Identifier> currentVertices = new HashSet<>();
+        currentVertices.add(vertexV);
+        for (int i = 1; i <= depth; i++) {
+            HashSet<Identifier> prevVertices = currentVertices;
+            currentVertices = new HashSet<>();
+            for (Identifier curVertex : prevVertices)
+                for (Identifier neigh : this.vertices.get(curVertex).getEdges().keySet())
+                    if (!result.containsKey(neigh)) {
+                        currentVertices.add(neigh);
+                        result.put(neigh, i);
+                    }
+        }
+        return result;
     }
 
     @Override
