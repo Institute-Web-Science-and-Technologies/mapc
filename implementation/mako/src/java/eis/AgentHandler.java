@@ -25,6 +25,7 @@ import org.w3c.dom.NodeList;
 public class AgentHandler {
 
     private static String configPath = "agentsConfig.xml";
+    private static String selectedTeam = "A";
 
     /**
      * Create the agents according to the specification given in the agents' XML
@@ -64,18 +65,20 @@ public class AgentHandler {
 
                         Element e = (Element) rootChildChild;
 
-                        String name = e.getAttribute("name");
+                        String serverName = e.getAttribute("serverName");
                         String entity = e.getAttribute("entity");
                         String team = e.getAttribute("team");
-                        String internalName = e.getAttribute("internalName");
+                        String jasonName = e.getAttribute("jasonName");
 
                         // add to agents
                         Agent agent = new Agent();
-                        agent.setName(name);
+                        agent.setServerName(serverName);
                         agent.setEntity(entity);
                         agent.setTeam(team);
-                        agent.setInternalName(internalName);
-                        agents.put(name, agent);
+                        agent.setJasonName(jasonName);
+                        if (team.equalsIgnoreCase(selectedTeam)) {
+                            agents.put(serverName, agent);
+                        }
                     }
                 }
             }

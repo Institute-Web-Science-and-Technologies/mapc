@@ -7,17 +7,17 @@ package eis;
  */
 public class Agent {
 
-    private String name;
+    private String serverName;
     private String team;
     private String entity;
-    private String internalName;
+    private String jasonName;
 
-    public String getName() {
-        return name;
+    public String getServerName() {
+        return serverName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setServerName(String name) {
+        this.serverName = name;
     }
 
     public String getTeam() {
@@ -36,11 +36,11 @@ public class Agent {
         this.entity = entity;
     }
 
-    public String getInternalName() {
-        return internalName;
+    public String getJasonName() {
+        return jasonName;
     }
 
-    public void setInternalName(String type) {
-        this.internalName = type;
+    public void setJasonName(String type) {
+        this.jasonName = type;
     }
 }

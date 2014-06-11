@@ -8,11 +8,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
-import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
 import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
-import eis.iilang.Action;
 import eis.iilang.Identifier;
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
@@ -63,14 +61,14 @@ public class EISEnvironment extends Environment implements AgentListener {
         for (Agent agent : agents.values()) {
             try {
                 // tell server which agents are there
-                environmentInterface.registerAgent(agent.getName());
+                environmentInterface.registerAgent(agent.getServerName());
 
                 // tell server which agent is connected to which entity
-                environmentInterface.associateEntity(agent.getName(), agent.getEntity());
-                addPercept(agent.getInternalName(), Literal.parseLiteral("myName(" + agent.getName() + ")"));
+                environmentInterface.associateEntity(agent.getServerName(), agent.getEntity());
+                addPercept(agent.getJasonName(), Literal.parseLiteral("myName(" + agent.getServerName() + ")"));
 
                 // listener for global percepts from the server
-                environmentInterface.attachAgentListener(agent.getName(), this);
+                environmentInterface.attachAgentListener(agent.getServerName(), this);
             } catch (AgentException e) {
                 e.printStackTrace();
             } catch (RelationException e) {
@@ -93,7 +91,17 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agName, Structure action) {
-        if (action.getFunctor().equals("recharge")) {
+        logger.info("agName: " + agName);
+        logger.info("Functor: " + action.getFunctor());
+        logger.info("Terms: " + action.getTerms());
+        if (action.getFunctor().equals("bla")) {
+            // try {
+            // environmentInterface.performAction(agName,
+            // ActionHandler.recharge());
+            // return true;
+            // } catch (ActException e) {
+            // return false;
+            // }
         }
         return true;
     }
@@ -110,19 +118,10 @@ public class EISEnvironment extends Environment implements AgentListener {
         for (Percept percept : percepts) {
             updateSimulationState(percept);
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                String jasonName = agents.get(agentName).getInternalName();
+                String jasonName = agents.get(agentName).getJasonName();
                 Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
                 addPercept(jasonName, literal);
             }
-        }
-    }
-
-    public boolean doAction(String agentName, Action action) {
-        try {
-            environmentInterface.performAction(agentName, action);
-            return true;
-        } catch (ActException e) {
-            return false;
         }
     }
 
