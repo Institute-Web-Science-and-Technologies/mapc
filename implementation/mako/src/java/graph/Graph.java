@@ -227,10 +227,16 @@ public class Graph implements IGraph {
         return vertex.getEdgeWeight(vertexDID);
     }
 
+    /**
+     * Currently only tests if a shortest path can be determined. For optimising
+     * speed, it should stop any calculations after having found any path.
+     * 
+     * @see #getShortestPath(Identifier, Identifier)
+     */
     @Override
     public boolean existsPath(Identifier vertexSID, Identifier vertexDID) {
         // TODO Auto-generated method stub
-        return false;
+        return (getShortestPath(vertexSID, vertexDID) != null);
     }
 
     @Override
