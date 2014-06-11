@@ -30,6 +30,11 @@
    <-
    internalActions.setGlobalEdgesAmount(AmountEdges).
 
++vertices(AmountVertices)[source(percept)]:
+   true
+   <-
+   internalActions.setGlobalVerticesAmount(AmountVertices).
+
 +visibleVertex(Vertex, Team)[source(percept)]:
     true
     <-
