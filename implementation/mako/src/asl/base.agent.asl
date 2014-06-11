@@ -15,6 +15,21 @@
     -+myPosition(CurrentVertex);
     internalActions.updateTeamAgentPosition(MyName2, CurrentVertex).
 
++visibleEdge(VertexA, VertexB)[source(percept)]: 
+   true
+   <-
+   internalActions.addEdge(VertexA, VertexB).
+
++surveyedEdge(VertexA, VertexB, Weight)[source(percept)]: 
+   true
+   <-
+   internalActions.addEdge(VertexA, VertexB, Weight).
+
++edges(AmountEdges)[source(percept)]:
+   true
+   <-
+   internalActions.setGlobalEdgesAmount(AmountEdges).
+
 /* Plans */
 +!start <- .my_name(AgentName).
 +!recharge : true <- bla(hallo).
