@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
+import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
 import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
@@ -26,7 +27,8 @@ public class EISEnvironment extends Environment implements AgentListener {
     public static String NAME = EISEnvironment.class.getName();
     private EnvironmentInterfaceStandard environmentInterface;
     private AgentLogger logger = new AgentLogger(EISEnvironment.NAME);
-    private HashMap<String, Agent> agents = new HashMap<String, Agent>();
+    private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
+    private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
 
     /*
      * jason lifecycle: init -> user-init -> compile -> run -> user-end
@@ -42,13 +44,23 @@ public class EISEnvironment extends Environment implements AgentListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        agents = AgentHandler.createAgents();
+        serverAgentMap = AgentHandler.createAgents();
+        jasonAgentMap = initJasonAgentMap();
         initAgents();
         try {
             environmentInterface.start();
         } catch (ManagementException e) {
             e.printStackTrace();
         }
+    }
+
+    private HashMap<String, Agent> initJasonAgentMap() {
+        HashMap<String, Agent> map = new HashMap<String, Agent>();
+        for (String serverAgentName : serverAgentMap.keySet()) {
+            Agent agent = serverAgentMap.get(serverAgentName);
+            map.put(agent.getJasonName(), agent);
+        }
+        return map;
     }
 
     /**
@@ -58,7 +70,7 @@ public class EISEnvironment extends Environment implements AgentListener {
      * and will receive percepts related to them.
      */
     private void initAgents() {
-        for (Agent agent : agents.values()) {
+        for (Agent agent : serverAgentMap.values()) {
             try {
                 // tell server which agents are there
                 environmentInterface.registerAgent(agent.getServerName());
@@ -90,18 +102,18 @@ public class EISEnvironment extends Environment implements AgentListener {
     }
 
     @Override
-    public boolean executeAction(String agName, Structure action) {
-        logger.info("agName: " + agName);
+    public boolean executeAction(String agentJasonName, Structure action) {
+        logger.info("agName: " + agentJasonName);
         logger.info("Functor: " + action.getFunctor());
         logger.info("Terms: " + action.getTerms());
-        if (action.getFunctor().equals("bla")) {
-            // try {
-            // environmentInterface.performAction(agName,
-            // ActionHandler.recharge());
-            // return true;
-            // } catch (ActException e) {
-            // return false;
-            // }
+        if (action.getFunctor().equals("recharge")) {
+            try {
+                String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
+                environmentInterface.performAction(agentServerName, ActionHandler.recharge());
+                return true;
+            } catch (ActException e) {
+                return false;
+            }
         }
         return true;
     }
@@ -118,7 +130,7 @@ public class EISEnvironment extends Environment implements AgentListener {
         for (Percept percept : percepts) {
             updateSimulationState(percept);
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                String jasonName = agents.get(agentName).getJasonName();
+                String jasonName = serverAgentMap.get(agentName).getJasonName();
                 Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
                 addPercept(jasonName, literal);
             }
