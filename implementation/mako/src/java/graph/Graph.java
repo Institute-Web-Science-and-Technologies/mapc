@@ -298,4 +298,16 @@ public class Graph implements IGraph {
         return null;
     }
 
+    @Override
+    public void setVertexVisited(Identifier vertexID) {
+        this.getVertexOrCreateIt(vertexID).setVisited(true);
+    }
+
+    @Override
+    public boolean isVertexVisited(Identifier vertexID) {
+        if (!this.vertices.containsKey(vertexID))
+            return false;
+        return this.vertices.get(vertexID).isVisited();
+    }
+
 }

@@ -41,6 +41,10 @@ public interface IGraph {
 
     public void addVertex(Identifier vertexID, Identifier teamID);
 
+    public void setVertexVisited(Identifier vertexID);
+
+    public boolean isVertexVisited(Identifier vertexID);
+
     public void updateVertexValue(Identifier vertexID, Numeral value);
 
     /**
