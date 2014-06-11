@@ -236,6 +236,7 @@ public class Agent implements AgentListener {
     }
 
     private void updateAgentState(Percept percept) {
+        doAction(ActionHandler.probe());
         logger.info(percept.toString());
         // update agents values
 
