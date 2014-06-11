@@ -11,7 +11,7 @@ import eis.iilang.Percept;
  * 
  */
 public class JavaJasonTranslator {
-    public Literal perceptToLiteral(Percept percept) {
+    public static Literal perceptToLiteral(Percept percept) {
         Literal literal = Literal.parseLiteral(percept.toString());
         return literal;
     }

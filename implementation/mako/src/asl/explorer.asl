@@ -3,7 +3,5 @@
 /* Initial beliefs and rules */
 
 /* Initial goals */
-!recharge.
 
 /* Plans */
-+!recharge : true <- recharge.

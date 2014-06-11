@@ -38,6 +38,7 @@ public class SimulationState {
     private static SimulationState instance = null;
 
     private SimulationState() {
+        logger.setVisible(false);
     }
 
     public static SimulationState getInstance() {
