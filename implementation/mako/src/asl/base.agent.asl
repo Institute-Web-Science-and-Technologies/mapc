@@ -9,12 +9,22 @@
 +myName(MyName)[source(percept)]: true <- .print("My Name is ", MyName).
 +health(MyH)[source(percept)]: MyH > 0 <- .print("My Health is ", MyH).
 
-+position(CurrentVertex)[source(percept)]:
-   .my_name(MyName2)
++position(Vertex)[source(percept)]:
+   .my_name(MyName)
     <-
     -+myPosition(CurrentVertex);
-    internalActions.updateTeamAgentPosition(MyName2, CurrentVertex).
+    internalActions.updateTeamAgentPosition(MyName, Vertex).
 
++visibleVertex(Vertex, Team)[source(percept)]:
+    true
+    <-
+    internalActions.addVertex(Vertex, Team).
+    
++probedVertex(Vertex, Value)[source(percept)]:
+    true
+    <-
+    internalActions.addVertex(Vertex, Value).
+    
 /* Plans */
 +!start <- .my_name(AgentName).
 +!recharge : true <- bla(hallo).
