@@ -10,6 +10,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 
+/** @author Michael Ruster */
 public class updateTeamAgentPosition extends DefaultInternalAction {
 
     private static final long serialVersionUID = -4676929073688556989L;
