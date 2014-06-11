@@ -2,13 +2,17 @@
 
 package internalActions;
 
-import jason.JasonException;
+import eis.iilang.Identifier;
+import graph.Graph;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 
 public class updateTeamAgentPosition extends DefaultInternalAction {
+
+    private static final long serialVersionUID = -4676929073688556989L;
 
     /**
      * @param ts
@@ -16,19 +20,24 @@ public class updateTeamAgentPosition extends DefaultInternalAction {
      *            (setting
      * @param Unifier
      *            will send it back to Jason)
-     * @param args
+     * @param terms
      *            are the arguments from Jason (like the vertex)
      **/
     @Override
-    public Object execute(TransitionSystem ts, Unifier un, Term[] args)
+    public Object execute(TransitionSystem ts, Unifier un, Term[] terms)
             throws Exception {
-        // execute the internal action
-        ts.getAg().getLogger().info("executing internal action 'internalActions.updateTeamAgentPosition'");
-        if (true) { // just to show how to throw another kind of exception
-            throw new JasonException("not implemented!");
-        }
 
-        // everything ok, so returns true
-        return true;
+        if (terms[0].isLiteral()) {
+            String agentNameString = ((Literal) terms[0]).getFunctor();
+            if (terms[1].isLiteral()) {
+                String vertexIDString = ((Literal) terms[1]).getFunctor();
+
+                Graph graph = Graph.getInstance();
+                graph.updateTeamAgentPosition(new Identifier(agentNameString), new Identifier(vertexIDString));
+
+                return true;
+            }
+        }
+        return false;
     }
 }
