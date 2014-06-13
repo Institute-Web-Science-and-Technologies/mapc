@@ -2,7 +2,6 @@
 
 package internalActions;
 
-import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -21,9 +20,6 @@ public class getBestUnexploredVertex extends DefaultInternalAction {
             throws Exception {
         // execute the internal action
         ts.getAg().getLogger().info("executing internal action 'internalActions.getBestUnexploredVertex'");
-        if (true) { // just to show how to throw another kind of exception
-            throw new JasonException("not implemented!");
-        }
         Term agentPosition = args[0];
 
         String vertexIdentifier = null; // =
