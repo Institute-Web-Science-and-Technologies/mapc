@@ -47,4 +47,3 @@
 
 /* Plans */
 +!start <- .my_name(AgentName).
-+!recharge : true <- bla(hallo).
