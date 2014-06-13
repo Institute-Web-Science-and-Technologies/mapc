@@ -4,31 +4,26 @@
 { include("actions.recharge.asl") }
 
 /* Initial beliefs and rules */
-
 lowEnergy :- energy(E)[source(percept)] & E<5.
 
 /* Initial goals */
-!start.
 
-+myPosition(unknown)[source(self)].
 +myName(MyName)[source(percept)]: true <- .print("My Name is ", MyName).
 +health(MyH)[source(percept)]: MyH > 0 <- .print("My Health is ", MyH).
 
 +position(Vertex)[source(percept)]:
    .my_name(MyName)
-    <-
-    -+myPosition(CurrentVertex);
-    internalActions.updateTeamAgentPosition(MyName, Vertex).
+    <- internalActions.updateTeamAgentPosition(MyName, Vertex).
 
 +visibleEdge(VertexA, VertexB)[source(percept)]:
    true
    <-
    internalActions.addEdge(VertexA, VertexB).
 
-+surveyedEdge(VertexA, VertexB, Weight)[source(percept)]:
-   true
++surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
    <-
-   internalActions.addEdge(VertexA, VertexB, Weight).
+   internalActions.addEdge(VertexA, VertexB, Weight); !walkAround;
+   .print("Kante von ", VertexA, " nach ", VertexB, " Gewicht: ", Weight).
 
 +edges(AmountEdges)[source(percept)]:
    true
@@ -53,12 +48,14 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 +lowEnergy:
    .my_name(MyName)
    <- recharge(MyName).
+   
++simStart 
+   <- !start.
 
 /* Plans */
-+!start <- .my_name(AgentName);
-		   survey;
-		   !walkAround.
++!start <- survey.
 
-//+!walkAround  <- 
++!walkAround <- ?surveyedEdge(Pos, Target, Cost);
+	 goto(Target).
    
 

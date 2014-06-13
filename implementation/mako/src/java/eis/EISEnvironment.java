@@ -33,7 +33,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void init(String[] args) {
         // logger
-        logger.setVisible(false);
+        logger.setVisible(true);
 
         // init EISMASSIM environment
         try {
@@ -100,21 +100,25 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
-        logger.info("agName: " + agentJasonName);
-        logger.info("Functor: " + command.getFunctor());
-        logger.info("Terms: " + command.getTerms());
+        // logger.info("agName: " + agentJasonName);
+        // logger.info("Functor: " + command.getFunctor());
+        // logger.info("Terms: " + command.getTerms());
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = ActionHandler.skip();
         String functor = command.getFunctor();
-        if (functor.equals("goto")) {
+        if (functor.equalsIgnoreCase("goto")) {
             String nodeName = command.getTerm(0).toString();
             action = ActionHandler.goTo(nodeName);
         }
-        if (functor.equals("survey")) {
+        if (functor.equalsIgnoreCase("survey")) {
             action = ActionHandler.survey();
+        }
+        if (functor.equalsIgnoreCase("recharge")) {
+            action = ActionHandler.recharge();
         }
         try {
             environmentInterface.performAction(agentServerName, action);
+            logger.info(agentServerName + ": " + action.getName());
             return true;
         } catch (ActException e) {
             return false;
