@@ -15,3 +15,4 @@ bin/
 /implementation/beenutsFW/nbproject/private/
 /implementation/beenutsFW/build/
 *.1
+implementation/mako/logging.properties
