@@ -8,6 +8,17 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 
 /* Initial goals */
 
+/* Plans */
+
+//Print all received beliefs. Used for debugging.
++Belief <-
+	.print("Received new belief from percept: ", Belief);
+	for (B) {
+		.print("	When ", Belief, " is added, this is another belief in the belief base: ", B);
+	}
+	-Belief;
+	.print("		Removed ", Belief, " from belief base.").
+
 +myName(MyName)[source(percept)]: true <- .print("My Name is ", MyName).
 +health(MyH)[source(percept)]: MyH > 0 <- .print("My Health is ", MyH).
 
@@ -51,6 +62,10 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
    
 +simStart 
    <- !start.
+   
++visibleVertex(Vertex, Team)[source(percept)] <-
+    internalActions.addVertex(Vertex, Team).
+    
 
 /* Plans */
 +!start <- survey.
