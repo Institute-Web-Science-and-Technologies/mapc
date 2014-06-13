@@ -111,6 +111,15 @@ public class EISEnvironment extends Environment implements AgentListener {
                 return false;
             }
         }
+        if (action.getFunctor().equals("survey")) {
+            try {
+                String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
+                environmentInterface.performAction(agentServerName, ActionHandler.survey());
+                return true;
+            } catch (ActException e) {
+                return false;
+            }
+        }
         return true;
     }
 
