@@ -6,6 +6,7 @@ import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
 
 public class getBestUnexploredVertex extends DefaultInternalAction {
@@ -24,9 +25,16 @@ public class getBestUnexploredVertex extends DefaultInternalAction {
             throw new JasonException("not implemented!");
         }
         Term agentPosition = args[0];
-        Term Vertex = args[1];
 
-        // everything ok, so returns true
-        return true;
+        String vertexIdentifier = null; // =
+                                        // Graph.getPosition(agentPosition.toString());
+                                        // // fill this out please!
+
+        if (vertexIdentifier == null) {
+            return false;
+        } else {
+            Term vertexTerm = new Atom(vertexIdentifier);
+            return un.unifiesNoUndo(args[1], vertexTerm);
+        }
     }
 }
