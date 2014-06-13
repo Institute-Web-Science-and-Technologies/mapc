@@ -7,6 +7,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
+import eis.iilang.Identifier;
 
 public class getBestUnexploredVertex extends DefaultInternalAction {
 
@@ -22,15 +23,11 @@ public class getBestUnexploredVertex extends DefaultInternalAction {
         ts.getAg().getLogger().info("executing internal action 'internalActions.getBestUnexploredVertex'");
         Term agentPosition = args[0];
 
-        String vertexIdentifier = null; // =
-                                        // Graph.getPosition(agentPosition.toString());
-                                        // // fill this out please!
+        Identifier vertexIdentifier = null; // =
+        // Graph.getPosition(agentPosition.toString());
+        // // fill this out please!
 
-        if (vertexIdentifier == null) {
-            return false;
-        } else {
-            Term vertexTerm = new Atom(vertexIdentifier);
-            return un.unifiesNoUndo(args[1], vertexTerm);
-        }
+        Term vertexTerm = new Atom(vertexIdentifier.toString());
+        return un.unifiesNoUndo(args[1], vertexTerm);
     }
 }
