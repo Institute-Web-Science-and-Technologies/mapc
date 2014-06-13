@@ -1,10 +1,13 @@
 // Agent baseAgent in project mako
+{ include("actions.goto.asl") }
+{ include("actions.repair.asl") }
+{ include("actions.recharge.asl") }
 
 /* Initial beliefs and rules */
 
 /* Initial goals */
 !start.
-!recharge.
+
 +myPosition(unknown)[source(self)].
 +myName(MyName)[source(percept)]: true <- .print("My Name is ", MyName).
 +health(MyH)[source(percept)]: MyH > 0 <- .print("My Health is ", MyH).
@@ -52,7 +55,6 @@
 /* Plans */
 +!start <- .my_name(AgentName);
 		   survey.
-+!recharge : true <- bla(hallo).
 
 
    
