@@ -22,8 +22,7 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
    <-
-   internalActions.addEdge(VertexA, VertexB, Weight); !walkAround;
-   .print("Kante von ", VertexA, " nach ", VertexB, " Gewicht: ", Weight).
+   internalActions.addEdge(VertexA, VertexB, Weight).
 
 +edges(AmountEdges)[source(percept)]:
    true
@@ -52,7 +51,7 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 +step(S):
     true
 <- 
-    .print("Current step is ", S);
+    //.print("Current step is ", S);
     !walkAround.
     
 
