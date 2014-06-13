@@ -5,6 +5,8 @@
 
 /* Initial beliefs and rules */
 
+lowEnergy :- energy(E)[source(percept)] & E<5.
+
 /* Initial goals */
 !start.
 
@@ -48,14 +50,15 @@
     <-
     internalActions.addVertex(Vertex, Value).
     
-+energy(low):
++lowEnergy:
    .my_name(MyName)
    <- recharge(MyName).
 
 /* Plans */
 +!start <- .my_name(AgentName);
-		   survey.
+		   survey;
+		   !walkAround.
 
-
+//+!walkAround  <- 
    
 
