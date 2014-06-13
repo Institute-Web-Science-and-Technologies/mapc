@@ -45,6 +45,8 @@ public interface IGraph {
 
     public boolean isVertexVisited(Identifier vertexID);
 
+    public boolean isVertexProbed(Identifier vertexID);
+
     public void updateVertexValue(Identifier vertexID, Numeral value);
 
     /**

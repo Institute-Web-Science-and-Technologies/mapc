@@ -310,4 +310,11 @@ public class Graph implements IGraph {
         return this.vertices.get(vertexID).isVisited();
     }
 
+    @Override
+    public boolean isVertexProbed(Identifier vertexID) {
+        if (!this.vertices.containsKey(vertexID))
+            return false;
+        return this.vertices.get(vertexID).isProbed();
+    }
+
 }
