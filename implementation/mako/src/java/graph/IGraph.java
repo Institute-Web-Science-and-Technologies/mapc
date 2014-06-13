@@ -208,4 +208,14 @@ public interface IGraph {
     public HashMap<Agent, Vertex> getCloseEnemyRepairers(Identifier vertexID,
             int depth);
 
+    /**
+     * Returns a vertex corresponding to unvisited vertex with lowest edge
+     * weight. If there are no unvisited vertices in the neighborhood sets
+     * NextVertex = InitialVertex.
+     * 
+     * @param vertexID
+     * @return
+     */
+    public Identifier getBestUnexploredVertex(Identifier vertexID);
+
 }

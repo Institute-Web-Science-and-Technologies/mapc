@@ -48,14 +48,23 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 +lowEnergy:
    .my_name(MyName)
    <- recharge(MyName).
-   
-+simStart 
-   <- !start.
+
++step(S):
+    true
+<- 
+    .print("Current step is ", S);
+    !walkAround.
+    
 
 /* Plans */
 +!start <- survey.
 
-+!walkAround <- ?surveyedEdge(Pos, Target, Cost);
-	 goto(Target).
++!walkAround: 
+   position(Vertex) & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
+   <- 
+   .print("Surveyed ", Vertex, " going to ", NextVertex);
+   goto(NextVertex).
    
-
++!walkAround:  position(Vertex)
+	 <- 
+	 .print("Not surveyed ", Vertex); survey.
