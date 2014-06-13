@@ -317,4 +317,11 @@ public class Graph implements IGraph {
         return this.vertices.get(vertexID).isProbed();
     }
 
+    @Override
+    public boolean isEdgeSurveyed(Identifier vertexAID, Identifier vertexBID) {
+        if (!this.vertices.containsKey(vertexAID))
+            return false;
+        return this.vertices.get(vertexAID).isEdgeSurveyed(vertexBID);
+    }
+
 }

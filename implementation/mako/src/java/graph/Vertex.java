@@ -23,6 +23,7 @@ public class Vertex {
     private HashSet<Agent> teamAgents;
     private HashSet<Agent> enemyAgents;
     private HashMap<Identifier, Numeral> edges;
+    private final int edgeUnsurveyedWeight = 1000;
     /**
      * The returned values can be A, B or none.
      */
@@ -63,6 +64,13 @@ public class Vertex {
 
     public boolean isProbed() {
         return isProbed;
+    }
+
+    public boolean isEdgeSurveyed(Identifier neighVertexID) {
+        if (!edges.containsKey(neighVertexID))
+            return false;
+        Numeral weight = edges.get(neighVertexID);
+        return (weight.getValue().intValue() != this.edgeUnsurveyedWeight);
     }
 
     public HashSet<Agent> getTeamAgents() {
@@ -108,7 +116,7 @@ public class Vertex {
     public void addEdge(Identifier vertexDID, Numeral weight) {
         if (!(vertexDID.equals(this.id))) {
             if (weight == null) {
-                weight = new Numeral(1000);
+                weight = new Numeral(this.edgeUnsurveyedWeight);
             }
             edges.put(vertexDID, weight);
         }
