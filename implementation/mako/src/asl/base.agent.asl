@@ -44,7 +44,16 @@
     true
     <-
     internalActions.addVertex(Vertex, Value).
+    
++energy(low):
+   .my_name(MyName)
+   <- recharge(MyName).
 
 /* Plans */
-+!start <- .my_name(AgentName).
++!start <- .my_name(AgentName);
+		   survey.
 +!recharge : true <- bla(hallo).
+
+
+   
+
