@@ -324,4 +324,18 @@ public class Graph implements IGraph {
         return this.vertices.get(vertexAID).isEdgeSurveyed(vertexBID);
     }
 
+    @Override
+    public boolean isVertexSurveyed(Identifier vertexID) {
+        if (!this.vertices.containsKey(vertexID))
+            return false;
+        HashMap<Identifier, Integer> vertexNeighborhood = this.getNeighborhood(vertexID, 1);
+        vertexNeighborhood.remove(vertexID);
+        boolean isSurveyed = true;
+        for (Identifier neighVertexID : vertexNeighborhood.keySet()) {
+            if (!this.isEdgeSurveyed(vertexID, neighVertexID))
+                isSurveyed = false;
+        }
+        return isSurveyed;
+    }
+
 }

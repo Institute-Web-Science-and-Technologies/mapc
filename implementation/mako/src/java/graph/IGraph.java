@@ -47,6 +47,8 @@ public interface IGraph {
 
     public boolean isVertexProbed(Identifier vertexID);
 
+    public boolean isVertexSurveyed(Identifier vertexID);
+
     public boolean isEdgeSurveyed(Identifier vertexAID, Identifier vertexBID);
 
     public void updateVertexValue(Identifier vertexID, Numeral value);
