@@ -243,7 +243,7 @@ public class Graph implements IGraph {
     public synchronized void updateTeamAgentPosition(Identifier agent,
             Identifier vertexID) {
         this.teamAgentsPositions.put(agent, vertexID);
-        this.vertices.get(vertexID).setVisited(true);
+        this.getVertexOrCreateIt(vertexID).setVisited(true);
     }
 
     @Override
