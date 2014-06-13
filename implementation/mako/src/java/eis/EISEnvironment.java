@@ -12,6 +12,7 @@ import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
 import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
+import eis.iilang.Action;
 import eis.iilang.Percept;
 
 /**
@@ -98,20 +99,26 @@ public class EISEnvironment extends Environment implements AgentListener {
     }
 
     @Override
-    public boolean executeAction(String agentJasonName, Structure action) {
+    public boolean executeAction(String agentJasonName, Structure command) {
         logger.info("agName: " + agentJasonName);
-        logger.info("Functor: " + action.getFunctor());
-        logger.info("Terms: " + action.getTerms());
-        if (action.getFunctor().equals("recharge")) {
-            try {
-                String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
-                environmentInterface.performAction(agentServerName, ActionHandler.recharge());
-                return true;
-            } catch (ActException e) {
-                return false;
-            }
+        logger.info("Functor: " + command.getFunctor());
+        logger.info("Terms: " + command.getTerms());
+        String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
+        Action action = ActionHandler.skip();
+        String functor = command.getFunctor();
+        if (functor.equals("goto")) {
+            String nodeName = command.getTerm(0).toString();
+            action = ActionHandler.goTo(nodeName);
         }
-        return true;
+        if (functor.equals("survey")) {
+            action = ActionHandler.survey();
+        }
+        try {
+            environmentInterface.performAction(agentServerName, action);
+            return true;
+        } catch (ActException e) {
+            return false;
+        }
     }
 
     @Override
