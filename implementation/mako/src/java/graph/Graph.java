@@ -243,6 +243,7 @@ public class Graph implements IGraph {
     public synchronized void updateTeamAgentPosition(Identifier agent,
             Identifier vertexID) {
         this.teamAgentsPositions.put(agent, vertexID);
+        this.getVertexOrCreateIt(vertexID).setVisited(true);
     }
 
     @Override
@@ -322,6 +323,51 @@ public class Graph implements IGraph {
         if (!this.vertices.containsKey(vertexAID))
             return false;
         return this.vertices.get(vertexAID).isEdgeSurveyed(vertexBID);
+    }
+
+    @Override
+    public boolean isVertexSurveyed(Identifier vertexID) {
+        if (!this.vertices.containsKey(vertexID))
+            return false;
+        HashMap<Identifier, Numeral> vertexNeighborhood = this.vertices.get(vertexID).getEdges();
+
+        boolean isSurveyed = true;
+        for (Identifier neighVertexID : vertexNeighborhood.keySet()) {
+            if (!this.isEdgeSurveyed(vertexID, neighVertexID))
+                isSurveyed = false;
+        }
+        return isSurveyed;
+    }
+
+    @Override
+    public Identifier getBestUnexploredVertex(Identifier vertexID) {
+        HashMap<Identifier, Numeral> vertexNeighborhood = this.vertices.get(vertexID).getEdges();
+
+        Identifier nextVertexID;
+
+        if ((vertexNeighborhood == null) || (vertexNeighborhood.size() < 1)) {
+            nextVertexID = vertexID;
+        } else {
+            nextVertexID = vertexID;
+            int minWeght = Integer.MAX_VALUE;
+
+            for (Identifier vertexNeighID : vertexNeighborhood.keySet()) {
+
+                if (!this.isEdgeSurveyed(vertexID, vertexNeighID))
+                    continue;
+
+                if (this.isVertexVisited(vertexNeighID))
+                    continue;
+
+                int weight = vertexNeighborhood.get(vertexNeighID).getValue().intValue();
+                if (weight < minWeght) {
+                    minWeght = weight;
+                    nextVertexID = vertexNeighID;
+                }
+
+            }
+        }
+        return nextVertexID;
     }
 
 }

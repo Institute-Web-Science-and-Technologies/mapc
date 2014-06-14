@@ -33,8 +33,7 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
    <-
-   internalActions.addEdge(VertexA, VertexB, Weight); !walkAround;
-   .print("Kante von ", VertexA, " nach ", VertexB, " Gewicht: ", Weight).
+   internalActions.addEdge(VertexA, VertexB, Weight).
 
 +edges(AmountEdges)[source(percept)]:
    true
@@ -45,11 +44,6 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
    true
    <-
    internalActions.setGlobalVerticesAmount(AmountVertices).
-
-+visibleVertex(Vertex, Team)[source(percept)]:
-    true
-    <-
-    internalActions.addVertex(Vertex, Team).
 
 +probedVertex(Vertex, Value)[source(percept)]:
     true
@@ -65,12 +59,21 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
    
 +visibleVertex(Vertex, Team)[source(percept)] <-
     internalActions.addVertex(Vertex, Team).
+
++step(S) <-
+    //.print("Current step is ", S);
+    !walkAround.
     
 
 /* Plans */
 +!start <- survey.
 
-+!walkAround <- ?surveyedEdge(Pos, Target, Cost);
-	 goto(Target).
++!walkAround: 
+   position(Vertex) & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
+   <- 
+   .print("Surveyed ", Vertex, " going to ", NextVertex);
+   goto(NextVertex).
    
-
++!walkAround:  position(Vertex)
+	 <- 
+	 .print("Not surveyed ", Vertex); survey.

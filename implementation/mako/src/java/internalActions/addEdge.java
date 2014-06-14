@@ -29,7 +29,7 @@ public class addEdge extends DefaultInternalAction {
             if (args[0].isLiteral() && args[1].isLiteral()) {
                 String VertexAID = ((Literal) args[0]).getFunctor();
 
-                String VertexBID = ((Literal) args[0]).getFunctor();
+                String VertexBID = ((Literal) args[1]).getFunctor();
 
                 Graph graph = Graph.getInstance();
                 graph.addEdge(new Identifier(VertexAID), new Identifier(VertexBID));
@@ -41,7 +41,7 @@ public class addEdge extends DefaultInternalAction {
             if (args[0].isLiteral() && args[1].isLiteral() && args[2].isNumeric()) {
                 String VertexAID = ((Literal) args[0]).getFunctor();
 
-                String VertexBID = ((Literal) args[0]).getFunctor();
+                String VertexBID = ((Literal) args[1]).getFunctor();
 
                 double edgeWeight = ((NumberTerm) args[2]).solve();
 

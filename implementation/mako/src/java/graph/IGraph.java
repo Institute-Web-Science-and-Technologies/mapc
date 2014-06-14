@@ -47,6 +47,8 @@ public interface IGraph {
 
     public boolean isVertexProbed(Identifier vertexID);
 
+    public boolean isVertexSurveyed(Identifier vertexID);
+
     public boolean isEdgeSurveyed(Identifier vertexAID, Identifier vertexBID);
 
     public void updateVertexValue(Identifier vertexID, Numeral value);
@@ -205,5 +207,15 @@ public interface IGraph {
      */
     public HashMap<Agent, Vertex> getCloseEnemyRepairers(Identifier vertexID,
             int depth);
+
+    /**
+     * Returns a vertex corresponding to unvisited vertex with lowest edge
+     * weight. If there are no unvisited vertices in the neighborhood sets
+     * NextVertex = InitialVertex.
+     * 
+     * @param vertexID
+     * @return
+     */
+    public Identifier getBestUnexploredVertex(Identifier vertexID);
 
 }
