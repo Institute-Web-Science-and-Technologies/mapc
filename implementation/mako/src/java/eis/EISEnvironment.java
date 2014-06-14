@@ -7,6 +7,7 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -106,15 +107,17 @@ public class EISEnvironment extends Environment implements AgentListener {
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = ActionHandler.skip();
         String functor = command.getFunctor();
-        if (functor.equalsIgnoreCase("goto")) {
+        switch (functor.toLowerCase(Locale.ENGLISH)) {
+        case ("goto"): {
             String nodeName = command.getTerm(0).toString();
             action = ActionHandler.goTo(nodeName);
         }
-        if (functor.equalsIgnoreCase("survey")) {
+        case ("survey"): {
             action = ActionHandler.survey();
         }
-        if (functor.equalsIgnoreCase("recharge")) {
+        case ("recharge"): {
             action = ActionHandler.recharge();
+        }
         }
         try {
             environmentInterface.performAction(agentServerName, action);
