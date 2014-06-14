@@ -4,7 +4,7 @@
 { include("actions.recharge.asl") }
 
 /* Initial beliefs and rules */
-lowEnergy :- energy(E)[source(percept)] & E<5.
+lowEnergy :- energy(E)[source(percept)] & E < 8.
 
 /* Initial goals */
 
@@ -24,7 +24,8 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 
 +position(Vertex)[source(percept)]:
    .my_name(MyName)
-    <- internalActions.updateTeamAgentPosition(MyName, Vertex).
+    <- internalActions.updateTeamAgentPosition(MyName, Vertex);
+    -+position(Vertex)[source(self)].
 
 +visibleEdge(VertexA, VertexB)[source(percept)]:
    true
@@ -55,7 +56,8 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
    <- recharge(MyName).
    
 +simStart 
-   <- !start.
+   <- .print("Simulation started."). 
+//   !start.
    
 +visibleVertex(Vertex, Team)[source(percept)] <-
     internalActions.addVertex(Vertex, Team).
@@ -66,14 +68,20 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
     
 
 /* Plans */
-+!start <- survey.
+//+!start <- survey.
 
 +!walkAround: 
-   position(Vertex) & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
+   lowEnergy
+   <-
+   .print("My energy is low, going to recharge.");
+   recharge.
+
++!walkAround: 
+   position(Vertex)[source(self)] & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
    <- 
    .print("Surveyed ", Vertex, " going to ", NextVertex);
    goto(NextVertex).
    
-+!walkAround:  position(Vertex)
++!walkAround: position(Vertex)[source(self)]
 	 <- 
 	 .print("Not surveyed ", Vertex); survey.
