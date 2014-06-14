@@ -49,7 +49,7 @@ public class Vertex {
         return zoneTeam;
     }
 
-    public void setValue(Numeral value) {
+    public synchronized void setValue(Numeral value) {
         this.value = value;
         this.isProbed = true;
     }
@@ -58,7 +58,7 @@ public class Vertex {
         return isVisited;
     }
 
-    public void setVisited(boolean isVisited) {
+    public synchronized void setVisited(boolean isVisited) {
         this.isVisited = isVisited;
     }
 
@@ -77,7 +77,7 @@ public class Vertex {
         return teamAgents;
     }
 
-    public void setTeamAgents(HashSet<Agent> teamAgents) {
+    public synchronized void setTeamAgents(HashSet<Agent> teamAgents) {
         this.teamAgents = teamAgents;
     }
 
@@ -85,11 +85,11 @@ public class Vertex {
         return enemyAgents;
     }
 
-    public void setEnemyAgents(HashSet<Agent> enemyAgents) {
+    public synchronized void setEnemyAgents(HashSet<Agent> enemyAgents) {
         this.enemyAgents = enemyAgents;
     }
 
-    public void setZoneTeam(Identifier zoneTeam) {
+    public synchronized void setZoneTeam(Identifier zoneTeam) {
         this.zoneTeam = zoneTeam;
     }
 
@@ -97,7 +97,7 @@ public class Vertex {
         return edges;
     }
 
-    public void setEdges(HashMap<Identifier, Numeral> edges) {
+    public synchronized void setEdges(HashMap<Identifier, Numeral> edges) {
         this.edges = edges;
     }
 
@@ -113,7 +113,7 @@ public class Vertex {
      *            can be {@code null}. Then, the weight will be set high (1000)
      *            to simulate high costs for travelling unknown edges.
      */
-    public void addEdge(Identifier vertexDID, Numeral weight) {
+    public synchronized void addEdge(Identifier vertexDID, Numeral weight) {
         if (!(vertexDID.equals(this.id))) {
             if (weight == null) {
                 weight = new Numeral(this.edgeUnsurveyedWeight);

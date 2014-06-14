@@ -87,7 +87,7 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public void setOurTeam(Identifier ourTeam) {
+    public synchronized void setOurTeam(Identifier ourTeam) {
         this.ourTeam = ourTeam;
     }
 
@@ -300,7 +300,7 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public void setVertexVisited(Identifier vertexID) {
+    public synchronized void setVertexVisited(Identifier vertexID) {
         this.getVertexOrCreateIt(vertexID).setVisited(true);
     }
 

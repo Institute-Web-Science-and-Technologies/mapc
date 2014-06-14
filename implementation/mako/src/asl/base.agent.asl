@@ -10,7 +10,7 @@ lowEnergy :- energy(E)[source(percept)] & E < 8.
 
 /* Plans */
 
-//Print all received beliefs. Used for debugging.
+//Print all received beliefs. Used for debugging. (comment this out if your simulation crashes immediately)
 @debug[atomic] +Belief <-
 	.print("Received new belief from percept: ", Belief);
 	for (B) {
@@ -23,9 +23,9 @@ lowEnergy :- energy(E)[source(percept)] & E < 8.
 +health(MyH)[source(percept)]: MyH > 0 <- .print("My Health is ", MyH).
 
 +position(Vertex)[source(percept)]:
-   .my_name(MyName)
-    <- internalActions.updateTeamAgentPosition(MyName, Vertex);
-    -+position(Vertex)[source(self)].
+    .my_name(MyName)
+    <-
+    internalActions.updateTeamAgentPosition(MyName, Vertex).
 
 +visibleEdge(VertexA, VertexB)[source(percept)]:
    true
@@ -33,18 +33,18 @@ lowEnergy :- energy(E)[source(percept)] & E < 8.
    internalActions.addEdge(VertexA, VertexB).
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
-   <-
-   internalActions.addEdge(VertexA, VertexB, Weight).
+    <-
+    internalActions.addEdge(VertexA, VertexB, Weight).
 
 +edges(AmountEdges)[source(percept)]:
-   true
-   <-
-   internalActions.setGlobalEdgesAmount(AmountEdges).
+    true
+    <-
+    internalActions.setGlobalEdgesAmount(AmountEdges).
 
 +vertices(AmountVertices)[source(percept)]:
-   true
-   <-
-   internalActions.setGlobalVerticesAmount(AmountVertices).
+    true
+    <-
+    internalActions.setGlobalVerticesAmount(AmountVertices).
 
 +probedVertex(Vertex, Value)[source(percept)]:
     true
@@ -52,11 +52,11 @@ lowEnergy :- energy(E)[source(percept)] & E < 8.
     internalActions.addVertex(Vertex, Value).
     
 +lowEnergy:
-   .my_name(MyName)
-   <- recharge(MyName).
+    .my_name(MyName)
+    <- recharge(MyName).
    
 +simStart 
-   <- .print("Simulation started."). 
+    <- .print("Simulation started."). 
 //   !start.
    
 +visibleVertex(Vertex, Team)[source(percept)] <-
@@ -71,17 +71,17 @@ lowEnergy :- energy(E)[source(percept)] & E < 8.
 //+!start <- survey.
 
 +!walkAround: 
-   lowEnergy
-   <-
-   .print("My energy is low, going to recharge.");
-   recharge.
+    lowEnergy
+    <-
+    .print("My energy is low, going to recharge.");
+    recharge.
 
 +!walkAround: 
-   position(Vertex)[source(self)] & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
-   <- 
-   .print("Surveyed ", Vertex, " going to ", NextVertex);
-   goto(NextVertex).
+    position(Vertex)[source(self)] & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
+    <- 
+    .print("Surveyed ", Vertex, " going to ", NextVertex);
+    goto(NextVertex).
    
 +!walkAround: position(Vertex)[source(self)]
-	 <- 
-	 .print("Not surveyed ", Vertex); survey.
+	<- 
+	.print("Not surveyed ", Vertex); survey.
