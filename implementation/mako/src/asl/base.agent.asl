@@ -11,7 +11,7 @@ lowEnergy :- energy(E)[source(percept)] & E<5.
 /* Plans */
 
 //Print all received beliefs. Used for debugging.
-+Belief <-
+@debug[atomic] +Belief <-
 	.print("Received new belief from percept: ", Belief);
 	for (B) {
 		.print("	When ", Belief, " is added, this is another belief in the belief base: ", B);
