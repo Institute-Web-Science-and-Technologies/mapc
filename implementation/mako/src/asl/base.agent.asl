@@ -10,20 +10,28 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 /* Events */
 +myName(Name)[source(percept)]
-    <- .print("My Name is ", Name).
+    <- .print("My Server Name is: ", Name);
+    	.my_name(JName);
+       .print("My Jason Name is: ", JName);
+       .
     
 +health(Health)[source(percept)]:
     Health > 0
     <- .print("My Health is ", Health).
 
++energy(Energy)[source(percept)]
+	<- .print("My Energy is ", Energy).
+
 +position(Vertex)[source(percept)]
-    <- internalActions.updateTeamAgentPosition(.my_name(Name), Vertex).
+    <- .my_name(Name); 
+    	internalActions.updateTeamAgentPosition(Name, Vertex).
 
 +visibleEdge(VertexA, VertexB)[source(percept)]
    <- internalActions.addEdge(VertexA, VertexB).
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
-    <- internalActions.addEdge(VertexA, VertexB, Weight).
+    <- internalActions.addEdge(VertexA, VertexB, Weight);
+       .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight).
 
 +edges(AmountEdges)[source(percept)]
     <- internalActions.setGlobalEdgesAmount(AmountEdges).
@@ -51,13 +59,14 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +!walkAround: lowEnergy
     <- .print("My energy is low, going to recharge.");
-        recharge.
+        recharge;
+        -lowEnergy.
 
 +!walkAround: position(Vertex)[source(percept)] & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
     <- .print("Surveyed ", Vertex, " going to ", NextVertex);
     	goto(NextVertex).
    
-+!walkAround: position(Vertex)[source(percept)] & ~internalActions.isVertexSurveyed(Vertex)
++!walkAround: position(Vertex)[source(percept)] & internalActions.isVertexUnsurveyed(Vertex)
 	<- .print("Not surveyed ", Vertex);
 		survey.
 	
