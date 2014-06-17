@@ -24,4 +24,4 @@ nextStep(S).
 	<- !nextStep(S+1).
 
 +!nextStep(S)
-	<- .wait("step(", S,")"). 
+	<- .wait("step(", S,")").

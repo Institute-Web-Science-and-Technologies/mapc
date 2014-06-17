@@ -12,8 +12,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +myName(Name)[source(percept)]
     <- .print("My Server Name is: ", Name);
     	.my_name(JName);
-       .print("My Jason Name is: ", JName);
-       .
+       .print("My Jason Name is: ", JName).
     
 +health(Health)[source(percept)]:
     Health > 0
@@ -24,14 +23,17 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +position(Vertex)[source(percept)]
     <- .my_name(Name); 
-    	internalActions.updateTeamAgentPosition(Name, Vertex).
+    	internalActions.updateTeamAgentPosition(Name, Vertex);
+       .send(cartographer, tell, position(Name, Vertex)).
 
 +visibleEdge(VertexA, VertexB)[source(percept)]
-   <- internalActions.addEdge(VertexA, VertexB).
+    <- internalActions.addEdge(VertexA, VertexB);
+       .send(cartographer, tell, edge(VertexA, VertexB, 1000)).
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
     <- internalActions.addEdge(VertexA, VertexB, Weight);
-       .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight).
+       .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight);
+       .send(cartographer, tell, edge(VertexA, VertexB, Weight)).
 
 +edges(AmountEdges)[source(percept)]
     <- internalActions.setGlobalEdgesAmount(AmountEdges).
@@ -40,7 +42,8 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- internalActions.setGlobalVerticesAmount(AmountVertices).
 
 +probedVertex(Vertex, Value)[source(percept)]
-    <- internalActions.addVertex(Vertex, Value).
+    <- internalActions.addVertex(Vertex, Value)
+       .send(cartographer, tell, probed(Vertex, Value)).
     
 +simStart 
     <- .print("Simulation started."). 
