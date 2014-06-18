@@ -42,7 +42,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- internalActions.setGlobalVerticesAmount(AmountVertices).
 
 +probedVertex(Vertex, Value)[source(percept)]
-    <- internalActions.addVertex(Vertex, Value)
+    <- internalActions.addVertex(Vertex, Value);
        .send(cartographer, tell, probed(Vertex, Value)).
     
 +simStart 
