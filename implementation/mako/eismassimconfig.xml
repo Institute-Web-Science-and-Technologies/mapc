@@ -61,6 +61,7 @@
     <entity name="connectionB27" username="b27" password="1" iilang="no" xml="no"/>
     <entity name="connectionB28" username="b28" password="1" iilang="no" xml="no"/>
   </entities>
+  
 </interfaceConfig>
 
 
