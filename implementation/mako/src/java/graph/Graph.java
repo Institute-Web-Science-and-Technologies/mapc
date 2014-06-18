@@ -10,7 +10,7 @@ import eis.iilang.Numeral;
 
 /**
  * This class represents global graph accessible by all agents. Implements
- * {@code IGraph} interface.
+ * {@link IGraph} interface.
  * 
  * @author Sergey Dedukh
  * @author Miriam Koelle
@@ -45,23 +45,23 @@ public class Graph implements IGraph {
     private Identifier ourTeam = new Identifier("none");
 
     /**
-     * {@link HashMap} of pairs ({@link Identifier} of an agent,
-     * {@link Identifier} of a vertex).
+     * {@link HashMap} of pairs ({@link eis.iilang.Identifier} of an agent,
+     * {@link eis.iilang.Identifier} of a vertex).
      */
     private HashMap<Identifier, Identifier> teamAgentsPositions = new HashMap<>();
     /**
-     * {@link HashMap} of pairs ({@link Identifier} of an agent,
-     * {@link Identifier} of a vertex).
+     * {@link HashMap} of pairs ({@link eis.iilang.Identifier} of an agent,
+     * {@link eis.iilang.Identifier} of a vertex).
      */
     private HashMap<Identifier, Identifier> enemyAgentsPositions = new HashMap<>();
 
     /**
-     * Helper function, which casts {@code Numeral} to {@code int}.
+     * Helper function, which casts {@link eis.iilang.Numeral} to {@code int}.
      * 
      * @param val
-     *            value in {@code Numeral} format
-     * @return value of the {@code Numeral} or {@code -1} if casting was not
-     *         possible.
+     *            value in {@link eis.iilang.Numeral} format
+     * @return value of the {@link eis.iilang.Numeral} or {@code -1} if casting
+     *         was not possible.
      */
     private int Numeral2Int(Numeral val) {
         try {
@@ -111,9 +111,9 @@ public class Graph implements IGraph {
     }
 
     /**
-     * This method simply calls {@code addEdge} with {@code null} weight.
-     * 
-     * @see #addEdge(Identifier, Identifier, Numeral)
+     * This method simply calls
+     * {@link #addEdge(Identifier, Identifier, Numeral)} with {@code null}
+     * weight.
      */
     @Override
     public synchronized void addEdge(Identifier vertexAID, Identifier vertexBID) {
@@ -349,7 +349,7 @@ public class Graph implements IGraph {
             nextVertexID = vertexID;
         } else {
             nextVertexID = vertexID;
-            int minWeght = Integer.MAX_VALUE;
+            int minWeight = Integer.MAX_VALUE;
 
             for (Identifier vertexNeighID : vertexNeighborhood.keySet()) {
 
@@ -360,8 +360,8 @@ public class Graph implements IGraph {
                     continue;
 
                 int weight = vertexNeighborhood.get(vertexNeighID).getValue().intValue();
-                if (weight < minWeght) {
-                    minWeght = weight;
+                if (weight < minWeight) {
+                    minWeight = weight;
                     nextVertexID = vertexNeighID;
                 }
 

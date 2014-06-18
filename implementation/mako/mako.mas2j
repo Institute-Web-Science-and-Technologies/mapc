@@ -6,6 +6,7 @@ MAS mako {
 	environment: eis.EISEnvironment
 	
 	agents:
+		cartographer;
 	    explorer #6;
         repairer #6;
         saboteur #4;

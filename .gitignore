@@ -6,6 +6,11 @@
 
 # Log files (also generated with LaTeX)
 *.log
+*.1
+*.2
+*.3
+*.4
+*.5
 
 # Java binaries
 *.class
@@ -14,5 +19,4 @@ bin/
 # Added by NetBeans (binaries and machine-specific files)
 /implementation/beenutsFW/nbproject/private/
 /implementation/beenutsFW/build/
-*.1
 implementation/mako/logging.properties
