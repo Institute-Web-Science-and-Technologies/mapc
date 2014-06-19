@@ -107,17 +107,18 @@ public class EISEnvironment extends Environment implements AgentListener {
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = ActionHandler.skip();
         String functor = command.getFunctor();
+
         switch (functor.toLowerCase(Locale.ENGLISH)) {
-        case ("goto"): {
+        case "goto":
             String nodeName = command.getTerm(0).toString();
             action = ActionHandler.goTo(nodeName);
-        }
-        case ("survey"): {
+            break;
+        case "survey":
             action = ActionHandler.survey();
-        }
-        case ("recharge"): {
+            break;
+        case "recharge":
             action = ActionHandler.recharge();
-        }
+            break;
         }
         try {
             environmentInterface.performAction(agentServerName, action);
