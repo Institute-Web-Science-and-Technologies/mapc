@@ -4,7 +4,7 @@
 { include("actions.recharge.asl") }
 
 /* Initial beliefs and rules */
-lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
+lowEnergy :- energy(Energy)[source(percept)] & Energy < 5.
 
 /* Initial goals */
 
@@ -32,7 +32,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
     <- internalActions.addEdge(VertexA, VertexB, Weight);
-       .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight);
+       //.print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight);
        .send(cartographer, tell, edge(VertexA, VertexB, Weight)).
 
 +edges(AmountEdges)[source(percept)]
@@ -54,22 +54,46 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +step(Step)[source(percept)] 
 	<- .print("Current step is ", Step);
+	.send(cartographer, askAll, surveyed(Vertex));
     !walkAround.
     
 
 /* Plans */
 //+!start <- survey.
 
-+!walkAround: lowEnergy
++!getNextVertex: position(Vertex)[source(percept)] & surveyedEdge(X, Y, Z) & X==Vertex
+	<- .findall(Cost,surveyedEdge(Vertex, Y, Cost),List);
+	   //.findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
+	   //.concat(List,List2,ConcatedList);
+		.min(List, MinValue);
+		.print("Minimum Cost: ",MinValue);
+		?surveyedEdge(Vertex, NextNode, MinValue);
+		//?surveyedEdge(NextNode, Vertex, MinValue);
+		.print("Going to ",NextNode," which has cost of ",MinValue);
+		goto(NextNode);
+		.print("went to node ", NextNode).
+		
++!getNextVertex: position(Vertex)[source(percept)] & surveyedEdge(X, Y, Z) & Y==Vertex
+	<- .findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
+    	.min(List2, MinValue2);
+    	.print("Minimum Cost (First Plan fails): ",MinValue2);
+    	?surveyedEdge(NextNode2, Vertex, MinValue2);
+    	.print("Going to ",NextNode2," which has cost of ",MinValue2);
+		goto(NextNode2);
+		.print("went to node ", NextNode2).
+
++!walkAround: energy(E)[source(percept)] & E<10
     <- .print("My energy is low, going to recharge.");
         recharge;
-        -lowEnergy.
+        -energy(E)[source(percept)].
 
-+!walkAround: position(Vertex)[source(percept)] & internalActions.isVertexSurveyed(Vertex) & internalActions.getBestUnexploredVertex(Vertex, NextVertex)
-    <- .print("Surveyed ", Vertex, " going to ", NextVertex);
-    	goto(NextVertex).
++!walkAround: position(Vertex)[source(percept)] & surveyed(Vertex)
+    <- .print("Surveyed ", Vertex, ". Now getNextVertex ");
+    	!getNextVertex.
+    	//goto(NextVertex).
    
-+!walkAround: position(Vertex)[source(percept)] & internalActions.isVertexUnsurveyed(Vertex)
++!walkAround: position(Vertex)[source(percept)] & not surveyed(Vertex)
 	<- .print("Not surveyed ", Vertex);
-		survey.
+		survey;
+		.send(cartographer, tell, surveyed(Vertex)).
 	
