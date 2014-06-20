@@ -59,11 +59,11 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- .print("Simulation started."). 
    
 
+
 +step(Step)[source(percept)] 
 	<- .print("Current step is ", Step);
 	.send(cartographer, askAll, surveyed(Vertex));
-    !walkAround.
-    
+    !walkAround.    
 
 /* Plans */
 

@@ -138,9 +138,16 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
+        String jasonName = serverAgentMap.get(agentName).getJasonName();
+        // List<Literal> perceptList = consultPercepts(jasonName);
+        // logger.info("Percepts in agent " + jasonName +
+        // "before calling clearPercepts(): " + perceptList.toString());
+        clearPercepts(jasonName);
+        // perceptList = consultPercepts(jasonName);
+        // logger.info("Percepts in agent " + jasonName +
+        // "after calling clearPercepts(): " + perceptList.toString());
         for (Percept percept : percepts) {
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                String jasonName = serverAgentMap.get(agentName).getJasonName();
                 Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
                 addPercept(jasonName, literal);
             }
