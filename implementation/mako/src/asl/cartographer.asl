@@ -17,8 +17,9 @@
     -edge(VertexB, VertexA, _)[source(self)];   
     +edge(VertexA, VertexB, Weight)[source(self)];
     +edge(VertexB, VertexA, Weight)[source(self)];
-    .print("I was notified about surveyed edge from ", VertexA, " to ", VertexB, " having weight ", Weight).
-
+    !isVertexSurveyed(VertexA);
+    !isVertexSurveyed(VertexB).
+    
 // Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.    
 +edge(VertexA, VertexB, Weight)[source(PerceptSource)]:
     PerceptSource \== self & edge(VertexA, VertexB, BelievedWeight)[source(self)] 
@@ -31,16 +32,14 @@
     <- 
     -edge(VertexA, VertexB, Weight)[source(PerceptSource)];
     +edge(VertexA, VertexB, Weight)[source(self)];
-    +edge(VertexB, VertexA, Weight)[source(self)];
-    .print("I was notified about unsurveyed edge from ", VertexA, " to ", VertexB, " having weight ", Weight).
+    +edge(VertexB, VertexA, Weight)[source(self)].
 
 +position(Name, Vertex)[source(PerceptSource)]:
     PerceptSource \== self
     <- 
     -position(Name, Vertex)[source(PerceptSource)];
     -position(Name, _)[source(self)];
-    +position(Name, Vertex)[source(self)];
-    .print("Agent ", Name, " is at ", Vertex).
+    +position(Name, Vertex)[source(self)].
     
 +probed(Vertex, Value)[source(PerceptSource)]:
     PerceptSource \== self
@@ -51,12 +50,16 @@
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
-/* Rules */
+/* Test goals */
     
-isVertexSurveyed(Vertex) :-
-    // find edges connected to this Vertex:
-    .findall(Vertex, edge(Vertex, _, Weight), UnifiedEdges)
-    // there is at least one edge known:
-    & .length(UnifiedEdges, EdgesAmount) & EdgesAmount > 0
-    // all edges have a weight lower than 1000:
-    & UnifiedEdges < 1000.
++!isVertexSurveyed(Vertex):
+    surveyed(Vertex) |
+    // find edges connected to this Vertex with weight less than 1000:
+    .findall(Weight, edge(Vertex, _, Weight) & Weight < 1000, UnifiedWeights)
+    // at least one such edge exists:
+    & .length(UnifiedWeights, EdgesAmount) & EdgesAmount > 0
+    <-
+    +surveyed(Vertex).
+
+// have a zero condition goal to prevent errors:
++!isVertexSurveyed(Vertex).

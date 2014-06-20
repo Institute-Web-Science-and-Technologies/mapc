@@ -104,4 +104,4 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 	<- .print("Not surveyed ", Vertex);
 		survey;
 		.send(cartographer, tell, surveyed(Vertex)).
-	
+
