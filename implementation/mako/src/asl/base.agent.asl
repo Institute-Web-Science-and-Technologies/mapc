@@ -2,6 +2,18 @@
 { include("actions.goto.asl") }
 { include("actions.repair.asl") }
 { include("actions.recharge.asl") }
+{ include("storeBeliefs.asl") }
+
+
+//Print all received beliefs. Used for debugging. (comment this out if your simulation crashes immediately)
+//@debug[atomic] +Belief <-
+//	.print("Received new belief from percept: ", Belief);
+//	for (B) {
+//		.print("	When ", Belief, " is added, this is another belief in the belief base: ", B);
+//	}
+//	-Belief;
+//	.print("		Removed ", Belief, " from belief base.").
+	
 
 /* Initial beliefs and rules */
 lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
@@ -9,22 +21,13 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 /* Initial goals */
 
 /* Events */
-+myName(Name)[source(percept)]
-    <- .print("My Server Name is: ", Name);
-    	.my_name(JName);
-       .print("My Jason Name is: ", JName).
     
-+health(Health)[source(percept)]:
-    Health > 0
-    <- .print("My Health is ", Health).
-
-+energy(Energy)[source(percept)]
-	<- .print("My Energy is ", Energy).
-
 +position(Vertex)[source(percept)]
     <- .my_name(Name); 
     	internalActions.updateTeamAgentPosition(Name, Vertex);
-       .send(cartographer, tell, position(Name, Vertex)).
+       .send(cartographer, tell, position(Name, Vertex));
+       .print("New position(", Vertex, ")");
+	    -+position(Vertex)[source(self)].
 
 +visibleEdge(VertexA, VertexB)[source(percept)]
     <- internalActions.addEdge(VertexA, VertexB);
@@ -36,29 +39,31 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
        .send(cartographer, tell, edge(VertexA, VertexB, Weight)).
 
 +edges(AmountEdges)[source(percept)]
-    <- internalActions.setGlobalEdgesAmount(AmountEdges).
+    <- internalActions.setGlobalEdgesAmount(AmountEdges). //TODO: send to cartographer
 
 +vertices(AmountVertices)[source(percept)]
     <- internalActions.setGlobalVerticesAmount(AmountVertices).
 
 +probedVertex(Vertex, Value)[source(percept)]
     <- internalActions.addVertex(Vertex, Value);
-       .send(cartographer, tell, probed(Vertex, Value)).
-    
-+simStart 
-    <- .print("Simulation started."). 
-//   !start.
-   
+       .send(cartographer, tell, probed(Vertex, Value));
+        .print("New probedVertex(", Vertex, " ", Value, ")");
+	    -+probedVertex(Vertex, Value)[source(self)].
+	    
 +visibleVertex(Vertex, Team)[source(percept)] 
 	<- internalActions.addVertex(Vertex, Team).
 
-+step(Step)[source(percept)] 
-	<- .print("Current step is ", Step);
-    !walkAround.
+//TODO: visibleEntity, zoneScore
+    
++simStart 
+    <- .print("Simulation started."). 
+   
+
++step(Step)[source(self)] 
+	<- !walkAround.
     
 
 /* Plans */
-//+!start <- survey.
 
 +!walkAround: lowEnergy
     <- .print("My energy is low, going to recharge.");
