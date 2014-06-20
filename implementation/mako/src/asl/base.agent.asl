@@ -60,8 +60,6 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +simStart 
     <- .print("Simulation started."). 
    
-
-
 +step(Step)[source(self)] 
 	<- .print("Current step is ", Step);
 	.send(cartographer, askAll, surveyed(Vertex));
@@ -90,6 +88,9 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 		goto(NextNode2);
 		.print("went to node ", NextNode2).
 
+// offer applicable plans for all other states:
++!getNextVertex.
+
 +!walkAround: energy(E)[source(self)] & E<10
     <- .print("My energy is low, going to recharge.");
         recharge;
@@ -105,3 +106,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 		survey;
 		.send(cartographer, tell, surveyed(Vertex)).
 
+// if the earlier plans weren't applicable, cancel the plan:
++!walkAround
+    <- .print("Could not walk around.");
+       .fail_goal(walkAround).
