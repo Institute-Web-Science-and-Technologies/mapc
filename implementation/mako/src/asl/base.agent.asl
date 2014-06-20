@@ -32,13 +32,13 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +visibleEdge(VertexA, VertexB)[source(percept)]
     <- internalActions.addEdge(VertexA, VertexB);
        .send(cartographer, tell, edge(VertexA, VertexB, 1000));
-       +-visibleEdge(VertexA, VertexB).
+       -+visibleEdge(VertexA, VertexB)[source(self)].
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
     <- internalActions.addEdge(VertexA, VertexB, Weight);
        .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight);
        .send(cartographer, tell, edge(VertexA, VertexB, Weight));
-       +-surveyedEdge(VertexA, VertexB, Weight)[source(self)].
+       -+surveyedEdge(VertexA, VertexB, Weight)[source(self)].
 
 +edges(AmountEdges)[source(percept)]
     <- internalActions.setGlobalEdgesAmount(AmountEdges). //TODO: send to cartographer
