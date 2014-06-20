@@ -47,6 +47,11 @@ public interface IGraph {
 
     public boolean isVertexProbed(Identifier vertexID);
 
+    /**
+     * This method returns whether all adjacent edge weights to {@code vertexID} are known.
+     * @param vertexID the Vertex identifier to which other vertices are connected through weighted edges.
+     * @return {@code true} if the survey action has been executed on this node.
+     */
     public boolean isVertexSurveyed(Identifier vertexID);
 
     public boolean isEdgeSurveyed(Identifier vertexAID, Identifier vertexBID);
