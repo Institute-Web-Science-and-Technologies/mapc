@@ -25,22 +25,3 @@ nextStep(S).
 
 +!nextStep(S)
 	<- .wait("step(", S,")").
-	
-//___________________________________________________________________________________________________
-	
-+!getNextVertex: position(Vertex)[source(percept)] & surveyedEdge(X, Y, Z) & X==Vertex
-	<- .findall(Cost,surveyedEdge(Vertex, Y, Cost),List);
-	   //.findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
-	   //.concat(List,List2,ConcatedList);
-		.min(List, MinValue);
-		.print("Minimum Cost: ",MinValue);
-		?surveyedEdge(Vertex, NextNode, MinValue);
-		//?surveyedEdge(NextNode, Vertex, MinValue);
-		.print("Going to ",NextNode," which has cost of ",MinValue);
-		goto(NextNode);
-		.print("went to node ", NextNode).
-		
-+!walkAround: position(Vertex)[source(percept)] & surveyed(Vertex)
-    <- .print("Surveyed ", Vertex, ". Now getNextVertex ");
-    	!getNextVertex.
-    	//goto(NextVertex).
