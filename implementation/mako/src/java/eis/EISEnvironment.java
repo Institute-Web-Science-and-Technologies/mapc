@@ -7,13 +7,13 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Locale;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
 import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
 import eis.iilang.Action;
+import eis.iilang.Identifier;
 import eis.iilang.Percept;
 
 /**
@@ -105,21 +105,16 @@ public class EISEnvironment extends Environment implements AgentListener {
         // logger.info("Functor: " + command.getFunctor());
         // logger.info("Terms: " + command.getTerms());
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
-        Action action = ActionHandler.skip();
+        Action action = new Action("skip");
         String functor = command.getFunctor();
 
-        switch (functor.toLowerCase(Locale.ENGLISH)) {
-        case "goto":
-            String nodeName = command.getTerm(0).toString();
-            action = ActionHandler.goTo(nodeName);
-            break;
-        case "survey":
-            action = ActionHandler.survey();
-            break;
-        case "recharge":
-            action = ActionHandler.recharge();
-            break;
+        if (command.getArity() == 0)
+            action = new Action(functor);
+        else if (command.getArity() == 1) {
+            String entityName = command.getTerm(0).toString();
+            action = new Action(functor, new Identifier(entityName));
         }
+
         try {
             environmentInterface.performAction(agentServerName, action);
             logger.info(agentServerName + ": " + action.getName());
@@ -138,16 +133,9 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
-        String jasonName = serverAgentMap.get(agentName).getJasonName();
-        // List<Literal> perceptList = consultPercepts(jasonName);
-        // logger.info("Percepts in agent " + jasonName +
-        // "before calling clearPercepts(): " + perceptList.toString());
-        clearPercepts(jasonName);
-        // perceptList = consultPercepts(jasonName);
-        // logger.info("Percepts in agent " + jasonName +
-        // "after calling clearPercepts(): " + perceptList.toString());
         for (Percept percept : percepts) {
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
+                String jasonName = serverAgentMap.get(agentName).getJasonName();
                 Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
                 addPercept(jasonName, literal);
             }
