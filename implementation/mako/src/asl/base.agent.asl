@@ -7,13 +7,13 @@
 
 //Print all received beliefs. Used for debugging. (comment this out if your simulation crashes immediately)
 //@debug[atomic] +Belief <-
-//	.print("Received new belief from percept: ", Belief);
-//	for (B) {
-//		.print("	When ", Belief, " is added, this is another belief in the belief base: ", B);
-//	}
-//	-Belief;
-//	.print("		Removed ", Belief, " from belief base.").
-	
+//    .print("Received new belief from percept: ", Belief);
+//    for (B) {
+//        .print("    When ", Belief, " is added, this is another belief in the belief base: ", B);
+//    }
+//    -Belief;
+//    .print("        Removed ", Belief, " from belief base.").
+    
 
 /* Initial beliefs and rules */
 lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
@@ -23,20 +23,17 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 /* Events */
     
 +position(Vertex)[source(percept)]
-    <- .my_name(Name); 
-    	internalActions.updateTeamAgentPosition(Name, Vertex);
+    <- .my_name(Name);
        .send(cartographer, tell, position(Name, Vertex));
        .print("New position(", Vertex, ")");
-	    -+position(Vertex)[source(self)].
+        -+position(Vertex)[source(self)].
 
 +visibleEdge(VertexA, VertexB)[source(percept)]
-    <- internalActions.addEdge(VertexA, VertexB);
-       .send(cartographer, tell, edge(VertexA, VertexB, 1000));
+    <- .send(cartographer, tell, edge(VertexA, VertexB, 1000));
        -+visibleEdge(VertexA, VertexB)[source(self)].
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
-    <- internalActions.addEdge(VertexA, VertexB, Weight);
-       .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight);
+    <- .print("Surveyed Edge: ", VertexA, " -> ", VertexB, " Value: ", Weight);
        .send(cartographer, tell, edge(VertexA, VertexB, Weight));
        -+surveyedEdge(VertexA, VertexB, Weight)[source(self)].
 
@@ -47,13 +44,12 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- internalActions.setGlobalVerticesAmount(AmountVertices).
 
 +probedVertex(Vertex, Value)[source(percept)]
-    <- internalActions.addVertex(Vertex, Value);
-       .send(cartographer, tell, probed(Vertex, Value));
-        .print("New probedVertex(", Vertex, " ", Value, ")");
-	    -+probedVertex(Vertex, Value)[source(self)].
-	    
+    <- .send(cartographer, tell, probed(Vertex, Value));
+       .print("New probedVertex(", Vertex, " ", Value, ")");
+       -+probedVertex(Vertex, Value)[source(self)].
+        
 +visibleVertex(Vertex, Team)[source(percept)] 
-	<- internalActions.addVertex(Vertex, Team).
+    <- internalActions.addVertex(Vertex, Team).
 
 //TODO: visibleEntity, zoneScore
     
@@ -61,50 +57,52 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- .print("Simulation started."). 
    
 +step(Step)[source(self)] 
-	<- .print("Current step is ", Step);
-	.send(cartographer, askAll, surveyed(Vertex));
-    !walkAround.    
+    <- .print("Current step is ", Step);
+       .send(cartographer, askAll, surveyed(Vertex));
+       !walkAround.    
 
 /* Plans */
 
 +!getNextVertex: position(Vertex)[source(self)] & surveyedEdge(X, Y, Z) & X==Vertex
-	<- .findall(Cost,surveyedEdge(Vertex, Y, Cost),List);
-	   //.findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
-	   //.concat(List,List2,ConcatedList);
-		.min(List, MinValue);
-		.print("Minimum Cost: ",MinValue);
-		?surveyedEdge(Vertex, NextNode, MinValue);
-		//?surveyedEdge(NextNode, Vertex, MinValue);
-		.print("Going to ",NextNode," which has cost of ",MinValue);
-		goto(NextNode);
-		.print("went to node ", NextNode).
-		
+    <- .findall(Cost,surveyedEdge(Vertex, Y, Cost),List);
+       //.findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
+       //.concat(List,List2,ConcatedList);
+       .min(List, MinValue);
+       .print("Minimum Cost: ",MinValue);
+       ?surveyedEdge(Vertex, NextNode, MinValue);
+       //?surveyedEdge(NextNode, Vertex, MinValue);
+       .print("Going to ",NextNode," which has cost of ",MinValue);
+       goto(NextNode);
+       .print("went to node ", NextNode).
+        
 +!getNextVertex: position(Vertex)[source(self)] & surveyedEdge(X, Y, Z) & Y==Vertex
-	<- .findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
-    	.min(List2, MinValue2);
-    	.print("Minimum Cost (First Plan fails): ",MinValue2);
-    	?surveyedEdge(NextNode2, Vertex, MinValue2);
-    	.print("Going to ",NextNode2," which has cost of ",MinValue2);
-		goto(NextNode2);
-		.print("went to node ", NextNode2).
+    <- .findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
+       .min(List2, MinValue2);
+       .print("Minimum Cost (First Plan fails): ",MinValue2);
+       ?surveyedEdge(NextNode2, Vertex, MinValue2);
+       .print("Going to ",NextNode2," which has cost of ",MinValue2);
+       goto(NextNode2);
+       .print("went to node ", NextNode2).
 
 // offer applicable plans for all other states:
-+!getNextVertex.
++!getNextVertex
+    <- .print("Could not find next vertex.");
+       .fail_goal(walkAround).
 
 +!walkAround: energy(E)[source(self)] & E<10
     <- .print("My energy is low, going to recharge.");
-        recharge;
-        -energy(E)[source(self)].
+       recharge;
+       -energy(E)[source(self)].
 
 +!walkAround: position(Vertex)[source(self)] & surveyed(Vertex)
     <- .print("Surveyed ", Vertex, ". Now getNextVertex ");
-    	!getNextVertex.
-    	//goto(NextVertex).
+       !getNextVertex.
+       //goto(NextVertex).
    
 +!walkAround: position(Vertex)[source(self)] & not surveyed(Vertex)
-	<- .print("Not surveyed ", Vertex);
-		survey;
-		.send(cartographer, tell, surveyed(Vertex)).
+    <- .print("Not surveyed ", Vertex);
+       survey;
+       .send(cartographer, tell, surveyed(Vertex)).
 
 // if the earlier plans weren't applicable, cancel the plan:
 +!walkAround
