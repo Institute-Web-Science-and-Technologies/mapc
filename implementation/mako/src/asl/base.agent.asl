@@ -17,6 +17,7 @@
 
 /* Initial beliefs and rules */
 lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
+isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 
 /* Initial goals */
 
@@ -43,13 +44,15 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +vertices(AmountVertices)[source(percept)]
     <- internalActions.setGlobalVerticesAmount(AmountVertices).
 
-+probedVertex(Vertex, Value)[source(percept)]
++probedVertex(Vertex, Value)[source(percept)]:
+    .number(Value)
     <- .send(cartographer, tell, probed(Vertex, Value));
        .print("New probedVertex(", Vertex, " ", Value, ")");
-       -+probedVertex(Vertex, Value)[source(self)].
+       -+probedVertex(Vertex, Value)[source(self)]. // TODO: do we still want/need to set local knowledge?
         
-+visibleVertex(Vertex, Team)[source(percept)] 
-    <- internalActions.addVertex(Vertex, Team).
++visibleVertex(Vertex, Team)[source(percept)]:
+    .literal(Team)
+    <- .send(cartographer, tell, occupied(Vertex, Team)). // TODO: merge this with probed (minimum node value is 1)? Maybe also merge it with position
 
 //TODO: visibleEntity, zoneScore
     
@@ -63,7 +66,8 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 /* Plans */
 
-+!getNextVertex: position(Vertex)[source(self)] & surveyedEdge(X, Y, Z) & X==Vertex
++!getNextVertex:
+    position(Vertex)[source(self)] & surveyedEdge(X, Y, Z) & X==Vertex
     <- .findall(Cost,surveyedEdge(Vertex, Y, Cost),List);
        //.findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
        //.concat(List,List2,ConcatedList);
@@ -74,8 +78,10 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
        .print("Going to ",NextNode," which has cost of ",MinValue);
        goto(NextNode);
        .print("went to node ", NextNode).
-        
-+!getNextVertex: position(Vertex)[source(self)] & surveyedEdge(X, Y, Z) & Y==Vertex
+
+// TODO: at some point in time this (and/or the other) method tries to navigate the agent to the vertex he is currently located on
++!getNextVertex:
+    position(Vertex)[source(self)] & surveyedEdge(X, Y, Z) & Y==Vertex
     <- .findall(Cost2,surveyedEdge(Y2, Vertex, Cost2), List2);
        .min(List2, MinValue2);
        .print("Minimum Cost (First Plan fails): ",MinValue2);
@@ -89,17 +95,20 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- .print("Could not find next vertex.");
        .fail_goal(walkAround).
 
-+!walkAround: energy(E)[source(self)] & E<10
++!walkAround:
+    energy(E)[source(self)] & E<10
     <- .print("My energy is low, going to recharge.");
        recharge;
        -energy(E)[source(self)].
 
-+!walkAround: position(Vertex)[source(self)] & surveyed(Vertex)
++!walkAround:
+    position(Vertex)[source(self)]& isVertexSurveyed(Vertex) & surveyed(Vertex)
     <- .print("Surveyed ", Vertex, ". Now getNextVertex ");
        !getNextVertex.
        //goto(NextVertex).
    
-+!walkAround: position(Vertex)[source(self)] & not surveyed(Vertex)
++!walkAround:
+    position(Vertex)[source(self)] & isVertexSurveyed(Vertex) & not surveyed(Vertex)
     <- .print("Not surveyed ", Vertex);
        survey;
        .send(cartographer, tell, surveyed(Vertex)).

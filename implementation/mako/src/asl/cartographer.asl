@@ -38,22 +38,26 @@
        +position(Name, Vertex)[source(self)].
     
 +probed(Vertex, Value)[source(PerceptSource)]:
-    PerceptSource \== self
+    .number(Value) & PerceptSource \== self
     <- -probed(Vertex, Value)[source(PerceptSource)];
-       +probed(Vertex, Value)[source(self)];
+       -+probed(Vertex, Value)[source(self)];
        .print(Vertex, " is worth ", Value).
+       
++occupied(Vertex, Team)[source(PerceptSource)]:
+    .literal(Team) & PerceptSource \== self
+    <- -occupied(Vertex, Team)[source(PerceptSource)];
+       -+occupied(Vertex, Team)[source(self)].
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
-/* Test goals */
-    
 +!isVertexSurveyed(Vertex):
     surveyed(Vertex) |
     // find edges connected to this Vertex with weight less than 1000:
     .findall(Weight, edge(Vertex, _, Weight) & Weight < 1000, UnifiedWeights)
     // at least one such edge exists:
     & .length(UnifiedWeights, EdgesAmount) & EdgesAmount > 0
-    <- +surveyed(Vertex).
+    <- +surveyed(Vertex);
+       .print("Found a surveyed vertex ", Vertex).
 
 // have a zero condition goal to prevent errors:
 +!isVertexSurveyed(Vertex).
