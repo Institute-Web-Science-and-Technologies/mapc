@@ -101,20 +101,15 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
-        // logger.info("agName: " + agentJasonName);
-        // logger.info("Functor: " + command.getFunctor());
-        // logger.info("Terms: " + command.getTerms());
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = new Action("skip");
         String functor = command.getFunctor();
-
-        if (command.getArity() == 0)
+        if (command.getArity() == 0) {
             action = new Action(functor);
-        else if (command.getArity() == 1) {
+        } else if (command.getArity() == 1) {
             String entityName = command.getTerm(0).toString();
             action = new Action(functor, new Identifier(entityName));
         }
-
         try {
             environmentInterface.performAction(agentServerName, action);
             logger.info(agentServerName + ": " + action.getName());
@@ -128,14 +123,16 @@ public class EISEnvironment extends Environment implements AgentListener {
     public void handlePercept(String agentName, Percept percept) {
         String jasonName = serverAgentMap.get(agentName).getJasonName();
         Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
+        removePercept(jasonName, literal);
         addPercept(jasonName, literal);
     }
 
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
+        String jasonName = serverAgentMap.get(agentName).getJasonName();
+        clearPercepts(jasonName);
         for (Percept percept : percepts) {
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                String jasonName = serverAgentMap.get(agentName).getJasonName();
                 Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
                 addPercept(jasonName, literal);
             }
