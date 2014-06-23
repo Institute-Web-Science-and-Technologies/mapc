@@ -122,7 +122,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void handlePercept(String agentName, Percept percept) {
         String jasonName = serverAgentMap.get(agentName).getJasonName();
-        Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
+        Literal literal = Literal.parseLiteral(percept.toProlog());
         removePercept(jasonName, literal);
         addPercept(jasonName, literal);
     }
@@ -132,9 +132,26 @@ public class EISEnvironment extends Environment implements AgentListener {
         String jasonName = serverAgentMap.get(agentName).getJasonName();
         clearPercepts(jasonName);
         for (Percept percept : percepts) {
-            if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                Literal literal = JavaJasonTranslator.perceptToLiteral(percept);
+            Literal literal;
+            switch (percept.getName()) {
+            case "lastActionParam":
+                break;
+            case "role":
+                String role = percept.toProlog().toLowerCase();
+                literal = Literal.parseLiteral(role);
                 addPercept(jasonName, literal);
+                break;
+            case "visibleEntity":
+            case "visibleVertex":
+                String escaped = percept.toProlog().replace("A", "teamA");
+                escaped = percept.toProlog().replace("B", "teamB");
+                literal = Literal.parseLiteral(escaped);
+                addPercept(jasonName, literal);
+                break;
+            default:
+                literal = Literal.parseLiteral(percept.toProlog());
+                addPercept(jasonName, literal);
+                break;
             }
         }
     }
