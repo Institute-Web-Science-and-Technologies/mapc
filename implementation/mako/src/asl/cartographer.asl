@@ -12,12 +12,12 @@
 +edge(VertexA, VertexB, Weight)[source(PerceptSource)]: 
     PerceptSource \== self & Weight < 1000
     <- -edge(VertexA, VertexB, Weight)[source(PerceptSource)];
+//       .print("Added edge: ", VertexA, " ", VertexB, " ", Weight);   
+//       .print("Added edge: ", VertexB, " ", VertexA, " ", Weight);   
        -edge(VertexA, VertexB, _)[source(self)];
-       -edge(VertexB, VertexA, _)[source(self)];   
+       -edge(VertexB, VertexA, _)[source(self)];
        +edge(VertexA, VertexB, Weight)[source(self)];
-       +edge(VertexB, VertexA, Weight)[source(self)];
-       !isVertexSurveyed(VertexA);
-       !isVertexSurveyed(VertexB).
+       +edge(VertexB, VertexA, Weight)[source(self)].
     
 // Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.    
 +edge(VertexA, VertexB, Weight)[source(PerceptSource)]:
@@ -35,7 +35,8 @@
     PerceptSource \== self
     <- -position(Name, Vertex)[source(PerceptSource)];
        -position(Name, _)[source(self)];
-       +position(Name, Vertex)[source(self)].
+       +position(Name, Vertex)[source(self)];
+       +visited(Vertex)[source(self)].
     
 +probed(Vertex, Value)[source(PerceptSource)]:
     .number(Value) & PerceptSource \== self
@@ -50,14 +51,4 @@
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
-+!isVertexSurveyed(Vertex):
-    surveyed(Vertex) |
-    // find edges connected to this Vertex with weight less than 1000:
-    .findall(Weight, edge(Vertex, _, Weight) & Weight < 1000, UnifiedWeights)
-    // at least one such edge exists:
-    & .length(UnifiedWeights, EdgesAmount) & EdgesAmount > 0
-    <- +surveyed(Vertex);
-       .print("Found a surveyed vertex ", Vertex).
 
-// have a zero condition goal to prevent errors:
-+!isVertexSurveyed(Vertex).
