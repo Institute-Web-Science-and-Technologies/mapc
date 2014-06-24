@@ -52,7 +52,7 @@
 +probed(Vertex, Value)[source(PerceptSource)]:
     .number(Value) & PerceptSource \== self
     <- -probed(Vertex, Value)[source(PerceptSource)];
-       -+probed(Vertex, Value)[source(self)];
+       +probed(Vertex, Value)[source(self)];
        .print(Vertex, " is worth ", Value).
        
 +occupied(Vertex, Team)[source(PerceptSource)]:
