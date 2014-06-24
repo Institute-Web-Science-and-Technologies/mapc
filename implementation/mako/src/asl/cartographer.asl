@@ -17,7 +17,9 @@
 			+unsurveyed(Vertex);
 		}. 
 		
-
++surveyed(Vertex)
+	<-  -unsurveyed(Vertex).
+	
 // Received surveyed edge percept -> delete previous edge beliefs, add new one
 +edge(VertexA, VertexB, Weight)[source(PerceptSource)]: 
     PerceptSource \== self & Weight < 1000
