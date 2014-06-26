@@ -31,11 +31,11 @@
        +edge(VertexA, VertexB, Weight)[source(self)];
        +edge(VertexB, VertexA, Weight)[source(self)].
 
-+position(Name, Vertex)[source(PerceptSource)]:
-    PerceptSource \== self
-    <- -position(Name, Vertex)[source(PerceptSource)];
-       -position(Name, _)[source(self)];
-       +position(Name, Vertex)[source(self)];
++position(Vertex)[source(Sender)]:
+    Sender \== self
+    <- -position(Sender, Vertex)[source(Sender)];
+       -position(Sender, _)[source(self)];
+       +position(Sender, Vertex)[source(self)];
        +visited(Vertex)[source(self)].
     
 +probed(Vertex, Value)[source(PerceptSource)]:
@@ -48,6 +48,19 @@
     .literal(Team) & PerceptSource \== self
     <- -occupied(Vertex, Team)[source(PerceptSource)];
        -+occupied(Vertex, Team)[source(self)].
+       
++surveyed[source(Sender)]
+    <- position(Sender, Vertex);
+       -surveyed(Vertex)[source(_)];
+       -+surveyed(Vertex).
+    
+// Find all adjacent vertices which have not been surveyed and return them as a list.
++?unsurveyedVertices(CurrentVertex)[source(Sender)]
+    <- position(Sender, CurrentVertex);
+      .findall(DestinationVertex, edge(CurrentVertex, DestinationVertex, _) & not surveyed(DestinationVertex), NextVertices);
+      .print(Sender, " at ", CurrentVertex, " could go to ", NextVertices)
+      // static reply for testing only:
+      .send(Sender, tell, "v144").
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
