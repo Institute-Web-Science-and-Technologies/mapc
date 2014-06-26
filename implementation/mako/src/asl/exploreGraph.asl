@@ -55,12 +55,16 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 // Return not visited vertex from the neighbourhood.
 +!findNextVertex(CurrVertex, NextVertex)
     <-
-    .send(cartographer, askOne, unsurveyedVertices(CurrVertex), PossibleVertices, 300);
-    if (PossibleVertices & .length(PossibleVertices) > 0) { // there exists at least one Vertex
-    .print("Landed in if with following vertices: ", PossibleVertices);
-       .nth(1, PossibleVertices, NextVertex);
+    -unsurveyedNeighbours(CurrVertex, _);
+    .send(cartographer, askOne, unsurveyedNeighbours(CurrVertex, _));
+    wait(3000);
+    // retrieve reply from askOne:
+    ?unsurveyedNeighbours(CurrVertex, UnsurveyedNeighbours);
+    if (.length(UnsurveyedNeighbours) > 0) { // there exists at least one Vertex
+    .print("Landed in if with following vertices: ", UnsurveyedNeighbours);
+       .nth(1, UnsurveyedNeighbours, NextVertex);
     } else {
-    .print("Reached else branch, because of ", PossibleVertices);
+    .print("Reached else branch, because of ", UnsurveyedNeighbours);
        dfspath(CurrPath);
        if (.length(CurrPath) > 1) { // there is a backtrack history
           dfspath(CurrPath) & .length(CurrPath) > 1 

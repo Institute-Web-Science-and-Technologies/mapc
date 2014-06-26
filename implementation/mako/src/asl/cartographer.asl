@@ -54,13 +54,10 @@
        -surveyed(Vertex)[source(_)];
        -+surveyed(Vertex).
     
-// Find all adjacent vertices which have not been surveyed and return them as a list.
-+?unsurveyedVertices(CurrentVertex)[source(Sender)]
-    <- position(Sender, CurrentVertex);
-      .findall(DestinationVertex, edge(CurrentVertex, DestinationVertex, _) & not surveyed(DestinationVertex), NextVertices);
-      .print(Sender, " at ", CurrentVertex, " could go to ", NextVertices)
-      // static reply for testing only:
-      .send(Sender, tell, "v144").
+// Find all adjacent vertices which have not been surveyed and store them as a list e.g. [v123, v482].
++?unsurveyedNeighbours(CurrentVertex, UnsurveyedNeighbours)
+    <-
+    .findall(DestinationVertex, edge(CurrentVertex, DestinationVertex, _) & not surveyed(DestinationVertex), UnsurveyedNeighbours).
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
