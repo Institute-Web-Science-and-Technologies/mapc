@@ -57,12 +57,12 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     <-
     -unsurveyedNeighbours(CurrVertex, _);
     .send(cartographer, askOne, unsurveyedNeighbours(CurrVertex, _));
-    wait(3000);
+    wait(200);
     // retrieve reply from askOne:
     ?unsurveyedNeighbours(CurrVertex, UnsurveyedNeighbours);
     if (.length(UnsurveyedNeighbours) > 0) { // there exists at least one Vertex
     .print("Landed in if with following vertices: ", UnsurveyedNeighbours);
-       .nth(1, UnsurveyedNeighbours, NextVertex);
+       .nth(0, UnsurveyedNeighbours, NextVertex);
     } else {
     .print("Reached else branch, because of ", UnsurveyedNeighbours);
        dfspath(CurrPath);

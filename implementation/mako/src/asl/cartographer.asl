@@ -59,6 +59,19 @@
     <-
     .findall(DestinationVertex, edge(CurrentVertex, DestinationVertex, _) & not surveyed(DestinationVertex), UnsurveyedNeighbours).
 
+// If already surveyed or if there is unsurveyed adjacent edge - do nothing.
++!isVertexSurveyed(Vertex):
+    surveyed(Vertex) | (edge(Vertex, _, Weight) & Weight == 1000).
+
+// At least one edge with weight less than 1000 exists - mark as surveyed    
++!isVertexSurveyed(Vertex):
+    edge(Vertex, _, Weight)
+    <- 
+    +surveyed(Vertex).
+
+// Have a zero condition goal to prevent errors:
++!isVertexSurveyed(Vertex).
+
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
 
