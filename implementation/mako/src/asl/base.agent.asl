@@ -16,7 +16,7 @@
     
 
 /* Initial beliefs and rules */
-lowEnergy :- energy(Energy)[source(percept)] & Energy < 10.
+lowEnergy :- energy(Energy)[source(percept)] & Energy < 25.
 //isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 
 /* Initial goals */
