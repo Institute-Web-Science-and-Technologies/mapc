@@ -24,9 +24,9 @@
 
 +?breadthSearch(CurrentVertex, PathWithValue, ListOfPaths) <-
 	PathWithValue = [Value|Path];
-	.findAll([AdjacentVertexA, WeightA], edge(CurrentVertex, AdjacentVertexA, WeightA), VerticesA);	
+	.findall([AdjacentVertexA, WeightA], edge(CurrentVertex, AdjacentVertexA, WeightA), VerticesA);	
 	.print("VerticesA: ", VerticesA);
-	.findAll([AdjacentVertexB, WeightB], edge(AdjacentVertexB, CurrentVertex, WeightB), VerticesB);
+	.findall([AdjacentVertexB, WeightB], edge(AdjacentVertexB, CurrentVertex, WeightB), VerticesB);
 	.print("VerticesB: ", VerticesB);
 	.concat(VerticesA, VerticesB, Vertices);
 	.print("ListOfVertices: ", Vertices);
