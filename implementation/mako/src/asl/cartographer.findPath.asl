@@ -2,22 +2,21 @@
 
 
 +!searchPath(InitialVertex, GoalVertex, Path): InitialVertex == GoalVertex <-
-	.print("PathBeforeFinish: ", Path); 
-	.concat([], Path, Path)
-	.print("PathAfterFinish: ", Path)
-	-+bestPathValue(1000).
+	Path = [Value|_];
+	-+bestPathValue(Value).
 
 // [14,[v123,v124,v125]]
 
 +!findPath(InitialVertex, GoalVertex, Path) <-
-	bestPathValue(1000).
-.
+	-+bestPathValue(10000);
+	Path = [0, []];
+	!searchPath(InitialVertex, GoalVertex, Path);
+	.print("Found Path: ", Path).
 
 +!searchPath(InitialVertex, GoalVertex, Path): InitialVertex \== GoalVertex <-	
 	?breadthSearch(InitialVertex, Path, ListOfPaths);
 	for (.member([PathValue|PathVertices], ListOfPaths)) {
 		if (bestPathValue(V) & V > PathValue) {
-		-+bestPathValue(PathValue);
 		.length(PathVertices, PathLength);
 		.nth(PathLength-1, PathVertices, NextVertex);	
 		!findPath(NextVertex, GoalVertex, PathVertices)

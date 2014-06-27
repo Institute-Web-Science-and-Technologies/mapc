@@ -1,5 +1,5 @@
 // Agent cartographer in project mako
-
+{ include("cartographer.shortestPath.asl") }
 /* Initial beliefs and rules */
 
 /* Initial goals */
