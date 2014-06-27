@@ -21,13 +21,15 @@
     
 // Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.    
 +edge(VertexA, VertexB, Weight)[source(PerceptSource)]:
-    PerceptSource \== self & edge(VertexA, VertexB, BelievedWeight)[source(self)] 
+    PerceptSource \== self & edge(VertexA, VertexB, _)[source(self)]
     <- -edge(VertexA, VertexB, Weight)[source(PerceptSource)].
 
 // Received unsurveyed edge belief -> add to belief base. 
 +edge(VertexA, VertexB, Weight)[source(PerceptSource)]:
-    PerceptSource \== self
+    PerceptSource \== self 
     <- -edge(VertexA, VertexB, Weight)[source(PerceptSource)];
+       -edge(VertexA, VertexB, _)[source(self)];
+       -edge(VertexB, VertexA, _)[source(self)];
        +edge(VertexA, VertexB, Weight)[source(self)];
        +edge(VertexB, VertexA, Weight)[source(self)].
 
@@ -49,29 +51,28 @@
     <- -occupied(Vertex, Team)[source(PerceptSource)];
        -+occupied(Vertex, Team)[source(self)].
        
-//+surveyed[source(Sender)]
-//    <- ?position(Sender, Vertex);
-//       -surveyed(Vertex)[source(_)];
-//       +surveyed(Vertex).
-    
-// Find all adjacent vertices which have not been surveyed and store them as a list e.g. [v123, v482].
-//+?unsurveyedNeighbours(CurrentVertex, UnsurveyedNeighbours)
-//    <-
-//    .findall(DestinationVertex, edge(CurrentVertex, DestinationVertex, _) & not surveyed(DestinationVertex), UnsurveyedNeighbours).
-
-// Checking is the vertex is surveyed and are there unvisited edges in the neighborhood
+// Checking is the vertex is surveyed and are there unvisited edges in the neighborhood.
 +!calculateDFSOpportunities(Vertex)[source(SenderAgent)]
     <-
-    !isVertexSurveyed(Vertex);
-    if (surveyed(Vertex)){
-    	.send(SenderAgent, tell, surveyed(Vertex));
-    	+processedVertices([])[source(SenderAgent)];
-    	!sendOpportunities(Vertex, SenderAgent);
-    	-processedVertices(_)[source(SenderAgent)];
-    };
+    !isVertexSurveyed(Vertex); // first check if thevertex is surveyed.
+    !processOpportunities(Vertex)[source(SenderAgent)];
+    .send(SenderAgent, tell, doneCalculatingOpportunities(Vertex)).
+//    .print("I'm done calculating opportunities for ", SenderAgent).
+
+// If surveyed - send back suitable edges.  
++!processOpportunities(Vertex)[source(SenderAgent)]:
+    surveyed(Vertex)
+    <-
+    .send(SenderAgent, tell, surveyed(Vertex));
+    +processedVertices([])[source(SenderAgent)];
+    !sendOpportunities(Vertex, SenderAgent);
+    -processedVertices(_)[source(SenderAgent)];
     .send(SenderAgent, tell, doneCalculatingOpportunities(Vertex)).
 
-// Recursively send opportunities     
+// Not surveyed - do not return any edges.    
++!processOpportunities(Vertex)[source(SenderAgent)].
+    
+// Recursively send opportunities.     
 +!sendOpportunities(Vertex, SenderAgent):
     edge(Vertex, NextVertex, Weight) & not visited(NextVertex) 
     & processedVertices(ProcessedList)[source(SenderAgent)] & not .member(NextVertex, ProcessedList)
@@ -90,7 +91,7 @@
 
 // At least one edge with weight less than 1000 exists - mark as surveyed    
 +!isVertexSurveyed(Vertex):
-    edge(Vertex, _, Weight)
+    edge(Vertex, _, Weight) & Weight < 1000
     <- 
     +surveyed(Vertex).
 
@@ -98,4 +99,7 @@
 +!isVertexSurveyed(Vertex).
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
+
+//+!announceStep(Step)[source(Agent)]
+//	<- .print("Current step:", Step, " said ", Agent).
 

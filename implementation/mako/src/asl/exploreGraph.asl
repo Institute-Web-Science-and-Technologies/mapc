@@ -53,7 +53,7 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     .print("Next vertex: ", NextVertex);
     !goto(NextVertex);
     .abolish(edge(Vertex, _, _));
-    -surveyed(Vertex);
+    //-surveyed(Vertex);
     -doneCalculatingOpportunities(Vertex)[source(SourceAgent)].    
 
 // Fallback goal.

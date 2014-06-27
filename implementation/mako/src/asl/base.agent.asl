@@ -54,9 +54,11 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +simStart
     <- .print("Simulation started.").
+    
 +step(Step)[source(self)]:
-    position(CurrVertex)
-    <- .print("Current step is ", Step);
+    position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
+    <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
+   //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:
