@@ -93,9 +93,16 @@
 	-+simStart[source(self)].
 
 //TODO: Overlord
-+step(Numeral)[source(percept)] <-
++step(Numeral)[source(percept)]: position(Vertex) & .my_name(Name)<-
 //	.print("New step(", Numeral, ")");	
-	-+step(Numeral)[source(self)].
+	-+step(Numeral)[source(self)];
+	if (Numeral == 3 & Name == "repairer6") {
+//		.print("Entering step(3) plan!");
+//		.send(cartographer, achieve, getTestVertex(VertexB));
+//		.print("My position is: ", Vertex);
+//		.send(cartographer, achieve, findPath(Vertex, VertexB, Path));	
+//		.print("Found Path: ", Path)
+	}.
 	
 //TODO: Overlord
 +steps(Numeral)[source(percept)] <-

@@ -103,3 +103,6 @@
 //+!announceStep(Step)[source(Agent)]
 //	<- .print("Current step:", Step, " said ", Agent).
 
+
++!getTestVertex(VertexB): edge(_, VertexB, _).
+	
