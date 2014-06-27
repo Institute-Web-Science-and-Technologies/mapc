@@ -94,7 +94,7 @@
 
 //TODO: Overlord
 +step(Numeral)[source(percept)] <-
-//	.print("New step(", Numeral, ")");
+//	.print("New step(", Numeral, ")");	
 	-+step(Numeral)[source(self)].
 	
 //TODO: Overlord

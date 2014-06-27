@@ -10,8 +10,7 @@
 +!findPath(InitialVertex, GoalVertex, Path) <-
 	-+bestPathValue(10000);
 	Path = [0, []];
-	!searchPath(InitialVertex, GoalVertex, Path);
-	.print("Found Path: ", Path).
+	!searchPath(InitialVertex, GoalVertex, Path).
 
 +!searchPath(InitialVertex, GoalVertex, Path): InitialVertex \== GoalVertex <-	
 	?breadthSearch(InitialVertex, Path, ListOfPaths);
