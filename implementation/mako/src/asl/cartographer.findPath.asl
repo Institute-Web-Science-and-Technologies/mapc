@@ -23,11 +23,11 @@
 		if (bestPathValue(V) & V > PathValue) {
 		.length(PathVertices, PathLength);
 		.nth(PathLength-1, PathVertices, NextVertex);	
-		!findPath(NextVertex, GoalVertex, PathVertices)
+		!findPath(NextVertex, GoalVertex, PathVertices);
 		}
 	}
-	}.
-
+	}
+.
 +?breadthSearch(CurrentVertex, PathWithValue, ListOfPaths) <-
 	PathWithValue = [Value|Path];
 //	ListOfPaths = [];
@@ -59,10 +59,12 @@
 			}
 			else {
 				ListOfPaths = [NewPathWithValue];
-				.print("ListOfPaths = [NewPathWithValue]", ListOfPaths)
+				.print("ListOfPaths = [NewPathWithValue]", ListOfPaths);
 			}
-		}		
-=======
+		}
+		
+		}.
+
 // Agent cartographershortestPath in project mako
 
 
