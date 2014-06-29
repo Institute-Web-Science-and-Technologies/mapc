@@ -8,30 +8,27 @@
 
 /* Plans */
 
-// Received surveyed edge percept -> delete previous edge beliefs, add new one
-+edge(VertexA, VertexB, Weight)[source(PerceptSource)]: 
-    PerceptSource \== self & Weight < 1000
-    <- -edge(VertexA, VertexB, Weight)[source(PerceptSource)];
-//       .print("Added edge: ", VertexA, " ", VertexB, " ", Weight);   
-//       .print("Added edge: ", VertexB, " ", VertexA, " ", Weight);   
-       -edge(VertexA, VertexB, _)[source(self)];
-       -edge(VertexB, VertexA, _)[source(self)];
-       +edge(VertexA, VertexB, Weight)[source(self)];
-       +edge(VertexB, VertexA, Weight)[source(self)].
+// Received surveyed edge percept -> delete previous edge beliefs, add new one.
+// Atomic to avoid adding surveyed and unsurveyed edges in parallel.
+@addEdges[atomic]
++edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]: 
+    Weight < 1000
+    <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)];
+       .abolish(edge(VertexA, VertexB, _));
+       .abolish(edge(VertexB, VertexA, _));
+       +edge(VertexA, VertexB, Weight);
+       +edge(VertexB, VertexA, Weight).
     
 // Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.    
-+edge(VertexA, VertexB, Weight)[source(PerceptSource)]:
-    PerceptSource \== self & edge(VertexA, VertexB, _)[source(self)]
-    <- -edge(VertexA, VertexB, Weight)[source(PerceptSource)].
++edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]:
+    edge(VertexA, VertexB, _)
+    <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)].
 
 // Received unsurveyed edge belief -> add to belief base. 
-+edge(VertexA, VertexB, Weight)[source(PerceptSource)]:
-    PerceptSource \== self 
-    <- -edge(VertexA, VertexB, Weight)[source(PerceptSource)];
-       -edge(VertexA, VertexB, _)[source(self)];
-       -edge(VertexB, VertexA, _)[source(self)];
-       +edge(VertexA, VertexB, Weight)[source(self)];
-       +edge(VertexB, VertexA, Weight)[source(self)].
++edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]
+    <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)];
+       +edge(VertexA, VertexB, Weight);
+       +edge(VertexB, VertexA, Weight).
 
 +position(Vertex)[source(Sender)]:
     Sender \== self
@@ -100,9 +97,20 @@
 
 +!start : true <- .print("I am the cartographer. How may I help you?").
 
-//+!announceStep(Step)[source(Agent)]
-//	<- .print("Current step:", Step, " said ", Agent).
+// Announce step, do some tests
+//+!announceStep(Step)[source(Agent)]:
+//    Agent == explorer1
+//	<- .print("Current step:", Step, " said ", Agent);
+//	!testEdgesDuplicate.
+	
+//+!announceStep(Step)[source(Agent)].
 
+// Test for duplicate edge beliefs
+//+!testEdgesDuplicate
+//    <-
+//    .findall(edge(VertexA, VertexB), edge(VertexA, VertexB, Weight) & Weight < 1000, SurveyedEdges);
+//    .findall(edge(VertexA, VertexB), edge(VertexA, VertexB, Weight) & Weight == 1000, UnsurveyedEdges);
+//    .intersection(SurveyedEdges, UnsurveyedEdges, DuplicateEdges);
+//    .print("Duplicate edges found: ", DuplicateEdges).
 
-+!getTestVertex(VertexB): edge(_, VertexB, _).
 	

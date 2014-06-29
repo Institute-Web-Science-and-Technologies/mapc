@@ -28,10 +28,10 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
        -+position(Vertex)[source(self)].
 
 +visibleEdge(VertexA, VertexB)[source(percept)]
-    <- .send(cartographer, tell, edge(VertexA, VertexB, 1000)).
+    <- .send(cartographer, tell, edgePercept(VertexA, VertexB, 1000)).
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
-    <- .send(cartographer, tell, edge(VertexA, VertexB, Weight)).
+    <- .send(cartographer, tell, edgePercept(VertexA, VertexB, Weight)).
 
 +edges(AmountEdges)[source(percept)]
     <- internalActions.setGlobalEdgesAmount(AmountEdges). //TODO: send to cartographer
@@ -47,7 +47,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +visibleVertex(Vertex, Team)[source(percept)]:
     .literal(Team)
-    <- .send(cartographer, tell, visibleVertex(Vertex));
+    <- //.send(cartographer, tell, visibleVertex(Vertex));
        .send(cartographer, tell, occupied(Vertex, Team)). // TODO: merge this with probed (minimum node value is 1)? Maybe also merge it with position
 
 //TODO: visibleEntity, zoneScore
