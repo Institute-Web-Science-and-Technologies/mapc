@@ -54,26 +54,31 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +simStart
     <- .print("Simulation started.").
-    
+
 +step(Step)[source(self)]:
-    position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role)
+     position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role) & Role == explorer
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:
-        if(Role == explorer)
-        {  .send(cartographer, askOne, probed(CurrVertex,Value));       	
+           .send(cartographer, askOne, probed(CurrVertex,Value));       	
              .wait(100);   
              .print("probing",CurrVertex);           
-             !doProbing(CurrVertex)                     
-        }
-     else {
-              !exploreGraph
-           }.
+             !doProbing(CurrVertex).                    
+      
++step(Step)[source(self)]:
+    position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
+    <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
+   //  .send(cartographer, achieve, announceStep(Step));
+       .perceive;
+       .wait(200); // wait until all percepts have been added.
+        // Continue with DFS:      
+        !exploreGraph.
+
 // If not probed - probe
 + !doProbing(Vertex):
-energy(CurrEnergy) & CurrEnergy > 1 & not probed(Vertex,Value)
+ not probed(Vertex,Value)
 <-
    .print(Vertex,"is not probed,do probing");
     probe.
