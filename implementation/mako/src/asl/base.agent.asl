@@ -56,12 +56,39 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- .print("Simulation started.").
     
 +step(Step)[source(self)]:
-    position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
+    position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role)
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:
-       !exploreGraph.
+        if(Role == explorer)
+        {  .send(cartographer, askOne, probed(CurrVertex,Value));       	
+             .wait(100);   
+             .print("probing",CurrVertex);           
+             !doProbing(CurrVertex)                     
+        }
+     else {
+              !exploreGraph
+           }.
+// If not probed - probe
++ !doProbing(Vertex):
+energy(CurrEnergy) & CurrEnergy > 1 & not probed(Vertex,Value)
+<-
+   .print(Vertex,"is not probed,do probing");
+    probe.
+    
+//if energy is not enough - recharge
++ !doProbing(Vertex):
+energy(CurrEnergy) & CurrEnergy < 1
+<-
+     .print("I have ", CurrEnergy, " energy, but need 1 to probe going to recharge first.");
+      recharge.
+      
+// If probed - do graph exploring      
++ !doProbing(Vertex)
+<-
+    .print(Vertex,"has been probed,it will do graph exploring!");
+    !exploreGraph.
 
 /* Plans */
