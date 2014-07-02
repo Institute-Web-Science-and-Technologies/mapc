@@ -47,40 +47,17 @@
     .literal(Team) & PerceptSource \== self
     <- -occupied(Vertex, Team)[source(PerceptSource)];
        -+occupied(Vertex, Team)[source(self)].
-       
-// Checking is the vertex is surveyed and are there unvisited edges in the neighborhood.
-+!calculateDFSOpportunities(Vertex)[source(SenderAgent)]
-    <-
-    !isVertexSurveyed(Vertex); // first check if thevertex is surveyed.
-    !processOpportunities(Vertex)[source(SenderAgent)];
-    .send(SenderAgent, tell, doneCalculatingOpportunities(Vertex)).
-//    .print("I'm done calculating opportunities for ", SenderAgent).
 
-// If surveyed - send back suitable edges.  
-+!processOpportunities(Vertex)[source(SenderAgent)]:
-    surveyed(Vertex)
-    <-
-    .send(SenderAgent, tell, surveyed(Vertex));
-    +processedVertices([])[source(SenderAgent)];
-    !sendOpportunities(Vertex, SenderAgent);
-    -processedVertices(_)[source(SenderAgent)];
-    .send(SenderAgent, tell, doneCalculatingOpportunities(Vertex)).
 
-// Not surveyed - do not return any edges.    
-+!processOpportunities(Vertex)[source(SenderAgent)].
-    
-// Recursively send opportunities.     
-+!sendOpportunities(Vertex, SenderAgent):
-    edge(Vertex, NextVertex, Weight) & not visited(NextVertex) 
-    & processedVertices(ProcessedList)[source(SenderAgent)] & not .member(NextVertex, ProcessedList)
++?unvisitedNeighbours(Vertex, UnsurveyedNeighbours)[source(SenderAgent)]
     <-
-    .send(SenderAgent, tell, edge(Vertex, NextVertex, Weight));
-    .concat([NextVertex], ProcessedList, NewProcessedList);
-    -+processedVertices(NewProcessedList)[source(SenderAgent)];
-    !sendOpportunities(Vertex, SenderAgent).
-
-// No more opportunities, stop.
-+!sendOpportunities(_, _).
+     !isVertexSurveyed(Vertex); // make sure this information exists for later use from the base agent.
+     if(surveyed(Vertex)){
+     	.send(SenderAgent, tell, surveyed(Vertex));
+        .findall([DestinationVertex, Weight], 
+     	   edge(Vertex, DestinationVertex, Weight) & not visited(DestinationVertex), 
+     	   UnsurveyedNeighbours);
+     }.
 
 // If already surveyed or if there is unsurveyed adjacent edge - do nothing.
 +!isVertexSurveyed(Vertex):

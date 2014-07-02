@@ -34,48 +34,46 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 
 // Ask cartographer about opportunities
 +!exploreGraph:
-    position(CurrVertex)
+    position(CurrVertex) & .my_name(Name)
     <-
-    .send(cartographer, achieve, calculateDFSOpportunities(CurrVertex)).
-
-// (DFS) If the vertex is not surveyed -> survey.    
-+doneCalculatingOpportunities(Vertex)[source(SourceAgent)]:
-    not surveyed(Vertex)
-    <-
-    .print(Vertex, " not surveyed, surveying.");
-    !survey;
-    -doneCalculatingOpportunities(Vertex)[source(SourceAgent)].
-
-// (DFS) If the vertex is surveyed -> go further.
-+doneCalculatingOpportunities(Vertex)[source(SourceAgent)]
-    <-
-    !findNextVertex(CurrVertex, NextVertex); 
-    .print("Next vertex: ", NextVertex);
-    !goto(NextVertex);
-    .abolish(edge(Vertex, _, _));
-    //-surveyed(Vertex);
-    -doneCalculatingOpportunities(Vertex)[source(SourceAgent)].    
+//    .send(cartographer, achieve, calculateDFSOpportunities(CurrVertex)).
+    .send(cartographer, askOne, unvisitedNeighbours(CurrVertex, _)[source(Name)], unvisitedNeighbours(_, Options));
+    if(surveyed(CurrVertex)){
+        .print("Result of unvisitedNeighbours: ", Options);
+        !findNextVertex(CurrVertex, Options, NextVertex);
+        !goto(NextVertex);
+    }
+    else{
+        .print(CurrVertex, " not surveyed, surveying.");
+        !survey;    	
+    }.
 
 // Fallback goal.
 +!exploreGraph
     <-
+    .print("The goal !exploreGraph has failed.");
     fail_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
- +!findNextVertex(CurrVertex, NextVertex):
-     edge(CurrVertex, NextVertex, _)
-     <-
-     true.
+ +!findNextVertex(CurrVertex, Options, NextVertex):
+     .length(Options, NumOptions) & NumOptions > 1
+     <-      
+     .nth(math.random(NumOptions), Options, NextVertexList);
+     .nth(0, NextVertexList, NextVertex);
+     .nth(1, NextVertexList, NextVertexWeight);
+     .print("Next vertex: ", NextVertex, " having weight: ", NextVertexWeight);
+     +edge(CurrVertex, NextVertex, NextVertexWeight);
+     +edge(NextVertex, CurrVertex, NextVertexWeight).
  
  // If there are no unvisited vertices in the neighborhood -> return previous position.     
- +!findNextVertex(CurrVertex, NextVertex):
+ +!findNextVertex(CurrVertex, Options, NextVertex):
      dfspath(CurrPath) & .length(CurrPath) > 1
      <- 
      .nth(1, CurrPath, NextVertex);
-     .print("Can't find unvisited vertices in the neighborhood - returning one step back."). 
+     .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", NextVertex). 
  
  // DFS is completed. 
- +!findNextVertex(CurrVertex, NextVertex)
+ +!findNextVertex(CurrVertex, Options, NextVertex)
      <-
      .print("I'm done with exploring!").
 
