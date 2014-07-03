@@ -35,7 +35,11 @@
     <- -position(Sender, Vertex)[source(Sender)];
        -position(Sender, _)[source(self)];
        +position(Sender, Vertex)[source(self)];
-       +visited(Vertex)[source(self)].
+       +visited(Vertex)[source(self)];
+       if (not knownNodes(Vertex)) {
+           .create_agent(Vertex, "src/asl/nodeAgent.asl");
+           +knownNodes(Vertex);
+       }.
     
 +probed(Vertex, Value)[source(PerceptSource)]:
     .number(Value) & PerceptSource \== self
