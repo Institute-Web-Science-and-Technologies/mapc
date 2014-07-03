@@ -63,9 +63,9 @@
 +!isVertexSurveyed(Vertex):
     surveyed(Vertex) | (edge(Vertex, _, Weight) & Weight == 1000).
 
-// At least one edge with weight less than 1000 exists - mark as surveyed    
+// At least one edge exists - mark as surveyed    
 +!isVertexSurveyed(Vertex):
-    edge(Vertex, _, Weight) & Weight < 1000
+    edge(Vertex, _, _)
     <- 
     +surveyed(Vertex).
 
