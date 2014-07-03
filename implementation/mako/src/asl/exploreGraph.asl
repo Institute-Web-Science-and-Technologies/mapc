@@ -49,6 +49,25 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
         .print(CurrVertex, " not surveyed, surveying.");
         !survey;    	
     }.
+    
+// Try to find unvisited vertex, which is not selected by another agent
++!recalculateNextVertex(CurrVertex, Options, NextVertex):
+    .length(Options) > 0
+    & .nth(_, Options, NextVertexList)
+    & .nth(0, NextVertexList, NextVertex)
+    & not iWantToGoTo(NextVertex, _, _).
+
+// If we cannot find unvisited vertices not selected by another agent -> return previous position.     
++!recalculateNextVertex(CurrVertex, Options, NextVertex):
+    dfspath(CurrPath) & .length(CurrPath) > 1
+    <- 
+    .nth(1, CurrPath, NextVertex);
+    .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", NextVertex). 
+
+// DFS is completed. 
++!recalculateNextVertex(CurrVertex, Options, NextVertex)
+    <-
+    .print("I'm done with exploring!").
 
 // Fallback goal.
 +!exploreGraph
