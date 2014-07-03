@@ -56,7 +56,7 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 
 // Return not visited vertex from the neighborhood.
  +!findNextVertex(CurrVertex, Options, NextVertex):
-     .length(Options, NumOptions) & NumOptions > 1
+     .length(Options, NumOptions) & NumOptions > 0
      <-      
      .nth(math.random(NumOptions), Options, NextVertexList);
      .nth(0, NextVertexList, NextVertex);
