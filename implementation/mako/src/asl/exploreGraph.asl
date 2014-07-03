@@ -39,15 +39,34 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     .send(cartographer, askOne, unvisitedNeighbours(CurrVertex, _)[source(Name)], unvisitedNeighbours(_, Options));
     if(surveyed(CurrVertex)){
         .print("Result of unvisitedNeighbours: ", Options);
-        !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
-        .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E));
+        //-+options(Options);
+        !findNextVertex(CurrVertex, Options, NextVertex);
+        .broadcast(tell, iWantToGoTo(Name, NextVertex, NextVertexWeight, E));
         .wait(500);
+        .findall(NextVertex, iWantToGoTo(Name, NextVertex, NextVertexWeight, E), ListOfNextVertices);
+        //.findall(NextVertexWeight, iWantToGoTo(NextVertex, NextVertexWeight, E), ListOfNextVerticesWeight);
+        !reconsiderChoice(NextVertex, NextVertexWeight, ListOfNextVertices, Options);
         !goto(NextVertex);
     }
     else{
         .print(CurrVertex, " not surveyed, surveying.");
         !survey;    	
     }.
+
+//if my choosen nextVertex is in the list of vertices that other agents want to go to and the cost of going there
+//is cheaper for them, then choose another one
++!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, Options):
+	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(Name, NextVertex, NextVertexWeight, E) & MyNextVertexWeight > NextVertexWeight
+	<-
+	?position(CurrVertex);
+	.print("I am in a conflict and the other agent has lower costs. Need to recalculate next vertex.");
+	!recalculateNextVertex(CurrVertex, Options, NextVertex).
+	
++!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, MyOptions):
+	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(Name, NextVertex, NextVertexWeight, E) & MyNextVertexWeight < NextVertexWeight
+	.
+	
++!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, Options): not .member(NextVertex, ListOfNextVertices).
     
 // Try to find unvisited vertex, which is not selected by another agent
 +!recalculateNextVertex(CurrVertex, Options, NextVertex):
@@ -79,7 +98,7 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     fail_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
- +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
+ +!findNextVertex(CurrVertex, Options, NextVertex):
      .length(Options, NumOptions) & NumOptions > 0
      <-      
      .nth(math.random(NumOptions), Options, NextVertexList);
