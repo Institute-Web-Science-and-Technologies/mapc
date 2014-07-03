@@ -14,8 +14,6 @@ MAS mako {
         inspector #6;
 		
 	classpath:
-        "lib/moise.jar";
-        "lib/cartago.jar";
         "lib/c4jason.jar";
 
 	aslSourcePath:

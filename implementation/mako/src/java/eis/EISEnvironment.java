@@ -101,22 +101,22 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
-        String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
-        Action action = new Action("skip");
-        String functor = command.getFunctor();
-        if (command.getArity() == 0) {
-            action = new Action(functor);
-        } else if (command.getArity() == 1) {
-            String entityName = command.getTerm(0).toString();
-            action = new Action(functor, new Identifier(entityName));
-        }
-        try {
-            environmentInterface.performAction(agentServerName, action);
-            logger.info(agentServerName + ": " + action.getName());
-            return true;
-        } catch (ActException e) {
-            return false;
-        }
+            String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
+            Action action = new Action("skip");
+            String functor = command.getFunctor();
+            if (command.getArity() == 0) {
+                action = new Action(functor);
+            } else if (command.getArity() == 1) {
+                String entityName = command.getTerm(0).toString();
+                action = new Action(functor, new Identifier(entityName));
+            }
+            try {
+                environmentInterface.performAction(agentServerName, action);
+                logger.info(agentServerName + ": " + action.getName());
+                return true;
+            } catch (ActException e) {
+                return false;
+            }
     }
 
     @Override
