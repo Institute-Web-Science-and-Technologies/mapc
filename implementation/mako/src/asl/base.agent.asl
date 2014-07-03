@@ -79,7 +79,19 @@ visibleEntity(Vechile,CurrVertex,Team,Disabled)[source(percept)]
         // Continue with DFS:          
              .print("attacking",Vechile);           
               attack(Vechile).
-                                        
+
+//for repair, repair our team agent who is on the same Vertex
++step(S):
+visibleEntity(Vechile,CurrVertex,Team,Disabled)[source(percept)]
+  & position(MyCurrVertex) &myName(Name)& Team==teamA & role(Role) & Role == repairer & Disabled == disabled & lastActionResult(Result) & lastAction(Action) & MyCurrVertex == CurrVertex
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vechile,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
+   //     .send(cartographer, achieve, announceStep(Step));
+       .perceive;
+       .wait(200); // wait until all percepts have been added.
+        // Continue with DFS:          
+             .print("repairing",Vechile);           
+              repair(Vechile).
+                                                 
  +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
