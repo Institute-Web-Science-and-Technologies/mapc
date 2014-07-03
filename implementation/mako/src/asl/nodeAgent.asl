@@ -1,29 +1,51 @@
 // Agent nodeAgent in project mako
 
-// TODO: create Neighbours belief
 /* Initial beliefs and rules */
 
 /* Initial goals */
 
-!start.
-
 /* Plans */
 
-+!start :
-    .my_name(Name)
-    <- .print("A new node agent has been created").
+// this method adds Vertex as a neighbour and removes all other paths to this
+// Vertex, assuming the neighbour is the shortest path.
++path(Vertex, Weight)[source(Sender)]:
+    Sender == cartographer
+    <- -path(Vertex, Weight)[source(cartographer)];
+       !addedPathIfShorter(Vertex, Weight);
+       -+neighbour(Vertex).
 
-+path(DestinationId, Costs, Steps)[source(HopId)]:
-    not path(DestinationId, _, _)
-    | path(HopId, _, HopCost, HopSteps)
-    // either we already know a route with higher costs:
-    | path(DestinationId, _, KnownCosts, KnownSteps) & NewCosts = Costs + HopCost & KnownCost > NewCosts
-    // or it takes fewer steps to reach the destination:
-    | NewSteps = Steps + HopSteps & KnownSteps > NewSteps
-    <- -path(DestinationId, _, KnownCost, KnownSteps); // assuming removing fails silently when there is no such belief
-       -path(DestinationId, Cost, Steps)[source(HopId)]; // don't add the trigger to the BB
-       +path(DestinationId, HopId, Cost, Step);
-       .send(Neighbours, tell, path(DestinationId, NewCosts, NewSteps)).
++path(DestinationId, Costs)[source(HopId)]:
+    // How much does travelling to the hop and to the destination currently cost:
+    shortestPath(HopId, _, HopCost) & shortestPath(DestinationId, _, KnownCosts)
+    // We know a route but with higher costs:
+    & NewCosts = Costs + HopCost & KnownCosts > NewCosts
+    <- -shortestPath(DestinationId, _, KnownCosts);
+       // don't add this plan to the BB:
+       -shortestPath(DestinationId, Cost)[source(HopId)];
+       +shortestPath(DestinationId, HopId, NewCosts);
+       if (neighbour(Neighbours)) {
+           .send(Neighbours, tell, path(DestinationId, NewCosts));
+       }.
        
-+path(DestinationId, Cost, Steps)[source(Sender)]
-    <- -path(DestinationId, Cost, Steps)[source(Sender)].
+// the suggested path does not improve our situation, hence ignore it:
++path(DestinationId, Cost)[source(Sender)]
+    <- -path(DestinationId, Cost)[source(Sender)].
+
+/* Additional goals */
+
+// Replace old edges by the new one if it was the cheapest:
+@letCartographerOnlyAddCheaperEdges[atomic]
++!addedPathIfShorter(Vertex, Cost):
+    not shortestPath(Vertex, _, KnownCosts)
+    // We know a route but with higher costs:
+    | KnownCosts > Cost
+    <- -shortestPath(Vertex, _, _);
+       +shortestPath(Vertex, Vertex, Cost);
+       if (neighbour(Neighbours)) {
+           .send(Neighbours, tell, path(Vertex, Cost));
+       }.
+       
+// We know a cheaper route – but it is more steps away. This scenario is quite
+// unlikely in practice:
++!addedPathIfShorter(_, _)
+    <- true.
