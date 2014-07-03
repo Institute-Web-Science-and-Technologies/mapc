@@ -87,25 +87,39 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +step(S):
 visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamB & role(Role) & Role == saboteur & Disabled == normal & MyCurrVertex == CurrVertex 
-    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vehcile,"who is on the",CurrVertex, Disabled );
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vehicle,"who is on the",CurrVertex, Disabled );
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:          
-             .print("attacking",Vehcile);           
-              attack(Vehcile).
+             .print("attacking",Vehicle);           
+              attack(Vehicle).
+              
+//for parry. When see an enemy Saboteur in the same Vertex, then do parry. 
+// But the role of enemy agent returns some numbers which we don't know the meaning, so here I just assum role 6 is Saboteur.
++step(S):
+role(MyRole) & MyRole \== explorer & MyRole \==inspector &
+visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
+  & position(MyCurrVertex) &myName(Name)& MyCurrVertex == CurrVertex & Team==teamB & parametersOfEnemyAgent(Vehicle,Node,Role,Strength,Team,VisRange) & Role == 6
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will parry the attack from",Vehicle,"who is on the",CurrVertex);
+   //     .send(cartographer, achieve, announceStep(Step));
+       .perceive;
+       .wait(200); // wait until all percepts have been added.
+        // Continue with DFS:          
+             .print("parrying");           
+              parry. 
 
 //for repair, repair our team agent who is on the same Vertex
 +step(S):
-visibleEntity(Vehcile,CurrVertex,Team,Disabled)[source(percept)]
+visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamA & role(Role) & Role == repairer & Disabled == disabled & lastActionResult(Result) & lastAction(Action) & MyCurrVertex == CurrVertex
-    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vehcile,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vehicle,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:          
-             .print("repairing",Vehcile);           
-              repair(Vehcile).
+             .print("repairing",Vehicle);           
+              repair(Vehicle).
                                                  
  +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
