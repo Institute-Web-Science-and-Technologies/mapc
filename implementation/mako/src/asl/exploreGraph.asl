@@ -36,12 +36,13 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 +!exploreGraph:
     position(CurrVertex) & .my_name(Name) & energy(E)
     <-
+    .abolish(iWantToGoTo(_, _, _, _)[source(_)]);
     .send(cartographer, askOne, unvisitedNeighbours(CurrVertex, _)[source(Name)], unvisitedNeighbours(_, Options));
     if(surveyed(CurrVertex)){
         .print("Result of unvisitedNeighbours: ", Options);
-        //-+options(Options);
+        .length(Options, NumOptions);
         !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
-        .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E));
+        .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
         .wait(300); // Wait for bids from other agents.
         !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
         !goto(RevisedNextVertex);
@@ -57,22 +58,38 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     .print("The goal !exploreGraph has failed.");
     fail_goal(exploreGraph).
     
-//if my chosen NextVertex is in conflict: another agent wants to go there and 
-// - the cost of going there is cheaper for him, or if they are equal
-// - the he has bigger energy, or if they are equal
-// - he has higher name string (in terms of string comparison)
-//, then choose another NextVertex
+// If my chosen NextVertex is in conflict with another agent's NextVertex, and 
+// - I have more options;
+// - or equal number of options, but the cost of going to NextVertex is more expensive for me;
+// - or equal edge cost, but I have less energy;
+// - or equal energy, but my name string is lower than his (in terms of string comparison),
+// then choose another NextVertex.
 +!reconsiderChoice(MyNextVertex, MyNextVertexWeight, Options, RevisedNextVertex):
-	iWantToGoTo(MyNextVertex, NextVertexWeight, E)[source(AgentName)] 
-	& position(CurrVertex) & energy(MyE) & .my_name(MyName)
-	& ( (MyNextVertexWeight > NextVertexWeight) // Have bigger edge cost
-	| (MyNextVertexWeight == NextVertexWeight &  MyE < E) // Have lower energy
-	| (MyNextVertexWeight == NextVertexWeight &  MyE == E & MyName < AgentName) ) // Have lower name string
+	iWantToGoTo(MyNextVertex, NextVertexWeight, E, NumOptions)[source(AgentName)] 
+	& position(CurrVertex) & energy(MyE) & .my_name(MyName) & .length(Options, MyNumOptions)
+	& ( 
+		(MyNumOptions > NumOptions) // Have bigger number of options
+		| (MyNumOptions == NumOptions & (MyNextVertexWeight > NextVertexWeight // Have bigger edge cost
+		| (MyNextVertexWeight == NextVertexWeight & (MyE < E // Have lower energy
+		| MyE == E & MyName < AgentName) // Have lower name string
+	))))	
 	<-
 	.print("I am in a conflict in intension to go to ", MyNextVertex, " with the agent ", AgentName, ". Need to recalculate next vertex.");
+//	.print("My parameters for comparison were: ", MyNumOptions, " ",MyNextVertexWeight, " ", MyE, " ", MyName);
+//	.print("Opponent's' parameters for comparison were: ", NumOptions, " ",NextVertexWeight, " ", E, " ", AgentName);
 	!recalculateNextVertex(CurrVertex, Options, MyNextVertex, RevisedNextVertex).
-	
-// Don't have conflicts.
+
+// Debugging bidding outcomes
+//+!reconsiderChoice(MyNextVertex, MyNextVertexWeight, Options, RevisedNextVertex):
+//	iWantToGoTo(MyNextVertex, NextVertexWeight, E, NumOptions)[source(AgentName)] 
+//	& position(CurrVertex) & energy(MyE) & .my_name(MyName) & .length(Options, MyNumOptions)
+//	<-
+//	.print("I had a conflict in intension to go to ", MyNextVertex, " with the agent ", AgentName, ", but I won the bidding.");	
+//	.print("My parameters for comparison were: ", MyNumOptions, " ",MyNextVertexWeight, " ", MyE, " ", MyName);
+//	.print("Opponent's' parameters for comparison were: ", NumOptions, " ",NextVertexWeight, " ", E, " ", AgentName);
+//	RevisedNextVertex = MyNextVertex.
+		
+// Don't have conflicts or won in bidding.
 +!reconsiderChoice(MyNextVertex, _, _, RevisedNextVertex)
     <-
     RevisedNextVertex = MyNextVertex.

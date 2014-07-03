@@ -124,7 +124,6 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
  +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
-       .abolish(iWantToGoTo(_, _, _)[source(_)]);
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:      
