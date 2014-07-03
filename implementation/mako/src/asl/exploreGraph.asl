@@ -54,7 +54,11 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     .length(Options) > 0
     & .nth(_, Options, NextVertexList)
     & .nth(0, NextVertexList, NextVertex)
-    & not iWantToGoTo(NextVertex, _, _).
+    & .nth(1, NextVertexList, NextVertexWeight)
+    & not iWantToGoTo(NextVertex, _, _)
+    <-
+    +edge(CurrVertex, NextVertex, NextVertexWeight);
+    +edge(NextVertex, CurrVertex, NextVertexWeight).
 
 // If we cannot find unvisited vertices not selected by another agent -> return previous position.     
 +!recalculateNextVertex(CurrVertex, Options, NextVertex):
