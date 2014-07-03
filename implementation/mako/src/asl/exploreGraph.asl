@@ -41,9 +41,9 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
         .print("Result of unvisitedNeighbours: ", Options);
         //-+options(Options);
         !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
-        .broadcast(tell, iWantToGoTo(Name, NextVertex, NextVertexWeight, E));
+        .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E));
         .wait(500);
-        .findall(NextVertex, iWantToGoTo(Name, NextVertex, NextVertexWeight, E), ListOfNextVertices);
+        .findall(NextVertex, iWantToGoTo(NextVertex, NextVertexWeight, E), ListOfNextVertices);
         //.findall(NextVertexWeight, iWantToGoTo(NextVertex, NextVertexWeight, E), ListOfNextVerticesWeight);
         !reconsiderChoice(NextVertex, NextVertexWeight, ListOfNextVertices, Options);
         !goto(NextVertex);
@@ -56,14 +56,14 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 //if my choosen nextVertex is in the list of vertices that other agents want to go to and the cost of going there
 //is cheaper for them, then choose another one
 +!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, Options):
-	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(Name, NextVertex, NextVertexWeight, E) & MyNextVertexWeight > NextVertexWeight
+	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(NextVertex, NextVertexWeight, E) & MyNextVertexWeight > NextVertexWeight
 	<-
 	?position(CurrVertex);
 	.print("I am in a conflict and the other agent has lower costs. Need to recalculate next vertex.");
 	!recalculateNextVertex(CurrVertex, Options, NextVertex).
 	
 +!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, MyOptions):
-	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(Name, NextVertex, NextVertexWeight, E) & MyNextVertexWeight < NextVertexWeight
+	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(NextVertex, NextVertexWeight, E) & MyNextVertexWeight < NextVertexWeight
 	.
 	
 +!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, Options): not .member(NextVertex, ListOfNextVertices).
