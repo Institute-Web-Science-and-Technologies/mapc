@@ -74,13 +74,11 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     & Team==teamB & lastActionResult(Result) & lastAction(Action) &  not roleOfAgent(Vehicle,_)
         <- .print("Current step is ", S, " result of last action ", Action," is ", Result);
            .print("I want to inspect", Vehicle);
-           inspect(Vehicle).
-           
-
+           !doInspect(Vehicle).
+          
 +inspectedEntity(Energy,Health,MaxEnergy,MaxHealth,Name,Node,Role,Strength,Team,VisRange)
     <- .print("enemy agent role ", Role,"enemy agent name", Name, "Enemy team is",Team); 
-        .broadcast(tell, parametersOfEnemyAgent(Name,Node,Role,Strength,Team,VisRange));
-        
+        .broadcast(tell, parametersOfEnemyAgent(Name,Node,Role,Strength,Team,VisRange));       
        +roleOfAgent(Vehicle, Role).
              
 //for attack, attack enemy team agent who is on the same Vertex
@@ -90,13 +88,12 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
     <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vehicle,"who is on the",CurrVertex, Disabled );
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
-       .wait(200); // wait until all percepts have been added.
-        // Continue with DFS:          
-             .print("attacking",Vehicle);           
-              attack(Vehicle).
+       .wait(200); // wait until all percepts have been added.                  
+        !doAttack(Vehicle).
               
 //for parry. When see an enemy Saboteur in the same Vertex, then do parry. 
-// But the role of enemy agent returns some numbers which we don't know the meaning, so here I just assum role 6 is Saboteur.
+// But the role of enemy agent returns some numbers which we don't know the meaning
+// here I just assum role 6 is Saboteur.
 +step(S):
 role(MyRole) & MyRole \== explorer & MyRole \==inspector &
 visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
@@ -104,22 +101,19 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
     <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will parry the attack from",Vehicle,"who is on the",CurrVertex);
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
-       .wait(200); // wait until all percepts have been added.
-        // Continue with DFS:          
-             .print("parrying");           
-              parry. 
+       .wait(200); // wait until all percepts have been added.          
+       !doParry. 
 
-//for repair, repair our team agent who is on the same Vertex
+//for repair, repair our team disabled agent who is on the same Vertex. spend 3 energy
+//ToDo: repairer can also repair the agent who is undisabled,and spend 2 energy
 +step(S):
 visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamA & role(Role) & Role == repairer & Disabled == disabled & lastActionResult(Result) & lastAction(Action) & MyCurrVertex == CurrVertex
     <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vehicle,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
-       .wait(200); // wait until all percepts have been added.
-        // Continue with DFS:          
-             .print("repairing",Vehicle);           
-              repair(Vehicle).
+       .wait(200); // wait until all percepts have been added.          
+       !doRepair(Vehicle).
                                                  
  +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
@@ -143,10 +137,58 @@ energy(CurrEnergy) & CurrEnergy < 1
      .print("I have ", CurrEnergy, " energy, but need 1 to probe going to recharge first.");
       recharge.
       
-// If probed - do graph exploring      
+// if energy is enough - probe     
 + !doProbing(Vertex)
 <-
     .print(Vertex,"has been probed,it will do graph exploring!");
     !exploreGraph.
-
+    
+ // if energy is not enough - recharge  
++ !doInspect(Vehicle):
+energy(CurrEnergy) & CurrEnergy < 2
+<-
+     .print("I have ", CurrEnergy, " energy, but need 2 to inspect,S going to recharge first.");
+      recharge.
+// If energy is enough - attack         
++ !doInspect(Vehicle)
+<-
+    .print("inspecting",Vehicle); 
+     inspect(Vehicle).
+    
+// if energy is not enough - recharge  
++ !doAttack(Vehicle):
+energy(CurrEnergy) & CurrEnergy < 2
+<-
+     .print("I have ", CurrEnergy, " energy, but need 2 to attack,S going to recharge first.");
+      recharge.
+// If energy is enough - attack         
++ !doAttack(Vehicle)
+<-
+    .print("attacking",Vehicle); 
+    attack(Vehicle).
+// if energy is not enough - recharge  
++ !doParry:
+energy(CurrEnergy) & CurrEnergy < 2
+<-
+     .print("I have ", CurrEnergy, " energy, but need 2 to parry,S going to recharge first.");
+      recharge.
+// If energy is enough - parry        
++ !doParry
+<-
+    .print("parry"); 
+     parry.
+     
+// if energy is not enough - recharge 
+//ToDo: repairer can also repair the agent who is undisabled,and spend 2 energy    
++ !doRepair(Vehicle):
+energy(CurrEnergy) & CurrEnergy < 3
+<-
+     .print("I have ", CurrEnergy, " energy, but need 3 to repair,going to recharge first.");
+      recharge.
+      
+// if energy is enough - repair    
++ !doRepair(Vehicle)
+<-
+    .print("repairing", Vehicle);
+     repair(Vehicle).
 /* Plans */
