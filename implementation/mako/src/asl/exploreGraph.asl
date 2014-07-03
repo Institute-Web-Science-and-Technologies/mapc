@@ -57,55 +57,51 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     .print("The goal !exploreGraph has failed.");
     fail_goal(exploreGraph).
     
-//if my chosen NextVertex is in conflict: another agent wants to go there and the cost of going there
-//is cheaper for him, then choose another NextVertex
+//if my chosen NextVertex is in conflict: another agent wants to go there and 
+// - the cost of going there is cheaper for him, or if they are equal
+// - the he has bigger energy, or if they are equal
+// - he has higher name string (in terms of string comparison)
+//, then choose another NextVertex
 +!reconsiderChoice(MyNextVertex, MyNextVertexWeight, Options, RevisedNextVertex):
-	iWantToGoTo(MyNextVertex, NextVertexWeight, _) & MyNextVertexWeight > NextVertexWeight & position(CurrVertex)
+	iWantToGoTo(MyNextVertex, NextVertexWeight, E)[source(AgentName)] 
+	& position(CurrVertex) & energy(MyE) & .my_name(MyName)
+	& ( (MyNextVertexWeight > NextVertexWeight) // Have bigger edge cost
+	| (MyNextVertexWeight == NextVertexWeight &  MyE < E) // Have lower energy
+	| (MyNextVertexWeight == NextVertexWeight &  MyE == E & MyName < AgentName) ) // Have lower name string
 	<-
-	.print("I am in a conflict and the other agent has lower costs. Need to recalculate next vertex.");
-	!recalculateNextVertex(CurrVertex, Options, RevisedNextVertex).
-
-// Conflict. My energy is lower -> recalculate next vertex.	
-+!reconsiderChoice(MyNextVertex, _, Options, RevisedNextVertex):
-	iWantToGoTo(MyNextVertex, _, E) & energy(MyE) & MyE < E  & position(CurrVertex)
-	<-
-	.print("I am in a conflict and the other agent has more energy. Need to recalculate next vertex.");
-	!recalculateNextVertex(CurrVertex, Options, RevisedNextVertex).
-	
-// Conflict. My name string is lower -> recalculate next vertex.	
-+!reconsiderChoice(MyNextVertex, _, Options, RevisedNextVertex):
-	iWantToGoTo(MyNextVertex, _, _)[source(AgentName)] & .my_name(MyName) & MyName < AgentName  & position(CurrVertex)
-	<-
-	.print("I am in a conflict and the other agent has greater name string. Need to recalculate next vertex.");
-	!recalculateNextVertex(CurrVertex, Options, RevisedNextVertex).
+	.print("I am in a conflict in intension to go to ", MyNextVertex, " with the agent ", AgentName, ". Need to recalculate next vertex.");
+	!recalculateNextVertex(CurrVertex, Options, MyNextVertex, RevisedNextVertex).
 	
 // Don't have conflicts.
 +!reconsiderChoice(MyNextVertex, _, _, RevisedNextVertex)
     <-
     RevisedNextVertex = MyNextVertex.
     
-// Try to find unvisited vertex, which is not selected by another agent
-+!recalculateNextVertex(CurrVertex, Options, NextVertex):
-    .length(Options) > 0
-    & .nth(OptionNumber, Options, NextVertexList)
-    & .nth(0, NextVertexList, NextVertex)
-    & .nth(1, NextVertexList, NextVertexWeight)
-    & not iWantToGoTo(NextVertex, _, _)
+// Try to find another unvisited vertex
++!recalculateNextVertex(CurrVertex, Options, NextVertex, RevisedNextVertex):
+    .length(Options) > 1 & edge(CurrVertex, NextVertex, NextVertexWeight) 
     <-
-    +edge(CurrVertex, NextVertex, NextVertexWeight);
-    +edge(NextVertex, CurrVertex, NextVertexWeight).
+    .delete([NextVertex, NextVertexWeight], Options, NewOptions);
+    .length(NewOptions, NumOptions);
+    .nth(math.random(NumOptions), NewOptions, NextVertexList);
+    .nth(0, NextVertexList, RevisedNextVertex);
+    .nth(1, NextVertexList, RevisedNextVertexWeight);
+    .print("New options were: ", NewOptions, ", I chose ", RevisedNextVertex);
+    +edge(CurrVertex, RevisedNextVertex, RevisedNextVertexWeight);
+    +edge(RevisedNextVertex, CurrVertex, RevisedNextVertexWeight).
 
 // If we cannot find unvisited vertices not selected by another agent -> return previous position.     
-+!recalculateNextVertex(CurrVertex, Options, NextVertex):
++!recalculateNextVertex(CurrVertex, _, _, RevisedNextVertex):
     dfspath(CurrPath) & .length(CurrPath) > 1
     <- 
-    .nth(1, CurrPath, NextVertex);
-    .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", NextVertex). 
+    .nth(1, CurrPath, RevisedNextVertex);
+    .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", RevisedNextVertex). 
 
 // DFS is completed. 
-+!recalculateNextVertex(CurrVertex, Options, NextVertex)
++!recalculateNextVertex(_, _, _, _)
     <-
-    .print("I'm done with exploring!").
+    .print("I'm done with exploring!");
+    .succeed_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
  +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
@@ -128,7 +124,8 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
  // DFS is completed. 
  +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight	)
      <-
-     .print("I'm done with exploring!").
+     .print("I'm done with exploring!");
+     .succeed_goal(exploreGraph).
 
 // Want to goto, but don't have enough energy -> recharge.
 +!goto(NextVertex):
