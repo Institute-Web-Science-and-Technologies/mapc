@@ -34,10 +34,10 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
     <- .send(cartographer, tell, edgePercept(VertexA, VertexB, Weight)).
 
 +edges(AmountEdges)[source(percept)]
-    <- internalActions.setGlobalEdgesAmount(AmountEdges). //TODO: send to cartographer
+    <- true. //TODO: send to cartographer
 
 +vertices(AmountVertices)[source(percept)]
-    <- internalActions.setGlobalVerticesAmount(AmountVertices).
+    <- true. //TODO: send to cartographer
 
 +probedVertex(Vertex, Value)[source(percept)]:
     .number(Value)
