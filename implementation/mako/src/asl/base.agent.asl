@@ -55,6 +55,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 +simStart
     <- .print("Simulation started.").
+    
 //For Probe
 +step(Step)[source(self)]:
      position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role) & Role == explorer
@@ -68,29 +69,29 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
              .print("probing",CurrVertex);           
              !doProbing(CurrVertex).
              
-//for attack
+//for attack, attack enemy team agent who is on the same Vertex
 +step(S):
-visibleEntity(Vechile,CurrVertex,Team,Disabled)[source(percept)]
+visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamB & role(Role) & Role == saboteur & Disabled == normal & MyCurrVertex == CurrVertex 
-    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vechile,"who is on the",CurrVertex, Disabled );
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vehcile,"who is on the",CurrVertex, Disabled );
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:          
-             .print("attacking",Vechile);           
-              attack(Vechile).
+             .print("attacking",Vehcile);           
+              attack(Vehcile).
 
 //for repair, repair our team agent who is on the same Vertex
 +step(S):
-visibleEntity(Vechile,CurrVertex,Team,Disabled)[source(percept)]
+visibleEntity(Vehcile,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamA & role(Role) & Role == repairer & Disabled == disabled & lastActionResult(Result) & lastAction(Action) & MyCurrVertex == CurrVertex
-    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vechile,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vehcile,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
    //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:          
-             .print("repairing",Vechile);           
-              repair(Vechile).
+             .print("repairing",Vehcile);           
+              repair(Vehcile).
                                                  
  +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
