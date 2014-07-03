@@ -36,7 +36,6 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 +!exploreGraph:
     position(CurrVertex) & .my_name(Name) & energy(E)
     <-
-//    .send(cartographer, achieve, calculateDFSOpportunities(CurrVertex)).
     .send(cartographer, askOne, unvisitedNeighbours(CurrVertex, _)[source(Name)], unvisitedNeighbours(_, Options));
     if(surveyed(CurrVertex)){
         .print("Result of unvisitedNeighbours: ", Options);

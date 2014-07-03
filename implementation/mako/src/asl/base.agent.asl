@@ -70,7 +70,7 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
-   //  .send(cartographer, achieve, announceStep(Step));
+       .abolish(iWantToGoTo(_, _, _)[source(_)]);
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:      
