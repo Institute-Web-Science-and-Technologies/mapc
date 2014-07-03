@@ -52,9 +52,10 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 //TODO: visibleEntity, zoneScore
 
+
 +simStart
     <- .print("Simulation started.").
-
+//For Probe
 +step(Step)[source(self)]:
      position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role) & Role == explorer
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
@@ -65,9 +66,21 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
            .send(cartographer, askOne, probed(CurrVertex,Value));       	
              .wait(100);   
              .print("probing",CurrVertex);           
-             !doProbing(CurrVertex).                    
-      
-+step(Step)[source(self)]:
+             !doProbing(CurrVertex).
+             
+//for attack
++step(S):
+visibleEntity(Vechile,CurrVertex,Team,Disabled)[source(percept)]
+  & position(MyCurrVertex) &myName(Name)& Team==teamB & role(Role) & Role == saboteur & Disabled == normal & MyCurrVertex == CurrVertex 
+    <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vechile,"who is on the",CurrVertex, Disabled );
+   //     .send(cartographer, achieve, announceStep(Step));
+       .perceive;
+       .wait(200); // wait until all percepts have been added.
+        // Continue with DFS:          
+             .print("attacking",Vechile);           
+              attack(Vechile).
+                                        
+ +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
        .abolish(iWantToGoTo(_, _, _)[source(_)]);
