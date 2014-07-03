@@ -68,6 +68,20 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
              .wait(100);   
              .print("probing",CurrVertex);           
              !doProbing(CurrVertex).
+// For Inspecting, Inspecting the enemy and broadcaste there parametersofenemyagent
++step(S):
+    visibleEntity(Vehicle,Vertex,Team,Disabled)[source(percept)] & role(Role) & Role == inspector &   position(MyCurrVertex) & Vertex==MyCurrVertex  
+    & Team==teamB & lastActionResult(Result) & lastAction(Action) &  not roleOfAgent(Vehicle,_)
+        <- .print("Current step is ", S, " result of last action ", Action," is ", Result);
+           .print("I want to inspect", Vehicle);
+           inspect(Vehicle).
+           
+
++inspectedEntity(Energy,Health,MaxEnergy,MaxHealth,Name,Node,Role,Strength,Team,VisRange)
+    <- .print("enemy agent role ", Role,"enemy agent name", Name, "Enemy team is",Team); 
+        .broadcast(tell, parametersOfEnemyAgent(Name,Node,Role,Strength,Team,VisRange));
+        
+       +roleOfAgent(Vehicle, Role).
              
 //for attack, attack enemy team agent who is on the same Vertex
 +step(S):
