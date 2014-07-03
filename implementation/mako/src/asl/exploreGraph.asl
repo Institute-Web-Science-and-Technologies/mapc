@@ -34,13 +34,15 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 
 // Ask cartographer about opportunities
 +!exploreGraph:
-    position(CurrVertex) & .my_name(Name)
+    position(CurrVertex) & .my_name(Name) & energy(E)
     <-
 //    .send(cartographer, achieve, calculateDFSOpportunities(CurrVertex)).
     .send(cartographer, askOne, unvisitedNeighbours(CurrVertex, _)[source(Name)], unvisitedNeighbours(_, Options));
     if(surveyed(CurrVertex)){
         .print("Result of unvisitedNeighbours: ", Options);
-        !findNextVertex(CurrVertex, Options, NextVertex);
+        !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
+        .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E));
+        .wait(500);
         !goto(NextVertex);
     }
     else{
@@ -55,7 +57,7 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
     fail_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
- +!findNextVertex(CurrVertex, Options, NextVertex):
+ +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
      .length(Options, NumOptions) & NumOptions > 0
      <-      
      .nth(math.random(NumOptions), Options, NextVertexList);
