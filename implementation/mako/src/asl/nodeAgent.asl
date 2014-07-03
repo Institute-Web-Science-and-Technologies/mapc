@@ -11,19 +11,19 @@
 
 +!start :
     .my_name(Name)
-    <- .print("A new node agent has been created: ", Name).
+    <- .print("A new node agent has been created").
 
-+path(DestinationId, Cost, Steps)[source(HopId)]:
++path(DestinationId, Costs, Steps)[source(HopId)]:
     not path(DestinationId, _, _)
     | path(HopId, _, HopCost, HopSteps)
     // either we already know a route with higher costs:
-    | path(DestinationId, _, KnownCost, KnownSteps) & KnownCost > Cost + HopCost
+    | path(DestinationId, _, KnownCosts, KnownSteps) & NewCosts = Costs + HopCost & KnownCost > NewCosts
     // or it takes fewer steps to reach the destination:
-    | KnownSteps > Steps + HopSteps
+    | NewSteps = Steps + HopSteps & KnownSteps > NewSteps
     <- -path(DestinationId, _, KnownCost, KnownSteps); // assuming removing fails silently when there is no such belief
        -path(DestinationId, Cost, Steps)[source(HopId)]; // don't add the trigger to the BB
        +path(DestinationId, HopId, Cost, Step);
-       .send(Neighbours, tell, path(DestinationId, Cost, Steps)).
+       .send(Neighbours, tell, path(DestinationId, NewCosts, NewSteps)).
        
 +path(DestinationId, Cost, Steps)[source(Sender)]
     <- -path(DestinationId, Cost, Steps)[source(Sender)].
