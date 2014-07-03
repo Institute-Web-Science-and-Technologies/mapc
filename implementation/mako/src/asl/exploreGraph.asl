@@ -42,36 +42,52 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
         //-+options(Options);
         !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
         .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E));
-        .wait(500);
-        .findall(NextVertex, iWantToGoTo(NextVertex, NextVertexWeight, E), ListOfNextVertices);
-        //.findall(NextVertexWeight, iWantToGoTo(NextVertex, NextVertexWeight, E), ListOfNextVerticesWeight);
-        !reconsiderChoice(NextVertex, NextVertexWeight, ListOfNextVertices, Options);
-        !goto(NextVertex);
+        .wait(300); // Wait for bids from other agents.
+        !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
+        !goto(RevisedNextVertex);
     }
     else{
         .print(CurrVertex, " not surveyed, surveying.");
         !survey;    	
     }.
 
-//if my choosen nextVertex is in the list of vertices that other agents want to go to and the cost of going there
-//is cheaper for them, then choose another one
-+!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, Options):
-	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(NextVertex, NextVertexWeight, E) & MyNextVertexWeight > NextVertexWeight
+// Fallback goal.
++!exploreGraph
+    <-
+    .print("The goal !exploreGraph has failed.");
+    fail_goal(exploreGraph).
+    
+//if my chosen NextVertex is in conflict: another agent wants to go there and the cost of going there
+//is cheaper for him, then choose another NextVertex
++!reconsiderChoice(MyNextVertex, MyNextVertexWeight, Options, RevisedNextVertex):
+	iWantToGoTo(MyNextVertex, NextVertexWeight, _) & MyNextVertexWeight > NextVertexWeight & position(CurrVertex)
 	<-
-	?position(CurrVertex);
 	.print("I am in a conflict and the other agent has lower costs. Need to recalculate next vertex.");
-	!recalculateNextVertex(CurrVertex, Options, NextVertex).
+	!recalculateNextVertex(CurrVertex, Options, RevisedNextVertex).
+
+// Conflict. My energy is lower -> recalculate next vertex.	
++!reconsiderChoice(MyNextVertex, _, Options, RevisedNextVertex):
+	iWantToGoTo(MyNextVertex, _, E) & energy(MyE) & MyE < E  & position(CurrVertex)
+	<-
+	.print("I am in a conflict and the other agent has more energy. Need to recalculate next vertex.");
+	!recalculateNextVertex(CurrVertex, Options, RevisedNextVertex).
 	
-+!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, MyOptions):
-	.member(MyNextVertex, ListOfNextVertices) & iWantToGoTo(NextVertex, NextVertexWeight, E) & MyNextVertexWeight < NextVertexWeight
-	.
+// Conflict. My name string is lower -> recalculate next vertex.	
++!reconsiderChoice(MyNextVertex, _, Options, RevisedNextVertex):
+	iWantToGoTo(MyNextVertex, _, _)[source(AgentName)] & .my_name(MyName) & MyName < AgentName  & position(CurrVertex)
+	<-
+	.print("I am in a conflict and the other agent has greater name string. Need to recalculate next vertex.");
+	!recalculateNextVertex(CurrVertex, Options, RevisedNextVertex).
 	
-+!reconsiderChoice(MyNextVertex, MyNextVertexWeight, ListOfNextVertices, Options): not .member(NextVertex, ListOfNextVertices).
+// Don't have conflicts.
++!reconsiderChoice(MyNextVertex, _, _, RevisedNextVertex)
+    <-
+    RevisedNextVertex = MyNextVertex.
     
 // Try to find unvisited vertex, which is not selected by another agent
 +!recalculateNextVertex(CurrVertex, Options, NextVertex):
     .length(Options) > 0
-    & .nth(_, Options, NextVertexList)
+    & .nth(OptionNumber, Options, NextVertexList)
     & .nth(0, NextVertexList, NextVertex)
     & .nth(1, NextVertexList, NextVertexWeight)
     & not iWantToGoTo(NextVertex, _, _)
@@ -90,12 +106,6 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 +!recalculateNextVertex(CurrVertex, Options, NextVertex)
     <-
     .print("I'm done with exploring!").
-
-// Fallback goal.
-+!exploreGraph
-    <-
-    .print("The goal !exploreGraph has failed.");
-    fail_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
  +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
