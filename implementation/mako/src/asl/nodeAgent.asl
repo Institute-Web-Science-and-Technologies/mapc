@@ -18,7 +18,7 @@
 
 /* Additional goals */
 
-+!pathCostsCheaper(DestinationID, Costs)[source(HopId)]:
++!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
 	// How much does travelling to the hop and to the destination currently cost:
     minCostPath(HopId, _, HopCost, _) & minCostPath(DestinationId, _, KnownCosts, _)
     // We know a route but with higher costs:
@@ -33,7 +33,7 @@
 // If a cartographer wanted to add information from an edge but couldn't because
 // no information existed before about minCostPaths, he may add it directly
 // because there will be no intermediate nodes.
-+!pathCostsCheaper(DestinationID, Costs)[source(Sender)]:
++!pathCostsCheaper(DestinationId, Costs)[source(Sender)]:
     Sender == cartographer
     // there was no alternative path:
     & not minCostPath(DestinationId, _, KnownCosts, _)
@@ -48,7 +48,8 @@
     
 // the suggested path does not improve our situation, hence ignore it:
 +!pathCostsCheaper(DestinationId, Cost)[source(Sender)]
-    <- true.
+    <- .print("@@@@@@@@@@@@@@@@@@@@@@@@@@", DestinationId, " <dest", Cost, " <cost", Sender, " <Sender");
+    true.
        
 +!pathStepsFewer(DestinationId, Steps)[source(HopId)]: 
 	// How many steps does travelling to the hop and to the destination currently take:
@@ -65,9 +66,9 @@
 // If a cartographer wanted to add information from an edge but couldn't because
 // no information existed before about minCostPaths, he may add it directly
 // because there will be no intermediate nodes.
-+!pathStepsFewer(DestinationID, Steps)[source(Sender)]:
++!pathStepsFewer(DestinationId, Steps)[source(Sender)]:
     Sender == cartographer
-    & minCostPath(DestinationID, _, HopCost, _)
+    & minCostPath(DestinationId, _, HopCost, _)
     <- -minStepsPath(DestinationId, _, KnownSteps, _);
        +minStepsPath(DestinationId, DestinationId, 1, HopCost);
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
