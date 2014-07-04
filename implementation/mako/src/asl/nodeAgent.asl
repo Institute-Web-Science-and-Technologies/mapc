@@ -11,19 +11,21 @@
 +path(Vertex, Weight)[source(Sender)]:
     Sender == cartographer
     <- -path(Vertex, Weight)[source(cartographer)];
+       -neighbour(Vertex);
        !addedPathIfShorter(Vertex, Weight);
-       -+neighbour(Vertex).
+       +neighbour(Vertex).
 
 +path(DestinationId, Costs)[source(HopId)]:
     // How much does travelling to the hop and to the destination currently cost:
-    shortestPath(HopId, _, HopCost) & shortestPath(DestinationId, _, KnownCosts)
+    minCostPath(HopId, _, HopCost) & minCostPath(DestinationId, _, KnownCosts)
     // We know a route but with higher costs:
     & NewCosts = Costs + HopCost & KnownCosts > NewCosts
-    <- -shortestPath(DestinationId, _, KnownCosts);
+    <- -minCostPath(DestinationId, _, KnownCosts);
        // don't add this plan to the BB:
-       -shortestPath(DestinationId, Cost)[source(HopId)];
-       +shortestPath(DestinationId, HopId, NewCosts);
+       -path(DestinationId, Cost)[source(HopId)];
+       +minCostPath(DestinationId, HopId, NewCosts);
        if (neighbour(Neighbours)) {
+       		.print("neighbour(Neighbours): ",  Neighbours);
            .send(Neighbours, tell, path(DestinationId, NewCosts));
        }.
        
@@ -36,16 +38,17 @@
 // Replace old edges by the new one if it was the cheapest:
 @letCartographerOnlyAddCheaperEdges[atomic]
 +!addedPathIfShorter(Vertex, Cost):
-    not shortestPath(Vertex, _, KnownCosts)
+    not minCostPath(Vertex, _, KnownCosts)
     // We know a route but with higher costs:
     | KnownCosts > Cost
-    <- -shortestPath(Vertex, _, _);
-       +shortestPath(Vertex, Vertex, Cost);
-       if (neighbour(Neighbours)) {
-           .send(Neighbours, tell, path(Vertex, Cost));
+    <- -minCostPath(Vertex, _, _);
+       +minCostPath(Vertex, Vertex, Cost);
+       .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
+       for (.member(Neighbour, Neighbours)) {
+       		.send(Neighbour, tell, path(Vertex, Cost));
        }.
        
-// We know a cheaper route – but it is more steps away. This scenario is quite
+// We know a cheaper route -- but it is more steps away. This scenario is quite
 // unlikely in practice:
 +!addedPathIfShorter(_, _)
     <- true.
