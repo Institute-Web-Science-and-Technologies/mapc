@@ -3,8 +3,11 @@
 /* Initial beliefs and rules */
 
 /* Initial goals */
+!start.
 
 /* Plans */
++!start: .my_name(Name) <- +minCostPath(Name, Name, 0, 0); +minStepsPath(Name, Name, 0, 0).
+
 
 // this method adds Vertex as a neighbour and removes all other paths to this
 // Vertex, assuming the neighbour is the shortest path.
@@ -27,6 +30,19 @@
        +minCostPath(DestinationId, HopId, NewCosts, HopCost);
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
        for (.member(Neighbour, Neighbours)) {
+//       		.print("Going to ask Neighbour node ", Neighbour, "to achieve pathCostsCheaper(", DestinationId, " ", NewCosts, ").");
+//       		.print("HopId is: ", HopId, ". HopCost is: ", HopCost);
+            .send(Neighbour, achieve, pathCostsCheaper(DestinationId, NewCosts));
+       }.
+       
++!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
+	not minCostPath(DestinationId, _, _, _) & minCostPath(HopId, _, HopCost, _)
+	& NewCosts = Costs + HopCost <-
+       +minCostPath(DestinationId, HopId, NewCosts, HopCost);
+       .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
+       for (.member(Neighbour, Neighbours)) {
+//       		.print("Going to ask Neighbour node ", Neighbour, "to achieve pathCostsCheaper(", DestinationId, " ", NewCosts, ").");
+//       		.print("HopId is: ", HopId, ". HopCost is: ", HopCost);
             .send(Neighbour, achieve, pathCostsCheaper(DestinationId, NewCosts));
        }.
 
