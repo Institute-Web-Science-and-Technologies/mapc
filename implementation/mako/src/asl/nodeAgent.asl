@@ -8,13 +8,14 @@
 !start.
 
 /* Plans */
+// Set distances to self as 0:
 +!start:
     .my_name(Name)
-    <- +minCostPath(Name, Name, 0, 0); // Destination, hop, total costs, costs to hop
-    +minStepsPath(Name, Name, 0, 0). // Destination, hop, total steps, costs to hop
+    <- +minCostPath(Name, Name, 0, 0); // DestinationId, HopId, total costs, costs to hop
+    +minStepsPath(Name, Name, 0, 0). // DestinationId, HopId, total steps, costs to hop
 
-// this method adds Vertex as a neighbour and removes all other paths to this
-// Vertex, assuming the neighbour is the shortest path.
+// This plan adds Vertex as a neighbour and may set this path as the new
+// cheapest (cost) or shortest (steps) path.
 +path(Vertex, Weight)[source(Sender)]:
     Sender == cartographer
     <- -path(Vertex, Weight)[source(cartographer)];
@@ -22,86 +23,3 @@
        !pathCostsCheaper(Vertex, Weight)[source(cartographer)];
        !pathStepsFewer(Vertex, 0)[source(cartographer)];
        +neighbour(Vertex, Weight).
-
-/* Additional goals */
-
-+!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
-	// How much does travelling to the hop and to the destination currently cost:
-    minCostPath(HopId, _, HopCost, _) & minCostPath(DestinationId, _, KnownCosts, _)
-    // We know a route but with higher costs:
-    & NewCosts = Costs + HopCost & KnownCosts > NewCosts
-	<- -minCostPath(DestinationId, _, KnownCosts, _);
-       +minCostPath(DestinationId, HopId, NewCosts, HopCost);
-       .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
-       for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathCostsCheaper(DestinationId, NewCosts));
-       }.
-       
-+!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
-    // The agent does not know an alternative path (the rest are just needed parameters):
-	not minCostPath(DestinationId, _, _, _) & minCostPath(HopId, _, HopCost, _)
-	& NewCosts = Costs + HopCost
-	<- +minCostPath(DestinationId, HopId, NewCosts, HopCost);
-       .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
-       for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathCostsCheaper(DestinationId, NewCosts));
-       }.
-
-// If a cartographer wanted to add information from an edge but couldn't because
-// no information existed before about minCostPaths, he may add it directly
-// because there will be no intermediate nodes.
-+!pathCostsCheaper(DestinationId, Costs)[source(Sender)]:
-    Sender == cartographer
-    // there was no alternative path:
-    & (not minCostPath(DestinationId, _, KnownCosts, _)
-    // or it was more expensive:
-    | KnownCosts > Costs)
-    <- -minCostPath(DestinationId, _, KnownCosts, _);
-       +minCostPath(DestinationId, DestinationId, Costs, Costs);
-       .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
-       for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathCostsCheaper(DestinationId, Costs));
-       }.
-    
-// the suggested path does not improve our situation, hence ignore it:
-+!pathCostsCheaper(DestinationId, Cost)[source(Sender)]
-    <- true.
-       
-+!pathStepsFewer(DestinationId, Steps)[source(HopId)]: 
-	// How many steps does travelling to the hop and to the destination currently take:
-    minStepsPath(HopId, _, _, HopCost) & minStepsPath(DestinationId, _, KnownSteps, _)
-    // We know a route but with more steps:
-    & NewSteps = Steps + 1 & KnownSteps > NewSteps
-	<- -minStepsPath(DestinationId, _, KnownSteps, _);
-       +minStepsPath(DestinationId, HopId, NewSteps, HopCost);
-       .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
-       for (.member(Neighbour, Neighbours)) {
-       	    .send(Neighbour, achieve, pathStepsFewer(DestinationId, NewSteps));
-       }.
-       
-+!pathStepsFewer(DestinationId, Steps)[source(HopId)]:
-    // The agent does not know an alternative path (the rest are just needed parameters):
-    not minStepsPath(DestinationId, _, _, _)
-    & NewSteps = Steps + 1 & neighbour(HopId, HopCost)
-    <- +minStepsPath(DestinationId, HopId, NewSteps, HopCost);
-       .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
-       for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathStepsFewer(DestinationId, NewSteps));
-       }.
-
-// If a cartographer wanted to add information from an edge but couldn't because
-// no information existed before about minCostPaths, he may add it directly
-// because there will be no intermediate nodes.
-+!pathStepsFewer(DestinationId, Steps)[source(Sender)]:
-    Sender == cartographer
-    & minCostPath(DestinationId, _, HopCost, _)
-    <- -minStepsPath(DestinationId, _, KnownSteps, _);
-       +minStepsPath(DestinationId, DestinationId, 1, HopCost);
-       .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
-       for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathStepsFewer(DestinationId, 1));
-       }.
-
-// the suggested path does not improve our situation, hence ignore it:	
-+!pathStepsFewer(DestinationId, Steps)[source(Sender)]
-    <- true.
