@@ -36,9 +36,9 @@
 +!pathCostsCheaper(DestinationId, Costs)[source(Sender)]:
     Sender == cartographer
     // there was no alternative path:
-    & not minCostPath(DestinationId, _, KnownCosts, _)
+    & (not minCostPath(DestinationId, _, KnownCosts, _)
     // or it was more expensive:
-    | KnownCosts > Costs
+    | KnownCosts > Costs)
     <- -minCostPath(DestinationId, _, KnownCosts, _);
        +minCostPath(DestinationId, DestinationId, Costs, Costs);
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
@@ -48,8 +48,7 @@
     
 // the suggested path does not improve our situation, hence ignore it:
 +!pathCostsCheaper(DestinationId, Cost)[source(Sender)]
-    <- .print("@@@@@@@@@@@@@@@@@@@@@@@@@@", DestinationId, " <dest", Cost, " <cost", Sender, " <Sender");
-    true.
+    <- true.
        
 +!pathStepsFewer(DestinationId, Steps)[source(HopId)]: 
 	// How many steps does travelling to the hop and to the destination currently take:
