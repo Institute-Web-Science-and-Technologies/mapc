@@ -17,13 +17,14 @@
 
 +path(DestinationId, Costs)[source(HopId)]:
     // How much does travelling to the hop and to the destination currently cost:
-    minCostPath(HopId, _, HopCost) & minCostPath(DestinationId, _, KnownCosts)
+    minCostPath(HopId, _, HopCost, _) & minCostPath(DestinationId, _, KnownCosts, _)
     // We know a route but with higher costs:
     & NewCosts = Costs + HopCost & KnownCosts > NewCosts
-    <- -minCostPath(DestinationId, _, KnownCosts);
+    
+    <- -minCostPath(DestinationId, _, KnownCosts, _);
        // don't add this plan to the BB:
        -path(DestinationId, Cost)[source(HopId)];
-       +minCostPath(DestinationId, HopId, NewCosts);
+       +minCostPath(DestinationId, HopId, NewCosts, HopCost);
        if (neighbour(Neighbours)) {
        		.print("neighbour(Neighbours): ",  Neighbours);
            .send(Neighbours, tell, path(DestinationId, NewCosts));
@@ -42,7 +43,7 @@
     // We know a route but with higher costs:
     | KnownCosts > Cost
     <- -minCostPath(Vertex, _, _);
-       +minCostPath(Vertex, Vertex, Cost);
+       +minCostPath(Vertex, Vertex, Cost, Cost);
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
        for (.member(Neighbour, Neighbours)) {
        		.send(Neighbour, tell, path(Vertex, Cost));
