@@ -1,4 +1,6 @@
 // Agent nodeAgent in project mako
+{ include("nodeAgent.steps.asl") }
+{ include("nodeAgent.costs.asl") }
 
 /* Initial beliefs and rules */
 
@@ -6,8 +8,10 @@
 !start.
 
 /* Plans */
-+!start: .my_name(Name) <- +minCostPath(Name, Name, 0, 0); +minStepsPath(Name, Name, 0, 0).
-
++!start:
+    .my_name(Name)
+    <- +minCostPath(Name, Name, 0, 0); // Destination, hop, total costs, costs to hop
+    +minStepsPath(Name, Name, 0, 0). // Destination, hop, total steps, costs to hop
 
 // this method adds Vertex as a neighbour and removes all other paths to this
 // Vertex, assuming the neighbour is the shortest path.
@@ -30,19 +34,16 @@
        +minCostPath(DestinationId, HopId, NewCosts, HopCost);
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
        for (.member(Neighbour, Neighbours)) {
-//       		.print("Going to ask Neighbour node ", Neighbour, "to achieve pathCostsCheaper(", DestinationId, " ", NewCosts, ").");
-//       		.print("HopId is: ", HopId, ". HopCost is: ", HopCost);
             .send(Neighbour, achieve, pathCostsCheaper(DestinationId, NewCosts));
        }.
        
 +!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
+    // The agent does not know an alternative path (the rest are just needed parameters):
 	not minCostPath(DestinationId, _, _, _) & minCostPath(HopId, _, HopCost, _)
-	& NewCosts = Costs + HopCost <-
-       +minCostPath(DestinationId, HopId, NewCosts, HopCost);
+	& NewCosts = Costs + HopCost
+	<- +minCostPath(DestinationId, HopId, NewCosts, HopCost);
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
        for (.member(Neighbour, Neighbours)) {
-//       		.print("Going to ask Neighbour node ", Neighbour, "to achieve pathCostsCheaper(", DestinationId, " ", NewCosts, ").");
-//       		.print("HopId is: ", HopId, ". HopCost is: ", HopCost);
             .send(Neighbour, achieve, pathCostsCheaper(DestinationId, NewCosts));
        }.
 
@@ -76,6 +77,16 @@
        .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
        for (.member(Neighbour, Neighbours)) {
        	    .send(Neighbour, achieve, pathStepsFewer(DestinationId, NewSteps));
+       }.
+       
++!pathStepsFewer(DestinationId, Steps)[source(HopId)]:
+    // The agent does not know an alternative path (the rest are just needed parameters):
+    not minStepsPath(DestinationId, _, _, _)
+    & NewSteps = Steps + 1
+    <- +minStepsPath(DestinationId, HopId, NewSteps, HopCost);
+       .findall(NodeAgent, neighbour(NodeAgent), Neighbours);
+       for (.member(Neighbour, Neighbours)) {
+            .send(Neighbour, achieve, pathStepsFewer(DestinationId, NewSteps));
        }.
 
 // If a cartographer wanted to add information from an edge but couldn't because
