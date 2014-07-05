@@ -4,6 +4,7 @@
 { include("actions.recharge.asl") }
 { include("storeBeliefs.asl") }
 { include("exploreGraph.asl") }
+{ include("initialization.asl") }
 
 //Print all received beliefs. Used for debugging. (comment this out if your simulation crashes immediately)
 //@debug[atomic] +Belief <-
@@ -60,14 +61,15 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 +step(Step)[source(self)]:
      position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role) & Role == explorer
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
-   //     .send(cartographer, achieve, announceStep(Step));
+       .abolish(iWantToGoTo(_, _, _, _)[source(_)]);
        .perceive;
        .wait(200); // wait until all percepts have been added.
-        // Continue with DFS:
-           .send(cartographer, askOne, probed(CurrVertex,Value));       	
-             .wait(100);   
-             .print("probing",CurrVertex);           
-             !doProbing(CurrVertex).
+       // Continue with DFS:
+       .send(cartographer, askOne, probed(CurrVertex,Value));       	
+       .wait(100);   
+       .print("probing",CurrVertex);           
+       !doProbing(CurrVertex).
+       
 // For Inspecting, Inspecting the enemy and broadcaste there parametersofenemyagent
 +step(S):
     visibleEntity(Vehicle,Vertex,Team,Disabled)[source(percept)] & role(Role) & Role == inspector &   position(MyCurrVertex) & Vertex==MyCurrVertex  
@@ -86,7 +88,6 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamB & role(Role) & Role == saboteur & Disabled == normal & MyCurrVertex == CurrVertex 
     <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will attack",Vehicle,"who is on the",CurrVertex, Disabled );
-   //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.                  
         !doAttack(Vehicle).
@@ -99,7 +100,6 @@ role(MyRole) & MyRole \== explorer & MyRole \==inspector &
 visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& MyCurrVertex == CurrVertex & Team==teamB & parametersOfEnemyAgent(Vehicle,Node,Role,Strength,Team,VisRange) & Role == 6
     <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will parry the attack from",Vehicle,"who is on the",CurrVertex);
-   //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.          
        !doParry. 
@@ -110,7 +110,6 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
 visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
   & position(MyCurrVertex) &myName(Name)& Team==teamA & role(Role) & Role == repairer & Disabled == disabled & lastActionResult(Result) & lastAction(Action) & MyCurrVertex == CurrVertex
     <- .print(Name, "is on the Vertex:",MyCurrVertex, "and it will repair",Vehicle,"who is on the",CurrVertex, Disabled,  " result of last action ", Action," is ", Result);
-   //     .send(cartographer, achieve, announceStep(Step));
        .perceive;
        .wait(200); // wait until all percepts have been added.          
        !doRepair(Vehicle).
@@ -118,6 +117,7 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
  +step(Step)[source(self)]:
     position(CurrVertex) & lastActionResult(Result) & lastAction(Action)
     <- .print("Current step is ", Step, " current position is ", CurrVertex, " result of last action ", Action," is ", Result);
+       .abolish(iWantToGoTo(_, _, _, _)[source(_)]);
        .perceive;
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:      

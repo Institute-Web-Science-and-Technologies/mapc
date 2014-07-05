@@ -1,16 +1,13 @@
 // Implementation of Depth First Search for graph exploration.
 
 /* Initial beliefs and rules */
-isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 
 /* Initial goals */
-
-!start.
 
 /* Plans */
 
 // Initialization
-+!start
++!initExploreGraph
     <-
     +dfspath([])[source(self)]. // Initial path for DFS (needed for backtracking)
 
@@ -36,14 +33,16 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
 +!exploreGraph:
     position(CurrVertex) & .my_name(Name) & energy(E)
     <-
-    .abolish(iWantToGoTo(_, _, _, _)[source(_)]);
     .send(cartographer, askOne, unvisitedNeighbours(CurrVertex, _)[source(Name)], unvisitedNeighbours(_, Options));
     if(surveyed(CurrVertex)){
         .print("Result of unvisitedNeighbours: ", Options);
         .length(Options, NumOptions);
         !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
-        .broadcast(tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
-        .wait(300); // Wait for bids from other agents.
+        ?broadcastAgentList(BroadcastList);
+        .send(BroadcastList, tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
+        .wait(400); // Wait for bids from other agents.
+//        .findall(SourceAgent, iWantToGoTo(_, _, _ ,_)[source(SourceAgent)], ReceivedBids);
+//        .print("-------------------------------------------------Received number of bids: ", .length(ReceivedBids));
         !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
         !goto(RevisedNextVertex);
     }
