@@ -136,6 +136,7 @@ isVertexSurveyed(Vertex) :- .send(cartographer, askOne, surveyed(Vertex)).
      dfspath(CurrPath) & .length(CurrPath) > 1
      <- 
      .nth(1, CurrPath, NextVertex);
+     ?edge(CurrVertex, NextVertex, NextVertexWeight);
      .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", NextVertex). 
  
  // DFS is completed. 
