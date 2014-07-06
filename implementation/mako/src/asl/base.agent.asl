@@ -5,6 +5,7 @@
 { include("storeBeliefs.asl") }
 { include("exploreGraph.asl") }
 { include("initialization.asl") }
+//{ include("explorer.asl") }
 
 //Print all received beliefs. Used for debugging. (comment this out if your simulation crashes immediately)
 //@debug[atomic] +Belief <-
@@ -122,73 +123,5 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:      
         !exploreGraph.
-
-// If not probed - probe
-+ !doProbing(Vertex):
- not probed(Vertex,Value)
-<-
-   .print(Vertex,"is not probed,do probing");
-    probe.
-    
-//if energy is not enough - recharge
-+ !doProbing(Vertex):
-energy(CurrEnergy) & CurrEnergy < 1
-<-
-     .print("I have ", CurrEnergy, " energy, but need 1 to probe going to recharge first.");
-      recharge.
-      
-// if energy is enough - probe     
-+ !doProbing(Vertex)
-<-
-    .print(Vertex,"has been probed,it will do graph exploring!");
-    !exploreGraph.
-    
- // if energy is not enough - recharge  
-+ !doInspect(Vehicle):
-energy(CurrEnergy) & CurrEnergy < 2
-<-
-     .print("I have ", CurrEnergy, " energy, but need 2 to inspect,S going to recharge first.");
-      recharge.
-// If energy is enough - attack         
-+ !doInspect(Vehicle)
-<-
-    .print("inspecting",Vehicle); 
-     inspect(Vehicle).
-    
-// if energy is not enough - recharge  
-+ !doAttack(Vehicle):
-energy(CurrEnergy) & CurrEnergy < 2
-<-
-     .print("I have ", CurrEnergy, " energy, but need 2 to attack,S going to recharge first.");
-      recharge.
-// If energy is enough - attack         
-+ !doAttack(Vehicle)
-<-
-    .print("attacking",Vehicle); 
-    attack(Vehicle).
-// if energy is not enough - recharge  
-+ !doParry:
-energy(CurrEnergy) & CurrEnergy < 2
-<-
-     .print("I have ", CurrEnergy, " energy, but need 2 to parry,S going to recharge first.");
-      recharge.
-// If energy is enough - parry        
-+ !doParry
-<-
-    .print("parry"); 
-     parry.
-     
-// if energy is not enough - recharge 
-//ToDo: repairer can also repair the agent who is undisabled,and spend 2 energy    
-+ !doRepair(Vehicle):
-energy(CurrEnergy) & CurrEnergy < 3
-<-
-     .print("I have ", CurrEnergy, " energy, but need 3 to repair,going to recharge first.");
-      recharge.
-      
-// if energy is enough - repair    
-+ !doRepair(Vehicle)
-<-
-    .print("repairing", Vehicle);
-     repair(Vehicle).
+        
 /* Plans */
