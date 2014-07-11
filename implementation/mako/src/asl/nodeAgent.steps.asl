@@ -26,7 +26,7 @@
 // knows the hop costs.
 +!pathStepsFewer(DestinationId, Steps)[source(Sender)]:
     Sender == cartographer
-    & minCostPath(DestinationId, _, _, HopCost)
+    & neighbour(DestinationId, HopCost)
     <- -minStepsPath(DestinationId, _, KnownSteps, _);
        +minStepsPath(DestinationId, DestinationId, 1, HopCost);
        !toldNeighboursAboutCloserPath(DestinationId, 1).
