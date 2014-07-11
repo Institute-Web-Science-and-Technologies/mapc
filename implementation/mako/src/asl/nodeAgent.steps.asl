@@ -39,11 +39,41 @@
             .send(Neighbour, achieve, pathStepsFewerPrioritised(DestinationId, Steps));
        }.
 
-@preferShortPaths[priority(0)]
+@preferShortPaths0[priority(0)]
 +!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
-    Steps < 15
+    Steps < 2
     <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
-
-@delayLongPaths[priority(-10)]
+    
+@preferShortPaths1[priority(-1)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 4
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+    
+@preferShortPaths2[priority(-2)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 8
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+    
+@preferShortPaths3[priority(-3)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 16
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+    
+@preferShortPaths4[priority(-4)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 32
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+    
+@preferShortPaths5[priority(-5)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 64
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+    
+@preferShortPaths[priority(-6)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 128
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+    
+@delayLongPaths[priority(-7)]
 +!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]
     <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
