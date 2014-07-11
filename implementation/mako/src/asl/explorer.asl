@@ -1,10 +1,17 @@
 { include("base.agent.asl") }
 
-/* Initial beliefs and rules */
+//For Probe
++step(Step)[source(self)]:
+     position(CurrVertex) & lastActionResult(Result) & lastAction(Action) & role(Role) & Role == explorer
+    <- .print("Current step is ", Step, ". Current position is (", CurrVertex, "). Result of last action '", Action,"' is ", Result);
+       .abolish(iWantToGoTo(_, _, _, _)[source(_)]);
+       .perceive;
+       .wait(200); // wait until all percepts have been added.
+       // Continue with DFS:
+       .send(cartographer, askOne, probed(CurrVertex,Value), Reply);
+       .print("Try to probe Vertex (", CurrVertex, "). Reply is: ", Reply);           
+       !doProbing(CurrVertex).
 
-/* Initial goals */
-
-/* Plans */      
 // if energy is enough - probe     
 + !doProbing(Vertex): 
 probed(Vertex, Value)

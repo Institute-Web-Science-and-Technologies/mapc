@@ -5,6 +5,15 @@
 /* Initial goals */
 
 /* Plans */
+   
+//for attack, attack enemy team agent who is on the same Vertex
++step(S):
+visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
+  & position(MyCurrVertex) & Team == teamB & role(Role) & Role == saboteur & Disabled == normal & MyCurrVertex == CurrVertex 
+    <- .print("I'm on the Vertex (", MyCurrVertex, ") and I will attack ", Vehicle," who is on the Vertex (", CurrVertex, ").");
+       .perceive;
+       .wait(200); // wait until all percepts have been added.                  
+        !doAttack(Vehicle).
     
 // If energy is not enough - recharge  
 + !doAttack(Vehicle):
