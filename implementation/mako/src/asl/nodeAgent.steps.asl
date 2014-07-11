@@ -22,10 +22,8 @@
     <- +minStepsPath(DestinationId, HopId, NewSteps, HopCost);
        !toldNeighboursAboutCloserPath(DestinationId, NewSteps).
 
-// If a cartographer wanted to add information from an edge but couldn't because
-// no information existed before about paths to destination and/or hop, he may
-// add it directly because there will be no intermediate nodes. This means, he
-// knows the hop costs.
+// If a cartographer wants to add information from an edge he may add it
+// directly because there will be no shorter step path than this one:
 +!pathStepsFewer(DestinationId, Steps, HopCost)[source(Sender)]
     <- -minStepsPath(DestinationId, _, KnownSteps, _);
        +minStepsPath(DestinationId, DestinationId, 1, HopCost);
