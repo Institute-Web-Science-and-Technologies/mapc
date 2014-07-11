@@ -8,7 +8,7 @@
 /* Plans */
 
 +achievement(Identifier)[source(percept)] <-
-	.print("New achievement(", Identifier, ")");
+//	.print("New achievement(", Identifier, ")");
 	+achievement(Identifier)[source(self)].
 	
 +bye[source(percept)] <-
@@ -110,7 +110,7 @@
 	-+steps(Numeral)[source(self)].
 	
 +strength(Numeral)[source(percept)] <-
-	.print("New strength(", Numeral, ")");
+//	.print("New strength(", Numeral, ")");
 	-+strength(Numeral)[source(self)].
 
 //TODO: Overlord?

@@ -9,10 +9,10 @@
 + !doInspect(Vehicle):
 energy(CurrEnergy) & CurrEnergy < 2
 <-
-     .print("I have ", CurrEnergy, " energy, but need 2 to inspect,S going to recharge first.");
+     .print("I have ", CurrEnergy, " energy, but I need 2 to inspect. Going to recharge first.");
       recharge.
 // If energy is enough - attack         
 + !doInspect(Vehicle)
 <-
-    .print("inspecting",Vehicle); 
+    .print("Inspecting ", Vehicle); 
      inspect(Vehicle).
