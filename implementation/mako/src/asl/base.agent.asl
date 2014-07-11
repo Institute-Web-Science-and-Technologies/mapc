@@ -13,7 +13,8 @@ idle(true).
 +edges(AmountEdges)[source(percept)] <- true.
 //TODO: send to cartographer
 
-+vertices(AmountVertices)[source(percept)] <- true. 
++vertices(AmountVertices)[source(percept)]
+    <- true. 
 //TODO: send to cartographer
 
 //TODO: visibleEntity, zoneScore
@@ -22,12 +23,10 @@ idle(true).
 // Whenever an agent gets a new position percept, update the belief base, 
 // if the new position belief is not already in belief base. 
 // Furthermore tell the cartographer about agents current position. 
-+position(Vertex)[source(percept)]:
-	not position(Vertex)
-    <- .print("I'm now at position: (", Vertex, ")"); 
++position(Vertex)[source(percept)]
+    <- .print("I'm now at position: (", Vertex, ")."); 
        .send(cartographer, tell, position(Vertex));
-       -position(_);
-       +position(Vertex)[source(self)].
+       -+position(Vertex)[source(self)].
 
 // Whenever an agent get a new probedVertex percept, 
 // tell the cartographer about the vertex and the probed value.
@@ -50,7 +49,7 @@ idle(true).
 // Assume the traversing costs of the edge are the max edge costs. 
 +visibleEdge(VertexA, VertexB)[source(percept)]:
     maxEdgeCost(Costs)
-    <- .print("I see an edge from (", VertexA, ") to (", VertexB, "). Costs are unknown (default=max)."); 
+    <- .print("I see an edge from (", VertexA, ") to (", VertexB, ") with unknown costs."); 
        .send(cartographer, tell, edgePercept(VertexA, VertexB, Costs)).
 
 // Whenever an agent gets a new surveyedEdge percept, 
@@ -61,10 +60,15 @@ idle(true).
 
 /*Actions*/                              
  +step(Step)[source(self)]:
-    position(Position) & lastActionResult(Result) & lastAction(Action) & idle(true)
-    <- .print("[Step", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result);
+    position(Position) & lastActionResult(Result) & lastAction(Action) & idle(Idle)
+    <- .print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,".");
        .abolish(iWantToGoTo(_, _, _, _)[source(_)]);
        .perceive;
        .wait(200); // wait until all percepts have been added.
-        // Continue with DFS:      
-        !exploreGraph.
+        // Continue with DFS:
+        if (Idle) {
+        	-+idle(false);
+        	!exploreGraph;
+        	-+idle(true);
+        	.print("I'm idle.");
+        }.
