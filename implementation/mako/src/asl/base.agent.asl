@@ -2,22 +2,9 @@
 { include("storeBeliefs.asl") }
 { include("exploreGraph.asl") }
 { include("initialization.asl") }
-//{ include("explorer.asl") }
-
-//Print all received beliefs. Used for debugging. (comment this out if your simulation crashes immediately)
-//@debug[atomic] +Belief <-
-//    .print("Received new belief from percept: ", Belief);
-//    for (B) {
-//        .print("    When ", Belief, " is added, this is another belief in the belief base: ", B);
-//    }
-//    -Belief;
-//    .print("        Removed ", Belief, " from belief base.").
-
 
 /* Initial beliefs and rules */
 maxEdgeCost(11).
-
-lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 /* Initial goals */
 
@@ -67,9 +54,8 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
        .perceive;
        .wait(200); // wait until all percepts have been added.
        // Continue with DFS:
-       .send(cartographer, askOne, probed(CurrVertex,Value));       	
-       .wait(100);   
-       .print("Try to probe Vertex (", CurrVertex, ").");           
+       .send(cartographer, askOne, probed(CurrVertex,Value), Reply);
+       .print("Try to probe Vertex (", CurrVertex, "). Reply is: ", Reply);           
        !doProbing(CurrVertex).
        
 //TODO: Move to inspector.asl       
