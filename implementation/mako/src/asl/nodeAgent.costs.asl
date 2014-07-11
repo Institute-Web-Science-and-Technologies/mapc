@@ -22,10 +22,12 @@
     <- +minCostPath(DestinationId, HopId, NewCosts, HopCost);
        !toldNeighboursAboutCheaperPath(DestinationId, NewCosts).
 
-// If a cartographer wanted to add information from an edge but couldn't because
-// no information existed before about paths to destination and/or hop, he may
-// add it directly because there will be no intermediate nodes. This means, he
-// knows the hop costs.
+// the suggested path does not improve our situation, hence ignore it:
++!pathCostsCheaper(DestinationId, Cost)[source(Sender)]
+    <- true.
+
+// If a cartographer wants to add information from an edge he may add it
+// directly because there will be no shorter step path than this one:
 +!pathCostsCheaper(DestinationId, Costs)[source(Sender)]:
     Sender == cartographer
     // there was no alternative path:
@@ -36,10 +38,6 @@
        +minCostPath(DestinationId, DestinationId, Costs, Costs);
        !toldNeighboursAboutCheaperPath(DestinationId, Costs).
 
-// the suggested path does not improve our situation, hence ignore it:
-+!pathCostsCheaper(DestinationId, Cost)[source(Sender)]
-    <- true.
-    
 +!toldNeighboursAboutCheaperPath(DestinationId, Costs)
     <- .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
        for (.member(Neighbour, Neighbours)) {

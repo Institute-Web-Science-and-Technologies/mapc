@@ -26,9 +26,7 @@
 // no information existed before about paths to destination and/or hop, he may
 // add it directly because there will be no intermediate nodes. This means, he
 // knows the hop costs.
-+!pathStepsFewer(DestinationId, Steps)[source(Sender)]:
-    Sender == cartographer
-    & neighbour(DestinationId, HopCost)
++!pathStepsFewer(DestinationId, Steps, HopCost)[source(Sender)]
     <- -minStepsPath(DestinationId, _, KnownSteps, _);
        +minStepsPath(DestinationId, DestinationId, 1, HopCost);
        !toldNeighboursAboutCloserPath(DestinationId, 1).
@@ -37,8 +35,8 @@
 +!pathStepsFewer(DestinationId, Steps)[source(Sender)]
     <- true.
 
-+!toldNeighboursAboutCloserPath(DestinationId, Costs)
++!toldNeighboursAboutCloserPath(DestinationId, Steps)
     <- .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
        for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathStepsFewer(DestinationId, Costs));
+            .send(Neighbour, achieve, pathStepsFewer(DestinationId, Steps));
        }.
