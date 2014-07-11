@@ -11,16 +11,14 @@
 // Set distances to self as 0:
 +!start:
     .my_name(Name)
-    <- .print("Entering the !start plan.");
-    +minCostPath(Name, Name, 0, 0); // DestinationId, HopId, total costs, costs to hop
+    <- +minCostPath(Name, Name, 0, 0); // DestinationId, HopId, total costs, costs to hop
     +minStepsPath(Name, Name, 0, 0). // DestinationId, HopId, total steps, costs to hop
 
 // This plan adds Vertex as a neighbour and may set this path as the new
 // cheapest (cost) or shortest (steps) path.
 +path(Vertex, Weight)[source(Sender)]:
     Sender == cartographer
-    <- .print("Entering the +path plan.");
-       -path(Vertex, Weight)[source(cartographer)];
+    <- -path(Vertex, Weight)[source(cartographer)];
        -neighbour(Vertex, _);
        !pathCostsCheaper(Vertex, Weight)[source(cartographer)];
        !pathStepsFewer(Vertex, 0)[source(cartographer)];
