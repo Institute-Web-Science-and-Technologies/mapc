@@ -56,7 +56,7 @@ maxEdgeCost(11).
        // Continue with DFS:
        .send(cartographer, askOne, probed(CurrVertex,Value), Reply);
        .print("Try to probe Vertex (", CurrVertex, "). Reply is: ", Reply);           
-       !doProbing(CurrVertex).
+       !doProbing(CurrVertex, Reply).
        
 //TODO: Move to inspector.asl       
 // For Inspecting, Inspecting the enemy and broadcast there parameters of enemy agent
@@ -115,5 +115,7 @@ visibleEntity(Vehicle,CurrVertex,Team,Disabled)[source(percept)]
        .wait(200); // wait until all percepts have been added.
         // Continue with DFS:      
         !exploreGraph.
+        
+
         
 /* Plans */
