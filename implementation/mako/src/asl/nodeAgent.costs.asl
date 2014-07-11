@@ -43,5 +43,14 @@
 +!toldNeighboursAboutCheaperPath(DestinationId, Costs)
     <- .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
        for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathCostsCheaper(DestinationId, Costs));
+            .send(Neighbour, achieve, pathCostsCheaperPrioritised(DestinationId, Costs));
        }.
+
+@preferCheaperPaths[priority(0)]
++!pathCostsCheaperPrioritised(DestinationId, Costs)[source(HopId)]:
+    Costs < 20
+    <- !pathCostsCheaper(DestinationId, Costs)[source(HopId)].
+
+@delayExpensivePaths[priority(-10)]
++!pathCostsCheaperPrioritised(DestinationId, Costs)[source(HopId)]
+    <- !pathCostsCheaper(DestinationId, Costs)[source(HopId)].

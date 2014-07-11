@@ -20,8 +20,8 @@
     Sender == cartographer
     <- -path(Vertex, Weight)[source(cartographer)];
        -neighbour(Vertex, _);
-       !pathCostsCheaper(Vertex, Weight)[source(cartographer)];
        !pathStepsFewer(Vertex, 0, Weight)[source(cartographer)];
+       !pathCostsCheaper(Vertex, Weight)[source(cartographer)];
        // add the neighbour afterwards to prevent telling someone who knows
        // about exactly that edge:
        +neighbour(Vertex, Weight).

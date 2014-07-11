@@ -36,5 +36,14 @@
 +!toldNeighboursAboutCloserPath(DestinationId, Steps)
     <- .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
        for (.member(Neighbour, Neighbours)) {
-            .send(Neighbour, achieve, pathStepsFewer(DestinationId, Steps));
+            .send(Neighbour, achieve, pathStepsFewerPrioritised(DestinationId, Steps));
        }.
+
+@preferShortPaths[priority(0)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]:
+    Steps < 15
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
+
+@delayLongPaths[priority(-10)]
++!pathStepsFewerPrioritised(DestinationId, Steps)[source(HopId)]
+    <- !pathStepsFewer(DestinationId, Steps)[source(HopId)].
