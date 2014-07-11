@@ -37,8 +37,8 @@ maxEdgeCost(11).
     <- -position(Sender, Vertex)[source(Sender)];
        -position(Sender, _)[source(self)];
        +position(Sender, Vertex)[source(self)];
-       +visited(Vertex)[source(self)].
-       //!addedNodeAgent(Vertex).
+       +visited(Vertex)[source(self)];
+       !addedNodeAgent(Vertex).
     
 +probed(Vertex, Value)[source(PerceptSource)]:
     .number(Value) & PerceptSource \== self
