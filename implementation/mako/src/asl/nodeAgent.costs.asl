@@ -3,6 +3,7 @@
 /* Goals */
 
 // Add path if known alternatives where more expensive.
+@addCheaperPath[atomic]
 +!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
     // How much does travelling to the hop and to the destination currently cost:
    minCostPath(DestinationId, _, KnownCosts, _) & neighbour(HopId, HopCost)
@@ -13,6 +14,7 @@
        !toldNeighboursAboutCheaperPath(DestinationId, NewCosts).
 
 // Add path if there is no known alternative yet but there is a path to the hop:
+@addNewCheapestPath[atomic]
 +!pathCostsCheaper(DestinationId, Costs)[source(HopId)]:
     // The agent does not know an alternative path (the rest are just needed parameters):
     not minCostPath(DestinationId, _, _, _) & neighbour(HopId, HopCost)

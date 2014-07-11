@@ -19,12 +19,13 @@ maxEdgeCost(11).
        +edge(VertexB, VertexA, Weight);
        !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
        
-// Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.    
+// Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]:
     edge(VertexA, VertexB, _)
     <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)].
 
-// Received unsurveyed edge belief -> add to belief base. 
+// Received unsurveyed edge belief -> add to belief base.
+@addUnsurveyedEdges[atomic]
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]
     <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)];
        +edge(VertexA, VertexB, Weight);
