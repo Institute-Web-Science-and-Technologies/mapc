@@ -16,9 +16,8 @@ maxEdgeCost(11).
        .abolish(edge(VertexA, VertexB, _));
        .abolish(edge(VertexB, VertexA, _));
        +edge(VertexA, VertexB, Weight);
-       +edge(VertexB, VertexA, Weight).
-       
-       //!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
+       +edge(VertexB, VertexA, Weight);
+       !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
        
 // Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]:
@@ -30,8 +29,8 @@ maxEdgeCost(11).
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]
     <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)];
        +edge(VertexA, VertexB, Weight);
-       +edge(VertexB, VertexA, Weight).
-       //!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
+       +edge(VertexB, VertexA, Weight);
+       !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
 
 +position(Vertex)[source(Sender)]:
     Sender \== self
