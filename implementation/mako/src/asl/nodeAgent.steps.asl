@@ -3,6 +3,7 @@
 /* Goals */
 
 // Add path if known alternatives took more steps.
+@addShorterPath[atomic]
 +!pathStepsFewer(DestinationId, Steps)[source(HopId)]: 
     // How many steps does travelling to the hop and to the destination currently take:
     neighbour(HopId, HopCost) & minStepsPath(DestinationId, _, KnownSteps, _)
@@ -13,6 +14,7 @@
        !toldNeighboursAboutCloserPath(DestinationId, NewSteps).
 
 // Add path if there is no known alternative yet but there is a path to the hop:
+@addNewShortestPath[atomic]
 +!pathStepsFewer(DestinationId, Steps)[source(HopId)]:
     // The agent does not know an alternative path (the rest are just needed parameters):
     not minStepsPath(DestinationId, _, _, _)
