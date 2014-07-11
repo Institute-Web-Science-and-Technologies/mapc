@@ -24,11 +24,11 @@
 //	-+edges(Numeral)[source(self)].
 	
 +energy(Numeral)[source(percept)] <-
-	.print("New energy(", Numeral, ")");
+	//.print("New energy(", Numeral, ")");
 	-+energy(Numeral)[source(self)].
 	
 +health(Numeral)[source(percept)] <-
-	.print("New health(", Numeral, ")");
+	//.print("New health(", Numeral, ")");
 	-+health(Numeral)[source(self)].
 
 //TODO: Overlord
