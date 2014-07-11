@@ -10,12 +10,10 @@ idle(true).
 +simStart <- .print("Simulation started.").
 
 /* TODO */
-+edges(AmountEdges)[source(percept)]
-    <- true.
++edges(AmountEdges)[source(percept)] <- true.
 //TODO: send to cartographer
 
-+vertices(AmountVertices)[source(percept)]
-    <- true. 
++vertices(AmountVertices)[source(percept)] <- true. 
 //TODO: send to cartographer
 
 //TODO: visibleEntity, zoneScore
