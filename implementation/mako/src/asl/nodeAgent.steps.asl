@@ -3,9 +3,10 @@
 /* Goals */
 
 // Add path if known alternatives took more steps.
+@addShorterPath[atomic]
 +!pathStepsFewer(DestinationId, Steps)[source(HopId)]: 
     // How many steps does travelling to the hop and to the destination currently take:
-    minStepsPath(HopId, _, _, HopCost) & minStepsPath(DestinationId, _, KnownSteps, _)
+    neighbour(HopId, HopCost) & minStepsPath(DestinationId, _, KnownSteps, _)
     // We know a route but with more steps:
     & NewSteps = Steps + 1 & KnownSteps > NewSteps
     <- -minStepsPath(DestinationId, _, KnownSteps, _);
@@ -13,6 +14,7 @@
        !toldNeighboursAboutCloserPath(DestinationId, NewSteps).
 
 // Add path if there is no known alternative yet but there is a path to the hop:
+@addNewShortestPath[atomic]
 +!pathStepsFewer(DestinationId, Steps)[source(HopId)]:
     // The agent does not know an alternative path (the rest are just needed parameters):
     not minStepsPath(DestinationId, _, _, _)
@@ -26,7 +28,7 @@
 // knows the hop costs.
 +!pathStepsFewer(DestinationId, Steps)[source(Sender)]:
     Sender == cartographer
-    & minCostPath(DestinationId, _, HopCost, _)
+    & neighbour(DestinationId, HopCost)
     <- -minStepsPath(DestinationId, _, KnownSteps, _);
        +minStepsPath(DestinationId, DestinationId, 1, HopCost);
        !toldNeighboursAboutCloserPath(DestinationId, 1).

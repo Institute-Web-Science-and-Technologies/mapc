@@ -1,6 +1,6 @@
 // Agent cartographer in project mako
 /* Initial beliefs and rules */
-
+maxEdgeCost(11).
 /* Initial goals */
 
 !start.
@@ -11,7 +11,7 @@
 // Atomic to avoid adding surveyed and unsurveyed edges in parallel.
 @addEdges[atomic]
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]: 
-    Weight < 1000
+    maxEdgeCost(N) & Weight < N
     <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)];
        .abolish(edge(VertexA, VertexB, _));
        .abolish(edge(VertexB, VertexA, _));
@@ -19,12 +19,13 @@
        +edge(VertexB, VertexA, Weight);
        !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
        
-// Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.    
+// Received unsurveyed edge belief, but the edge is already in our beliefs -> delete new unsurveyed edge belief.
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]:
     edge(VertexA, VertexB, _)
     <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)].
 
-// Received unsurveyed edge belief -> add to belief base. 
+// Received unsurveyed edge belief -> add to belief base.
+@addUnsurveyedEdges[atomic]
 +edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)]
     <- -edgePercept(VertexA, VertexB, Weight)[source(PerceptSource)];
        +edge(VertexA, VertexB, Weight);
@@ -64,7 +65,7 @@
 
 // If already surveyed or if there is unsurveyed adjacent edge - do nothing.
 +!isVertexSurveyed(Vertex):
-    surveyed(Vertex) | (edge(Vertex, _, Weight) & Weight == 1000).
+    surveyed(Vertex) | (edge(Vertex, _, Weight) & maxEdgeCost(Weight)).
 
 // At least one edge exists - mark as surveyed    
 +!isVertexSurveyed(Vertex):

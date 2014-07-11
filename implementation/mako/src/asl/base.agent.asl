@@ -15,6 +15,8 @@
 
 
 /* Initial beliefs and rules */
+maxEdgeCost(11).
+
 lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
 
 /* Initial goals */
@@ -27,7 +29,8 @@ lowEnergy :- energy(Energy)[source(percept)] & Energy < 8.
        -+position(Vertex)[source(self)].
 
 +visibleEdge(VertexA, VertexB)[source(percept)]
-    <- .send(cartographer, tell, edgePercept(VertexA, VertexB, 1000)).
+    <- ?maxEdgeCost(N);
+       .send(cartographer, tell, edgePercept(VertexA, VertexB, N)).
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
     <- .send(cartographer, tell, edgePercept(VertexA, VertexB, Weight)).
