@@ -24,11 +24,11 @@
 //	-+edges(Numeral)[source(self)].
 	
 +energy(Numeral)[source(percept)] <-
-//	.print("New energy(", Numeral, ")");
+	.print("New energy(", Numeral, ")");
 	-+energy(Numeral)[source(self)].
 	
 +health(Numeral)[source(percept)] <-
-//	.print("New health(", Numeral, ")");
+	.print("New health(", Numeral, ")");
 	-+health(Numeral)[source(self)].
 
 //TODO: Overlord
@@ -93,16 +93,9 @@
 	-+simStart[source(self)].
 
 //TODO: Overlord
-+step(Numeral)[source(percept)]: position(Vertex) & .my_name(Name)<-
++step(Numeral)[source(percept)]<-
 //	.print("New step(", Numeral, ")");	
-	-+step(Numeral)[source(self)];
-	if (Numeral == 3 & Name == "repairer6") {
-//		.print("Entering step(3) plan!");
-//		.send(cartographer, achieve, getTestVertex(VertexB));
-//		.print("My position is: ", Vertex);
-//		.send(cartographer, achieve, findPath(Vertex, VertexB, Path));	
-//		.print("Found Path: ", Path)
-	}.
+	-+step(Numeral)[source(self)].
 	
 //TODO: Overlord
 +steps(Numeral)[source(percept)] <-
