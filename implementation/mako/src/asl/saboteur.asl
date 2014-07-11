@@ -6,28 +6,30 @@
 
 /* Plans */
     
-// if energy is not enough - recharge  
+// If energy is not enough - recharge  
 + !doAttack(Vehicle):
 energy(CurrEnergy) & CurrEnergy < 2
 <-
-     .print("I have ", CurrEnergy, " energy, but need 2 to attack,S going to recharge first.");
+     .print("I have ", CurrEnergy, " energy, but I need 2 energy to attack. Going to recharge first.");
       recharge.
+      
 // If energy is enough - attack         
 + !doAttack(Vehicle)
 <-
-    .print("attacking",Vehicle); 
+    .print("Attacking (", Vehicle, ")."); 
     attack(Vehicle).
     
     
 
-// if energy is not enough - recharge  
+// If energy is not enough - recharge  
 + !doParry:
 energy(CurrEnergy) & CurrEnergy < 2
 <-
-     .print("I have ", CurrEnergy, " energy, but need 2 to parry,S going to recharge first.");
+     .print("I have ", CurrEnergy, " energy, but I need 2 energy to parry. Going to recharge first.");
       recharge.
+      
 // If energy is enough - parry        
 + !doParry
 <-
-    .print("parry"); 
+    .print("Parry."); 
      parry.
