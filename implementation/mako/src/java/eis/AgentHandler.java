@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 public class AgentHandler {
 
     private static String configPath = "agentsConfig.xml";
-    private static String selectedTeam = "A";
+    private static String selectedTeam = "teamA";
 
     /**
      * Create the agents according to the specification given in the agents' XML

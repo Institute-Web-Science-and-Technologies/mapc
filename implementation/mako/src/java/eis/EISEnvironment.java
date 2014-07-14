@@ -76,7 +76,7 @@ public class EISEnvironment extends Environment implements AgentListener {
                 // tell server which agent is connected to which entity
                 environmentInterface.associateEntity(agent.getServerName(), agent.getEntity());
                 addPercept(agent.getJasonName(), Literal.parseLiteral("myName(" + agent.getServerName() + ")"));
-
+                addPercept(agent.getJasonName(), Literal.parseLiteral("myTeam(" + agent.getTeam() + ")"));
                 // listener for global percepts from the server
                 environmentInterface.attachAgentListener(agent.getServerName(), this);
             } catch (AgentException e) {
