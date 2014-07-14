@@ -26,6 +26,7 @@ public class AgentHandler {
 
     private static String configPath = "agentsConfig.xml";
     private static String selectedTeam = "teamA";
+    private static String enemyTeam = "teamB";
 
     /**
      * Create the agents according to the specification given in the agents' XML
@@ -75,6 +76,8 @@ public class AgentHandler {
                         agent.setServerName(serverName);
                         agent.setEntity(entity);
                         agent.setTeam(team);
+                        String enemy = (team.equalsIgnoreCase(selectedTeam)) ? enemyTeam : selectedTeam;
+                        agent.setEnemyTeam(enemy);
                         agent.setJasonName(jasonName);
                         if (team.equalsIgnoreCase(selectedTeam)) {
                             agents.put(serverName, agent);

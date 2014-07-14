@@ -1,6 +1,5 @@
 package eis;
 
-
 /**
  * @author Artur Daudrich
  * @author Michael Sewell
@@ -9,6 +8,7 @@ public class Agent {
 
     private String serverName;
     private String team;
+    private String enemyTeam;
     private String entity;
     private String jasonName;
 
@@ -42,5 +42,13 @@ public class Agent {
 
     public void setJasonName(String type) {
         this.jasonName = type;
+    }
+
+    public String getEnemyTeam() {
+        return enemyTeam;
+    }
+
+    public void setEnemyTeam(String enemyTeam) {
+        this.enemyTeam = enemyTeam;
     }
 }
