@@ -126,7 +126,7 @@ maxNodesAmount(625).
 // Tells the NodeAgents about this edge. Also add the other vertex to the list
 // of neighbours:
 +!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight)
-    <- .send(VertexA, tell, path(VertexB, Weight));      
+    <- .send(VertexA, tell, path(VertexB, Weight));     
        .send(VertexB, tell, path(VertexA, Weight)).
 
 

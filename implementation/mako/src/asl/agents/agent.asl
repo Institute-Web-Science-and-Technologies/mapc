@@ -8,7 +8,6 @@ zoneMode(false).
 +simStart <- .print("Simulation started.").
 
 /* TODO */
-
 //TODO: visibleEntity, zoneScore
 
 /* Map Related Stuff */
@@ -27,7 +26,7 @@ zoneMode(false).
        -+position(Vertex)[source(self)];
        -+isSurveying(false);
 	   -+isProbing(false);
-	   -+isExploring(false);
+	   -+isExploring(false)
 	   -+doneSurveying(false).
 
 /*Actions*/                              
