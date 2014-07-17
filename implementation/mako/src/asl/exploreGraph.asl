@@ -97,14 +97,13 @@
 +!recalculateNextVertex(CurrVertex, Options, NextVertex, RevisedNextVertex):
     .length(Options) > 1 & edge(CurrVertex, NextVertex, NextVertexWeight) 
     <-
-    .delete([NextVertex, NextVertexWeight], Options, NewOptions);
-    .length(NewOptions, NumOptions);
-    .nth(math.random(NumOptions), NewOptions, NextVertexList);
-    .nth(0, NextVertexList, RevisedNextVertex);
-    .nth(1, NextVertexList, RevisedNextVertexWeight);
-    .print("New options were: ", NewOptions, ", I chose ", RevisedNextVertex);
-    +edge(CurrVertex, RevisedNextVertex, RevisedNextVertexWeight);
-    +edge(RevisedNextVertex, CurrVertex, RevisedNextVertexWeight).
+     .delete([NextVertex, NextVertexWeight], Options, NewOptions);
+     .min(NewOptions, CheapestOption);
+     .nth(0, CheapestOption, RevisedNextVertexWeight);
+     .nth(1, CheapestOption, RevisedNextVertex);
+     .print("New options were: ", NewOptions, ", I chose ", RevisedNextVertex);
+     +edge(CurrVertex, RevisedNextVertex, RevisedNextVertexWeight);
+     +edge(RevisedNextVertex, CurrVertex, RevisedNextVertexWeight).
 
 // If we cannot find unvisited vertices not selected by another agent -> return previous position.     
 +!recalculateNextVertex(CurrVertex, _, _, RevisedNextVertex):
@@ -121,11 +120,11 @@
 
 // Return not visited vertex from the neighborhood.
  +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
-     .length(Options, NumOptions) & NumOptions > 0
-     <-      
-     .nth(math.random(NumOptions), Options, NextVertexList);
-     .nth(0, NextVertexList, NextVertex);
-     .nth(1, NextVertexList, NextVertexWeight);
+     not .length(Options, 0)
+     <-
+     .min(Options, CheapestOption);
+     .nth(0, CheapestOption, NextVertexWeight);
+     .nth(1, CheapestOption, NextVertex);
      .print("Next vertex: ", NextVertex, " having weight: ", NextVertexWeight);
      +edge(CurrVertex, NextVertex, NextVertexWeight);
      +edge(NextVertex, CurrVertex, NextVertexWeight).

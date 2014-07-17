@@ -56,7 +56,9 @@ maxEdgeCost(11).
      !isVertexSurveyed(Vertex); // make sure this information exists for later use from the base agent.
      if(surveyed(Vertex)){
      	.send(SenderAgent, tell, surveyed(Vertex));
-        .findall([DestinationVertex, Weight], 
+     	// putting Weight before DestinationVertex allows a natural order in
+     	// favour of the weights:
+        .findall([Weight, DestinationVertex], 
      	   edge(Vertex, DestinationVertex, Weight) & not visited(DestinationVertex), 
      	   UnsurveyedNeighbours);
      }.
