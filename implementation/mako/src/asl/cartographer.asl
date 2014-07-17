@@ -37,8 +37,7 @@ maxEdgeCost(11).
     <- -position(Sender, Vertex)[source(Sender)];
        -position(Sender, _)[source(self)];
        +position(Sender, Vertex)[source(self)];
-       +visited(Vertex)[source(self)];
-       !addedNodeAgent(Vertex).
+       +visited(Vertex)[source(self)].
     
 +probed(Vertex, Value)[source(PerceptSource)]:
     .number(Value) & PerceptSource \== self
@@ -82,26 +81,17 @@ maxEdgeCost(11).
 // Have a zero condition goal to prevent errors:
 +!isVertexSurveyed(Vertex).
 
-+!start : true <- .print("I am the cartographer. How may I help you?").
-
-// Agent with given name existed, nothing to do:
-+!addedNodeAgent(Vertex):
-    existingNodeAgents(Vertex)
-    <- true.
-
-// If an agent with given name does not exist yet, create it:
-@addNodeAgentIfNeeded[atomic]
-+!addedNodeAgent(Vertex)
-    <- .create_agent(Vertex, "src/asl/nodeAgent.asl");
-       +existingNodeAgents(Vertex).
++!start
+    <- internalActions.createNodeAgentsList(NodeAgents);
+       for (.member(NodeAgent, NodeAgents)) {
+            .create_agent(NodeAgent, "src/asl/nodeAgent.asl");
+       };
+       .print("I created ", .length(NodeAgents), " nodeAgents.").
 
 // Creates agent nodes if necessary and tells them about this edge.
 // Also add the other vertex to the list of neighbours.
 +!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight)
-    <- !addedNodeAgent(VertexA);
-       !addedNodeAgent(VertexB);
-       
-       .send(VertexA, tell, path(VertexB, Weight));      
+    <- .send(VertexA, tell, path(VertexB, Weight));      
        .send(VertexB, tell, path(VertexA, Weight)).
 
 
