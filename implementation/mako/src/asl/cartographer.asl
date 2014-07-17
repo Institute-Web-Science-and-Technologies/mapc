@@ -1,6 +1,7 @@
 // Agent cartographer in project mako
 /* Initial beliefs and rules */
 maxEdgeCost(11).
+maxNodesAmount(625).
 /* Initial goals */
 
 !start.
@@ -81,8 +82,9 @@ maxEdgeCost(11).
 // Have a zero condition goal to prevent errors:
 +!isVertexSurveyed(Vertex).
 
-+!start
-    <- internalActions.createNodeAgentsList(NodeAgents);
++!start:
+    maxNodesAmount(Amount)
+    <- internalActions.createNodeAgentsList(Amount, NodeAgents);
        for (.member(NodeAgent, NodeAgents)) {
             .create_agent(NodeAgent, "src/asl/nodeAgent.asl");
        };
