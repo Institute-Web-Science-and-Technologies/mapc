@@ -1,2 +1,2 @@
 #!/bin/bash
-/usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java -classpath /home/students/mako:/home/students/mako/bin/classes:/opt/jason/lib/jason.jar:/home/students/mako/lib/c4jason.jar:/home/students/mako/lib/cartago.jar:/home/students/mako/lib/eis.jar:/home/students/mako/lib/eismassim-2.1-javadoc.jar:/home/students/mako/lib/eismassim.jar:/home/students/mako/lib/jason.jar:/home/students/mako/lib/moise.jar jason.infra.centralised.RunCentralisedMAS mako.mas2j
+/usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java -classpath .:bin/classes:/opt/jason/lib/jason.jar:lib/c4jason.jar:lib/eis.jar:lib/eismassim.jar:lib/jason.jar: jason.infra.centralised.RunCentralisedMAS mako.mas2j
