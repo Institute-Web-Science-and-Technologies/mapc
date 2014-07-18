@@ -128,6 +128,10 @@ public class EISEnvironment extends Environment implements AgentListener {
         addPercept(jasonName, literal);
     }
 
+    /**
+     * This method clears earlier percepts with {@code [source(percept)]} of the
+     * respective agents and then adds the new ones from the current step.
+     */
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         String jasonName = serverAgentMap.get(agentName).getJasonName();

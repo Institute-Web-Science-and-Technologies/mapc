@@ -8,11 +8,6 @@ zoneMode(false).
 +simStart <- .print("Simulation started.").
 
 /* TODO */
-+edges(AmountEdges)[source(percept)] <- true.
-//TODO: send to cartographer
-
-+vertices(AmountVertices)[source(percept)] <- true. 
-//TODO: send to cartographer
 
 //TODO: visibleEntity, zoneScore
 
@@ -32,7 +27,7 @@ zoneMode(false).
        -+position(Vertex)[source(self)];
        -+isSurveying(false);
 	   -+isProbing(false);
-	   -+isExploring(false)
+	   -+isExploring(false);
 	   -+doneSurveying(false).
 
 /*Actions*/                              
