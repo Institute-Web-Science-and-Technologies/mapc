@@ -32,7 +32,7 @@ idle(true).
 // tell the cartographer about the vertex and the probed value.
 +probedVertex(Vertex, Value)[source(percept)]:
     .number(Value)
-    <-.print("I found a new probed vertex (", Vertex, ") with value of ", Value); 
+    <-//.print("I found a new probed vertex (", Vertex, ") with value of ", Value); 
       .send(cartographer, tell, probed(Vertex, Value));
       -+probedVertex(Vertex, Value)[source(self)].
 // TODO: do we still want/need to set local knowledge?
@@ -41,7 +41,7 @@ idle(true).
 // tell the cartographer about the vertex and the occupying team.
 +visibleVertex(Vertex, Team)[source(percept)]:
     .literal(Team)
-    <- .print("I see the vertex (", Vertex, "). It is occupied by team ", Team, ".");
+    <- //.print("I see the vertex (", Vertex, "). It is occupied by team ", Team, ".");
     .send(cartographer, tell, occupied(Vertex, Team)). 
 // TODO: merge this with probed (minimum node value is 1)? Maybe also merge it with position
 
@@ -49,13 +49,13 @@ idle(true).
 // Assume the traversing costs of the edge are the max edge costs. 
 +visibleEdge(VertexA, VertexB)[source(percept)]:
     maxEdgeCost(Costs)
-    <- .print("I see an edge from (", VertexA, ") to (", VertexB, ") with unknown costs."); 
+    <- //.print("I see an edge from (", VertexA, ") to (", VertexB, ") with unknown costs."); 
        .send(cartographer, tell, edgePercept(VertexA, VertexB, Costs)).
 
 // Whenever an agent gets a new surveyedEdge percept, 
 // tell the cartographer about adjacent vertices and the traversing costs of the edge.
 +surveyedEdge(VertexA, VertexB, Costs)[source(percept)]
-    <- .print("I see an edge from (", VertexA, ") to (", VertexB, "). Costs are ", Costs, ".");
+    <- //.print("I see an edge from (", VertexA, ") to (", VertexB, "). Costs are ", Costs, ".");
        .send(cartographer, tell, edgePercept(VertexA, VertexB, Costs)).
 
 /*Actions*/                              

@@ -63,6 +63,10 @@ maxEdgeCost(11).
      	   UnsurveyedNeighbours);
      }.
 
++?unvisitedVertices(UnsurveyedNeighbours)
+    <-
+    .findall(Vertex, existingNodeAgents(Vertex) & not visited(Vertex), UnsurveyedNeighbours).
+
 /* Additional goals */
 
 // If already surveyed or if there is unsurveyed adjacent edge - do nothing.

@@ -76,7 +76,8 @@
 	.print("I am in a conflict in intension to go to ", MyNextVertex, " with the agent ", AgentName, ". Need to recalculate next vertex.");
 //	.print("My parameters for comparison were: ", MyNumOptions, " ",MyNextVertexWeight, " ", MyE, " ", MyName);
 //	.print("Opponent's' parameters for comparison were: ", NumOptions, " ",NextVertexWeight, " ", E, " ", AgentName);
-	!recalculateNextVertex(CurrVertex, Options, MyNextVertex, RevisedNextVertex).
+	.delete([MyNextVertexWeight, MyNextVertex], Options, NewOptions);
+	!findNextVertex(CurrVertex, NewOptions, RevisedNextVertex, _).
 
 // Debugging bidding outcomes
 //+!reconsiderChoice(MyNextVertex, MyNextVertexWeight, Options, RevisedNextVertex):
@@ -92,31 +93,6 @@
 +!reconsiderChoice(MyNextVertex, _, _, RevisedNextVertex)
     <-
     RevisedNextVertex = MyNextVertex.
-    
-// Try to find another unvisited vertex
-+!recalculateNextVertex(CurrVertex, Options, NextVertex, RevisedNextVertex):
-    .length(Options) > 1 & edge(CurrVertex, NextVertex, NextVertexWeight) 
-    <-
-     .delete([NextVertex, NextVertexWeight], Options, NewOptions);
-     .min(NewOptions, CheapestOption);
-     .nth(0, CheapestOption, RevisedNextVertexWeight);
-     .nth(1, CheapestOption, RevisedNextVertex);
-     .print("New options were: ", NewOptions, ", I chose ", RevisedNextVertex);
-     +edge(CurrVertex, RevisedNextVertex, RevisedNextVertexWeight);
-     +edge(RevisedNextVertex, CurrVertex, RevisedNextVertexWeight).
-
-// If we cannot find unvisited vertices not selected by another agent -> return previous position.     
-+!recalculateNextVertex(CurrVertex, _, _, RevisedNextVertex):
-    dfspath(CurrPath) & .length(CurrPath) > 1
-    <- 
-    .nth(1, CurrPath, RevisedNextVertex);
-    .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", RevisedNextVertex). 
-
-// DFS is completed. 
-+!recalculateNextVertex(_, _, _, _)
-    <-
-    .print("I'm done with exploring!");
-    .succeed_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
  +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
@@ -130,7 +106,7 @@
      +edge(NextVertex, CurrVertex, NextVertexWeight).
  
  // If there are no unvisited vertices in the neighborhood -> return previous position.     
- +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
+ +!findNextVertex(CurrVertex, _, NextVertex, NextVertexWeight):
      dfspath(CurrPath) & .length(CurrPath) > 1
      <- 
      .nth(1, CurrPath, NextVertex);
@@ -138,10 +114,27 @@
      .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", NextVertex). 
  
  // DFS is completed. 
- +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight	)
+ +!findNextVertex(CurrVertex, _, NextVertex, NextVertexWeight)
      <-
-     .print("I'm done with exploring!");
-     .succeed_goal(exploreGraph).
+     .print("I'm done with DFS, heading to some unvisited vertex.");
+     !findNearestUnvisitedVertex(CurrVertex, NextVertex);
+     -+dfspath([])[source(self)];
+     .print("I chose to go to ", NextVertex, " as my next hop.").
+     
++!findNearestUnvisitedVertex(CurrVertex, NextVertex)
+    <-
+    .send(cartographer, askOne, unvisitedVertices(_), unvisitedVertices(UnvisitedVertexList));
+    //.print("Unvisited vertices(", .length(UnvisitedVertexList),"): ", UnvisitedVertexList);
+    if(not .length(UnvisitedVertexList, 0)){
+    	//.print("I want to send message to ", CurrVertex);
+    	.send(CurrVertex, askOne, getClosestVetexFromList(UnvisitedVertexList, _), getClosestVetexFromList(_, NextVertex));
+    	.send(cartographer, askOne, edge(CurrVertex, NextVertex, _), edge(_, _, Weight));
+    	-+edge(CurrVertex, NextVertex, Weight);  	
+    }
+    else{
+    	.print("There are no unvisited vertices in the graph. Stopping.");
+    	.succeed_goal(exploreGraph);
+    }.
 
 // Want to goto, but don't have enough energy -> recharge.
 +!goto(NextVertex):

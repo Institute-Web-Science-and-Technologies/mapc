@@ -25,3 +25,11 @@
        // add the neighbour afterwards to prevent telling someone who knows
        // about exactly that edge:
        +neighbour(Vertex, Weight).
+
++?getClosestVetexFromList(VertexList, NextVertex):
+    not .length(VertexList, 0)
+    <-
+    .findall([Steps, NextHopVertex], minStepsPath(Vertex, NextHopVertex, Steps, _) & .member(Vertex, VertexList), VertexDistanceList);
+    .min(VertexDistanceList, NextVertexWithDist);
+    .nth(1, NextVertexWithDist, NextVertex).
+
