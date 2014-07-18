@@ -26,7 +26,8 @@
        // about exactly that edge:
        +neighbour(Vertex, Weight).
 
-+?getClosestVetexFromList(VertexList, NextVertex):
+// From the input list of vertices (VertexList) calculates the closest vertex
++?getClosestVertexFromList(VertexList, NextVertex):
     not .length(VertexList, 0)
     <-
     .findall([Steps, NextHopVertex], minStepsPath(Vertex, NextHopVertex, Steps, _) & .member(Vertex, VertexList), VertexDistanceList);
