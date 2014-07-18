@@ -84,11 +84,13 @@ maxNodesAmount(625).
 
 +!start:
     maxNodesAmount(Amount)
-    <- internalActions.createNodeAgentsList(Amount, NodeAgents);
-       for (.member(NodeAgent, NodeAgents)) {
-            .create_agent(NodeAgent, "src/asl/nodeAgent.asl");
-       };
-       .print("I created ", .length(NodeAgents), " nodeAgents.").
+    <- 
+    for (.range(Int, 0, Amount - 1)) {
+    	.concat("v", Int, NodeAgent);
+    	.create_agent(NodeAgent, "src/asl/nodeAgent.asl");
+    	+existingNodeAgents(NodeAgent);
+    };
+    .print("I created ", Amount, " nodeAgents.").
 
 // Creates agent nodes if necessary and tells them about this edge.
 // Also add the other vertex to the list of neighbours.
