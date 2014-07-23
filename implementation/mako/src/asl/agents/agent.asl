@@ -79,6 +79,10 @@ zoneMode(false).
 	<- !goto(Destination).
 
 +!avoidEnemy:
+  position(Position) & surveyedEdge(Position, Destination, Weight)
+  <- !goto(Destination).
+
++!avoidEnemy:
 	position(Position) & surveyedEdge(Destination, Position, Weight)
 	<- !goto(Destination).
 	
