@@ -10,12 +10,6 @@ idle(true).
 +simStart <- .print("Simulation started.").
 
 /* TODO */
-+edges(AmountEdges)[source(percept)] <- true.
-//TODO: send to cartographer
-
-+vertices(AmountVertices)[source(percept)]
-    <- true. 
-//TODO: send to cartographer
 
 //TODO: visibleEntity, zoneScore
 
@@ -28,7 +22,7 @@ idle(true).
        .send(cartographer, tell, position(Vertex));
        -+position(Vertex)[source(self)].
 
-// Whenever an agent get a new probedVertex percept, 
+// Whenever an agent gets a new probedVertex percept, 
 // tell the cartographer about the vertex and the probed value.
 +probedVertex(Vertex, Value)[source(percept)]:
     .number(Value)
