@@ -17,5 +17,5 @@ MAS mako {
         "lib/c4jason.jar";
 
 	aslSourcePath:
-		"src/asl";
+		"src/asl/agents";
 }

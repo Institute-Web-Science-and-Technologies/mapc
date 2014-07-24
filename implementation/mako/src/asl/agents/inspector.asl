@@ -1,10 +1,6 @@
-{ include("base.agent.asl") }
+{ include("agent.asl") }
 
-/* Initial beliefs and rules */
-
-/* Initial goals */
-
-/* Plans */
++!dealWithEnemy <- !avoidEnemy.
 
 // For Inspecting, Inspecting the enemy and broadcast there parameters of enemy agent
 +step(S):
