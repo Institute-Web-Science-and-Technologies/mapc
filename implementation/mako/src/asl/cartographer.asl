@@ -1,11 +1,23 @@
 // Agent cartographer in project mako
 /* Initial beliefs and rules */
 maxEdgeCost(11).
+maxNodesAmount(625).
 /* Initial goals */
 
 !start.
 
 /* Plans */
+// Remove knowledge about non-existing nodeAgents as quickly as possible:
++vertices(VerticesAmount)[source(percept)]:
+    maxNodesAmount(Amount)
+    <- for (.range(ControlVariable, VerticesAmount, Amount - 1)) {
+         .concat("v", ControlVariable, NodeAgent);
+         .kill_agent(NodeAgent);
+         // uncomment the next line if you also want to destroy the respective
+         // agents. This is not done in hope for a better performance:
+         // -existingNodeAgents(NodeAgent);
+       };
+       .print("Only ", VerticesAmount, " existing nodes. Removed beliefs. You should only see this message once per simulation.").
 
 // Received surveyed edge percept -> delete previous edge beliefs, add new one.
 // Atomic to avoid adding surveyed and unsurveyed edges in parallel.
@@ -37,8 +49,7 @@ maxEdgeCost(11).
     <- -position(Sender, Vertex)[source(Sender)];
        -position(Sender, _)[source(self)];
        +position(Sender, Vertex)[source(self)];
-       +visited(Vertex)[source(self)];
-       !addedNodeAgent(Vertex).
+       +visited(Vertex)[source(self)].
     
 +probed(Vertex, Value)[source(PerceptSource)]:
     .number(Value) & PerceptSource \== self
@@ -50,6 +61,9 @@ maxEdgeCost(11).
     .literal(Team) & PerceptSource \== self
     <- -occupied(Vertex, Team)[source(PerceptSource)];
        -+occupied(Vertex, Team)[source(self)].
+
+//TODO: do something fancy with it:
++edges(AmountEdges)[source(percept)] <- true.
 
 +?unvisitedNeighbours(Vertex, UnsurveyedNeighbours)[source(SenderAgent)]
     <-
@@ -82,26 +96,22 @@ maxEdgeCost(11).
 // Have a zero condition goal to prevent errors:
 +!isVertexSurveyed(Vertex).
 
-+!start : true <- .print("I am the cartographer. How may I help you?").
-
-// Agent with given name existed, nothing to do:
-+!addedNodeAgent(Vertex):
-    existingNodeAgents(Vertex)
-    <- true.
-
-// If an agent with given name does not exist yet, create it:
-@addNodeAgentIfNeeded[atomic]
-+!addedNodeAgent(Vertex)
-    <- .create_agent(Vertex, "src/asl/nodeAgent.asl");
-       +existingNodeAgents(Vertex).
+// Before the simulation is started, create as many nodeAgents as maxNodesAmount
+// specified:
++!start:
+    maxNodesAmount(Amount)
+    <- 
+    for (.range(ControlVariable, 0, Amount - 1)) {
+    	.concat("v", ControlVariable, NodeAgent);
+    	.create_agent(NodeAgent, "src/asl/nodeAgent.asl");
+    	+existingNodeAgents(NodeAgent);
+    };
+    .print("I created ", Amount, " nodeAgents.").
 
 // Creates agent nodes if necessary and tells them about this edge.
 // Also add the other vertex to the list of neighbours.
 +!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight)
-    <- !addedNodeAgent(VertexA);
-       !addedNodeAgent(VertexB);
-       
-       .send(VertexA, tell, path(VertexB, Weight));      
+    <- .send(VertexA, tell, path(VertexB, Weight));      
        .send(VertexB, tell, path(VertexA, Weight)).
 
 
