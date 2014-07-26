@@ -18,9 +18,24 @@ maxNodesAmount(625).
          // -existingNodeAgents(NodeAgent);
        };
        .print("Only ", VerticesAmount, " existing nodes. Removed beliefs. You should only see this message once per simulation.").
+       
+// Whenever the server tells about a surveyed edge, handle it. If the edge is already known with its weight, ignore it.
+// Otherwise remove unsurveyed edge beliefs and add belief as new edge belief with updated costs. Also inform the NodeAgents about it.
++surveyedEdge(VertexA, VertexB, Weight)[source(percept)]:
+	edge(VertexA, VertexB, Weight) & maxEdgeWeight(Max) & Weight \== Max
+	<- //.print("I already know about this surveyed edge.");
+		true.
 
-// Whenever an agent gets a new visibleEdge percept, tell the cartographer about adjacent vertices. 
-// Assume the traversing costs of the edge are the max edge costs.
++surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
+    <- .print("I was informed about an edge from (", VertexA, ") to (", VertexB, "). Weight is ", Weight, ".");
+       -edge(VertexA, VertexB, _);
+       -edge(VertexB, VertexA, _);
+       +edge(VertexA, VertexB, Weight);
+       +edge(VertexB, VertexA, Weight);
+       !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
+       
+// Whenever the server tells about a visible edge, handle it. If the edge is already known, ignore it. 
+// Otherwise add the edge with assuming max weight for edge costs. Add both directions of edge traversing and inform the NodeAgents.
 +visibleEdge(VertexA, VertexB)[source(percept)]:
 	edge(VertexA, VertexB, _)
 	<- //.print("I already know about this edge");
@@ -32,84 +47,77 @@ maxNodesAmount(625).
        +edge(VertexA, VertexB, Weight);
        +edge(VertexB, VertexA, Weight);
        !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
-       
-// Whenever an agent gets a new surveyedEdge percept, 
-// tell the cartographer about adjacent vertices and the traversing costs of the edge.
-+surveyedEdge(VertexA, VertexB, Weight)[source(percept)]:
-	edge(VertexA, VertexB, Weight)
-	<- //.print("I already know about this surveyed edge.");
-		true.
-
-+surveyedEdge(VertexA, VertexB, Weight)[source(percept)]
-    <- .print("I was informed about an edge from (", VertexA, ") to (", VertexB, "). Weight is ", Weight, ".");
-       .abolish(edge(VertexA, VertexB, _));
-       .abolish(edge(VertexB, VertexA, _));
-       +edge(VertexA, VertexB, Weight);
-       +edge(VertexB, VertexA, Weight);
-       !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
-
-+position(Vertex)[source(Sender)]:
-    Sender \== self
-    <- -position(Sender, Vertex)[source(Sender)];
-       -position(Sender, _)[source(self)];
-       +position(Sender, Vertex)[source(self)];
-       +visited(Vertex)[source(self)].
     
-// If the cartographer already knows about the probed vertex, ignore it. 
-+probedVertex(Vertex, Value)[source(Source)]:
-	.number(Value) & probedVertex(Vertex, Value)[source(self)]
+// Whenever the server tells about a probed vertex, handle it. If the vertex is already known with its value, ignore it.
+// Otherwise update the belief of the vertex.
++probedVertex(Vertex, Value)[source(percept)]:
+	vertex(Vertex, _, Value, _) & Value \== 0
 	<- //.print("I already know about this probed vertex.");
 		true.
 
-// If the agent probed the vertex, inform the cartographer about it.
 +probedVertex(Vertex, Value)[source(percept)]:
-    .number(Value)
-    <-.print("I know about a new probed vertex (", Vertex, ") with value of ", Value);
-      +probedVertex(Vertex, Value)[source(self)].
+	vertex(Vertex, IsVisited, 0, Team)
+	<- .print("I was informed about a probed vertex ", Vertex, " with value of ", Value);
+		-vertex(Vertex, IsVisited, 0, Team);
+		+vertex(Vertex, IsVisited, Value, Team).
+	
++probedVertex(Vertex, Value)[source(percept)]
+    <-.print("I was informed about a new probed vertex ", Vertex, " with value of ", Value);
+      +vertex(Vertex, false, Value, unknown).
 
-// Whenever an agent gets a visibleVertex percept, 
-// tell the cartographer about the vertex and the occupying team.       
+// Whenever an Agent tells the cartographer about its position, handle it. If the position of this agent is already known, ignore it.
+// Otherwise update the position belief of this agent, and change the state of the vertex to visited. 
++position(Vertex)[source(Sender)]:
+	position(Sender, Vertex)
+	<- .print("I already know that Agent ", Sender, " is on Vertex ", Vertex);
+		true. 
+	
++position(Vertex)[source(Sender)]:
+	vertex(Vertex, true, _, _)
+    <- .print("I was informed that Agent ", Sender, " is now on Vertex ", Vertex);
+    	-position(Sender, _);
+    	+position(Sender, Vertex).
+       	
++position(Vertex)[source(Sender)]:
+	vertex(Vertex, false, Value, Team)
+    <- .print("I was informed that Agent ", Sender, " is now on Vertex ", Vertex ,". This Vertex was not visited before, but was already probed.");
+    	-position(Sender, _);
+    	+position(Sender, Vertex);
+    	-vertex(Vertex, false, Value, Team);
+       	+vertex(Vertex, true, Value, Team).
+       	
++position(Vertex)[source(Sender)]
+    <- .print("I was informed that Agent ", Sender, " is now on Vertex ", Vertex, ". This Vertex was not visited before.");
+    	-position(Sender, _);
+    	+position(Sender, Vertex);
+       	+vertex(Vertex, true, 0, unknown).
+       	
+// Whenever the server tells about a visible vertex, handle it. If the vertex is already known with its occupying team, ignore it.
+// Otherwise if the team changes, update the vertex belief. If the vertex belief is not in the belief base, add it.      
 +visibleVertex(Vertex, Team)[source(percept)]:
-	.literal(Team) & visibleVertex(Vertex, Team)[source(self)]
+	vertex(Vertex, _, _, Team)
 	<- //.print("I already know about this visible vertex.");
 		true.       
        
 +visibleVertex(Vertex, Team)[source(percept)]:
-    .literal(Team)
-    <- .print("I was informed of the vertex (", Vertex, "). It is occupied by team ", Team, ".");
-    	.abolish(visibleVertex(Vertex, _)[source(self)]);
-    	+visibleVertex(Vertex, Team)[source(self)].
+	vertex(Vertex, IsVisited, Value, OldTeam) & OldTeam \== Team
+	<- .print("I was informed that now Team ", Team, " occupies the Vertex");
+		-vertex(Vertex, _, _, OldTeam);
+		+vertex(Vertex, IsVisited, Value, Team).
+       
++visibleVertex(Vertex, Team)[source(percept)]
+	<- .print("I was informed about a new visible Vertex ", Vertex, " and it is occupied by Team ", Team);
+		+vertex(Vertex, false, 0, Team).
 
-+?unvisitedNeighbours(Vertex, UnsurveyedNeighbours)[source(SenderAgent)]
-    <-
-     !isVertexSurveyed(Vertex); // make sure this information exists for later use from the base agent.
-     if(surveyed(Vertex)){
-        .send(SenderAgent, tell, surveyed(Vertex));
-        // putting Weight before DestinationVertex allows a natural order in
-        // favour of the weights:
-        .findall([Weight, DestinationVertex], 
-           edge(Vertex, DestinationVertex, Weight) & not visited(DestinationVertex), 
-           UnsurveyedNeighbours);
-     }.
++?unvisitedNeighbours(Vertex, Result)[source(SenderAgent)]:
+	edge(Vertex, _, Weight) & maxEdgeWeight(Max) & Weight \== Max
+    <- .send(SenderAgent, tell, surveyed(Vertex));
+       // putting Weight before DestinationVertex allows a natural order in
+       // favour of the weights:
+       .findall([Weight, Destination], edge(Vertex, Destination, Weight) & vertex(Destination, false, _, _), Result).
 
-+?unvisitedVertices(UnsurveyedNeighbours)
-    <-
-    .findall(Vertex, existingNodeAgents(Vertex) & not visited(Vertex), UnsurveyedNeighbours).
-
-/* Additional goals */
-
-// If already surveyed or if there is unsurveyed adjacent edge - do nothing.
-+!isVertexSurveyed(Vertex):
-    surveyed(Vertex) | (edge(Vertex, _, Weight) & maxEdgeWeight(Weight)).
-
-// At least one edge exists - mark as surveyed    
-+!isVertexSurveyed(Vertex):
-    edge(Vertex, _, _)
-    <- 
-    +surveyed(Vertex).
-
-// Have a zero condition goal to prevent errors:
-+!isVertexSurveyed(Vertex).
++?unvisitedVertices(Result)
+    <- .findall(Vertex, vertex(Vertex, false, _, _), Result).
 
 // Before the simulation is started, create as many nodeAgents as maxNodesAmount
 // specified:
