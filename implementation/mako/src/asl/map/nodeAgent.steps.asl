@@ -37,6 +37,7 @@
     <- .findall(NodeAgent, neighbour(NodeAgent, _), Neighbours);
        for (.member(Neighbour, Neighbours)) {
             .send(Neighbour, achieve, pathStepsFewerPrioritised(DestinationId, Steps));
+            .send(Neighbour, tell, nodeValue(DestinationId, 1)) // TODO: DELETEME ONCE NODE VALUE COMMUNICATION IS IMPLEMENTED
        }.
 
 @preferShortPaths0[priority(0)]
