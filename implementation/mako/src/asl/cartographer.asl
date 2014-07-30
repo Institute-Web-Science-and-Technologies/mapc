@@ -12,10 +12,10 @@ maxNodesAmount(625).
     maxNodesAmount(Amount)
     <- for (.range(ControlVariable, VerticesAmount, Amount - 1)) {
          .concat("v", ControlVariable, NodeAgent);
-         .kill_agent(NodeAgent);
+         -existingNodeAgents(NodeAgent);
          // uncomment the next line if you also want to destroy the respective
          // agents. This is not done in hope for a better performance:
-         // -existingNodeAgents(NodeAgent);
+         // .kill_agent(NodeAgent);
        };
        .print("Only ", VerticesAmount, " existing nodes. Removed beliefs. You should only see this message once per simulation.").
 

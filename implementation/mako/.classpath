@@ -4,7 +4,6 @@
 	<classpathentry excluding="*.asl" kind="src" path="src/asl"/>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="lib" path="lib/c4jason.jar"/>
-	<classpathentry kind="lib" path="lib/cartago.jar"/>
 	<classpathentry kind="lib" path="lib/eis.jar"/>
 	<classpathentry kind="lib" path="lib/eismassim.jar">
 		<attributes>
@@ -16,6 +15,5 @@
 			<attribute name="javadoc_location" value="http://jason.sourceforge.net/api/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/moise.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
