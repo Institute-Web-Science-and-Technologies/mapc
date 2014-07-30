@@ -40,8 +40,18 @@
 // From the input list of vertices (VertexList) calculates the closest vertex
 +?getClosestVertexFromList(VertexList, NextVertex):
     not .length(VertexList, 0)
+    & .my_name(ThisVertex)
     <-
     .findall([Steps, NextHopVertex], minStepsPath(Vertex, NextHopVertex, Steps, _) & .member(Vertex, VertexList), VertexDistanceList);
-    .min(VertexDistanceList, NextVertexWithDist);
-    .nth(1, NextVertexWithDist, NextVertex).
-
+    if (VertexDistanceList == []) {
+    	NextVertex = ThisVertex
+    }
+    else {
+    	.min(VertexDistanceList, NextVertexWithDist);
+    	.nth(1, NextVertexWithDist, NextVertex)
+    }
+    .print("The closest vertex from the list ", VertexList, " is ", NextVertex, ".").
+    
++?getClosestVertexFromList(VertexList, NextVertex)
+	<-
+	.print("Tried to find the closest vertex from a list, but the list was empty!").

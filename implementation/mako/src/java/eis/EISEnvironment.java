@@ -150,8 +150,8 @@ public class EISEnvironment extends Environment implements AgentListener {
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                addAgentPercept(jasonName, percept);
                 addCartographerPercept(percept);
+                addAgentPercept(jasonName, percept);
             }
         }
         if (step != null) {

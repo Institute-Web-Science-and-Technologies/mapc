@@ -8,33 +8,6 @@ zoneMode(false).
 
 +simStart <- .print("Simulation started.").
 
-+surveyedEdge(VertexA, VertexB, Weight)[source(percept)]:
-	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
-	& broadcastAgentList(AgentList)
-	<-
-	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
-	.send(AgentList, tell, surveyedEdge(VertexA, VertexB, Weight));
-	.abolish(surveyedEdge(VertexA, VertexB, Weight));
-	+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
-	+surveyedEdge(VertexB, VertexA, Weight)[source(self)].
-
-@surveyedEdgeFromOthers[atomic]	
-+surveyedEdge(VertexA, VertexB, Weight)[source(Agent)]:
-	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
-	<-
-	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent ", Agent);
-	.abolish(surveyedEdge(VertexA, VertexB, Weight));
-	-+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
-	-+surveyedEdge(VertexB, VertexA, Weight)[source(self)].
-	
-+surveyedEdge(VertexA, VertexB, Weight)[source(Agent)]:
-	surveyedEdge(VertexA, VertexB, Weight)[source(self)]
-	& Agent \== self
-	<-
-//	.print("I already knew about the surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
-	-surveyedEdge(VertexA, VertexB, Weight)[source(Agent)].
-	
-	
 /* Map Related Stuff */
 // Whenever an agent gets a new position percept, update the belief base, 
 // if the new position belief is not already in belief base. 
@@ -128,9 +101,19 @@ zoneMode(false).
 	<- .print("Surveying Vertex: ", Position);
 		survey.
     	
-+!doExploring <- !exploreGraph.
+//+!doExploring <- !exploreGraph.
 
 +enemy(Name, Role):
 	enemy(Name, Role)
 	<- .print("I already was informed about this enemy");
 		true.
+
+// Want to goto, but don't have enough energy -> recharge.
++!goto(NextVertex):
+    position(CurrVertex) & energy(CurrEnergy) & edge(CurrVertex, NextVertex, Weight) & CurrEnergy < Weight
+    <- .print("I have ", CurrEnergy, " energy, but need ", Weight, " to go, going to recharge first.");
+       recharge.
+
+// Otherwise just goto.
++!goto(NextVertex)
+    <- goto(NextVertex).
