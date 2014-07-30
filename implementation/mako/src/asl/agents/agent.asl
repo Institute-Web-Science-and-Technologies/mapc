@@ -10,26 +10,28 @@ zoneMode(false).
 
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]:
 	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
+	& broadcastAgentList(AgentList)
 	<-
 	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
-	?broadcastAgentList(AgentList);
 	.send(AgentList, tell, surveyedEdge(VertexA, VertexB, Weight));
 	.abolish(surveyedEdge(VertexA, VertexB, Weight));
 	+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
 	+surveyedEdge(VertexB, VertexA, Weight)[source(self)].
-	
+
+@surveyedEdgeFromOthers[atomic]	
 +surveyedEdge(VertexA, VertexB, Weight)[source(Agent)]:
 	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
 	<-
-	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent.", Agent);
+	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent ", Agent);
 	.abolish(surveyedEdge(VertexA, VertexB, Weight));
-	+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
-	+surveyedEdge(VertexB, VertexA, Weight)[source(self)].
+	-+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
+	-+surveyedEdge(VertexB, VertexA, Weight)[source(self)].
 	
 +surveyedEdge(VertexA, VertexB, Weight)[source(Agent)]:
 	surveyedEdge(VertexA, VertexB, Weight)[source(self)]
+	& Agent \== self
 	<-
-	.print("I already knew about the surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
+//	.print("I already knew about the surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
 	-surveyedEdge(VertexA, VertexB, Weight)[source(Agent)].
 	
 	

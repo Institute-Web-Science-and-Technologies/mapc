@@ -25,8 +25,10 @@
 	+probedVertex(Vertex, Value)[source(self)].
 	
 +probedVertex(Vertex, Value)[source(Agent)]
+	:
+	Agent \== self
 	<-
-	.print("I learned that the value of ", Vertex, " is ", Value, " from agent", Agent, ".");
+	.print("I learned that the value of ", Vertex, " is ", Value, " from agent ", Agent, ".");
 	.abolish(probedVertex(Vertex, Value));
 	+probedVertex(Vertex, Value)[source(self)].
 	
