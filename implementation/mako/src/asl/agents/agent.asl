@@ -90,7 +90,13 @@ zoneMode(false).
 
 +!avoidEnemy:
 	position(Position) & visibleEdge(Position, Destination)
-	<- !goto(Destination).
+	<- .print("Avoiding enemy over visible edge."); 
+	!goto(Destination).
+	
++!avoidEnemy:
+	position(Position) & visibleEdge(Destination, Position)
+	<- .print("Avoiding enemy over visible edge."); 
+	!goto(Destination).
 
 // If the agent has enough energy than survey. Otherwise recharge.
 +!doSurveying:
