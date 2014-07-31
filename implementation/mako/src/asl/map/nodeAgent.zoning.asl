@@ -19,12 +19,12 @@ zoneValue(0).
 		?nodeValue(Neighbour, NodeValue);
 		!addToZoneValue(Neighbour, NodeValue);
 	}
-	.print("Finished calculateZone plan.")
+	?zoneValue(ZoneValue); .print("Finished calculateZone plan. My zone value is ", ZoneValue, ".")
 	.
 	
 +!addToZoneValue(Neighbour, NodeValue):
 	zoneValue(CurrentZoneValue)
 	<-
 	NewZoneValue = CurrentZoneValue + NodeValue;
-//	.print("My current zone value is ", CurrentZoneValue, ". The node value of my two-hop neighbour ", Neighbour, " is ", NodeValue, ". If I add this neighbour to my zone, my new zone value will be ", NewZoneValue, ".");
+	.print("My current zone value is ", CurrentZoneValue, ". The node value of my two-hop neighbour ", Neighbour, " is ", NodeValue, ". If I add this neighbour to my zone, my new zone value will be ", NewZoneValue, ".");
 	-+zoneValue(NewZoneValue).

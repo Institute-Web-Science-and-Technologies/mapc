@@ -34,7 +34,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void init(String[] args) {
         // logger
-        logger.setVisible(false);
+        logger.setVisible(true);
 
         // init EISMASSIM environment
         try {
@@ -102,7 +102,7 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
-        logger.info("@@@@@@@@@@@@@@@@@@@@@" + agentJasonName + ", " + command);
+        logger.info("Agent " + agentJasonName + " wants to execute action " + command + ".");
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = new Action("skip");
         String functor = command.getFunctor();

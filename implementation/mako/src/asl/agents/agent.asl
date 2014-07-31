@@ -71,7 +71,7 @@ zoneMode(false).
 // If the energy of the agent is over a threshold of 10 the agent can move to another node.	
 +!doAction:
 	zoneMode(false) & energy(Energy) & Energy > 10
-	<- .print("I want to go to another vertex.");
+	<- .print("I want to go to another vertex. My energy is ", Energy, ".");
 		!doExploring. 
 
 // If the agent has nothing to do, it can just recharge.
@@ -116,4 +116,6 @@ zoneMode(false).
 
 // Otherwise just goto.
 +!goto(NextVertex)
-    <- goto(NextVertex).
+    <-
+    .print("I will move to vertex ", NextVertex, ".");
+	goto(NextVertex).

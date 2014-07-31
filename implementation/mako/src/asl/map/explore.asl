@@ -1,6 +1,6 @@
 //author: sewell
 //author: daudrich
-
+@surveyedEdgeFromSelf[atomic]	
 +surveyedEdge(VertexA, VertexB, Weight)[source(percept)]:
 	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
 	& broadcastAgentList(AgentList)
@@ -16,7 +16,7 @@
 +surveyedEdge(VertexA, VertexB, Weight)[source(Agent)]:
 	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
 	<-
-	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent ", Agent);
+	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent ", Agent, ".");
 	.abolish(surveyedEdge(VertexA, VertexB, Weight));
 	.abolish(surveyedEdge(VertexB, VertexA, Weight));
 	+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
@@ -50,5 +50,5 @@
 +!chooseNextVertex(UnsurveyedNeighbours)
 	<-
 	.nth(0, UnsurveyedNeighbours, [Weight, Destination]);
-	.print("I have chosen the next vertex ", Destination, " with weight" , Weight, ".");
+	.print("I want move to vertex ", Destination, ". The edge weight is " , Weight, ".");
 	!goto(Destination).

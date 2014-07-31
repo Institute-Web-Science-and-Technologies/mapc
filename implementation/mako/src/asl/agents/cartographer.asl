@@ -51,7 +51,9 @@ maxNodesAmount(625).
 	<-
        // putting Weight before DestinationVertex allows a natural order in
        // favour of the weights:
-       .findall([Weight, Destination], edge(Vertex, Destination, Weight) & vertex(Destination, false), Result).
+       .findall([Weight, Destination], edge(Vertex, Destination, Weight) & vertex(Destination, false), Result);
+       .print("Calculated the list of unsurveyed neighbours for vertex ", Vertex, ": ", Result)
+       .
 
 +?unsurveyedVertices(Result)
     <- .findall(Vertex, vertex(Vertex, false), Result).
