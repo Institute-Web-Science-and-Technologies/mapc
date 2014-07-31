@@ -81,10 +81,12 @@ zoneMode(false).
 		recharge.
 
 // To avoid an enemy agent, we select a destination to go to.
-// TODO: Optimization -> select the cheapest edge with "findAll". 
 +!avoidEnemy:
-	position(Position) & surveyedEdge(Position, Destination, Weight)
-	<- !goto(Destination).
+	position(Position) & surveyedEdge(Position, _, _) | surveyedEdge(_, Position, _)
+	<-
+	.findall([Weight, Neighbour], surveyedEdge(Position, Neighbour, Weight), Neighbours);
+	.nth(0, Neighbours, Destination); 
+	!goto(Destination).
 
 +!avoidEnemy:
 	position(Position) & visibleEdge(Position, Destination)
