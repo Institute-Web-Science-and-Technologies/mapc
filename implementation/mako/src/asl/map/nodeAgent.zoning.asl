@@ -8,16 +8,9 @@ zoneValue(0).
 	<-
 	.print("Entering calculateZone plan.");
 	-+zoneValue(0);
-	.findall(Vertex, neighbour(Vertex, _), OneHopNeighbourList);
-	.print("My one-hop neighbour list is ", OneHopNeighbourList);
-	.findall(Vertex, minStepsPath(Vertex, _, 2, _), TwoHopNeighbourList);
-	-+twoHopNeighbourList(TwoHopNeighbourList); // We need to save the list because we need to know where to position the agents to make our zone.
-	.print("My two-hop neighbour list is ", TwoHopNeighbourList);
-	.concat(OneHopNeighbourList, TwoHopNeighbourList, OneAndTwoHopNeighbourList);
-	.print("My one and two-hop neighbour list is ", OneAndTwoHopNeighbourList);
-	for (.member(Neighbour, OneAndTwoHopNeighbourList)) {
-		?nodeValue(Neighbour, NodeValue);
-		!addToZoneValue(Neighbour, NodeValue);
+	.findall([Vertex, Value], nodeValue(Vertex, Value), NeighbourList);
+	for (.member([Neighbour, NeighbourValue], NeighbourList)) {
+		!addToZoneValue(Neighbour, NeighbourValue);
 	}
 	?zoneValue(ZoneValue); .print("Finished calculateZone plan. My zone value is ", ZoneValue, ".")
 	.

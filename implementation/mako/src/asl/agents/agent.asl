@@ -22,7 +22,7 @@ zoneMode(false).
 // Since all other incoming percepts and beliefs
 //should be handled before the step belief is processed, we delay the step by assigning a low priority value to it.                        
 @delayStep[priority(-10)]
- +step(Step)[source(self)]:
+ +step(Step):
     position(Position) & lastActionResult(Result) & lastAction(Action)
     <- .print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,".");
        if (Result == successful & Action == survey) {

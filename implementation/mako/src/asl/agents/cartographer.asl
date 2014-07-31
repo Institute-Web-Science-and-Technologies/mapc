@@ -28,8 +28,8 @@ maxNodesAmount(625).
 
 +surveyedEdge(VertexA, VertexB, Weight)
     <- .print("I was informed about an edge from (", VertexA, ") to (", VertexB, ") with weight ", Weight, ".");
-       -edge(VertexA, VertexB, _);
-       -edge(VertexB, VertexA, _);
+       .abolish(edge(VertexA, VertexB, _));
+       .abolish(edge(VertexB, VertexA, _));
        +edge(VertexA, VertexB, Weight);
        +edge(VertexB, VertexA, Weight);
        !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).

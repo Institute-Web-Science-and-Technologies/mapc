@@ -1,5 +1,5 @@
 { include("agent.asl") }
-
+role(saboteur).
 //for attack, attack enemy team agent who is on the same Vertex
 +!dealWithEnemy <- !doAttack.
     

@@ -1,4 +1,6 @@
 { include("agent.asl") }
+
+role(explorer).
 // Store list of all agents except myself for broadcasting.
 !generateExplorerAgentList.
 +!generateExplorerAgentList:
@@ -30,6 +32,15 @@
 	<-
 	.print("I learned that the value of ", Vertex, " is ", Value, " from agent ", Agent, ".");
 	.abolish(probedVertex(Vertex, Value));
+	+probedVertex(Vertex, Value)[source(self)].
+	
++probedVertex(Vertex, Value)[source(Agent)]
+	:
+	probedVertex(Vertex, Value)[source(self)]
+	& Agent \== self
+	<-
+	.print("I already knew that the value of vertex ", Vertex, " is ", Value, ", ", Agent, "!");
+	.abolish(Vertex, Value);
 	+probedVertex(Vertex, Value)[source(self)].
 	
 // If the agent has enough energy than probe. Otherwise recharge.

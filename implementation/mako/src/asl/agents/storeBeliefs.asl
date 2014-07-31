@@ -40,13 +40,13 @@
 //	.print("New lastAction(", Identifier, ")");
 	-+lastAction(Identifier)[source(self)].
 	
-+lastActionParam(Identifier)[source(percept)] <-
-//	.print("New lastActionParam(", Identifier, ")");
-	-+lastActionParam(Identifier)[source(self)].
-
-+lastActionResult(Identifier)[source(percept)] <-
-//	.print("New lastActionResult(", Identifier, ")");
-	-+lastActionResult(Identifier)[source(self)].
+//+lastActionParam(Identifier)[source(percept)] <-
+////	.print("New lastActionParam(", Identifier, ")");
+//	-+lastActionParam(Identifier)[source(self)].
+//
+//+lastActionResult(Identifier)[source(percept)] <-
+////	.print("New lastActionResult(", Identifier, ")");
+//	-+lastActionResult(Identifier)[source(self)].
 
 //TODO: this should probably be sent to an Overlord agent	
 +lastStepScore(Numeral)[source(percept)] <-
@@ -75,9 +75,9 @@
 	-+requestAction[source(self)].
 	
 //Note: eismassim.pdf says this is a parameterless percept, but this seems to be different in practice
-+role(Identifier)[source(percept)] <-
-	.print("New role(", Identifier, ")");
-	-+role(Identifier)[source(self)].
+//+role(Identifier)[source(percept)] <-
+//	.print("New role(", Identifier, ")");
+//	-+role(Identifier)[source(self)].
 	
 //TODO: Overlord
 +score(Numeral)[source(percept)] <-
@@ -92,16 +92,6 @@
 	.print("New simStart");
 	-+simStart[source(self)].
 
-//TODO: Overlord
-+step(Numeral)[source(percept)]<-
-//	.print("New step(", Numeral, ")");	
-	-+step(Numeral)[source(self)].
-	
-//TODO: Overlord
-+steps(Numeral)[source(percept)] <-
-//	.print("New steps(", Numeral, ")");
-	-+steps(Numeral)[source(self)].
-	
 +strength(Numeral)[source(percept)] <-
 //	.print("New strength(", Numeral, ")");
 	-+strength(Numeral)[source(self)].

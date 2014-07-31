@@ -1,6 +1,6 @@
 { include("agent.asl") }
 { include("../actions/parry.asl")}
-
+role(repairer).
 /* Initial beliefs and rules */
 
 /* Initial goals */

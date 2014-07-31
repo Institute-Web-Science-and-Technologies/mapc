@@ -24,15 +24,50 @@
 	   -path(Vertex, Weight);
 	   -neighbour(Vertex, _);
 	   !pathStepsFewer(Vertex, 0, Weight)[source(cartographer)];
-	   //!pathCostsCheaper(Vertex, Weight)[source(cartographer)];
-	   -nodeValue(Vertex, _);
-	   +nodeValue(Vertex, 1); //TODO: Actually implement this properly
-	   ?nodeValue(Vertex, NodeValue);
-	   .print("I added the node value for Vertex ", Vertex, ", and it is ", NodeValue, ".");
-	   !calculateZone;
 	   // add the neighbour afterwards to prevent telling someone who knows
 	   // about exactly that edge:
-	   +neighbour(Vertex, Weight).
+	   +neighbour(Vertex, Weight)
+	   .
+
+//Received a new nodeValue belief, either from an explorer who has probed or
+//from a nearby node agent.
++nodeValue(Vertex, NodeValue)[source(Sender)]:
+	Sender \== self
+	& .my_name(Vertex)
+	& not nodeValue(Vertex, NodeValue)
+	<-
+	.abolish(nodeValue(Vertex, _));
+	+nodeValue(Vertex, NodeValue)[source(self)];
+	.findall(Vertex, neighbour(Vertex, _), OneHopNeighbourList);
+	.findall(Vertex, minStepsPath(Vertex, _, 2, _), TwoHopNeighbourList);
+	.concat(OneHopNeighbourList, TwoHopNeighbourList, OneAndTwoHopNeighbourList);
+	.print("My one and two-hop neighbour list is ", OneAndTwoHopNeighbourList);
+	.send(OneAndTwoHopNeighbourList, tell, nodeValue(Vertex, NodeValue));
+	!calculateZone.
+	
+//Received a nodeValue belief that I already knew about.
++nodeValue(Vertex, NodeValue)[source(Sender)]:
+	nodeValue(Vertex, NodeValue)[source(self)]
+	<-
+	-nodeValue(Vertex, NodeValue)[source(Sender)].
+	
++nodeValue(Vertex, NodeValue):
+	not nodeValue(Vertex, NodeValue)[source(self)]
+	<-
+	.abolish(nodeValue(Vertex, _));
+	+nodeValue(Vertex, NodeValue)[source(self)];
+	!calculateZone.
+
++minStepsPath(Vertex, _, Value, _):
+	Value <= 2
+	& .my_name(ThisVertex)
+	& nodeValue(ThisVertex, NodeValue)
+	<-
+	.print("Learned about a new neighbour in my two-hop neighbourhood, telling him about my node value.");
+	.send(Vertex, tell, nodeValue(ThisVertex, NodeValue))
+	.
+	
++neighbour(Vertex, Weight) <- .print("I learned about my neighbour ", Vertex, " with edge weight ", Weight, ".").
 	   
 //Default plan if we already know about this neighbour.
 +path(Vertex, Weight) <- .print("I already know about this path.").
