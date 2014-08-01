@@ -1,4 +1,3 @@
-
 // Agent baseAgent in project mako
 { include("storeBeliefs.asl") }
 { include("../map/explore.asl") }
@@ -14,7 +13,7 @@ zoneMode(false).
 // Furthermore tell the cartographer about agents current position.
 +position(Vertex)[source(percept)]:
 	not position(Vertex)[source(self)]
-    <- .print("I'm now at position: ", Vertex, "."); 
+    <- .print("Received percept position(", Vertex, ")."); 
        -+position(Vertex).
 
 /*Actions*/
@@ -24,11 +23,13 @@ zoneMode(false).
 @delayStep[priority(-10)]
  +step(Step):
     position(Position) & lastActionResult(Result) & lastAction(Action)
-    <- .print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,".");
-       if (Result == successful & Action == survey) {
-       	.send(cartographer,tell,vertex(Position, true))
-       }
-       !doAction.
+    <-
+	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,".");
+    .print("Received percept step(", Step, ").");
+    if (Result == successful & Action == survey) {
+    	.send(cartographer,tell,vertex(Position, true))
+	}
+    !doAction.
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.       
  +!doAction:

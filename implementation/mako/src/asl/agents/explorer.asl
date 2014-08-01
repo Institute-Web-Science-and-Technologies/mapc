@@ -17,7 +17,7 @@ role(explorer).
     .delete(Name, AgentList, BroadcastList); 
     +explorerAgentList(BroadcastList).
 
-+probedVertex(Vertex, Value)[source(percept)]:
++probedVertex(Vertex, Value)[source(storeBeliefs)]:
 	not probedVertex(Vertex, Value)[source(self)]
 	<-
 	.print("I learned that the value of ", Vertex, " is ", Value, ".");

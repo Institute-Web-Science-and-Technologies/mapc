@@ -136,11 +136,12 @@ public class EISEnvironment extends Environment implements AgentListener {
      */
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
+        // agentName: agentA1, jasonName: explorer1
         String jasonName = serverAgentMap.get(agentName).getJasonName();
         Percept step = null;
         clearPercepts(jasonName);
         clearPercepts("cartographer");
-        logger.info(percepts.toString());
+        logger.info("Received percepts for " + jasonName + ": " + percepts.toString());
         for (Percept percept : percepts) {
             // Make sure that the step percept is handled last by the agents
             // because when the agent receives the step action, it determines

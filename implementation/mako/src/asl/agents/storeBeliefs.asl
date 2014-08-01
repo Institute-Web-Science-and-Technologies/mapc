@@ -8,111 +8,110 @@
 /* Plans */
 
 +achievement(Identifier)[source(percept)] <-
-//	.print("New achievement(", Identifier, ")");
+	.print("Received percept achievement(", Identifier, ").");
 	+achievement(Identifier)[source(self)].
 	
 +bye[source(percept)] <-
-	.print("New bye");
+	.print("Received percept bye");
 	true. //TODO
 	
 +deadline(Numeral)[source(percept)] <-
-//	.print("New deadline(", Numeral, ")");
+	.print("Received percept deadline(", Numeral, ").");
 	-+deadline(Numeral)[source(self)].
-	
-//+edges(Numeral)[source(percept)] <-
-//	.print("New edges(", Numeral, ")");
-//	-+edges(Numeral)[source(self)].
+    
++edges(Numeral)[source(percept)] <-
+	.print("Received percept edges(", Numeral, ").").
 	
 +energy(Numeral)[source(percept)] <-
-	//.print("New energy(", Numeral, ")");
+	.print("Received percept energy(", Numeral, ").");
 	-+energy(Numeral)[source(self)].
 	
 +health(Numeral)[source(percept)] <-
-	//.print("New health(", Numeral, ")");
+	.print("Received percept health(", Numeral, ").");
 	-+health(Numeral)[source(self)].
 
-//TODO: Overlord
-+id(Identifier)[source(percept)] <-
-//	.print("New id(", Identifier, ")");
-	-+id(Identifier)[source(self)].
++id(Numeral)[source(percept)] <-
+	.print("Received percept id(", Numeral, ").").
 	
 +lastAction(Identifier)[source(percept)] <-
-//	.print("New lastAction(", Identifier, ")");
-	-+lastAction(Identifier)[source(self)].
+	.print("Received percept lastAction(", Identifier, ").").
 	
-//+lastActionParam(Identifier)[source(percept)] <-
-////	.print("New lastActionParam(", Identifier, ")");
-//	-+lastActionParam(Identifier)[source(self)].
-//
-//+lastActionResult(Identifier)[source(percept)] <-
-////	.print("New lastActionResult(", Identifier, ")");
-//	-+lastActionResult(Identifier)[source(self)].
++lastActionResult(Identifier)[source(percept)] <-
+	.print("Received percept lastActionResult(", Identifier, ").").
 
-//TODO: this should probably be sent to an Overlord agent	
 +lastStepScore(Numeral)[source(percept)] <-
-//	.print("New lastStepScore(", Numeral, ")");
-	-+lastStepScore(Numeral)[source(self)].
+	.print("Received percept lastStepScore(", Numeral, ").").
 	
 +maxEnergy(Numeral)[source(percept)] <-
-//	.print("New maxEnergy(", Numeral, ")");
+	.print("Received percept maxEnergy(", Numeral, ").");
 	-+maxEnergy(Numeral)[source(self)].
 
-//TODO: Overlord
++maxEnergyDisabled(Numeral)[source(percept)] <-
+	.print("Received percept maxEnergyDisabled(", Numeral, ").");
+	-+maxEnergyDisabled(Numeral)[source(self)].
+	
++maxHealth(Numeral)[source(percept)] <-
+	.print("Received percept maxHealth(", Numeral, ").").
+	
 +money(Numeral)[source(percept)] <-
-//	.print("New money(", Numeral, ")");
-	-+money(Numeral)[source(self)].
-
-//Handled in BaseAgent: position, probedVertex, surveyedEdge, vertices, visibleEdge, visibleEntity(?), visibleVertex(?), zoneScore(?)
-
-
-//TODO: Overlord
-+ranking(Numeral)[source(percept)] <-
-//	.print("New ranking(", Numeral, ")");
-	-+ranking(Numeral)[source(self)].
-	
-+requestAction[source(percept)] <-
-//	.print("New requestAction");
-	-+requestAction[source(self)].
-	
-//Note: eismassim.pdf says this is a parameterless percept, but this seems to be different in practice
-//+role(Identifier)[source(percept)] <-
-//	.print("New role(", Identifier, ")");
-//	-+role(Identifier)[source(self)].
-	
-//TODO: Overlord
-+score(Numeral)[source(percept)] <-
-//	.print("New score(", Numeral, ")");
-	-+score(Numeral)[source(self)].
-	
-+simEnd[source(percept)] <-
-	.print("New simEnd");
-	-+simEnd[source(self)].
-	
-+simStart[source(percept)] <-
-	.print("New simStart");
-	-+simStart[source(self)].
-
-+strength(Numeral)[source(percept)] <-
-//	.print("New strength(", Numeral, ")");
-	-+strength(Numeral)[source(self)].
-
-//TODO: Overlord?
-+timestamp(Numeral)[source(percept)] <-
-//	.print("New timestamp(", Numeral, ")");
-	-+timestamp(Numeral)[source(self)].
-	
-+visRange(Numeral)[source(percept)] <-
-//	.print("New visRange(", Numeral, ")");
-	-+visRange(Numeral)[source(self)].
-	
-//TODO: Overlord, Cartographer?
-+zonesScore(Numeral)[source(percept)] <-
-//	.print("New zonesScore(", Numeral, ")");
-	-+zonesScore(Numeral)[source(self)].
+	.print("Received percept money(", Numeral, ").").
 	
 //myName is a custom percept
 +myName(Name)[source(percept)] <-
-//    .print("My Server Name is: ", Name);
+    .print("My Server Name is: ", Name);
     .my_name(JName);
-//    .print("My Jason Name is: ", JName);
+    .print("My Jason Name is: ", JName);
     -+myName(Name)[source(self)].
+
++ranking(Numeral)[source(percept)] <-
+	.print("Received percept ranking(", Numeral, ").").
+	
++requestAction[source(percept)] <-
+	.print("Received percept requestAction.").
+	
++role(Identifier)[source(percept)] <-
+	.print("Received percept role(", Identifier, ").").
+	
++score(Numeral)[source(percept)] <-
+	.print("Received percept score(", Numeral, ").").
+	
++simEnd(Numeral)[source(percept)] <-
+	.print("Received percept simEnd(", Numeral, ").").
+	
++simStart[source(percept)] <-
+	.print("Received percept simStart.");
+	-+simStart[source(self)].
+
++steps(Numeral)[source(percept)] <-
+	.print("Received percept steps(", Numeral, ").").
+
++strength(Numeral)[source(percept)] <-
+	.print("Received percept strength(", Numeral, ").").
+	
++timestamp(Numeral)[source(percept)] <-
+	.print("Received percept timestamp(", Numeral, ").").
+
++vertices(Numeral)[source(percept)] <-
+	.print("Received percept vertices(", Numeral, ").").
+
++visRange(Numeral)[source(percept)] <-
+	.print("Received percept visRange(", Numeral, ").").
+	
++visibleEdge(Vertex1, Vertex2)[source(percept)] <-
+	.print("Received percept visibleEdge(", Vertex1, ", ", Vertex2, ").").
+	
++visibleEntity(Agent,Vertex,Team,State)[source(percept)] <-
+	.print("Received percept visibleEntity(", Agent, ", ", Vertex, ", ", Team, ", ", State, ").").
+	
++visibleVertex(Vertex, Team)[source(percept)] <-
+	.print("Received percept visibleVertex(", Vertex, ", ", Team, ").").
+
++zoneScore(Numeral)[source(percept)] <-
+	.print("Received percept zoneScore(", Numeral, ").").
+
++zonesScore(Numeral)[source(percept)] <-
+	.print("Received percept zonesScore(", Numeral, ").").
+	
++probedVertex(Vertex, Value)[source(percept)] <-
+	.print("Received percept probedVertex(", Vertex, ", ", Value, ").");
+	-+probedVertex(Vertex, Value)[source(storeBeliefs)].

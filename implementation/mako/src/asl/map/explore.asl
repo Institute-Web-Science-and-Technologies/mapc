@@ -5,7 +5,8 @@
 	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
 	& broadcastAgentList(AgentList)
 	<-
-	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
+	.print("Received percept surveyedEdge(", VertexA, ", ", VertexB, ", ", Weight, ".");
+//	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
 	.send(AgentList, tell, surveyedEdge(VertexA, VertexB, Weight));
 	.abolish(surveyedEdge(VertexA, VertexB, Weight));
 	.abolish(surveyedEdge(VertexB, VertexA, Weight));
@@ -16,7 +17,7 @@
 +surveyedEdge(VertexA, VertexB, Weight)[source(Agent)]:
 	not surveyedEdge(VertexA, VertexB, Weight)[source(self)]
 	<-
-	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent ", Agent, ".");
+//	.print("I learned about a surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, " from agent ", Agent, ".");
 	.abolish(surveyedEdge(VertexA, VertexB, Weight));
 	.abolish(surveyedEdge(VertexB, VertexA, Weight));
 	+surveyedEdge(VertexA, VertexB, Weight)[source(self)];
