@@ -117,7 +117,6 @@ public class EISEnvironment extends Environment implements AgentListener {
         }
         try {
             environmentInterface.performAction(agentServerName, action);
-            logger.info(agentServerName + ": " + action.getName());
             return true;
         } catch (ActException e) {
             return false;
@@ -153,18 +152,19 @@ public class EISEnvironment extends Environment implements AgentListener {
                 delayedPerceptsMap.remove(jasonName);
             }
         }
-        Percept step = null;
+        Percept requestAction = null;
         clearPercepts(jasonName);
         clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
         for (Percept percept : percepts) {
-            // Make sure that the step percept is handled last by the agents
-            // because when the agent receives the step action, it determines
+            // Make sure that the requestAction percept is handled last by the
+            // agents because when the agent receives the requestAction
+            // percept, it determines
             // which action to perform in the current step. By this point, all
             // other percepts need to have been handled properly already.
-            if (percept.getName().equalsIgnoreCase("step")) {
-                step = percept;
+            if (percept.getName().equalsIgnoreCase("requestAction")) {
+                requestAction = percept;
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
@@ -172,8 +172,8 @@ public class EISEnvironment extends Environment implements AgentListener {
                 addAgentPercept(jasonName, percept);
             }
         }
-        if (step != null) {
-            addAgentPercept(jasonName, step);
+        if (requestAction != null) {
+            addAgentPercept(jasonName, requestAction);
         }
     }
 
@@ -187,11 +187,11 @@ public class EISEnvironment extends Environment implements AgentListener {
             // case "visibleEntity":
             // case "edges":
             // case "vertices":
-            if (!cartographerPerceptSet.contains(percept)) {
-                cartographerPerceptSet.add(percept);
-                logger.info("Sending percept " + literal + " to agent cartographer.");
-                addPercept("cartographer", literal);
-            }
+            // if (!cartographerPerceptSet.contains(percept)) {
+            // cartographerPerceptSet.add(percept);
+            logger.info("Sending percept " + literal + " to cartographer.");
+            addPercept("cartographer", literal);
+            // }
         }
     }
 

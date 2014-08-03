@@ -63,11 +63,17 @@
     .print("My Jason Name is: ", JName);
     -+myName(Name)[source(self)].
 
++probedVertex(Vertex, Value)[source(percept)] <-
+	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
+	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
+
+	
 +ranking(Numeral)[source(percept)] <-
 	.print("Received percept ranking(", Numeral, ").").
 	
 +requestAction[source(percept)] <-
-	.print("Received percept requestAction.").
+	.print("Received percept requestAction.");
+	-+requestAction[source(self)].
 	
 +role(Identifier)[source(percept)] <-
 	.print("Received percept role(", Identifier, ").").
@@ -79,9 +85,11 @@
 	.print("Received percept simEnd(", Numeral, ").").
 	
 +simStart[source(percept)] <-
-	.print("Received percept simStart.");
-	-+simStart[source(self)].
-
+	.print("Received percept simStart.").
+	
++step(Numeral)[source(percept)] <-
+	.print("Received percept step(", Numeral, ").").
+	
 +steps(Numeral)[source(percept)] <-
 	.print("Received percept steps(", Numeral, ").").
 
@@ -111,7 +119,3 @@
 
 +zonesScore(Numeral)[source(percept)] <-
 	.print("Received percept zonesScore(", Numeral, ").").
-	
-+probedVertex(Vertex, Value)[source(percept)] <-
-	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
-	-+probedVertex(Vertex, Value)[source(storeBeliefs)].

@@ -26,13 +26,14 @@ maxNodesAmount(625).
 	<-
 	.print("I already knew about the surveyed edge from (", VertexA, ") to (", VertexB, ") with weight ", Weight, ".").
 
-+surveyedEdge(VertexA, VertexB, Weight)[source(Sender)]
-    <- .print("I was informed about an edge from ", VertexA, " to ", VertexB, " with weight ", Weight, " by ", Sender, ".");
-       .abolish(edge(VertexA, VertexB, _));
-       .abolish(edge(VertexB, VertexA, _));
-       +edge(VertexA, VertexB, Weight);
-       +edge(VertexB, VertexA, Weight);
-       !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
++surveyedEdge(VertexA, VertexB, Weight)
+    <-
+    .print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ".");
+   	.abolish(edge(VertexA, VertexB, _));
+   	.abolish(edge(VertexB, VertexA, _));
+   	+edge(VertexA, VertexB, Weight);
+   	+edge(VertexB, VertexA, Weight);
+   	!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
        
 // Whenever the server tells about a visible edge, handle it. If the edge is already known, ignore it. 
 // Otherwise add the edge with assuming max weight for edge costs. Add both directions of edge traversing and inform the NodeAgents.
@@ -84,7 +85,7 @@ maxNodesAmount(625).
 //that he did.
 +vertex(Vertex, true)[source(Sender)]
 	<-
-	.print("I learned that ", Vertex, " has been probed by ", Sender, ".");
+	.print("I learned that ", Vertex, " has been surveyed by ", Sender, ".");
 	-vertex(Vertex, false).
 
 //Generate a vertex belief when informed about a new visible vertex. Assume

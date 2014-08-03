@@ -5,8 +5,6 @@
 
 zoneMode(false).
 
-+simStart <- .print("Simulation started.").
-
 /* Map Related Stuff */
 // Whenever an agent gets a new position percept, update the belief base, 
 // if the new position belief is not already in belief base. 
@@ -20,12 +18,15 @@ zoneMode(false).
 // Try to do an action in every step.
 // Since all other incoming percepts and beliefs
 //should be handled before the step belief is processed, we delay the step by assigning a low priority value to it.                        
-@delayStep[priority(-10)]
- +step(Step):
-    position(Position) & lastActionResult(Result) & lastAction(Action)
+@delayExecution[priority(-10)]
++requestAction
+	:
+    position(Position)
+	& lastActionResult(Result)
+	& lastAction(Action)
+	& step(Step)
     <-
 	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,".");
-    .print("Received percept step(", Step, ").");
     if (Result == successful & Action == survey) {
     	.send(cartographer,tell,vertex(Position, true))
 	}
@@ -59,7 +60,7 @@ zoneMode(false).
 	& not probedVertex(Vertex, _)
 	& position(Vertex)
 	& role(explorer)
-	<- .print("I'm trying to probe.");
+	<- .print("I will probe ", Vertex, ".");
 	 	!doProbing.
 	 	
 // If an agent is on a vertex which has an edge to an adjacent not surveyed vertex, survey the position.
@@ -110,7 +111,7 @@ zoneMode(false).
     	
 +!doSurveying:
 	position(Position)
-	<- .print("Surveying Vertex: ", Position);
+	<- .print("Surveying from vertex ", Position, ".");
 		survey.
     	
 //+!doExploring <- !exploreGraph.

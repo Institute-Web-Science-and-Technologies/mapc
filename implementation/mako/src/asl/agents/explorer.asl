@@ -30,7 +30,7 @@
 	:
 	Agent \== self
 	<-
-	.print("I learned that the value of ", Vertex, " is ", Value, " from agent ", Agent, ".");
+	.print("Received percept probedVertex(", Vertex, ",", Value, ") from agent ", Agent, ".");
 	.abolish(probedVertex(Vertex, Value));
 	+probedVertex(Vertex, Value)[source(self)].
 	
@@ -46,7 +46,7 @@
 // If the agent has enough energy than probe. Otherwise recharge.
 +!doProbing:
 	energy(Energy) & Energy > 1 & position(Position)
-	<- .print("Probing Vertex ", Position);
+	<- .print("Probing vertex ", Position, ".");
 		probe.
 	
 +!doProbing:
