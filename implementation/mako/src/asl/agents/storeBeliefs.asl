@@ -98,13 +98,13 @@
 	.print("Received percept visRange(", Numeral, ").").
 	
 +visibleEdge(Vertex1, Vertex2)[source(percept)] <-
-	.print("Received percept visibleEdge(", Vertex1, ", ", Vertex2, ").").
+	.print("Received percept visibleEdge(", Vertex1, ",", Vertex2, ").").
 	
 +visibleEntity(Agent,Vertex,Team,State)[source(percept)] <-
-	.print("Received percept visibleEntity(", Agent, ", ", Vertex, ", ", Team, ", ", State, ").").
+	.print("Received percept visibleEntity(", Agent, ",", Vertex, ",", Team, ",", State, ").").
 	
 +visibleVertex(Vertex, Team)[source(percept)] <-
-	.print("Received percept visibleVertex(", Vertex, ", ", Team, ").").
+	.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
 
 +zoneScore(Numeral)[source(percept)] <-
 	.print("Received percept zoneScore(", Numeral, ").").
@@ -113,5 +113,5 @@
 	.print("Received percept zonesScore(", Numeral, ").").
 	
 +probedVertex(Vertex, Value)[source(percept)] <-
-	.print("Received percept probedVertex(", Vertex, ", ", Value, ").");
+	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
 	-+probedVertex(Vertex, Value)[source(storeBeliefs)].

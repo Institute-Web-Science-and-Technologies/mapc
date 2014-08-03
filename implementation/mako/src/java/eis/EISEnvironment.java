@@ -27,6 +27,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     private AgentLogger logger = new AgentLogger(EISEnvironment.NAME);
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
+    private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
 
     /*
      * jason lifecycle: init -> user-init -> compile -> run -> user-end
@@ -138,6 +139,18 @@ public class EISEnvironment extends Environment implements AgentListener {
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
         String jasonName = serverAgentMap.get(agentName).getJasonName();
+        // The following if-else block was added because agents were missing out
+        // on the initial list of beliefs. This is of course a dirty workaround,
+        // but I can't think of any other way to fix this issue. -sewell
+        if (percepts.toString().contains("role")) {
+            delayedPerceptsMap.put(jasonName, percepts);
+            return;
+        } else {
+            if (delayedPerceptsMap.containsKey(jasonName)) {
+                percepts.addAll(delayedPerceptsMap.get(jasonName));
+                delayedPerceptsMap.remove(jasonName);
+            }
+        }
         Percept step = null;
         clearPercepts(jasonName);
         clearPercepts("cartographer");

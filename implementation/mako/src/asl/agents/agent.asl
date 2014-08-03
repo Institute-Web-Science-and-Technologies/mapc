@@ -29,6 +29,9 @@ zoneMode(false).
     if (Result == successful & Action == survey) {
     	.send(cartographer,tell,vertex(Position, true))
 	}
+//	Why doesn't this work?
+//	.findall([From, To], visibleEdge(From, To), visibleEdgeList);
+//	.print("List of visible edges: ", visibleEdgeList);
     !doAction.
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.       

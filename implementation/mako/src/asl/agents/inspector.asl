@@ -1,5 +1,4 @@
 { include("agent.asl") }
-role(inspector).
 +!dealWithEnemy <- !avoidEnemy.
 
 // For Inspecting, Inspecting the enemy and broadcast there parameters of enemy agent

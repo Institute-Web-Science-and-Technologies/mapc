@@ -1,6 +1,5 @@
 { include("agent.asl") }
 
-role(explorer).
 // Store list of all agents except myself for broadcasting.
 !generateExplorerAgentList.
 +!generateExplorerAgentList:
