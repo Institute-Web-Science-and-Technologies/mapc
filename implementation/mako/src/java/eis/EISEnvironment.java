@@ -7,6 +7,7 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -28,6 +29,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
+    private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
 
     /*
      * jason lifecycle: init -> user-init -> compile -> run -> user-end
@@ -154,7 +156,8 @@ public class EISEnvironment extends Environment implements AgentListener {
         Percept step = null;
         clearPercepts(jasonName);
         clearPercepts("cartographer");
-        logger.info("Received percepts for " + jasonName + ": " + percepts.toString());
+        // logger.info("Received percepts for " + jasonName + ": " +
+        // percepts.toString());
         for (Percept percept : percepts) {
             // Make sure that the step percept is handled last by the agents
             // because when the agent receives the step action, it determines
@@ -182,9 +185,13 @@ public class EISEnvironment extends Environment implements AgentListener {
         case "visibleEdge":
         case "surveyedEdge":
             // case "visibleEntity":
-        case "edges":
-        case "vertices":
-            addPercept("cartographer", literal);
+            // case "edges":
+            // case "vertices":
+            if (!cartographerPerceptSet.contains(percept)) {
+                cartographerPerceptSet.add(percept);
+                logger.info("Sending percept " + literal + " to agent cartographer.");
+                addPercept("cartographer", literal);
+            }
         }
     }
 

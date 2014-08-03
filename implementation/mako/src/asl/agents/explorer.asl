@@ -20,6 +20,7 @@
 	not probedVertex(Vertex, Value)[source(self)]
 	<-
 	.print("I learned that the value of ", Vertex, " is ", Value, ".");
+	.print("Sending nodeValue(", Vertex, ",", Value, ") to ", Vertex);
 	.send(Vertex,tell,nodeValue(Vertex,Value)); // send node value info to respective node agent
     ?explorerAgentList(ExplorerList);
     .send(ExplorerList, tell, probedVertex(Vertex,Value));

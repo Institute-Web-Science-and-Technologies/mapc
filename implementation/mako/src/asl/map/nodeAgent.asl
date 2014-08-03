@@ -31,29 +31,34 @@
 
 //Received a new nodeValue belief, either from an explorer who has probed or
 //from a nearby node agent.
-+nodeValue(Vertex, NodeValue)[source(Sender)]:
++nodeValue(Vertex, NodeValue)[source(Sender)]
+	:
 	Sender \== self
 	& .my_name(Vertex)
-	& not nodeValue(Vertex, NodeValue)
+	& not nodeValue(Vertex, NodeValue)[source(self)]
 	<-
+	.print("Learned about my own nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
 	.abolish(nodeValue(Vertex, _));
 	+nodeValue(Vertex, NodeValue)[source(self)];
-	.findall(Vertex, neighbour(Vertex, _), OneHopNeighbourList);
-	.findall(Vertex, minStepsPath(Vertex, _, 2, _), TwoHopNeighbourList);
+	.findall(OneHopNeighbour, neighbour(OneHopNeighbour, _), OneHopNeighbourList);
+	.print("My direct neighbours are ", OneHopNeighbourList, ".");
+	.findall(TwoHopNeighbour, minStepsPath(TwoHopNeighbour, _, 2, _), TwoHopNeighbourList);
+	.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
 	.concat(OneHopNeighbourList, TwoHopNeighbourList, OneAndTwoHopNeighbourList);
-	.print("My one and two-hop neighbour list is ", OneAndTwoHopNeighbourList);
+	.print("Will inform ", OneAndTwoHopNeighbourList, " about my node value.");
 	.send(OneAndTwoHopNeighbourList, tell, nodeValue(Vertex, NodeValue));
 	!calculateZone.
 	
 //Received a nodeValue belief that I already knew about.
-+nodeValue(Vertex, NodeValue)[source(Sender)]:
-	nodeValue(Vertex, NodeValue)[source(self)]
-	<-
-	-nodeValue(Vertex, NodeValue)[source(Sender)].
+//+nodeValue(Vertex, NodeValue)[source(Sender)]:
+//	nodeValue(Vertex, NodeValue)[source(self)]
+//	<-
+//	-nodeValue(Vertex, NodeValue)[source(Sender)].
 	
-+nodeValue(Vertex, NodeValue):
++nodeValue(Vertex, NodeValue)[source(Sender)]:
 	not nodeValue(Vertex, NodeValue)[source(self)]
 	<-
+	.print("Received nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
 	.abolish(nodeValue(Vertex, _));
 	+nodeValue(Vertex, NodeValue)[source(self)];
 	!calculateZone.
@@ -63,11 +68,13 @@
 	& .my_name(ThisVertex)
 	& nodeValue(ThisVertex, NodeValue)
 	<-
-	.print("Learned about a new neighbour in my two-hop neighbourhood, telling him about my node value.");
+	.print("Learned about ", Vertex, " in my two-hop neighbourhood. Will send him my node value.");
 	.send(Vertex, tell, nodeValue(ThisVertex, NodeValue))
 	.
 	
-+neighbour(Vertex, Weight) <- .print("I learned about my neighbour ", Vertex, " with edge weight ", Weight, ".").
++neighbour(Vertex, Weight)[source(Sender)]
+	<-
+	.print("I learned about my neighbour ", Vertex, " with edge weight ", Weight, ".").
 	   
 //Default plan if we already know about this neighbour.
 +path(Vertex, Weight) <- .print("I already know about this path.").

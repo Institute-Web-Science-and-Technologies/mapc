@@ -26,8 +26,8 @@ maxNodesAmount(625).
 	<-
 	.print("I already knew about the surveyed edge from (", VertexA, ") to (", VertexB, ") with weight ", Weight, ".").
 
-+surveyedEdge(VertexA, VertexB, Weight)
-    <- .print("I was informed about an edge from (", VertexA, ") to (", VertexB, ") with weight ", Weight, ".");
++surveyedEdge(VertexA, VertexB, Weight)[source(Sender)]
+    <- .print("I was informed about an edge from ", VertexA, " to ", VertexB, " with weight ", Weight, " by ", Sender, ".");
        .abolish(edge(VertexA, VertexB, _));
        .abolish(edge(VertexB, VertexA, _));
        +edge(VertexA, VertexB, Weight);
@@ -38,14 +38,16 @@ maxNodesAmount(625).
 // Otherwise add the edge with assuming max weight for edge costs. Add both directions of edge traversing and inform the NodeAgents.
 +visibleEdge(VertexA, VertexB)[source(percept)]:
 	edge(VertexA, VertexB, _)
-	<- .print("I already know about this edge").
+	<-
+	.print("Received percept visibleEdge(", VertexA, ",", VertexB, "). I already know about this edge.").
 
 +visibleEdge(VertexA, VertexB)[source(percept)]:
     maxEdgeWeight(Weight)
-    <- .print("I was informed about an edge from (", VertexA, ") to (", VertexB, ") with unknown weight.");
-       +edge(VertexA, VertexB, Weight);
-       +edge(VertexB, VertexA, Weight);
-       !informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
+    <-
+	.print("Received percept visibleEdge(", VertexA, ",", VertexB, ").");
+   	+edge(VertexA, VertexB, Weight);
+   	+edge(VertexB, VertexA, Weight);
+   	!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
     
 +?unsurveyedNeighbours(Vertex, Result)[source(SenderAgent)]
 	<-
@@ -80,11 +82,15 @@ maxNodesAmount(625).
     
 //Handle the case where an agent who has surveyed a node lets the cartographer know
 //that he did.
-+vertex(Vertex, true) <- -+vertex(Vertex, true).
++vertex(Vertex, true)[source(Sender)]
+	<-
+	.print("I learned that ", Vertex, " has been probed by ", Sender, ".");
+	-vertex(Vertex, false).
 
 //Generate a vertex belief when informed about a new visible vertex. Assume
 //that it has not been surveyed yet.
-+visibleVertex(Vertex, _):
++visibleVertex(Vertex, Team)[source(Sender)]:
 	not vertex(Vertex, _)
 	<-
+	.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
 	+vertex(Vertex, false).
