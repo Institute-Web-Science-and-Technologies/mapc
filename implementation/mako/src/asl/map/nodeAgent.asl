@@ -4,7 +4,7 @@
 { include("nodeAgent.zoning.asl") }
 
 /* Initial beliefs and rules */
-
+twoHopNeighbours([]).
 /* Initial goals */
 !start.
 
@@ -14,6 +14,7 @@
     .my_name(Name)
     <-
 //	+minCostPath(Name, Name, 0, 0); // DestinationId, HopId, total costs, costs to hop
+	+nodeValue(Name, 1);
     +minStepsPath(Name, Name, 0, 0). // DestinationId, HopId, total steps, costs to hop
 
 // This plan adds Vertex as a neighbour and may set this path as the new
@@ -36,13 +37,13 @@
 	Sender \== self
 	& .my_name(Vertex)
 	& not nodeValue(Vertex, NodeValue)[source(self)]
+	& twoHopNeighbours(TwoHopNeighbourList)
 	<-
 	.print("Learned about my own nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
 	.abolish(nodeValue(Vertex, _));
 	+nodeValue(Vertex, NodeValue)[source(self)];
 	.findall(OneHopNeighbour, neighbour(OneHopNeighbour, _), OneHopNeighbourList);
 	.print("My direct neighbours are ", OneHopNeighbourList, ".");
-	.findall(TwoHopNeighbour, minStepsPath(TwoHopNeighbour, _, 2, _), TwoHopNeighbourList);
 	.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
 	.concat(OneHopNeighbourList, TwoHopNeighbourList, OneAndTwoHopNeighbourList);
 	.print("Will inform ", OneAndTwoHopNeighbourList, " about my node value.");
@@ -67,10 +68,13 @@
 	Value <= 2
 	& .my_name(ThisVertex)
 	& nodeValue(ThisVertex, NodeValue)
+	& Vertex \== ThisVertex
 	<-
 	.print("Learned about ", Vertex, " in my two-hop neighbourhood. Will send him my node value.");
-	.send(Vertex, tell, nodeValue(ThisVertex, NodeValue))
-	.
+	.send(Vertex, tell, nodeValue(ThisVertex, NodeValue));
+	.findall(TwoHopNeighbour, minStepsPath(TwoHopNeighbour, _, 2, _), TwoHopNeighbourList);
+	.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
+	-+twoHopNeighbours(TwoHopNeighbourList).
 	
 +neighbour(Vertex, Weight)[source(Sender)]
 	<-

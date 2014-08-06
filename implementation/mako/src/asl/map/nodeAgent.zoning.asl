@@ -4,7 +4,8 @@
 zoneValue(0).
 
 @calculateZone[atomic]
-+!calculateZone
++!calculateZone:
+	twoHopNeighbours(TwoHopNeighbourList)
 	<-
 	.print("Entering calculateZone plan.");
 	-+zoneValue(0);
@@ -12,7 +13,9 @@ zoneValue(0).
 	for (.member([Neighbour, NeighbourValue], NeighbourList)) {
 		!addToZoneValue(Neighbour, NeighbourValue);
 	}
-	?zoneValue(ZoneValue); .print("Finished calculateZone plan. My zone value is ", ZoneValue, ".")
+	?zoneValue(ZoneValue);
+	DividedZoneValue = ZoneValue / (.length(TwoHopNeighbourList) + 1);
+	.print("Finished calculateZone plan. My zone value is ", ZoneValue, ". My divided zone value is ", DividedZoneValue)
 	.
 	
 +!addToZoneValue(Neighbour, NodeValue):
