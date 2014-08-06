@@ -101,8 +101,10 @@
 +?getNextHopToVertex(Destination, NextHop):
 	minStepsPath(Destination, NextHopVertex, _, _)
 	<-
+	.print("The next hop to ", Destination, " is ", NextHopVertex, ".");
 	NextHop = NextHopVertex.
 	
 +?getNextHopToVertex(Destination, NextHop):
 	.my_name(ThisVertex)
-	<- NextHop = ThisVertex.
+	<- .print("I do not know how to get to this node.");
+	NextHop = ThisVertex.

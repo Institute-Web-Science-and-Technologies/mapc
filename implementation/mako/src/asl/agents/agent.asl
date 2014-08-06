@@ -134,7 +134,8 @@ zoneMode(false).
 +!goto(Destination):
 	position(CurrVertex) & not visibleEdge(CurrVertex, Destination)
 	<-
-	.send(CurrVertex, askOne, getNextHopToVertex(Destination, NextHop), NextHop);
+	.print("I am currently on ", CurrVertex, ". I want to move to ", Destination, ", but I do not see an edge to it. Will ask for the next hop.");
+	.send(CurrVertex, askOne, getNextHopToVertex(Destination, NextHop), getNextHopToVertex(_, NextHop));
 	!goto(NextHop).
 
 //In the case where we for some reason get told to move to the node we're already on,
@@ -142,10 +143,11 @@ zoneMode(false).
 +!goto(Destination):
 	position(MyPosition) & Destination == MyPosition
 	<-
+	.print("I was told to move to the node I am already on (", MyPosition, "). Will recharge instead.");
 	recharge.
 
 // This is the default goto action if we want to move to one of our neighbor nodes.
 +!goto(Destination)
     <-
-    .print("I will move to vertex ", Destination, ".");
+    .print("I will move to my neighbour node ", Destination, ".");
 	goto(Destination).
