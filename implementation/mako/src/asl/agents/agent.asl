@@ -129,15 +129,6 @@ zoneMode(false).
     <- .print("I have ", CurrEnergy, " energy, but need ", Weight, " to go, going to recharge first.");
        recharge.
 
-// Goto if the destination is not a neighbour of the node we are currently on.
-// We have to ask the node agent for the next hop on the way to our destination.
-+!goto(Destination):
-	position(CurrVertex) & not visibleEdge(CurrVertex, Destination)
-	<-
-	.print("I am currently on ", CurrVertex, ". I want to move to ", Destination, ", but I do not see an edge to it. Will ask for the next hop.");
-	.send(CurrVertex, askOne, getNextHopToVertex(Destination, NextHop), getNextHopToVertex(_, NextHop));
-	!goto(NextHop).
-
 //In the case where we for some reason get told to move to the node we're already on,
 //we perform a recharge action isntead.
 +!goto(Destination):
@@ -145,6 +136,16 @@ zoneMode(false).
 	<-
 	.print("I was told to move to the node I am already on (", MyPosition, "). Will recharge instead.");
 	recharge.
+
+// Goto if the destination is not a neighbour of the node we are currently on.
+// We have to ask the node agent for the next hop on the way to our destination.
++!goto(Destination):
+	position(CurrVertex) & not (visibleEdge(CurrVertex, Destination) | visibleEdge(Destination, CurrVertex))
+	<-
+	.print("I am currently on ", CurrVertex, ". I want to move to ", Destination, ", but I do not see an edge to it. Will ask for the next hop.");
+	.send(CurrVertex, askOne, getNextHopToVertex(Destination, NextHop), getNextHopToVertex(_, NextHop));
+	!goto(NextHop).
+
 
 // This is the default goto action if we want to move to one of our neighbor nodes.
 +!goto(Destination)

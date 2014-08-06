@@ -44,6 +44,7 @@
 	<-
 	.send(cartographer,askOne,unsurveyedVertices(_), unsurveyedVertices(UnsurveyedVertices));
 	.send(CurrentVertex, askOne, getClosestVertexFromList(UnsurveyedVertices, _), getClosestVertexFromList(_, ClosestUnsurveyedVertex));
+	.print("The closest node from the list of unsurveyed nodes ", UnsurveyedVertices, " is ", ClosestUnsurveyedVertex, ".");
 	!goto(ClosestUnsurveyedVertex).
 	
 //In the case where we have unsurveyed neighbours, we go to the one that is the
