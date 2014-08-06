@@ -23,6 +23,7 @@
 	.print("Sending nodeValue(", Vertex, ",", Value, ") to ", Vertex);
 	.send(Vertex,tell,nodeValue(Vertex,Value)); // send node value info to respective node agent
     ?explorerAgentList(ExplorerList);
+    .print("Sending message probedVertex(", Vertex, ",", Value, ") to ", ExplorerList, ".");
     .send(ExplorerList, tell, probedVertex(Vertex,Value));
 	+probedVertex(Vertex, Value)[source(self)].
 	
@@ -30,7 +31,7 @@
 	:
 	Agent \== self
 	<-
-	.print("Received percept probedVertex(", Vertex, ",", Value, ") from agent ", Agent, ".");
+	.print("Received message probedVertex(", Vertex, ",", Value, ") from agent ", Agent, ".");
 	.abolish(probedVertex(Vertex, Value));
 	+probedVertex(Vertex, Value)[source(self)].
 	

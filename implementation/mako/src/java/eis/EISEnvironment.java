@@ -154,7 +154,7 @@ public class EISEnvironment extends Environment implements AgentListener {
         }
         Percept requestAction = null;
         clearPercepts(jasonName);
-        clearPercepts("cartographer");
+        // clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
         for (Percept percept : percepts) {
@@ -187,11 +187,11 @@ public class EISEnvironment extends Environment implements AgentListener {
             // case "visibleEntity":
             // case "edges":
             // case "vertices":
-            // if (!cartographerPerceptSet.contains(percept)) {
-            // cartographerPerceptSet.add(percept);
-            logger.info("Sending percept " + literal + " to cartographer.");
-            addPercept("cartographer", literal);
-            // }
+            if (!cartographerPerceptSet.contains(percept)) {
+                cartographerPerceptSet.add(percept);
+                logger.info("Sending percept " + literal + " to cartographer.");
+                addPercept("cartographer", literal);
+            }
         }
     }
 

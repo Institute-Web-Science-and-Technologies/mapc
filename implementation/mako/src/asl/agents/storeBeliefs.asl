@@ -60,7 +60,7 @@
 +myName(Name)[source(percept)] <-
     .print("My Server Name is: ", Name);
     .my_name(JName);
-    .print("My Jason Name is: ", JName);
+    .print("My Jason Name is: ", JName); //Why does this get printed twice?
     -+myName(Name)[source(self)].
 
 +probedVertex(Vertex, Value)[source(percept)] <-
@@ -73,7 +73,10 @@
 	
 +requestAction[source(percept)] <-
 	.print("Received percept requestAction.");
-	-+requestAction[source(self)].
+//	We have to abolish here because we need to make sure that requestAction
+//	gets processed in every step.
+	.abolish(requestAction);
+	!executeAction.
 	
 +role(Identifier)[source(percept)] <-
 	.print("Received percept role(", Identifier, ").").

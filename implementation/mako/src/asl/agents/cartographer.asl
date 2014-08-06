@@ -28,7 +28,7 @@ maxNodesAmount(625).
 
 +surveyedEdge(VertexA, VertexB, Weight)
     <-
-    .print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ".");
+    .print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ").");
    	.abolish(edge(VertexA, VertexB, _));
    	.abolish(edge(VertexB, VertexA, _));
    	+edge(VertexA, VertexB, Weight);

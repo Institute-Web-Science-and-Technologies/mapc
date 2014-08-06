@@ -19,7 +19,7 @@ zoneMode(false).
 // Since all other incoming percepts and beliefs
 //should be handled before the step belief is processed, we delay the step by assigning a low priority value to it.                        
 @delayExecution[priority(-10)]
-+requestAction
++!executeAction
 	:
     position(Position)
 	& lastActionResult(Result)
@@ -34,6 +34,8 @@ zoneMode(false).
 //	.findall([From, To], visibleEdge(From, To), visibleEdgeList);
 //	.print("List of visible edges: ", visibleEdgeList);
     !doAction.
+//    We have to abolish here, or the agent will ignore 
+//    .abolish(requestAction).
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.       
  +!doAction:
