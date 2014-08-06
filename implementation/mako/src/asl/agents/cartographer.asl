@@ -19,13 +19,6 @@ maxNodesAmount(625).
        };
        .print("Only ", VerticesAmount, " existing nodes. Removed beliefs. You should only see this message once per simulation.").
        
-// Whenever the server tells about a surveyed edge, handle it. If the edge is already known with its weight, ignore it.
-// Otherwise remove unsurveyed edge beliefs and add belief as new edge belief with updated costs. Also inform the NodeAgents about it.
-+surveyedEdge(VertexA, VertexB, Weight):
-	edge(VertexA, VertexB, Weight) & edge(VertexB,VertexA, Weight) & maxEdgeWeight(Max) & Weight \== Max
-	<-
-	.print("I already knew about the surveyed edge from (", VertexA, ") to (", VertexB, ") with weight ", Weight, ".").
-
 +surveyedEdge(VertexA, VertexB, Weight)
     <-
     .print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ").");
@@ -35,13 +28,6 @@ maxNodesAmount(625).
    	+edge(VertexB, VertexA, Weight);
    	!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
        
-// Whenever the server tells about a visible edge, handle it. If the edge is already known, ignore it. 
-// Otherwise add the edge with assuming max weight for edge costs. Add both directions of edge traversing and inform the NodeAgents.
-+visibleEdge(VertexA, VertexB)[source(percept)]:
-	edge(VertexA, VertexB, _)
-	<-
-	.print("Received percept visibleEdge(", VertexA, ",", VertexB, "). I already know about this edge.").
-
 +visibleEdge(VertexA, VertexB)[source(percept)]:
     maxEdgeWeight(Weight)
     <-
@@ -50,7 +36,7 @@ maxNodesAmount(625).
    	+edge(VertexB, VertexA, Weight);
    	!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
     
-+?unsurveyedNeighbours(Vertex, Result)[source(SenderAgent)]
++?unsurveyedNeighbours(Vertex, Result)
 	<-
        // putting Weight before DestinationVertex allows a natural order in
        // favour of the weights:
@@ -93,5 +79,5 @@ maxNodesAmount(625).
 +visibleVertex(Vertex, Team)[source(Sender)]:
 	not vertex(Vertex, _)
 	<-
-	.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
+	.print("Received percept visibleVertex(", Vertex, ",", Team, ").");
 	+vertex(Vertex, false).

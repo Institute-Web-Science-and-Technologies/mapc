@@ -120,17 +120,32 @@ zoneMode(false).
 
 +enemy(Name, Role):
 	enemy(Name, Role)
-	<- .print("I already was informed about this enemy");
-		true.
+	<-
+	.print("I already was informed about this enemy").
 
 // Want to goto, but don't have enough energy -> recharge.
-+!goto(NextVertex):
-    position(CurrVertex) & energy(CurrEnergy) & edge(CurrVertex, NextVertex, Weight) & CurrEnergy < Weight
++!goto(Destination):
+    position(CurrVertex) & energy(CurrEnergy) & surveyedEdge(CurrVertex, Destination, Weight) & CurrEnergy < Weight
     <- .print("I have ", CurrEnergy, " energy, but need ", Weight, " to go, going to recharge first.");
        recharge.
 
-// Otherwise just goto.
-+!goto(NextVertex)
+// Goto if the destination is not a neighbour of the node we are currently on.
+// We have to ask the node agent for the next hop on the way to our destination.
++!goto(Destination):
+	position(CurrVertex) & not visibleEdge(CurrVertex, Destination)
+	<-
+	.send(CurrVertex, askOne, getNextHopToVertex(Destination, NextHop), NextHop);
+	!goto(NextHop).
+
+//In the case where we for some reason get told to move to the node we're already on,
+//we perform a recharge action isntead.
++!goto(Destination):
+	position(MyPosition) & Destination == MyPosition
+	<-
+	recharge.
+
+// This is the default goto action if we want to move to one of our neighbor nodes.
++!goto(Destination)
     <-
-    .print("I will move to vertex ", NextVertex, ".");
-	goto(NextVertex).
+    .print("I will move to vertex ", Destination, ".");
+	goto(Destination).

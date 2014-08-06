@@ -97,3 +97,12 @@
 +?getClosestVertexFromList(VertexList, NextVertex)
 	<-
 	.print("Tried to find the closest vertex from a list, but the list was empty!").
+	
++?getNextHopToVertex(Destination, NextHop):
+	minStepsPath(Destination, NextHopVertex, _, _)
+	<-
+	NextHop = NextHopVertex.
+	
++?getNextHopToVertex(Destination, NextHop):
+	.my_name(ThisVertex)
+	<- NextHop = ThisVertex.
