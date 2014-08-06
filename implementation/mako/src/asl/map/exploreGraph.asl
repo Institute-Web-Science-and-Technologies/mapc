@@ -38,41 +38,18 @@
         .print("Result of unvisitedNeighbours: ", Options);
         .length(Options, NumOptions);
         !findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight);
-//        ?broadcastAgentList(BroadcastList);
-//        .send(BroadcastList, tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
-//        .wait(400); // Wait for bids from other agents.
+        ?broadcastAgentList(BroadcastList);
+        .send(BroadcastList, tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
+        .wait(400); // Wait for bids from other agents.
 //        .findall(SourceAgent, iWantToGoTo(_, _, _ ,_)[source(SourceAgent)], ReceivedBids);
 //        .print("-------------------------------------------------Received number of bids: ", .length(ReceivedBids));
-//        !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
-		!doNextVertexBidding(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
+        !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
         !goto(RevisedNextVertex);
     }
     else{
         .print(CurrVertex, " not surveyed, surveying.");
         !survey;    	
     }.
-
-// If we already received a bid with the same NextVertex then make comparison:
-// if my bid is better - broadcast it;
-// if my bid is worse - change my NextVertex.
-+!doNextVertexBidding(NextVertex, NextVertexWeight, Options, RevisedNextVertex):
-    iWantToGoTo(NextVertex, _, _, _)[source(Agent)]
-    <-
-    !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex);
-    if(NextVertex == RevisedNextVertex){
-    	?energy(E);
-    	.length(Options, NumOptions);
-        ?broadcastAgentList(BroadcastList);
-        .send(BroadcastList, tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
-    }.
-
-// If we didn't receive a bid with the same NextVertex yet, broadcast our bid, wait and check again.
-+!doNextVertexBidding(NextVertex, NextVertexWeight, Options, RevisedNextVertex):
-    energy(E) & .length(Options, NumOptions) & broadcastAgentList(BroadcastList)
-    <-
-    .send(BroadcastList, tell, iWantToGoTo(NextVertex, NextVertexWeight, E, NumOptions)); // Broadcast a bid for NextVertex.
-    .wait(400);
-    !reconsiderChoice(NextVertex, NextVertexWeight, Options, RevisedNextVertex).
 
 // Fallback goal.
 +!exploreGraph
@@ -99,8 +76,7 @@
 	.print("I am in a conflict in intension to go to ", MyNextVertex, " with the agent ", AgentName, ". Need to recalculate next vertex.");
 //	.print("My parameters for comparison were: ", MyNumOptions, " ",MyNextVertexWeight, " ", MyE, " ", MyName);
 //	.print("Opponent's' parameters for comparison were: ", NumOptions, " ",NextVertexWeight, " ", E, " ", AgentName);
-	.delete([MyNextVertexWeight, MyNextVertex], Options, NewOptions);
-	!findNextVertex(CurrVertex, NewOptions, RevisedNextVertex, _).
+	!recalculateNextVertex(CurrVertex, Options, MyNextVertex, RevisedNextVertex).
 
 // Debugging bidding outcomes
 //+!reconsiderChoice(MyNextVertex, MyNextVertexWeight, Options, RevisedNextVertex):
@@ -116,20 +92,46 @@
 +!reconsiderChoice(MyNextVertex, _, _, RevisedNextVertex)
     <-
     RevisedNextVertex = MyNextVertex.
+    
+// Try to find another unvisited vertex
++!recalculateNextVertex(CurrVertex, Options, NextVertex, RevisedNextVertex):
+    .length(Options) > 1 & edge(CurrVertex, NextVertex, NextVertexWeight) 
+    <-
+    .delete([NextVertex, NextVertexWeight], Options, NewOptions);
+    .length(NewOptions, NumOptions);
+    .nth(math.random(NumOptions), NewOptions, NextVertexList);
+    .nth(0, NextVertexList, RevisedNextVertex);
+    .nth(1, NextVertexList, RevisedNextVertexWeight);
+    .print("New options were: ", NewOptions, ", I chose ", RevisedNextVertex);
+    +edge(CurrVertex, RevisedNextVertex, RevisedNextVertexWeight);
+    +edge(RevisedNextVertex, CurrVertex, RevisedNextVertexWeight).
+
+// If we cannot find unvisited vertices not selected by another agent -> return previous position.     
++!recalculateNextVertex(CurrVertex, _, _, RevisedNextVertex):
+    dfspath(CurrPath) & .length(CurrPath) > 1
+    <- 
+    .nth(1, CurrPath, RevisedNextVertex);
+    .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", RevisedNextVertex). 
+
+// DFS is completed. 
++!recalculateNextVertex(_, _, _, _)
+    <-
+    .print("I'm done with exploring!");
+    .succeed_goal(exploreGraph).
 
 // Return not visited vertex from the neighborhood.
  +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
-     not .length(Options, 0)
-     <-
-     .min(Options, CheapestOption);
-     .nth(0, CheapestOption, NextVertexWeight);
-     .nth(1, CheapestOption, NextVertex);
+     .length(Options, NumOptions) & NumOptions > 0
+     <-      
+     .nth(math.random(NumOptions), Options, NextVertexList);
+     .nth(0, NextVertexList, NextVertex);
+     .nth(1, NextVertexList, NextVertexWeight);
      .print("Next vertex: ", NextVertex, " having weight: ", NextVertexWeight);
      +edge(CurrVertex, NextVertex, NextVertexWeight);
      +edge(NextVertex, CurrVertex, NextVertexWeight).
  
  // If there are no unvisited vertices in the neighborhood -> return previous position.     
- +!findNextVertex(CurrVertex, _, NextVertex, NextVertexWeight):
+ +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight):
      dfspath(CurrPath) & .length(CurrPath) > 1
      <- 
      .nth(1, CurrPath, NextVertex);
@@ -137,26 +139,10 @@
      .print("Can't find unvisited vertices in the neighborhood - returning one step back to ", NextVertex). 
  
  // DFS is completed. 
- +!findNextVertex(CurrVertex, _, NextVertex, NextVertexWeight)
+ +!findNextVertex(CurrVertex, Options, NextVertex, NextVertexWeight	)
      <-
-     .print("I'm done with DFS, heading to some unvisited vertex.");
-     !findNearestUnvisitedVertex(CurrVertex, NextVertex, NextVertexWeight);
-     -+dfspath([])[source(self)];
-     .print("I chose to go to ", NextVertex, " as my next hop.").
-
-// Calculate the nearest unvisited vertex     
-+!findNearestUnvisitedVertex(CurrVertex, NextVertex, NextVertexWeight)
-    <-
-    .send(cartographer, askOne, unvisitedVertices(_), unvisitedVertices(UnvisitedVertexList));
-    if(not .length(UnvisitedVertexList, 0)){
-    	.send(CurrVertex, askOne, getClosestVertexFromList(UnvisitedVertexList, _), getClosestVertexFromList(_, NextVertex));
-    	.send(cartographer, askOne, edge(CurrVertex, NextVertex, _), edge(_, _, NextVertexWeight));
-    	-+edge(CurrVertex, NextVertex, NextVertexWeight);  	
-    }
-    else{
-    	.print("There are no unvisited vertices in the graph. Stopping.");
-    	.succeed_goal(exploreGraph);
-    }.
+     .print("I'm done with exploring!");
+     .succeed_goal(exploreGraph).
 
 // Want to goto, but don't have enough energy -> recharge.
 +!goto(NextVertex):

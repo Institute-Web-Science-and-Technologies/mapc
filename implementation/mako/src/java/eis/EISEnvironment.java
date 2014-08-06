@@ -7,6 +7,7 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -27,6 +28,8 @@ public class EISEnvironment extends Environment implements AgentListener {
     private AgentLogger logger = new AgentLogger(EISEnvironment.NAME);
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
+    private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
+    private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
 
     /*
      * jason lifecycle: init -> user-init -> compile -> run -> user-end
@@ -34,7 +37,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void init(String[] args) {
         // logger
-        logger.setVisible(false);
+        logger.setVisible(true);
 
         // init EISMASSIM environment
         try {
@@ -102,6 +105,7 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
+        logger.info("Agent " + agentJasonName + " wants to execute action " + command + ".");
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = new Action("skip");
         String functor = command.getFunctor();
@@ -113,7 +117,6 @@ public class EISEnvironment extends Environment implements AgentListener {
         }
         try {
             environmentInterface.performAction(agentServerName, action);
-            logger.info(agentServerName + ": " + action.getName());
             return true;
         } catch (ActException e) {
             return false;
@@ -122,47 +125,95 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public void handlePercept(String agentName, Percept percept) {
+        logger.info("Kommen wir hier jemals rein?");
         String jasonName = serverAgentMap.get(agentName).getJasonName();
         Literal literal = Literal.parseLiteral(percept.toProlog());
-        removePercept(jasonName, literal);
+        // removePercept(jasonName, literal);
         addPercept(jasonName, literal);
     }
 
+    /**
+     * This method clears earlier percepts with {@code [source(percept)]} of the
+     * respective agents and then adds the new ones from the current step.
+     */
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
+        // agentName: agentA1, jasonName: explorer1
         String jasonName = serverAgentMap.get(agentName).getJasonName();
+        // The following if-else block was added because agents were missing out
+        // on the initial list of beliefs. This is of course a dirty workaround,
+        // but I can't think of any other way to fix this issue. -sewell
+        if (percepts.toString().contains("role")) {
+            delayedPerceptsMap.put(jasonName, percepts);
+            return;
+        } else {
+            if (delayedPerceptsMap.containsKey(jasonName)) {
+                percepts.addAll(delayedPerceptsMap.get(jasonName));
+                delayedPerceptsMap.remove(jasonName);
+            }
+        }
+        Percept requestAction = null;
         clearPercepts(jasonName);
+        // clearPercepts("cartographer");
+        // logger.info("Received percepts for " + jasonName + ": " +
+        // percepts.toString());
         for (Percept percept : percepts) {
-            Literal literal;
-            switch (percept.getName()) {
-            case "lastActionParam":
-                break;
-            case "role": {
-                String role = percept.toProlog().toLowerCase();
-                literal = Literal.parseLiteral(role);
-                addPercept(jasonName, literal);
-                break;
+            // Make sure that the requestAction percept is handled last by the
+            // agents because when the agent receives the requestAction
+            // percept, it determines
+            // which action to perform in the current step. By this point, all
+            // other percepts need to have been handled properly already.
+            if (percept.getName().equalsIgnoreCase("requestAction")) {
+                requestAction = percept;
+                continue;
             }
-            case "visibleEntity":
-            case "visibleVertex": {
-                String escaped = percept.toProlog().replace("A", "teamA");
-                escaped = percept.toProlog().replace("B", "teamB");
-                literal = Literal.parseLiteral(escaped);
-                addPercept(jasonName, literal);
-                break;
+            if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
+                addCartographerPercept(percept);
+                addAgentPercept(jasonName, percept);
             }
-            case "edges":
-            case "vertices": {
-                literal = Literal.parseLiteral(percept.toProlog());
-                addPercept("cartographer", literal);
-                break;
-            }
+        }
+        if (requestAction != null) {
+            addAgentPercept(jasonName, requestAction);
+        }
+    }
 
-            default:
-                literal = Literal.parseLiteral(percept.toProlog());
-                addPercept(jasonName, literal);
-                break;
+    private void addCartographerPercept(Percept percept) {
+        Literal literal = perceptToLiteral(percept);
+        switch (percept.getName()) {
+        case "visibleVertex":
+            // case "probedVertex":
+        case "visibleEdge":
+        case "surveyedEdge":
+            // case "visibleEntity":
+            // case "edges":
+            // case "vertices":
+            if (!cartographerPerceptSet.contains(percept)) {
+                cartographerPerceptSet.add(percept);
+                logger.info("Sending percept " + literal + " to cartographer.");
+                addPercept("cartographer", literal);
             }
+        }
+    }
+
+    private void addAgentPercept(String jasonName, Percept percept) {
+        Literal literal = perceptToLiteral(percept);
+        logger.info("Sending percept " + perceptToLiteral(percept) + " to agent " + jasonName + ".");
+        addPercept(jasonName, literal);
+    }
+
+    private Literal perceptToLiteral(Percept percept) {
+        switch (percept.getName()) {
+        case "role":
+            return Literal.parseLiteral(percept.toProlog().toLowerCase());
+        case "visibleVertex":
+        case "visibleEntity":
+            String escaped = percept.toProlog().replace("A", "teamA").replace("B", "teamB");
+            return Literal.parseLiteral(escaped);
+        case "inspectedEntity":
+            String escaped2 = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
+            return Literal.parseLiteral(escaped2);
+        default:
+            return Literal.parseLiteral(percept.toProlog());
         }
     }
 }

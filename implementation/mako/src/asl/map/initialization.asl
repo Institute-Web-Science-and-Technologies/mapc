@@ -8,7 +8,7 @@
 
 +!start
     <- 
-    !initExploreGraph;
+//    !initExploreGraph;
     !loadBroadcastAgentList.
     
 // Store list of all agents except myself for broadcasting.    
