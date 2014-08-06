@@ -51,6 +51,6 @@
 //cheapest to go to.
 +!chooseNextVertex(UnsurveyedNeighbours)
 	<-
-	.nth(0, UnsurveyedNeighbours, [Weight, Destination]);
+	.min(UnsurveyedNeighbours, [Weight, Destination]);
 	.print("I want move to vertex ", Destination, ". The edge weight is " , Weight, ".");
 	!goto(Destination).
