@@ -186,8 +186,8 @@ public class EISEnvironment extends Environment implements AgentListener {
         }
 
         if (newStep) {
-            System.out.println("[" + step + "]Edges(Known|Surveyed|Total): " + edges + "|" + surveyedEdges + "|" + edgesMax + " - " + edges / edgesMax + "|" + surveyedEdges / edgesMax);
-            System.out.println("[" + step + "]Vertices(Known|Probed|Total): " + vertices + "|" + probedVertices + "|" + verticesMax + " - " + vertices / verticesMax + "|" + probedVertices / verticesMax);
+            System.out.println("[" + step + "]Edges(Known|Surveyed|Total): " + edges + "|" + surveyedEdges + "|" + edgesMax + " - " + edges / (edgesMax * 1.0) + "|" + surveyedEdges / (edgesMax * 1.0));
+            System.out.println("[" + step + "]Vertices(Known|Probed|Total): " + vertices + "|" + probedVertices + "|" + verticesMax + " - " + vertices / (verticesMax * 1.0) + "|" + probedVertices / (verticesMax * 1.0));
         }
     }
 
