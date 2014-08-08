@@ -34,10 +34,12 @@
 	.print("Received percept id(", Numeral, ").").
 	
 +lastAction(Identifier)[source(percept)] <-
-	.print("Received percept lastAction(", Identifier, ").").
+	.print("Received percept lastAction(", Identifier, ").");
+	-+lastAction(Identifier).
 	
 +lastActionResult(Identifier)[source(percept)] <-
-	.print("Received percept lastActionResult(", Identifier, ").").
+	.print("Received percept lastActionResult(", Identifier, ").");
+	-+lastActionResult(Identifier).
 
 +lastStepScore(Numeral)[source(percept)] <-
 	.print("Received percept lastStepScore(", Numeral, ").").
@@ -63,6 +65,10 @@
     .print("My Jason Name is: ", JName); //Why does this get printed twice?
     -+myName(Name)[source(self)].
 
++position(Identifier)[source(percept)]
+    <- .print("Received percept position(", Vertex, ")."); 
+       -+position(Identifier).
+       
 +probedVertex(Vertex, Value)[source(percept)] <-
 	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
 	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
@@ -71,12 +77,9 @@
 +ranking(Numeral)[source(percept)] <-
 	.print("Received percept ranking(", Numeral, ").").
 	
-+requestAction[source(percept)] <-
-	.print("Received percept requestAction.");
-//	We have to abolish here because we need to make sure that requestAction
-//	gets processed in every step.
-	.abolish(requestAction);
-	!executeAction.
+//The requestAction belief is handled by agent.asl.
+//+requestAction[source(percept)] <-
+//	.print("Received percept requestAction.").
 	
 +role(Identifier)[source(percept)] <-
 	.print("Received percept role(", Identifier, ").").
@@ -91,7 +94,8 @@
 	.print("Received percept simStart.").
 	
 +step(Numeral)[source(percept)] <-
-	.print("Received percept step(", Numeral, ").").
+	.print("Received percept step(", Numeral, ").");
+	-+step(Numeral).
 	
 +steps(Numeral)[source(percept)] <-
 	.print("Received percept steps(", Numeral, ").").
