@@ -15,6 +15,7 @@ import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
+import eis.iilang.Numeral;
 import eis.iilang.Percept;
 
 /**
@@ -139,6 +140,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
+        Boolean newStep = false;
         String jasonName = serverAgentMap.get(agentName).getJasonName();
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
@@ -163,6 +165,13 @@ public class EISEnvironment extends Environment implements AgentListener {
             // percept, it determines
             // which action to perform in the current step. By this point, all
             // other percepts need to have been handled properly already.
+            if (percept.getName().equalsIgnoreCase("step")) {
+                if (!step.equalsIgnoreCase(percept.getParameters().get(0).toString())) {
+                    newStep = true;
+                    step = percept.getParameters().get(0).toString();
+                }
+            }
+
             if (percept.getName().equalsIgnoreCase("requestAction")) {
                 requestAction = percept;
                 continue;
@@ -175,22 +184,53 @@ public class EISEnvironment extends Environment implements AgentListener {
         if (requestAction != null) {
             addAgentPercept(jasonName, requestAction);
         }
+
+        if (newStep) {
+            System.out.println("[" + step + "]Edges(Known|Surveyed|Total): " + edges + "|" + surveyedEdges + "|" + edgesMax + " - " + edges / edgesMax + "|" + surveyedEdges / edgesMax);
+            System.out.println("[" + step + "]Vertices(Known|Probed|Total): " + vertices + "|" + probedVertices + "|" + verticesMax + " - " + vertices / verticesMax + "|" + probedVertices / verticesMax);
+        }
     }
+
+    private String step = "";
+    private int edgesMax = 1;
+    private int edges = 0;
+    private int surveyedEdges = 0;
+    private int verticesMax = 1;
+    private int vertices = 0;
+    private int probedVertices = 0;
 
     private void addCartographerPercept(Percept percept) {
         Literal literal = perceptToLiteral(percept);
-        switch (percept.getName()) {
-        case "visibleVertex":
-            // case "probedVertex":
-        case "visibleEdge":
-        case "surveyedEdge":
+        if (!cartographerPerceptSet.contains(percept)) {
+            switch (percept.getName()) {
             // case "visibleEntity":
-            // case "edges":
-            // case "vertices":
-            if (!cartographerPerceptSet.contains(percept)) {
+            case "probedVertex":
+                probedVertices++;
                 cartographerPerceptSet.add(percept);
-                logger.info("Sending percept " + literal + " to cartographer.");
+                break;
+            case "visibleVertex":
+                vertices++;
+                cartographerPerceptSet.add(percept);
                 addPercept("cartographer", literal);
+                break;
+            case "visibleEdge":
+                edges++;
+                cartographerPerceptSet.add(percept);
+                addPercept("cartographer", literal);
+                break;
+            case "surveyedEdge":
+                surveyedEdges++;
+                cartographerPerceptSet.add(percept);
+                addPercept("cartographer", literal);
+                break;
+            case "edges":
+                edgesMax = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
+                cartographerPerceptSet.add(percept);
+                break;
+            case "vertices":
+                verticesMax = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
+                cartographerPerceptSet.add(percept);
+                break;
             }
         }
     }
