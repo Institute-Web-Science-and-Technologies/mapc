@@ -19,6 +19,7 @@ maxNodesAmount(625).
        };
        .print("Only ", VerticesAmount, " existing nodes. Removed beliefs. You should only see this message once per simulation.").
        
+@preventWeirdnessInDebugOutput1[atomic]
 +surveyedEdge(VertexA, VertexB, Weight)
     <-
     .print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ").");
@@ -28,6 +29,7 @@ maxNodesAmount(625).
    	+edge(VertexB, VertexA, Weight);
    	!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
        
+@preventWeirdnessInDebugOutput2[atomic]
 +visibleEdge(VertexA, VertexB)[source(percept)]:
     maxEdgeWeight(Weight)
     <-
@@ -81,3 +83,29 @@ maxNodesAmount(625).
 	<-
 	.print("Received percept visibleVertex(", Vertex, ",", Team, ").");
 	+vertex(Vertex, false).
+
+//These next three beliefs currently only get passed to the cartographer so we
+//include them in the debug output.
++edges(Numeral)[source(percept)] <-
+	-+edges(Numeral).
+	
++vertices(Numeral)[source(percept)] <-
+	-+vertices(Numeral).
+	
++probedVertex(Vertex, Value) <-
+	+probedVertex(Vertex, Value).
+	
+@delayDebugOutput[atomic,priority[-10]]
++step(Numeral):
+	edges(Edges)
+	& vertices(Vertices)
+	<-
+	.findall([VertexA, VertexB, Weight], edge(VertexA, VertexB, Weight), EdgeList);
+	.findall([VertexA, VertexB, Weight], edge(VertexA, VertexB, Weight) & (Weight < 11), SurveyedEdgeList);
+	.findall([Vertex, Surveyed], vertex(Vertex, Surveyed), VertexList);
+	.findall([Vertex, Value], probedVertex(Vertex, Value), ProbedVertexList);
+	.length(EdgeList, EdgeListLength);
+	.length(VertexList, VertexListLength);
+	.length(SurveyedEdgeList, SurveyedEdgeListLength);
+	.length(ProbedVertexList, ProbedVertexListLength);
+	.print("It is step ", Numeral, ". I know about ", EdgeListLength / 2, " of ", Edges, " edges, which is ", ((EdgeListLength/2)/Edges)*100, " percent. I know about ", VertexListLength, " of ", Vertices, " nodes, which is ", (VertexListLength/Vertices)*100, " percent. I know about ", SurveyedEdgeListLength / 2, " surveyed edges, which is ", (SurveyedEdgeListLength/EdgeListLength)*100, " percent of edges I know, and ", ((SurveyedEdgeListLength/2)/Edges)*100, " percent of all edges. I know about ", ProbedVertexListLength, " probed nodes (", ProbedVertexList, "), which is ", (ProbedVertexListLength/VertexListLength)*100, " percent of nodes I know about, or ", (ProbedVertexListLength/Vertices)*100, " percent of all nodes.").

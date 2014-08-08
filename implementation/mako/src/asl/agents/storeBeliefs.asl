@@ -82,7 +82,8 @@
 //	.print("Received percept requestAction.").
 	
 +role(Identifier)[source(percept)] <-
-	.print("Received percept role(", Identifier, ").").
+	.print("Received percept role(", Identifier, ").");
+	-+role(Identifier).
 	
 +score(Numeral)[source(percept)] <-
 	.print("Received percept score(", Numeral, ").").

@@ -15,7 +15,6 @@ import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
-import eis.iilang.Numeral;
 import eis.iilang.Percept;
 
 /**
@@ -140,7 +139,6 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
-        Boolean newStep = false;
         String jasonName = serverAgentMap.get(agentName).getJasonName();
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
@@ -165,13 +163,6 @@ public class EISEnvironment extends Environment implements AgentListener {
             // percept, it determines
             // which action to perform in the current step. By this point, all
             // other percepts need to have been handled properly already.
-            if (percept.getName().equalsIgnoreCase("step")) {
-                if (!step.equalsIgnoreCase(percept.getParameters().get(0).toString())) {
-                    newStep = true;
-                    step = percept.getParameters().get(0).toString();
-                }
-            }
-
             if (percept.getName().equalsIgnoreCase("requestAction")) {
                 requestAction = percept;
                 continue;
@@ -185,19 +176,7 @@ public class EISEnvironment extends Environment implements AgentListener {
             addAgentPercept(jasonName, requestAction);
         }
 
-        if (newStep) {
-            System.out.println("[" + step + "]Edges(Known|Surveyed|Total): " + edges + "|" + surveyedEdges + "|" + edgesMax + " - " + edges / (edgesMax * 1.0) + "|" + surveyedEdges / (edgesMax * 1.0));
-            System.out.println("[" + step + "]Vertices(Known|Probed|Total): " + vertices + "|" + probedVertices + "|" + verticesMax + " - " + vertices / (verticesMax * 1.0) + "|" + probedVertices / (verticesMax * 1.0));
-        }
     }
-
-    private String step = "";
-    private int edgesMax = 1;
-    private int edges = 0;
-    private int surveyedEdges = 0;
-    private int verticesMax = 1;
-    private int vertices = 0;
-    private int probedVertices = 0;
 
     private void addCartographerPercept(Percept percept) {
         Literal literal = perceptToLiteral(percept);
@@ -205,31 +184,16 @@ public class EISEnvironment extends Environment implements AgentListener {
             switch (percept.getName()) {
             // case "visibleEntity":
             case "probedVertex":
-                probedVertices++;
-                cartographerPerceptSet.add(percept);
-                break;
             case "visibleVertex":
-                vertices++;
-                cartographerPerceptSet.add(percept);
-                addPercept("cartographer", literal);
-                break;
             case "visibleEdge":
-                edges++;
-                cartographerPerceptSet.add(percept);
-                addPercept("cartographer", literal);
-                break;
             case "surveyedEdge":
-                surveyedEdges++;
-                cartographerPerceptSet.add(percept);
-                addPercept("cartographer", literal);
-                break;
             case "edges":
-                edgesMax = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
-                cartographerPerceptSet.add(percept);
-                break;
             case "vertices":
-                verticesMax = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
+            case "step":
                 cartographerPerceptSet.add(percept);
+                // logger.info("Sending percept " + literal +
+                // " to cartographer.");
+                addPercept("cartographer", literal);
                 break;
             }
         }

@@ -63,8 +63,8 @@ zoneMode(false).
 // If an explorer is on a unprobed vertex, probe it. 
 +!doAction:
 	zoneMode(false)
-	& not probedVertex(Vertex, _)
 	& position(Vertex)
+	& not probedVertex(Vertex, _)
 	& role(explorer)
 	<- .print("I will probe ", Vertex, ".");
 	 	!doProbing.
