@@ -10,6 +10,12 @@ zoneMode(false).
 // if the new position belief is not already in belief base. 
 // Furthermore tell the cartographer about agents current position.
 
+// Condition to start zoning phase
++achievement(Identifier)[source(self)]:
+    Identifier == surveyed1280
+    <-
+    .print("Done with surveying. Entering zone mode.");
+    -+zoneMode(true).
 
 /*Actions*/
 // Try to do an action in every step.
