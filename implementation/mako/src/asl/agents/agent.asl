@@ -9,24 +9,22 @@ zoneMode(false).
 // Whenever an agent gets a new position percept, update the belief base, 
 // if the new position belief is not already in belief base. 
 // Furthermore tell the cartographer about agents current position.
-+position(Vertex)[source(percept)]:
-	not position(Vertex)[source(self)]
-    <- .print("Received percept position(", Vertex, ")."); 
-       -+position(Vertex).
+
 
 /*Actions*/
 // Try to do an action in every step.
-// Since all other incoming percepts and beliefs
-//should be handled before the step belief is processed, we delay the step by assigning a low priority value to it.                        
-@delayExecution[priority(-10)]
-+!executeAction
-	:
++requestAction:
     position(Position)
 	& lastActionResult(Result)
 	& lastAction(Action)
 	& step(Step)
+	& energy(Energy)
     <-
-	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,".");
+    .print("Received percept requestAction.");
+//	We have to abolish here because we need to make sure that requestAction
+//	gets processed in every step.
+    .abolish(requestAction);
+	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     if (Result == successful & Action == survey) {
     	.send(cartographer,tell,vertex(Position, true))
 	}
