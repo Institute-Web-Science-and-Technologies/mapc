@@ -40,7 +40,18 @@ zoneMode(false).
 //    We have to abolish here, or the agent will ignore 
 //    .abolish(requestAction).
 
-// If an agent sees an enemy on its position, it has to deal with the enemy.       
+// If an agent sees an enemy on its position, it has to deal with the enemy.
+
++!doAction:
+	visibleEntity(Vehicle, Vertex, Team, Disabled)[source(percept)]
+	& Team == teamB
+	& role(Role)
+	& Role == inspector
+	& not roleOfAgent(Vehicle, _)
+	<-
+	.print("I want to inspect (", Vehicle, ").");
+	!doInspect(Vehicle).
+
  +!doAction:
  	position(Position)
 	& myTeam(MyTeam)

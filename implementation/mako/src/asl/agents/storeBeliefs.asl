@@ -32,7 +32,13 @@
 
 +id(Numeral)[source(percept)] <-
 	.print("Received percept id(", Numeral, ").").
-	
+
++inspectedEntity(Name, Team, Role, Node, Energy, MaxEnergy, Health, MaxHealth, Strength, VisRange)
+    <-
+	.print("Received percept inspectedEntity(", Energy, ",", Health, ",", MaxEnergy, ",", MaxHealth, ",", Name, ",", Node, ",", Role, ",", Strength, ",", Team, ",", VisRange, ")."); 
+//    .broadcast(tell, parametersOfEnemyAgent(Name,Node,Role,Strength,Team,VisRange));       
+    +roleOfAgent(Vehicle, Role).
+       
 +lastAction(Identifier)[source(percept)] <-
 	.print("Received percept lastAction(", Identifier, ").");
 	-+lastAction(Identifier).
@@ -72,7 +78,6 @@
 +probedVertex(Vertex, Value)[source(percept)] <-
 	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
 	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
-
 	
 +ranking(Numeral)[source(percept)] <-
 	.print("Received percept ranking(", Numeral, ").").
