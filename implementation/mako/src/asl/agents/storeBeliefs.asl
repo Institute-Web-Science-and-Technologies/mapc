@@ -62,7 +62,7 @@
 +myName(Name)[source(percept)] <-
     .print("My Server Name is: ", Name);
     .my_name(JName);
-    .print("My Jason Name is: ", JName); //Why does this get printed twice?
+    .print("My Jason Name is: ", JName);
     -+myName(Name)[source(self)].
 
 +position(Identifier)[source(percept)]
