@@ -11,8 +11,7 @@ zoneMode(false).
 // Furthermore tell the cartographer about agents current position.
 
 // Condition to start zoning phase
-+achievement(Identifier)[source(self)]:
-    Identifier == surveyed1280
++achievement(surveyed640)[source(self)]
     <-
     .print("Done with surveying. Entering zone mode.");
     -+zoneMode(true).
