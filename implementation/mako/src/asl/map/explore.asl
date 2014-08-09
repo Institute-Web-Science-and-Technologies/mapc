@@ -30,9 +30,13 @@
 //	.print("I already knew about the surveyed edge ", VertexA, " to ", VertexB, " with weight ", Weight, ".");
 	-surveyedEdge(VertexA, VertexB, Weight)[source(Agent)].
 
+
+	
+	
 +!doExploring:
 	position(Vertex)
 	<-
+	.print("Entering doExploring plan. I am on Vertex, ", Vertex, ".");
 	.send(cartographer, askOne, unsurveyedNeighbours(Vertex, _), unsurveyedNeighbours(_, UnsurveyedNeighbours));
 	.print("I am currently on vertex ", Vertex, ". My unsurveyed neighbours are: ", UnsurveyedNeighbours);
 	!chooseNextVertex(UnsurveyedNeighbours).
