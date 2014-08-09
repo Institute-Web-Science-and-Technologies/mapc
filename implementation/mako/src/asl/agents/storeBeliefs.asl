@@ -66,7 +66,7 @@
     -+myName(Name)[source(self)].
 
 +position(Identifier)[source(percept)]
-    <- .print("Received percept position(", Vertex, ")."); 
+    <- .print("Received percept position(", Identifier, ")."); 
        -+position(Identifier).
        
 +probedVertex(Vertex, Value)[source(percept)] <-
