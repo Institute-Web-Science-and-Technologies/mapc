@@ -169,6 +169,7 @@ public class EISEnvironment extends Environment implements AgentListener {
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
+                logger.info("Sending percept " + perceptToLiteral(percept) + " to agent MapAgent.");
                 MapAgent.getInstance().addPercept(percept);
                 addAgentPercept(jasonName, percept);
             }

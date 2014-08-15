@@ -49,4 +49,8 @@ public class Path {
         }
         return false;
     }
+
+    public String toString() {
+        return "-(" + nextHopVertex + "[" + hops + "]/" + nextBestCostVertex + "[" + costs + "])->" + destination;
+    }
 }

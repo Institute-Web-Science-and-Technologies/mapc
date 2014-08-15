@@ -13,7 +13,7 @@ import java.util.TreeMap;
  * 
  */
 public class Vertex {
-
+    private AgentLogger logger;
     // The 'name' of the vertex, e.g. 'v81'
     private String identifier = "";
     // the team currently occupying the vertex, e.g. 'teamA'
@@ -39,6 +39,8 @@ public class Vertex {
      */
     public Vertex(String identifier) {
         this.identifier = identifier;
+        logger = new AgentLogger("Vertex " + identifier);
+        logger.setVisible(true);
     }
 
     public String getIdentifier() {
@@ -82,8 +84,9 @@ public class Vertex {
 
     private void informZoneAboutNodeValue() {
         ArrayList<Vertex> zoneVertices = new ArrayList<Vertex>();
-        zoneVertices.addAll(destinationMap.get(1));
-        zoneVertices.addAll(destinationMap.get(2));
+        zoneVertices.addAll(getVerticesWithHop(1));
+
+        zoneVertices.addAll(getVerticesWithHop(2));
         for (Vertex vertex : zoneVertices) {
             vertex.setZoneNodeValue(this, this.getValue());
         }
@@ -111,18 +114,26 @@ public class Vertex {
         // calculate agent positions
         ArrayList<Vertex> agentPositions = new ArrayList<Vertex>();
         agentPositions.add(this);
+        logger.info("agentPositions: " + agentPositions);
 
-        ArrayList<Vertex> oneHops = destinationMap.get(1);
-        ArrayList<Vertex> twoHops = destinationMap.get(2);
+        ArrayList<Vertex> oneHops = getVerticesWithHop(1);
+        logger.info("oneHops: " + oneHops);
+        ArrayList<Vertex> twoHops = getVerticesWithHop(2);
+        logger.info("twoHops: " + twoHops);
+        if (oneHops.size() + twoHops.size() == 0) {
+            return;
+        }
 
-        for (int i = twoHops.size(); i > 0; i--) {
+        for (int i = twoHops.size() - 1; i > 0; i--) {
             Vertex vertex = twoHops.get(i);
             if (vertex.connectedWithVerticesInOneHop(oneHops) >= 2) {
                 twoHops.remove(vertex);
                 agentPositions.add(vertex);
             }
         }
-        for (int i = twoHops.size(); i > 0; i--) {
+        logger.info("agentPositions2: " + agentPositions);
+        logger.info("twoHops2: " + twoHops);
+        for (int i = twoHops.size() - 1; i > 0; i--) {
             Vertex vertex = twoHops.get(i);
             if (vertex.connectedWithVerticesInOneHop(agentPositions) >= 1) {
                 twoHops.remove(vertex);
@@ -132,7 +143,8 @@ public class Vertex {
                 twoHops.remove(vertex);
             }
         }
-        for (int i = twoHops.size(); i > 0; i--) {
+        logger.info("twoHops3: " + twoHops);
+        for (int i = twoHops.size() - 1; i > 0; i--) {
             Vertex vertex = twoHops.get(i);
             ArrayList<Vertex> bridge = vertex.buildBridge(twoHops);
             if (bridge.size() == 2) {
@@ -141,20 +153,25 @@ public class Vertex {
                 agentPositions.add(bridge.get(1));
             }
         }
+        logger.info("agentPositions3: " + agentPositions);
+        logger.info("twoHops4: " + twoHops);
         ArrayList<Vertex> optionalAgentPositions = new ArrayList<Vertex>();
-        optionalAgentPositions.addAll(destinationMap.get(2));
+        optionalAgentPositions.addAll(getVerticesWithHop(2));
         optionalAgentPositions.removeAll(agentPositions);
+        logger.info("optionalAgentPositions: " + optionalAgentPositions);
 
         // calculate zones
         double zoneValue = 0.0;
         ArrayList<Vertex> zoneVertices = new ArrayList<Vertex>();
         zoneVertices.addAll(oneHops);
         zoneVertices.addAll(agentPositions);
+        logger.info("zoneVertices: " + zoneVertices);
         // calculate initial zone value
         for (Vertex vertex : zoneVertices) {
             zoneValue += vertex.getValue();
         }
         zoneValue /= agentPositions.size();
+        logger.info("zoneValue: " + zoneValue);
         Zone zone = new Zone();
         zone.setZoneValue(zoneValue);
         zone.setPositions(agentPositions);
@@ -164,11 +181,13 @@ public class Vertex {
         for (Vertex optionalAgentPosition : optionalAgentPositions) {
             optionalAgentsWithValues.put(zoneValueMap.get(optionalAgentPosition), optionalAgentPosition);
         }
+        logger.info("optionalAgentsWithValues: " + optionalAgentsWithValues);
         while (optionalAgentsWithValues.size() > 0) {
             Entry<Integer, Vertex> bestEntry = optionalAgentsWithValues.pollLastEntry();
             if (bestEntry.getKey() > zone.getZoneValue()) {
                 ArrayList<Vertex> positions = zone.getPositions();
                 positions.add(bestEntry.getValue());
+                logger.info("positions: " + positions);
                 double newZoneValue = ((zone.getZoneValue() * (positions.size() - 1)) + bestEntry.getKey()) / positions.size();
                 zone = new Zone();
                 zone.setPositions(positions);
@@ -179,7 +198,7 @@ public class Vertex {
     }
 
     public ArrayList<Vertex> buildBridge(ArrayList<Vertex> vertices) {
-        ArrayList<Vertex> myOneHops = destinationMap.get(1);
+        ArrayList<Vertex> myOneHops = getVerticesWithHop(1);
         myOneHops.retainAll(vertices);
         ArrayList<Vertex> bridgeVertices = new ArrayList<Vertex>();
         if (myOneHops.size() >= 2) {
@@ -199,7 +218,7 @@ public class Vertex {
      */
     public boolean connectedWithVerticesInTwoHops(ArrayList<Vertex> vertices,
             ArrayList<Vertex> agentPositions) {
-        ArrayList<Vertex> myOneHops = destinationMap.get(1);
+        ArrayList<Vertex> myOneHops = getVerticesWithHop(1);
         myOneHops.retainAll(vertices); // blue to cyan
         for (Vertex vertex : myOneHops) {
             if (vertex.connectedWithVerticesInOneHop(agentPositions) >= 1) {
@@ -218,7 +237,7 @@ public class Vertex {
      * @return the number of neighbours in the given vertex list
      */
     public int connectedWithVerticesInOneHop(ArrayList<Vertex> vertices) {
-        ArrayList<Vertex> myOneHops = destinationMap.get(1);
+        ArrayList<Vertex> myOneHops = getVerticesWithHop(1);
         myOneHops.retainAll(vertices);
         return myOneHops.size();
     }
@@ -234,8 +253,8 @@ public class Vertex {
      * @return True if all adjacent edges of the node have been surveyed.
      */
     public boolean isSurveyed() {
-        for (Vertex neighbour : this.destinationMap.get(1)) {
-            if (pathMap.get(neighbour).getPathCosts() < 11) {
+        for (Vertex neighbour : this.getVerticesWithHop(1)) {
+            if (handlePath(neighbour).getPathCosts() < 11) {
                 return false;
             }
         }
@@ -256,8 +275,8 @@ public class Vertex {
         if (!this.destinationMap.containsKey(hop)) {
             return unsurveyedVertices;
         }
-        for (Vertex vertex : this.destinationMap.get(hop)) {
-            int weight = pathMap.get(vertex).getPathCosts();
+        for (Vertex vertex : this.getVerticesWithHop(hop)) {
+            int weight = handlePath(vertex).getPathCosts();
             unsurveyedVertices.put(vertex, weight);
         }
         if (unsurveyedVertices.size() > 0) {
@@ -284,7 +303,7 @@ public class Vertex {
     }
 
     private void informNeighboursAboutPath(Path path) {
-        for (Vertex neighbour : this.destinationMap.get(1)) {
+        for (Vertex neighbour : this.getVerticesWithHop(1)) {
             neighbour.setPath(path, this);
         }
     }
@@ -299,9 +318,15 @@ public class Vertex {
      *            the node telling this node about the new path
      */
     public void setPath(Path path, Vertex sender) {
+        logger.info("Entering setPath method. path: " + sender + path);
+        if (path.getDestination() == this) {
+            logger.info("Not saving path to myself");
+            return;
+        }
         Path newPath = handlePath(path.getDestination());
-        int newCosts = path.getPathCosts() + pathMap.get(sender).getPathCosts();
-        int newHops = path.getPathHops() + pathMap.get(sender).getPathHops();
+        int newCosts = path.getPathCosts() + handlePath(sender).getPathCosts();
+        int newHops = path.getPathHops() + handlePath(sender).getPathHops();
+        logger.info("Path: " + this + newPath + "newCosts/newHops: " + newCosts + "/" + newHops);
         boolean hasBetterCosts = newPath.setPathCosts(newCosts, sender);
         boolean hasBetterHops = newPath.setPathHops(newHops, sender);
         if (hasBetterHops) {
@@ -315,7 +340,7 @@ public class Vertex {
     private void addDestination(int hops, Vertex destination) {
         // first remove existing vertices
         for (int key : destinationMap.keySet()) {
-            if (destinationMap.get(key).contains(destination)) {
+            if (getVerticesWithHop(key).contains(destination)) {
                 destinationMap.get(key).remove(destination);
                 break;
             }
@@ -339,5 +364,17 @@ public class Vertex {
             path = pathMap.get(destination);
         }
         return path;
+    }
+
+    public String toString() {
+        return this.identifier;
+    }
+
+    private ArrayList<Vertex> getVerticesWithHop(int hops) {
+        if (destinationMap.containsKey(hops)) {
+            return destinationMap.get(hops);
+        } else {
+            return new ArrayList<Vertex>();
+        }
     }
 }

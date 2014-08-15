@@ -33,18 +33,19 @@
 +!doExploring:
 	position(Vertex)
 	<-
-	.send(cartographer, askOne, unsurveyedNeighbours(Vertex, _), unsurveyedNeighbours(_, UnsurveyedNeighbours));
-	.print("I am currently on vertex ", Vertex, ". My unsurveyed neighbours are: ", UnsurveyedNeighbours);
-	!chooseNextVertex(UnsurveyedNeighbours).
+//	.send(cartographer, askOne, unsurveyedNeighbours(Vertex, _), unsurveyedNeighbours(_, UnsurveyedNeighbours));
+	ia.getNextUnsurveyedVertices(Vertex, unsurveyedVertexList);
+	.print("I am currently on vertex ", Vertex, ". My unsurveyed neighbours are: ", UnsurveyedVertexList);
+	!chooseNextVertex(UnsurveyedVertexList).
 	
 //If all of our neighbours have been surveyed, we need to look at nodes that are
 //not our neighbours.
 +!chooseNextVertex([]):
 	position(CurrentVertex)
 	<-
-	.send(cartographer,askOne,unsurveyedVertices(_), unsurveyedVertices(UnsurveyedVertices));
-	.send(CurrentVertex, askOne, getClosestVertexFromList(UnsurveyedVertices, _), getClosestVertexFromList(_, ClosestUnsurveyedVertex));
-	.print("The closest node from the list of unsurveyed nodes ", UnsurveyedVertices, " is ", ClosestUnsurveyedVertex, ".");
+//	.send(cartographer,askOne,unsurveyedVertices(_), unsurveyedVertices(UnsurveyedVertices));
+//	.send(CurrentVertex, askOne, getClosestVertexFromList(UnsurveyedVertices, _), getClosestVertexFromList(_, ClosestUnsurveyedVertex));
+//	.print("The closest node from the list of unsurveyed nodes ", UnsurveyedVertices, " is ", ClosestUnsurveyedVertex, ".");
 	!goto(ClosestUnsurveyedVertex).
 	
 //In the case where we have unsurveyed neighbours, we go to the one that is the
