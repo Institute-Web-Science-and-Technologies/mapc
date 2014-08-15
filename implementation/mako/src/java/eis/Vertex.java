@@ -6,9 +6,10 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * This is the class that handles values and methods related to nodes.
+ * Handles values and methods related to nodes.
  * 
- * @author Artur Daudrich, Michael Sewell
+ * @author Artur Daudrich
+ * @author Michael Sewell
  * 
  */
 public class Vertex {
@@ -27,29 +28,24 @@ public class Vertex {
     private HashMap<Integer, ArrayList<Vertex>> destinationMap = new HashMap<Integer, ArrayList<Vertex>>();
     // for every destination, pathMap saves the path to it
     private HashMap<Vertex, Path> pathMap = new HashMap<Vertex, Path>();
+    // stores the node value of each node in our zone
     private HashMap<Vertex, Integer> zoneValueMap = new HashMap<Vertex, Integer>();
+    // the number of agents required to build a zone, and the zones themselves
     private HashMap<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
     /**
-     * Constructor for the Vertex class.
-     * 
-     * @param vertexName
+     * @param identifier
      *            The name of the vertex, e.g. 'v31'.
      */
-    public Vertex(String vertexName) {
-        this.identifier = vertexName;
+    public Vertex(String identifier) {
+        this.identifier = identifier;
     }
 
-    /**
-     * @return The identifier of the vertex.
-     */
     public String getIdentifier() {
         return this.identifier;
     }
 
     /**
-     * Tells the vertex about the team currently occupying it.
-     * 
      * @param team
      *            The identifier of the team currently occupying the node.
      */
@@ -60,7 +56,7 @@ public class Vertex {
     }
 
     /**
-     * @return The node value (1-10).
+     * @return The vertex value (1-10).
      */
     public int getValue() {
         if (this.value == 0) {
@@ -70,7 +66,8 @@ public class Vertex {
     }
 
     /**
-     * Sets the node value. Used after probing.
+     * Sets the vertex value and triggers zone recalculation. Used after
+     * probing.
      * 
      * @param value
      *            The node value (1-10).
@@ -94,7 +91,8 @@ public class Vertex {
 
     /**
      * Sets the node value of a node in the two-hop neighbourhood, which is used
-     * for calculating the zone value of this node.
+     * for calculating the zone value of this node. Also triggers zone value
+     * recalculation.
      * 
      * @param vertex
      *            the neighbour vertex
@@ -102,6 +100,7 @@ public class Vertex {
      *            the node value of the neighbour
      */
     public void setZoneNodeValue(Vertex vertex, int vertexValue) {
+        // only update value if it was previously unknown or worse
         if (!zoneValueMap.containsKey(vertex) || zoneValueMap.get(vertex) < vertexValue) {
             zoneValueMap.put(vertex, vertexValue);
             calculateZoneValue();
