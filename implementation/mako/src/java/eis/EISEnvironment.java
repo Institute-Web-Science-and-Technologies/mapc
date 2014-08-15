@@ -201,7 +201,8 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     private void addAgentPercept(String jasonName, Percept percept) {
         Literal literal = perceptToLiteral(percept);
-        logger.info("Sending percept " + perceptToLiteral(percept) + " to agent " + jasonName + ".");
+        // logger.info("Sending percept " + perceptToLiteral(percept) +
+        // " to agent " + jasonName + ".");
         addPercept(jasonName, literal);
     }
 

@@ -72,12 +72,47 @@ zoneMode(false).
 
 // If an explorer is on a unprobed vertex, probe it. 
 +!doAction:
-	zoneMode(false)
-	& position(Vertex)
+	position(Vertex)
 	& not probedVertex(Vertex, _)
 	& role(explorer)
 	<- .print("I will probe ", Vertex, ".");
 	 	!doProbing.
+	 	
+// In zoning mode explorer should go to the unprobed node which has most links to the probed nodes.
++!doAction:
+	zoneMode(true)
+	& position(Vertex)
+	& probedVertex(Vertex, _)
+	& role(explorer)
+	<- 
+	// Create list of neighbours which are not probed.
+    .findall(NeighVertex, (visibleEdge(Vertex, NeighVertex) | visibleEdge(NeighVertex, Vertex)) 
+    	& not probedVertex(NeighVertex, _), UnProbedNeighbours);
+    
+    // Check if list is not empty
+    if(not .empty(UnProbedNeighbours)){
+    	// Count the number of links to the probed nodes for all unprobed neighbours.
+    	.findall([Count, Neigh], .member(Neigh, UnProbedNeighbours) & 
+    		.count((visibleEdge(Neigh, X) | visibleEdge(X, Neigh)) & probedVertex(X, _), Count), NeighboursLinksCounts);
+    	
+    	// Choose the node with maximal count of links to the probed nodes.
+    	.max(NeighboursLinksCounts, [C, NextVertex]);
+    	
+    	// Print debug information
+    	.print("Unprobed neighbours with link counts: ", NeighboursLinksCounts);
+    	.print("Next vertex to probe: ", NextVertex, " ", C);
+    } else {
+    	// If there are no unprobed neighbours then go to the closest unprobed node.
+ 	    .send(cartographer, askOne, allVertices(_), allVertices(AllVertices));
+ 	    .findall(V, probedVertex(V, _), ProbedVertices);
+ 	    .difference(AllVertices, ProbedVertices, UnprobedVertices);
+ 	    .send(Vertex, askOne, getClosestVertexFromList(UnprobedVertices, _), getClosestVertexFromList(_, NextVertex)); 
+ 	    
+ 	    // Print debug information
+ 	    .print("There are no unprobed neighbours, going to the closest unprobed vertex.");
+    	.print("Next hop vertex: ", NextVertex);    	
+    };
+    !goto(NextVertex). 	 	
 	 	
 // If an agent is on a vertex which has an edge to an adjacent not surveyed vertex, survey the position.
 +!doAction:

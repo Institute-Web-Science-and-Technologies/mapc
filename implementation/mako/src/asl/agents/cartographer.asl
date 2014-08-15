@@ -48,6 +48,9 @@ maxNodesAmount(625).
 
 +?unsurveyedVertices(Result)
     <- .findall(Vertex, vertex(Vertex, false), Result).
+    
++?allVertices(Result)
+    <- .findall(Vertex, vertex(Vertex, _), Result).
 
 // Before the simulation is started, create as many nodeAgents as maxNodesAmount
 // specified:

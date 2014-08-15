@@ -16,18 +16,18 @@
 	true. //TODO
 	
 +deadline(Numeral)[source(percept)] <-
-	.print("Received percept deadline(", Numeral, ").");
+	//.print("Received percept deadline(", Numeral, ").");
 	-+deadline(Numeral)[source(self)].
     
 +edges(Numeral)[source(percept)] <-
 	.print("Received percept edges(", Numeral, ").").
 	
 +energy(Numeral)[source(percept)] <-
-	.print("Received percept energy(", Numeral, ").");
+	//.print("Received percept energy(", Numeral, ").");
 	-+energy(Numeral)[source(self)].
 	
 +health(Numeral)[source(percept)] <-
-	.print("Received percept health(", Numeral, ").");
+	//.print("Received percept health(", Numeral, ").");
 	-+health(Numeral)[source(self)].
 
 +id(Numeral)[source(percept)] <-
@@ -40,15 +40,15 @@
     +roleOfAgent(Vehicle, Role).
        
 +lastAction(Identifier)[source(percept)] <-
-	.print("Received percept lastAction(", Identifier, ").");
+	//.print("Received percept lastAction(", Identifier, ").");
 	-+lastAction(Identifier).
 	
 +lastActionResult(Identifier)[source(percept)] <-
-	.print("Received percept lastActionResult(", Identifier, ").");
+	//.print("Received percept lastActionResult(", Identifier, ").");
 	-+lastActionResult(Identifier).
 
-+lastStepScore(Numeral)[source(percept)] <-
-	.print("Received percept lastStepScore(", Numeral, ").").
++lastStepScore(Numeral)[source(percept)].// <-
+	//.print("Received percept lastStepScore(", Numeral, ").").
 	
 +maxEnergy(Numeral)[source(percept)] <-
 	.print("Received percept maxEnergy(", Numeral, ").");
@@ -72,11 +72,11 @@
     -+myName(Name)[source(self)].
 
 +position(Identifier)[source(percept)]
-    <- .print("Received percept position(", Identifier, ")."); 
+    <- //.print("Received percept position(", Identifier, ")."); 
        -+position(Identifier).
        
 +probedVertex(Vertex, Value)[source(percept)] <-
-	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
+	//.print("Received percept probedVertex(", Vertex, ",", Value, ").");
 	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
 	
 +ranking(Numeral)[source(percept)] <-
@@ -90,8 +90,8 @@
 	.print("Received percept role(", Identifier, ").");
 	-+role(Identifier).
 	
-+score(Numeral)[source(percept)] <-
-	.print("Received percept score(", Numeral, ").").
++score(Numeral)[source(percept)].// <-
+	//.print("Received percept score(", Numeral, ").").
 	
 +simEnd(Numeral)[source(percept)] <-
 	.print("Received percept simEnd(", Numeral, ").").
@@ -109,8 +109,8 @@
 +strength(Numeral)[source(percept)] <-
 	.print("Received percept strength(", Numeral, ").").
 	
-+timestamp(Numeral)[source(percept)] <-
-	.print("Received percept timestamp(", Numeral, ").").
++timestamp(Numeral)[source(percept)].// <-
+	//.print("Received percept timestamp(", Numeral, ").").
 
 +vertices(Numeral)[source(percept)] <-
 	.print("Received percept vertices(", Numeral, ").").
@@ -118,14 +118,14 @@
 +visRange(Numeral)[source(percept)] <-
 	.print("Received percept visRange(", Numeral, ").").
 	
-+visibleEdge(Vertex1, Vertex2)[source(percept)] <-
-	.print("Received percept visibleEdge(", Vertex1, ",", Vertex2, ").").
++visibleEdge(Vertex1, Vertex2)[source(percept)].// <-
+	//.print("Received percept visibleEdge(", Vertex1, ",", Vertex2, ").").
 	
-+visibleEntity(Agent,Vertex,Team,State)[source(percept)] <-
-	.print("Received percept visibleEntity(", Agent, ",", Vertex, ",", Team, ",", State, ").").
++visibleEntity(Agent,Vertex,Team,State)[source(percept)].// <-
+	//.print("Received percept visibleEntity(", Agent, ",", Vertex, ",", Team, ",", State, ").").
 	
-+visibleVertex(Vertex, Team)[source(percept)] <-
-	.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
++visibleVertex(Vertex, Team)[source(percept)].// <-
+	//.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
 
 +zoneScore(Numeral)[source(percept)] <-
 	.print("Received percept zoneScore(", Numeral, ").").
