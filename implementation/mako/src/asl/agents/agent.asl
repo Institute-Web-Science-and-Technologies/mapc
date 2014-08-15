@@ -2,6 +2,9 @@
 { include("storeBeliefs.asl") }
 { include("../map/explore.asl") }
 { include("../map/initialization.asl") }
+// zoning might be split down onto concrete agents e.g. because the explorer
+// should prefer probing instead of zoning:
+{ include("../actions/zoning.asl") }
 
 zoneMode(false).
 
