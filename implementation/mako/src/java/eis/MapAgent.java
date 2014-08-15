@@ -1,5 +1,11 @@
 package eis;
 
+import jason.asSyntax.ListTerm;
+import jason.asSyntax.ListTermImpl;
+import jason.asSyntax.LiteralImpl;
+import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.Term;
+
 import java.util.HashMap;
 
 import eis.iilang.Numeral;
@@ -107,5 +113,20 @@ public class MapAgent {
             vertex = vertexMap.get(name);
         }
         return vertex;
+    }
+
+    public Term getNextUnsurveyedVertices(String position) {
+        ListTerm result = new ListTermImpl();
+        if (vertexMap.containsKey(position)) {
+            Vertex vertex = vertexMap.get(position);
+            HashMap<Vertex, Integer> unsurveyedVertices = vertex.getNextUnsurveyedVertices(1);
+            for (Vertex v : unsurveyedVertices.keySet()) {
+                ListTerm object = new ListTermImpl();
+                object.add(new NumberTermImpl(unsurveyedVertices.get(v)));
+                object.add(new LiteralImpl(v.getIdentifier()));
+                result.add(object);
+            }
+        }
+        return result;
     }
 }
