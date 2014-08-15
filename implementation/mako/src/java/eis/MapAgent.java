@@ -7,6 +7,7 @@ import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.Term;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
@@ -20,6 +21,12 @@ public class MapAgent {
     private int vertices = 1;
     private int step = 0;
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+    private AgentLogger logger = new AgentLogger("MapAgent");
+
+    private HashSet<String> visibleVertices = new HashSet<String>();
+    private HashSet<String> probedVertices = new HashSet<String>();
+    private HashSet<String> visibleEdges = new HashSet<String>();
+    private HashSet<String> surveyedEdges = new HashSet<String>();
 
     public static MapAgent getInstance() {
         if (mapAgent == null) {
@@ -32,18 +39,22 @@ public class MapAgent {
         switch (percept.getName()) {
         case "visibleVertex":
             handleVisibleVertex(percept);
+            visibleVertices.add(percept.toProlog());
             break;
         case "probedVertex":
             handleProbedVertex(percept);
+            probedVertices.add(percept.toProlog());
             break;
         // case "visibleEntity":
         // handleVisibleEntity(percept);
         // break;
         case "visibleEdge":
             handleVisibleEdge(percept);
+            visibleEdges.add(percept.toProlog());
             break;
         case "surveyedEdge":
             handleSurveyedEdge(percept);
+            surveyedEdges.add(percept.toProlog());
             break;
         case "edges":
             edges = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
@@ -61,7 +72,8 @@ public class MapAgent {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > step) {
             step = newStep;
-            System.out.println("[" + step + "] TotalEdges: " + edges + ". Total Vertices: " + vertices + ". Known vertices: " + vertexMap.size());
+            logger.info("[" + step + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
+            logger.info("[" + step + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
         }
     }
 
