@@ -12,6 +12,10 @@ import eis.AgentLogger;
 import eis.MapAgent;
 
 public class getNextUnsurveyedVertices extends DefaultInternalAction {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4113666835276193698L;
     private AgentLogger logger = new AgentLogger("getNextUnsurveyedVertices");
 
     @Override

@@ -12,6 +12,14 @@ public class Path {
         this.destination = destination;
     }
 
+    public Path(Vertex destination, int costs, Vertex nextHopClosest, int hops, Vertex nextHopCheapest) {
+        this.destination = destination;
+        this.costs = costs;
+        this.hops = hops;
+        this.nextHopVertex = nextHopClosest;
+        this.nextBestCostVertex = nextHopCheapest;
+    }
+
     public Vertex getDestination() {
         return this.destination;
     }

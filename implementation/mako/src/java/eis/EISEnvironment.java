@@ -7,7 +7,6 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -29,7 +28,8 @@ public class EISEnvironment extends Environment implements AgentListener {
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
-    private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
+
+    // private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
 
     /*
      * jason lifecycle: init -> user-init -> compile -> run -> user-end

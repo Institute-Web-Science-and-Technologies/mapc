@@ -7,29 +7,31 @@ public class PathMap {
 
     private AgentLogger logger;
     private Vertex position;
-    private HashMap<Vertex, Path> paths = new HashMap<Vertex, Path>();
+    private HashMap<Vertex, Path> knownPaths = new HashMap<Vertex, Path>();
     private HashMap<Vertex, Integer> hopMapping = new HashMap<Vertex, Integer>();
     private HashMap<Integer, ArrayList<Vertex>> hopPaths = new HashMap<Integer, ArrayList<Vertex>>();
 
     public PathMap(Vertex vertex) {
         this.setPosition(vertex);
-        logger = new AgentLogger("PathMap - " + vertex.getIdentifier());
+        logger = new AgentLogger("PathMap " + vertex);
     }
 
-    public boolean handlePath(Path path) {
-        Vertex destination = path.getDestination();
+    public boolean handlePath(Path newPath) {
+        Vertex destination = newPath.getDestination();
+        // don't store paths that lead to ourselves
         if (destination == getPosition())
             return false;
-        if (paths.containsKey(destination)) {
-            Path currentPath = paths.get(destination);
-            boolean hasHopsChanged = currentPath.setPathHops(path.getPathHops(), path.getNextHopVertex());
-            boolean hasCostsChanged = currentPath.setPathCosts(path.getPathCosts(), path.getNextBestCostVertex());
+        if (knownPaths.containsKey(destination)) {
+            Path currentPath = knownPaths.get(destination);
+            String oldPathInfo = "" + this.position + currentPath;
+            boolean hasHopsChanged = currentPath.setPathHops(newPath.getPathHops(), newPath.getNextHopVertex());
+            boolean hasCostsChanged = currentPath.setPathCosts(newPath.getPathCosts(), newPath.getNextBestCostVertex());
             if (hasHopsChanged) {
-                updateHopPaths(path);
+                updateHopPaths(newPath);
             }
 
             if (hasHopsChanged || hasCostsChanged) {
-                logger.info("Updated path: " + this.position + path);
+                logger.info("Updated path: " + this.position + currentPath + " (was: " + oldPathInfo + ")");
             }
 
             // if (hasCostsChanged) {
@@ -38,9 +40,9 @@ public class PathMap {
             return hasHopsChanged || hasCostsChanged;
 
         } else {
-            paths.put(destination, path);
-            updateHopPaths(path);
-            logger.info("New path: " + this.position + path);
+            knownPaths.put(destination, newPath);
+            updateHopPaths(newPath);
+            logger.info("New path: " + this.position + newPath);
             return true;
         }
     }
@@ -65,8 +67,13 @@ public class PathMap {
         return getVerticesWithHop(1);
     }
 
-    public Path getPathToVertex(Vertex vertex) {
-        return paths.get(vertex);
+    /**
+     * @param vertex
+     *            the vertex to return the path to
+     * @return the path to the given vertex
+     */
+    public Path getPath(Vertex vertex) {
+        return knownPaths.get(vertex);
     }
 
     public boolean containsPathsWithHop(int hop) {

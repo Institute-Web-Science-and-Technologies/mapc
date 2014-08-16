@@ -21,8 +21,8 @@ public class Vertex {
     // been probed
     private int value = 0;
 
-    PathMap pathMap = new PathMap(this);
-    ZoneMap zoneMap = new ZoneMap(pathMap);
+    PathMap knownPaths;
+    ZoneMap zoneMap;
 
     /**
      * @param identifier
@@ -30,6 +30,8 @@ public class Vertex {
      */
     public Vertex(String identifier) {
         this.identifier = identifier;
+        this.knownPaths = new PathMap(this);
+        this.zoneMap = new ZoneMap(knownPaths);
         logger = new AgentLogger(identifier);
         logger.setVisible(true);
     }
@@ -97,8 +99,8 @@ public class Vertex {
      * @return True if all adjacent edges of the node have been surveyed.
      */
     public boolean isSurveyed() {
-        for (Vertex neighbour : pathMap.getNeighbours()) {
-            if (pathMap.getPathToVertex(neighbour).getPathCosts() < 11) {
+        for (Vertex neighbour : knownPaths.getNeighbours()) {
+            if (knownPaths.getPath(neighbour).getPathCosts() < 11) {
                 return false;
             }
         }
@@ -116,11 +118,11 @@ public class Vertex {
      */
     public HashMap<Vertex, Integer> getNextUnsurveyedVertices(int hop) {
         HashMap<Vertex, Integer> unsurveyedVertices = new HashMap<Vertex, Integer>();
-        if (!pathMap.containsPathsWithHop(hop)) {
+        if (!knownPaths.containsPathsWithHop(hop)) {
             return unsurveyedVertices;
         }
-        for (Vertex vertex : pathMap.getVerticesWithHop(hop)) {
-            int weight = pathMap.getPathToVertex(vertex).getPathCosts();
+        for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
+            int weight = knownPaths.getPath(vertex).getPathCosts();
             unsurveyedVertices.put(vertex, weight);
         }
         if (unsurveyedVertices.size() > 0) {
@@ -131,7 +133,10 @@ public class Vertex {
     }
 
     /**
-     * Tells the vertex about the existence of a neighbour node.
+     * Tells the vertex about the existence of a neighbour node. If the vertex
+     * already knows about this neighbour, it will only update the information
+     * about the edge weight to its neighbour if the edgeWeight parameter is
+     * smaller than the stored edge weight.
      * 
      * @param neighbour
      *            the vertex to be added to the list of neighbours
@@ -142,7 +147,7 @@ public class Vertex {
         Path newPath = new Path(neighbour);
         newPath.setPathHops(1, neighbour);
         newPath.setPathCosts(edgeWeight, neighbour);
-        boolean changed = pathMap.handlePath(newPath);
+        boolean changed = knownPaths.handlePath(newPath);
         if (changed) {
             logger.info("New or better path: " + this + newPath);
             informNeighboursAboutPath(newPath);
@@ -159,23 +164,24 @@ public class Vertex {
      * Force the vertex to recalculate a path if told to do so by one of its
      * neighbours.
      * 
-     * @param path
+     * @param senderToDestination
      *            the path to check for improved hops/costs
      * @param sender
      *            the node telling this node about the new path
      */
-    public void setPath(Path path, Vertex sender) {
-        logger.info("New path from neighbour: " + sender + path);
-        Path newPath = new Path(path.getDestination());
-        Path pathToSender = pathMap.getPathToVertex(sender);
-
-        int costs = path.getPathCosts() + pathToSender.getPathCosts();
-        newPath.setPathCosts(costs, sender);
-
-        int hops = path.getPathHops() + pathToSender.getPathHops();
-        newPath.setPathHops(hops, sender);
-
-        boolean changed = pathMap.handlePath(newPath);
+    public void setPath(Path senderToDestination, Vertex sender) {
+        logger.info("Received path " + sender + senderToDestination);
+        Vertex destination = senderToDestination.getDestination();
+        if (destination == this) {
+            return;
+        }
+        // call setNeighbour to guarantee that a path to the sender exists
+        setNeighbour(sender, 11);
+        Path hereToSender = knownPaths.getPath(sender);
+        int costs = senderToDestination.getPathCosts() + hereToSender.getPathCosts();
+        int hops = senderToDestination.getPathHops() + hereToSender.getPathHops();
+        Path newPath = new Path(destination, costs, sender, hops, sender);
+        boolean changed = knownPaths.handlePath(newPath);
         if (changed) {
             logger.info("New or better path: " + this + newPath);
             informNeighboursAboutPath(newPath);
@@ -187,6 +193,6 @@ public class Vertex {
     }
 
     public ArrayList<Vertex> getNeighbours() {
-        return this.pathMap.getNeighbours();
+        return this.knownPaths.getNeighbours();
     }
 }
