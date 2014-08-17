@@ -1,0 +1,58 @@
+\documentclass{../tech_reports/template/llncs}
+%
+\usepackage{url}
+\RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
+\usepackage{amsmath} % use equations
+\RequirePackage[utf8]{inputenc} % support Umlauts and special characters
+\usepackage{microtype} % use space more efficiently and hyphenate smarter: all in all looks a lot sexier
+\usepackage{listings} % allow source code environments
+% Define a listing style for FLUX code
+\lstdefinestyle{flux} {
+  frame=L,
+  xleftmargin=\parindent,
+  basicstyle=\footnotesize\ttfamily,
+  breakatwhitespace=true,
+  numbers=left,
+  escapechar=\%,
+  numberstyle=\tiny,
+  numberblanklines=false,
+  captionpos=b,
+  emph={perform, poss, state\_update, main\_loop, init},
+  emphstyle=\textbf,
+}
+%
+\title{Final Report}
+\subtitle{Multi-Agent Programming Contest}
+\titlerunning{logprog}
+\author{Rahul Arora \and Artur Daudrich \and Sergey Dedukh \and Michael Ruster \and Michael Sewell \and Yuan Sun}
+\institute{University Koblenz-Landau}
+\tocauthor{ }
+%
+\begin{document}
+\maketitle
+
+\section{Motivation}
+\input{content/motivation.tex}
+
+\section{Scientific Background and Fundamentals}
+\input{content/fundamentals.tex}
+
+\section{Team Organisation}
+\input{content/organisation.tex}
+
+\section{Architectural (?) Structure}
+\input{content/structure.tex}
+
+\section{Algorithms and Strategies}
+\input{content/algorithms.tex}
+
+\section{Implementation Details}
+\input{content/implementation.tex}
+
+\section{Conclusion}
+\input{content/conclusion.tex}
+
+\bibliographystyle{../tech\_reports/template/splncs03}
+\clearpage
+\bibliography{content/sources.bib}
+\end{document}
