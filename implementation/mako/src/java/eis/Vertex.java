@@ -149,13 +149,17 @@ public class Vertex {
         newPath.setPathCosts(edgeWeight, neighbour);
         boolean changed = knownPaths.handlePath(newPath);
         if (changed) {
-            logger.info("New or better path: " + this + newPath);
+            logger.info("New or better path (setNeighbour): " + this + newPath);
             informNeighboursAboutPath(newPath);
         }
     }
 
     private void informNeighboursAboutPath(Path path) {
-        for (Vertex neighbour : this.getNeighbours()) {
+        ArrayList<Vertex> neighbours = this.getNeighbours();
+        for (Vertex neighbour : neighbours) {
+            if (neighbours.contains(path.getDestination())) {
+                path.getDestination().setPath(knownPaths.getPath(neighbour), this);
+            }
             neighbour.setPath(path, this);
         }
     }
@@ -183,8 +187,10 @@ public class Vertex {
         Path newPath = new Path(destination, costs, sender, hops, sender);
         boolean changed = knownPaths.handlePath(newPath);
         if (changed) {
-            logger.info("New or better path: " + this + newPath);
-            informNeighboursAboutPath(newPath);
+            Path realNewPath = knownPaths.getPath(destination);
+            logger.info("SenderToDestinationHops: " + senderToDestination.getPathHops() + " - hereToSenderHops: " + hereToSender.getPathHops());
+            logger.info("New or better path: (setPath)" + this + realNewPath);
+            informNeighboursAboutPath(realNewPath);
         }
     }
 
