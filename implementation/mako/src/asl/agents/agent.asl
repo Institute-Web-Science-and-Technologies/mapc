@@ -48,8 +48,7 @@ zoneMode(false).
  +!doAction:
 	visibleEntity(Vehicle, Vertex, Team, Disabled)[source(percept)]
 	& Team == teamB
-	& role(Role)
-	& Role == inspector
+	& role(inspector)
 	& not roleOfAgent(Vehicle, _)
 	<-
 	.print("I want to inspect (", Vehicle, ").");
@@ -62,30 +61,27 @@ zoneMode(false).
 	& EnemyTeam \== MyTeam
  	<- .print("Enemy at my position! Disabled -> ", Disabled, ". Vehicle: ", Vehicle );
  		!dealWithEnemy.
-//Implement Attacking	
-//Find not disabled enemy agents on the same position
-    +!doAction:
+ 		
+// React on not disabled enemy agents on the same position and attack them.
++!doAction:
  	position(Vertex)
 	//& myTeam(MyTeam)
-	& role(Role)
-	& Role == saboteur
+	& role(saboteur)
 	& visibleEntity(Vehicle, Vertex, teamB, normal)
 	//& EnemyTeam \== MyTeam
- 	<- .print("Enemy Vehicle",Vehicle," is on my position:",Vertex );
- 		!dealWithVisRangeOneEnemy(Vehicle,Vertex).
+ 	<- .print("Enemy Vehicle ", Vehicle, " is on my position:", Vertex);
+ 	   !doAttack(Vehicle, Vertex).
  		
-//Find not disabled enemy agents on my one-step neighbor nodes (visiabily range = 1)
-	+!doAction:
+// React on not disabled enemy agents on my one-step neighbour nodes (visibility range = 1)
++!doAction:
  	position(Position)
- 	& role(Role)
-	& Role == saboteur
+ 	& role(saboteur)
  	//& myTeam(MyTeam)
 	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))	
 	& visibleEntity(Vehicle, Vertex, teamB, normal)
 	//& EnemyTeam \== MyTeam	
- 	<-
- 	.print("My position is :",Position,"Enemy",Vehicle," stands at position", Vertex);
- 		!dealWithVisRangeOneEnemy(Vehicle, Vertex).
+ 	<- .print("My position is: ", Position, ", Enemy ",Vehicle, " stands at position.", Vertex);
+ 	   !doAttack(Vehicle, Vertex).
  		
  
 // If an inspector sees an enemy
