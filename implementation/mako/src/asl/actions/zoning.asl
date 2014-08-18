@@ -1,10 +1,15 @@
 /* Initial beliefs and rules */
 mustCommunicateZones(true).
+// If this belief is true, the agent is either forming
+// a zone or keeping one up and may deny any zone building
+// requests:
+isBusyZoning(false).
+
 // @all: If you are looking for something to do,
 //       search this file for the keyword "TODO".
-
 // TODO: replace the placeholder names for internal actions with their actual names.
 // TODO: split this file into several files (e.g. zone_negotiation and zone_forming).
+// TODO: activate and deactivate isBusyZoning.
 
 /* Initial goals */
 
@@ -33,6 +38,14 @@ mustCommunicateZones(true).
        // trigger broadcasting:
        +bestZone(Value, CentreNode, UsedNodes)[source(self)].
 
+// Deny any zone building offers when we are busy building
+// or keeping up a zone already:
++foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
+    isBusyZoning(true)
+    <- -foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)];
+        // TODO: is CentreNode sufficient as an identifier?
+        .send(Coach, tell, negativeZoneReply(CentreNode)).
+
 // Our zone is better so we reply to the Coach with ours:
 +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
     bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
@@ -44,7 +57,6 @@ mustCommunicateZones(true).
         & MyName < Coach // TODO: that will probably not work
     )
     <- -foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)];
-        // TODO: can we manipulate the sender of this message? Else we will need an additional parameter:
        .send(Coach, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)).
 
 // We have received a zone better than the one we know (or
@@ -63,12 +75,26 @@ mustCommunicateZones(true).
     
        // tell our minions to look for another zone:
        .findall(Minion, availableMinion(Minion), Minions);
-       .send(Minions, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes));
+       .send(Minions, tell, foreignBestZone(Value, CentreNode, UsedNodes, Coach));
        -availableMinions(_);
+       
+       // if we were a minion ourselves, we should tell our master:
+       ?bestZone(_, _, _)[source(PreviousCoach)];
+       // TODO: would send to self fail or can we do it like this?:
+       .send(PreviousCoach, tell, foreignBestZone(Value, CentreNode, UsedNodes, Coach));
+       
        
        .send(Coach, tell, positiveZoneReply(CentreNode, Distance));
        // TODO: does that properly clear all previous best zones?:
        -+bestZone(Value, CentreNode, UsedNodes)[source(Coach)].
+
+// Convert four parameter replies to three parameter replies. This
+// is a workaround as we cannot fake the sender of a reply.
+// This belief is set when an agent replies with knowledge about
+// a better zone where he is not the coach.
++foreignBestZone(Value, CentreNode, UsedNodes, RemoteCoach)
+    <- -foreignBestZone(Value, CentreNode, UsedNodes, RemoteCoach);
+       +foreignBestZone(Value, CentreNode, UsedNodes)[source(RemoteCoach)].
 
 // If s.o. agreed to build a zone with us, we memorise his
 // availability if he is replying to the zone which we still try
@@ -77,23 +103,31 @@ mustCommunicateZones(true).
     bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
     // TODO: is the CentreNode as an identifier sufficient? I'm thinking of overlapping 1HNHs whose zone value got updated in the mean time:
     & BestZoneCentreNode == CentreNode
-    <- +availableMinion(Minion).
+    <- -positiveZoneReply(CentreNode, Distance)[source(WannabeCoach)];
+       +availableMinion(Minion).
     
 // If s.o. agreed to build a zone with us but we changed our
 // mind already, we tell him.
-//
-// TODO: can we manipulate the sender of this message? Else we will need an additional parameter, because the change probably came from a different agent informing us:
 +positiveZoneReply(CentreNode, Distance)[source(Minion)]:
+    bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)[source(Coach)]
+    <- -positiveZoneReply(CentreNode, Distance)[source(Minion)];
+       .send(Minion, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes, Coach)).
+
+// If we get a negative zone reply, we remove the sender from
+// our minions list – if he was on it.
++negativeZoneReply(CentreNode)[source(PossibleMinion)]:
     bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
-    <- -positiveZoneReply(CentreNode, Distance)[source(WannabeCoach)];
-       .send(Minion, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)).
+    // TODO: is the CentreNode as an identifier sufficient?:
+    & BestZoneCentreNode == CentreNode
+    <- -negativeZoneReply(CentreNode)[source(PossibleMinion)];
+       -availableMinion(PossibleMinion).
 
 // Zoning broadcasts may begin if we have found ourselves the bestZone:
 //
 // TODO: start working on this part and revise the upper belief addition triggers.
 +bestZone(ZoneValue, UsedNodes, CentreNode)[source(self)]:
-		broadcastAgentList(BroadcastList)
-		& bestZone(ZoneValue, UsedNodes, CentreNode)
+	broadcastAgentList(BroadcastList)
+	& bestZone(ZoneValue, UsedNodes, CentreNode)
     <- .send(BroadcastList, tell, foreignBestZone(ZoneValue, UsedNodes, CentreNode)).
     
 // We will wait for our coach to give us further instructions:
