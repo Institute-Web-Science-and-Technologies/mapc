@@ -1,11 +1,10 @@
-// Agent zoning in project mako
-
 /* Initial beliefs and rules */
 mustCommunicateZones(true).
-// This is the scheme how we could internally store known zones.
-// TODO: If we could guarantee that .nth(0, UsesNodes, Node) == CenterNode
-// then we could leave out CenterNode.
-// knownZone(ZoneValue, UsesNodes, CenterNode).
+// @all: If you are looking for something to do,
+//       search this file for the keyword "TODO".
+
+// TODO: replace the placeholder names for internal actions with their actual names.
+// TODO: split this file into several files (e.g. zone_negotiation and zone_forming).
 
 /* Initial goals */
 
@@ -14,62 +13,91 @@ mustCommunicateZones(true).
 /* Plans */
 
 // Zoning mode has begun and the agent is now looking for possible zones
-// to build around him.
-// It orders to calculate the best zone and starts the communication process.
+// to build around him. It will retrieve the best in his
+// 1HNH (short for: one-hop-neighbourhood) and start communicating it.
 +!doAction:
     zoneMode(true)
     & mustCommunicateZones(true)
-    & position(Vertex)
+    & position(PositionVertex)
     <- -+mustCommunicateZones(false);
+       // start over new: clear all previous beliefs:
+       -bestZone(_);
+       -availableMinions(_);
        // ask Vertex for its zone as well as its neighbours
-       // this will probably be done through one iA-call:
-       .send(Vertex, askOne, bestZoneValue, CurrentZone);
-       // TODO: next up, the reply must be handled. It is needed so
-       // that we wait until all zones have been set.
-       !findBestZone.
+       // this will be done through one iA-call whose name
+       // I don't know by heart:
+       .getBestZonePLACEHOLDERiA(PositionVertex, 1, BestZone);
+       .nth(0, BestZone, Value);
+       .nth(1, BestZone, CentreNode);
+       .nth(2, BestZone, UsedNodes);
+       // trigger broadcasting:
+       +bestZone(Value, CentreNode, UsedNodes)[source(self)].
+
+// Our zone is better so we reply to the Coach with ours:
++foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
+    bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
+    // my zone is better:
+    & Value < BestZoneValue
+    // or my the zones are identical but my name is alphabetically smaller:
+    | (Value == BestZoneValue
+        & .my_name(MyName)
+        & MyName < Coach // TODO: that will probably not work
+    )
+    <- -foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)];
+        // TODO: can we manipulate the sender of this message? Else we will need an additional parameter:
+       .send(Coach, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)).
+
+// We have received a zone better than the one we know (or
+// didn't know any), so we throw our zone away and reply
+// with our distance to the CentreNode.
+//
+// Also, we have to inform our minions about this.
+//
+// TODO: we must make a cut at some distance. Else all agents will want to go to one super-duper-awesome zone which is far away.
+@onlyAddOneBetterZoneAtATime[atomic]
++foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
+    position(PositionVertex)
+    // call the internal action to calculate my distance:
+    & .getDistancePLACEHOLDERiA(PositionVertex, CentreNode, Distance)
+    <- -foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)];
+    
+       // tell our minions to look for another zone:
+       .findall(Minion, availableMinion(Minion), Minions);
+       .send(Minions, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes));
+       -availableMinions(_);
+       
+       .send(Coach, tell, positiveZoneReply(CentreNode, Distance));
+       // TODO: does that properly clear all previous best zones?:
+       -+bestZone(Value, CentreNode, UsedNodes)[source(Coach)].
+
+// If s.o. agreed to build a zone with us, we memorise his
+// availability if he is replying to the zone which we still try
+// to build right now.
++positiveZoneReply(CentreNode, Distance)[source(Minion)]:
+    bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
+    // TODO: is the CentreNode as an identifier sufficient? I'm thinking of overlapping 1HNHs whose zone value got updated in the mean time:
+    & BestZoneCentreNode == CentreNode
+    <- +availableMinion(Minion).
+    
+// If s.o. agreed to build a zone with us but we changed our
+// mind already, we tell him.
+//
+// TODO: can we manipulate the sender of this message? Else we will need an additional parameter, because the change probably came from a different agent informing us:
++positiveZoneReply(CentreNode, Distance)[source(Minion)]:
+    bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
+    <- -positiveZoneReply(CentreNode, Distance)[source(WannabeCoach)];
+       .send(Minion, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)).
 
 // Zoning broadcasts may begin if we have found ourselves the bestZone:
-+bestZone(ZoneValue, UsedNodes, CenterNode)[source(self)]:
-		broadcastAgentList(BroadcastList)
-		& bestZone(ZoneValue, UsedNodes, CenterNode)
-    <- .send(BroadcastList, tell, bestZone(ZoneValue, UsedNodes, CenterNode)).
-
-// Got the bestZone from s.o. else and it is worse than mine, so I send back
-// mine:
-+bestZone(ZoneValue, UsedNodes, CenterNode)[source(Coach)]:
-        Coach \== self
-        <- true.
-        
-// Got the bestZone from s.o. else and it is better than mine, so I reply
-// with my distance to CenterNode:
-+bestZone(ZoneValue, UsedNodes, CenterNode)[source(Coach)]:
-        Coach \== self
-        <- true.
-
-//Looks into the agent's bb and determines the best known zone
-//from all received beliefs knownZone
-+!findBestZone:
- 		// there are zones to choose from:
- 		.length(knownZone(_)) > 0
- 		// get all beliefs as a list. TODO: there has to be an easier way!
- 		& (.findall([ZoneValue, UsedNodes, CenterNode], knownZone(ZoneValue, UsedNodes, CenterNode), KnownZones)
-    	  & .max(KnownZones, NewBestZone)
-    	  // compare our current maximum with the previously set (if any).
-    	  // N.b.: bestZone should only be already set if some other agent
-    	  // told this agent about a better one before:
-          & (bestZone(OldBestZone) & OldBestZone < NewBestZone)
-          // also trigger this goal if there wasn't any bestZone yet:
-    	  | not bestZone(_))
- 	<- .nth(0, NewBestZone, BestZoneValue);
- 	   .nth(1, NewBestZone, BestZoneUsedNodes);
- 	   .nth(2, NewBestZone, BestZoneCenterNode);
- 	   -+bestZone(BestZoneValue, BestZoneUsedNodes, BestZoneCenterNode)[source(self)]. // TODO: test updates all bestZones??
-
-// If there was no more knownZone left remove the bestZone or
-// if there was a better bestZone set (from another agent),
-// do nothing (doesn't remove bestZone(_)[source(_)]).
 //
-// TODO: switch this agent's behaviour to someone who is interested
-// in helping others building or extending zones.
-+!findBestZone
- 	<- -bestZone(_)[source(self)].
+// TODO: start working on this part and revise the upper belief addition triggers.
++bestZone(ZoneValue, UsedNodes, CentreNode)[source(self)]:
+		broadcastAgentList(BroadcastList)
+		& bestZone(ZoneValue, UsedNodes, CentreNode)
+    <- .send(BroadcastList, tell, foreignBestZone(ZoneValue, UsedNodes, CentreNode)).
+    
+// We will wait for our coach to give us further instructions:
++bestZone(_, _, _)[source(_)]
+    <- true.
+    
+// TODO: wait for all agents to reply and then build a zone.
