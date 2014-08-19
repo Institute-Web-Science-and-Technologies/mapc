@@ -104,8 +104,42 @@ isBusyZoning(false).
     // TODO: is the CentreNode as an identifier sufficient? I'm thinking of overlapping 1HNHs whose zone value got updated in the mean time:
     & BestZoneCentreNode == CentreNode
     <- -positiveZoneReply(CentreNode, Distance)[source(WannabeCoach)];
-       +availableMinion(Minion).
-    
+       +availableMinion(Minion);
+       //if we get a positive reply, we check if we now have enough minions 
+       //to build our zone. If that's the case, we tell the minions to which
+       //node they need to go to in order to build the zone.
+       .count(availableMinion(_), AvailableMinions);
+       if(.length(BestZoneUsedNodes) == AvailableMinions){
+       	  !tellMinionsTheirPosition(BestZoneUsedNodes);
+       };
+       //if more agents committed to the zone than actually needed, the coach
+       //will choose the minions which are close to the zone.
+       if(.length(BestZoneUsedNodes) < AvailableMinions){
+       	  !chooseClosestMinions(BestZoneUsedNodes, AvailableMinions);
+       }.
+       
+ //instead of telling the minions where to go, we just could send the list of nodes
+ //where agents need to be placed to the minions and they will decide/negoiate to which
+ //node they go depending on their current position
++!tellMinionsTheirPosition(BestZoneUsedNodes):
+	.findall(Minion, availableMinion(Minion), Minions)
+	<- .send(Minions, tell, BestZoneUsedNodes).
+	
+//choose closest Minions in case that more agents committed themself
+//to the zone than actually needed and tell the agents that are not needed
+//to look for another zone
++!chooseClosestMinions(BestZoneUsedNodes, AvailableMinions):
+	.findall(Distance, positiveZoneReply(_ , Distance), Distances)
+	<- .sort(Distances, SortedDistanes);
+		while(.length(BestZoneUsedNodes) > AvailableMinions){
+			.max(Distances, MaxDistance);
+			.delete(Max, Distances);
+			.find(Minion, positiveZoneReply(_ , Max)[source(Minion)], UnnecessaryMinion);
+			.delete(UnnecessaryMinion, AvailableMinions);
+			.send(UnnecessaryMinion, tell, lookForOtherZone(true))
+		};
+		!tellMinionsTheirPosition(BestZoneUsedNodes).
+		
 // If s.o. agreed to build a zone with us but we changed our
 // mind already, we tell him.
 +positiveZoneReply(CentreNode, Distance)[source(Minion)]:
