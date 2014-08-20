@@ -35,20 +35,24 @@ zoneMode(false).
     waitingTimeToPerformAction(WaitingTime) &
     position(Position) & lastAction(LastAction) & lastActionResult(Result) & energy(Energy)
     <-
-	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", LastAction,"'. Result was ", Result,". My energy is ", Energy ,".");
 	// If for some reason previous step was not completed - drop it.
 	.drop_all_intentions;
-	-+step(Numeral);
 	-+intendedAction(recharge);
+	// Set up a timer - after the given time !executeAction goal will be added.
+    .at("now +2 s", {+!executeAction});
+	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", LastAction,"'. Result was ", Result,". My energy is ", Energy ,".");
+	-+step(Numeral);
 	if (Result == successful & Action == survey) {
     	.send(cartographer,tell,vertex(Position, true))
 	}
-    !!doAction;
-	.wait({+intendedAction(X)}, WaitingTime, ElapsedTime);
-	.print("Time elapsed: ", ElapsedTime);
-	?intendedAction(Action);
-	.print("I intend to do action: ", Action);
-	Action.
+    !!doAction.
+
+@executeActionMaxPriority[priority(1000)]
++!executeAction:
+    intendedAction(Action)
+    <-
+    .print("I intend to do action: ", Action);
+    Action.
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.
  +!doAction:
