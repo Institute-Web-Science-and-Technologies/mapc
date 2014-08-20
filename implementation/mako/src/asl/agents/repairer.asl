@@ -18,10 +18,10 @@
 energy(CurrEnergy) & CurrEnergy < 3
 <-
      .print("I have ", CurrEnergy, " energy, but I need 3 to repair. Going to recharge first.");
-      recharge.
+      -+intendedAction(recharge).
       
 // If energy is enough - repair    
 + !doRepair(Vehicle)
 <-
     .print("Repairing ", Vehicle);
-     repair(Vehicle).
+     -+intendedAction(repair(Vehicle)).

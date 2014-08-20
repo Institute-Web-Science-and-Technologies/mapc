@@ -22,7 +22,7 @@ maxNodesAmount(625).
 @preventWeirdnessInDebugOutput1[atomic]
 +surveyedEdge(VertexA, VertexB, Weight)
     <-
-    .print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ").");
+    //.print("Received percept surveyedEdge(", VertexA, ",", VertexB, ",", Weight, ").");
    	.abolish(edge(VertexA, VertexB, _));
    	.abolish(edge(VertexB, VertexA, _));
    	+edge(VertexA, VertexB, Weight);
@@ -33,7 +33,7 @@ maxNodesAmount(625).
 +visibleEdge(VertexA, VertexB)[source(percept)]:
     maxEdgeWeight(Weight)
     <-
-	.print("Received percept visibleEdge(", VertexA, ",", VertexB, ").");
+	//.print("Received percept visibleEdge(", VertexA, ",", VertexB, ").");
    	+edge(VertexA, VertexB, Weight);
    	+edge(VertexB, VertexA, Weight);
    	!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight).
@@ -68,7 +68,7 @@ maxNodesAmount(625).
 // of neighbours:
 +!informedNodeAgentsAboutEdge(VertexA, VertexB, Weight)
     <-
-    .print("Sending information about edge ", VertexA, " - ", VertexB, " to node agents.");
+    //.print("Sending information about edge ", VertexA, " - ", VertexB, " to node agents.");
     .send(VertexA, tell, path(VertexB, Weight));     
     .send(VertexB, tell, path(VertexA, Weight)).
     
@@ -76,7 +76,7 @@ maxNodesAmount(625).
 //that he did.
 +vertex(Vertex, true)[source(Sender)]
 	<-
-	.print("I learned that ", Vertex, " has been surveyed by ", Sender, ".");
+	//.print("I learned that ", Vertex, " has been surveyed by ", Sender, ".");
 	-vertex(Vertex, false).
 
 //Generate a vertex belief when informed about a new visible vertex. Assume
@@ -84,7 +84,7 @@ maxNodesAmount(625).
 +visibleVertex(Vertex, Team)[source(Sender)]:
 	not vertex(Vertex, _)
 	<-
-	.print("Received percept visibleVertex(", Vertex, ",", Team, ").");
+	//.print("Received percept visibleVertex(", Vertex, ",", Team, ").");
 	+vertex(Vertex, false).
 
 //These next three beliefs currently only get passed to the cartographer so we

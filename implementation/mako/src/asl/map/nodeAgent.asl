@@ -39,14 +39,14 @@ twoHopNeighbours([]).
 	& not nodeValue(Vertex, NodeValue)[source(self)]
 	& twoHopNeighbours(TwoHopNeighbourList)
 	<-
-	.print("Learned about my own nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
+	//.print("Learned about my own nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
 	.abolish(nodeValue(Vertex, _));
 	+nodeValue(Vertex, NodeValue)[source(self)];
 	.findall(OneHopNeighbour, neighbour(OneHopNeighbour, _), OneHopNeighbourList);
-	.print("My direct neighbours are ", OneHopNeighbourList, ".");
-	.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
+	//.print("My direct neighbours are ", OneHopNeighbourList, ".");
+	//.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
 	.concat(OneHopNeighbourList, TwoHopNeighbourList, OneAndTwoHopNeighbourList);
-	.print("Will inform ", OneAndTwoHopNeighbourList, " about my node value.");
+	//.print("Will inform ", OneAndTwoHopNeighbourList, " about my node value.");
 	.send(OneAndTwoHopNeighbourList, tell, nodeValue(Vertex, NodeValue));
 	!calculateZone.
 	
@@ -59,7 +59,7 @@ twoHopNeighbours([]).
 +nodeValue(Vertex, NodeValue)[source(Sender)]:
 	not nodeValue(Vertex, NodeValue)[source(self)]
 	<-
-	.print("Received nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
+	//.print("Received nodeValue(", Vertex, ",", NodeValue, ") from ", Sender, ".");
 	.abolish(nodeValue(Vertex, _));
 	+nodeValue(Vertex, NodeValue)[source(self)];
 	!calculateZone.
@@ -70,18 +70,18 @@ twoHopNeighbours([]).
 	& nodeValue(ThisVertex, NodeValue)
 	& Vertex \== ThisVertex
 	<-
-	.print("Learned about ", Vertex, " in my two-hop neighbourhood. Will send him my node value.");
+	//.print("Learned about ", Vertex, " in my two-hop neighbourhood. Will send him my node value.");
 	.send(Vertex, tell, nodeValue(ThisVertex, NodeValue));
 	.findall(TwoHopNeighbour, minStepsPath(TwoHopNeighbour, _, 2, _), TwoHopNeighbourList);
-	.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
+	//.print("My two-hop neighbours are ", TwoHopNeighbourList, ".");
 	-+twoHopNeighbours(TwoHopNeighbourList).
 	
-+neighbour(Vertex, Weight)[source(Sender)]
-	<-
-	.print("I learned about my neighbour ", Vertex, " with edge weight ", Weight, ".").
++neighbour(Vertex, Weight)[source(Sender)].
+	//<-
+	//.print("I learned about my neighbour ", Vertex, " with edge weight ", Weight, ".").
 	   
 //Default plan if we already know about this neighbour.
-+path(Vertex, Weight) <- .print("I already know about this path.").
++path(Vertex, Weight).// <- .print("I already know about this path.").
 
 // From the input list of vertices (VertexList) calculates the closest vertex
 +?getClosestVertexFromList(VertexList, NextVertex):

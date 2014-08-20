@@ -61,8 +61,8 @@
 +maxHealth(Numeral)[source(percept)] <-
 	.print("Received percept maxHealth(", Numeral, ").").
 	
-+money(Numeral)[source(percept)] <-
-	.print("Received percept money(", Numeral, ").").
++money(Numeral)[source(percept)].// <-
+	//.print("Received percept money(", Numeral, ").").
 	
 //myName is a custom percept
 +myName(Name)[source(percept)] <-
@@ -79,8 +79,8 @@
 	//.print("Received percept probedVertex(", Vertex, ",", Value, ").");
 	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
 	
-+ranking(Numeral)[source(percept)] <-
-	.print("Received percept ranking(", Numeral, ").").
++ranking(Numeral)[source(percept)].// <-
+	//.print("Received percept ranking(", Numeral, ").").
 	
 //The requestAction belief is handled by agent.asl.
 //+requestAction[source(percept)] <-
@@ -98,10 +98,11 @@
 	
 +simStart[source(percept)] <-
 	.print("Received percept simStart.").
-	
-+step(Numeral)[source(percept)] <-
-	.print("Received percept step(", Numeral, ").");
-	-+step(Numeral).
+
+// Handled in agent.asl	
+//+step(Numeral)[source(percept)] <-
+//	.print("Received percept step(", Numeral, ").");
+//	-+step(Numeral).
 	
 +steps(Numeral)[source(percept)] <-
 	.print("Received percept steps(", Numeral, ").").
@@ -127,8 +128,9 @@
 +visibleVertex(Vertex, Team)[source(percept)].// <-
 	//.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
 
-+zoneScore(Numeral)[source(percept)] <-
-	.print("Received percept zoneScore(", Numeral, ").").
++zoneScore(Numeral)[source(percept)].// <-
+	//.print("Received percept zoneScore(", Numeral, ").").
 
-+zonesScore(Numeral)[source(percept)] <-
-	.print("Received percept zonesScore(", Numeral, ").").
++zonesScore(Numeral)[source(percept)].// <-
+	//.print("Received percept zonesScore(", Numeral, ").").
+	

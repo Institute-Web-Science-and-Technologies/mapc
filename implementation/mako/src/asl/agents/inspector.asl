@@ -7,9 +7,9 @@
 	& CurrEnergy < 2
 	<-
 	.print("I have ", CurrEnergy, " energy, but I need 2 to inspect. Going to recharge first.");
-	recharge.
+	-+intendedAction(recharge).
 
 // If energy is enough - attack
 +!doInspect(Vehicle) <-
     .print("Inspecting vehicle ", Vehicle, "."); 
-     inspect(Vehicle).
+     -+intendedAction(inspect(Vehicle)).

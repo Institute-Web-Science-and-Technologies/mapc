@@ -10,9 +10,9 @@
 +!doAttack(Vehicle, Vertex):
     energy(Energy) & Energy < 2
     <- .print("I have ", Energy, " energy, but I need 2 energy to attack. Going to recharge first.");
-       recharge.
+       -+intendedAction(recharge).
 
 // If energy is enough - attack         
 +!doAttack(Vehicle, Vertex)
     <- .print("Attacking (", Vehicle, ")."); 
-       attack(Vehicle).
+       -+intendedAction(attack(Vehicle)).

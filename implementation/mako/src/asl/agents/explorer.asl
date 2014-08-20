@@ -48,12 +48,12 @@
 +!doProbing:
 	energy(Energy) & Energy > 1 & position(Position)
 	<- .print("Probing vertex ", Position, ".");
-		probe.
+		-+intendedAction(probe).
 	
 +!doProbing:
  energy(Energy) & Energy < 1
 	<- .print("I have not enough energy to probe. I'll recharge first.");
-    	recharge.
+    	-+intendedAction(recharge).
 
 // Explorer has to flee from enemy agents.
 +!dealWithEnemy <- !avoidEnemy.

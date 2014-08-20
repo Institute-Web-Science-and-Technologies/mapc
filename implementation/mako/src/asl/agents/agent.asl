@@ -20,31 +20,36 @@ zoneMode(false).
     -+zoneMode(true).
 
 /*Actions*/
-// Try to do an action in every step.
-+requestAction:
-    position(Position)
-	& lastActionResult(Result)
-	& lastAction(Action)
-	& step(Step)
-	& energy(Energy)
+
+// On step 0 an agent always performs survey and calculates the waiting time.
+@step0MaxPriority[priority(1000)]
++step(0)[source(percept)]: 
+    deadline(Deadline) & timestamp(Timestamp)
     <-
-    .print("Received percept requestAction.");
-//	We have to abolish here because we need to make sure that requestAction
-//	gets processed in every step.
-    .abolish(requestAction);
-	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
-    if (Result == successful & Action == survey) {
+	survey;
+	+step(0);
+	+waitingTimeToPerformAction(Deadline - Timestamp - 750).
+
+@stepMaxPriority[priority(1000)]
++step(Step)[source(percept)]:
+    waitingTimeToPerformAction(WaitingTime) &
+    position(Position) & lastAction(LastAction) & lastActionResult(Result) & energy(Energy)
+    <-
+	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", LastAction,"'. Result was ", Result,". My energy is ", Energy ,".");
+	// If for some reason previous step was not completed - drop it.
+	.drop_all_intentions;
+	-+step(Numeral);
+	-+intendedAction(recharge);
+	if (Result == successful & Action == survey) {
     	.send(cartographer,tell,vertex(Position, true))
 	}
-//	Why doesn't this work?
-//	.findall([From, To], visibleEdge(From, To), visibleEdgeList);
-//	.print("List of visible edges: ", visibleEdgeList);
-    !doAction.
-//    We have to abolish here, or the agent will ignore 
-//    .abolish(requestAction).
+    !!doAction;
+	.wait(WaitingTime);
+	?intendedAction(Action);
+	.print("I intend to do action: ", Action);
+	Action.
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.
-
  +!doAction:
 	visibleEntity(Vehicle, Vertex, Team, Disabled)[source(percept)]
 	& Team == teamB
@@ -158,7 +163,7 @@ zoneMode(false).
 +!doAction:
 	energy(Energy) & maxEnergy(Max) & Energy <= Max
 	<- .print("I'm idle. I'm recharging.");
-		recharge.
+		-+intendedAction(recharge).
 
 // To avoid an enemy agent, we select a destination to go to.
 +!avoidEnemy:
@@ -182,12 +187,12 @@ zoneMode(false).
 +!doSurveying:
  energy(Energy) & Energy < 1
 	<- .print("I have not enough energy to survey. I'll recharge first.");
-    	recharge.
+    	-+intendedAction(recharge).
     	
 +!doSurveying:
 	position(Position)
 	<- .print("Surveying from vertex ", Position, ".");
-		survey.
+		-+intendedAction(survey).
     	
 //+!doExploring <- !exploreGraph.
 
@@ -200,7 +205,7 @@ zoneMode(false).
 +!goto(Destination):
     position(CurrVertex) & energy(CurrEnergy) & surveyedEdge(CurrVertex, Destination, Weight) & CurrEnergy < Weight
     <- .print("I have ", CurrEnergy, " energy, but need ", Weight, " to go, going to recharge first.");
-       recharge.
+       -+intendedAction(recharge).
 
 //In the case where we for some reason get told to move to the node we're already on,
 //we perform a recharge action isntead.
@@ -208,7 +213,7 @@ zoneMode(false).
 	position(MyPosition) & Destination == MyPosition
 	<-
 	.print("I was told to move to the node I am already on (", MyPosition, "). Will recharge instead.");
-	recharge.
+	-+intendedAction(recharge).
 
 // Goto if the destination is not a neighbour of the node we are currently on.
 // We have to ask the node agent for the next hop on the way to our destination.
@@ -224,4 +229,4 @@ zoneMode(false).
 +!goto(Destination)
     <-
     .print("I will move to my neighbour node ", Destination, ".");
-	goto(Destination).
+	-+intendedAction(goto(Destination)).
