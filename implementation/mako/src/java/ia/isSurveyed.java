@@ -2,26 +2,26 @@
 
 package ia;
 
-import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import eis.JasonHelper;
+import eis.MapAgent;
+import eis.Vertex;
 
-// input: position
-// output: true/false
+//Call from AgentSpeak: isSurveyed(Vertex, Result)
 public class isSurveyed extends DefaultInternalAction {
+    private static final long serialVersionUID = 1410005108812986441L;
 
     @Override
-    public Object execute(TransitionSystem ts, Unifier un, Term[] args)
+    public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
-        // execute the internal action
-        ts.getAg().getLogger().info("executing internal action 'ia.isSurveyed'");
-        if (true) { // just to show how to throw another kind of exception
-            throw new JasonException("not implemented!");
-        }
+        Vertex vertex = MapAgent.getInstance().getVertex(terms[0].toString());
+        Term resultTerm = terms[1];
 
-        // everything ok, so returns true
-        return true;
+        boolean result = MapAgent.getInstance().isVertexSurveyed(vertex);
+
+        return unifier.unifies(resultTerm, JasonHelper.getTerm(result));
     }
 }

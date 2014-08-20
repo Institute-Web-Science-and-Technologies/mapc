@@ -1,13 +1,9 @@
 package eis;
 
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.LiteralImpl;
-import jason.asSyntax.NumberTermImpl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
@@ -22,12 +18,17 @@ public class MapAgent {
     private int step = 0;
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
+    private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
+    private HashMap<String, String> enemies = new HashMap<String, String>();
     private AgentLogger logger = new AgentLogger("MapAgent");
 
     private HashSet<String> visibleVertices = new HashSet<String>();
     private HashSet<String> probedVertices = new HashSet<String>();
     private HashSet<String> visibleEdges = new HashSet<String>();
     private HashSet<String> surveyedEdges = new HashSet<String>();
+
+    private HashSet<Vertex> reservedUnsurveyedVertices = new HashSet<Vertex>();
+    private HashSet<Vertex> reservedProbedVertices = new HashSet<Vertex>();
 
     public static MapAgent getInstance() {
         if (mapAgent == null) {
@@ -42,7 +43,7 @@ public class MapAgent {
      * @param agent
      * @param position
      */
-    public void storePosition(String agent, String position) {
+    public void storeAgentPosition(String agent, String position) {
         agentPositions.put(agent, getVertex(position));
     }
 
@@ -56,9 +57,9 @@ public class MapAgent {
             handleProbedVertex(percept);
             probedVertices.add(percept.toProlog());
             break;
-        // case "visibleEntity":
-        // handleVisibleEntity(percept);
-        // break;
+        case "visibleEntity":
+            handleVisibleEntity(percept);
+            break;
         case "visibleEdge":
             handleVisibleEdge(percept);
             visibleEdges.add(percept.toProlog());
@@ -79,11 +80,26 @@ public class MapAgent {
         }
     }
 
+    private void handleVisibleEntity(Percept percept) {
+        String vehicle = percept.getParameters().get(0).toString();
+        String position = percept.getParameters().get(1).toString();
+        String team = percept.getParameters().get(2).toString();
+        String state = percept.getParameters().get(3).toString();
+
+        if (team.equalsIgnoreCase(AgentHandler.enemyTeam)) {
+            if (state.equalsIgnoreCase("normal")) {
+                enemyPositions.put(vehicle, getVertex(position));
+            } else {
+                enemyPositions.remove(vehicle);
+            }
+        }
+    }
+
     private void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > step) {
-            // clear reserved probed vertices
-            // clear reserved unsurveyed vertices
+            reservedProbedVertices.clear();
+            reservedUnsurveyedVertices.clear();
             step = newStep;
             logger.info("[" + step + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
             logger.info("[" + step + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
@@ -129,7 +145,7 @@ public class MapAgent {
         vertex.setTeam(team);
     }
 
-    private Vertex getVertex(String name) {
+    public Vertex getVertex(String name) {
         Vertex vertex;
         if (!vertexMap.containsKey(name)) {
             vertex = new Vertex(name);
@@ -141,26 +157,42 @@ public class MapAgent {
     }
 
     /**
-     * Returns the unsurveyed vertices near the given vertices as a Jason
-     * ListTerm.
+     * Returns the closest unsurveyed vertex near the given vertex. "Closest"
+     * meaning the least number of hops, and cheapest costs if multiple vertices
+     * with the same hop distance are available.
      * 
      * @param position
-     *            the vertex to find nearby unsurveyed vertices for
-     * @return a Jason ListTerm of unsurveyed nearby vertices
+     *            the vertex to find the next unsurveyed vertex for
+     * @return the closest unsurveyed vertex
      */
-    public ListTerm getNextUnsurveyedVertices(String position) {
-        ListTerm result = new ListTermImpl();
-        if (vertexMap.containsKey(position)) {
-            Vertex vertex = vertexMap.get(position);
-            HashMap<Vertex, Integer> unsurveyedVertices = vertex.getNextUnsurveyedVertices(1);
-            for (Vertex v : unsurveyedVertices.keySet()) {
-                ListTerm object = new ListTermImpl();
-                object.add(new NumberTermImpl(unsurveyedVertices.get(v)));
-                object.add(new LiteralImpl(v.getIdentifier()));
-                result.add(object);
+    public Vertex getNextUnsurveyedVertex(Vertex position) {
+        Vertex vertex = position;
+        TreeMap<Integer, Vertex> unsurveyedVertices = position.getNextUnsurveyedVertices(1);
+        if (!unsurveyedVertices.isEmpty()) {
+            int key = unsurveyedVertices.firstKey();
+            vertex = unsurveyedVertices.get(key);
+            while (reservedUnsurveyedVertices.contains(vertex)) {
+                key = unsurveyedVertices.higherKey(key);
+                vertex = unsurveyedVertices.get(key);
             }
+            reservedUnsurveyedVertices.add(vertex);
         }
-        return result;
+        return vertex;
+    }
+
+    public Vertex getNextUnprobedVertex(Vertex position) {
+        Vertex vertex = position;
+        TreeMap<Integer, Vertex> unprobedVertices = position.getNextUnprobedVertices(1);
+        if (!unprobedVertices.isEmpty()) {
+            int key = unprobedVertices.firstKey();
+            vertex = unprobedVertices.get(key);
+            while (reservedProbedVertices.contains(vertex)) {
+                key = unprobedVertices.higherKey(key);
+                vertex = unprobedVertices.get(key);
+            }
+            reservedProbedVertices.add(vertex);
+        }
+        return vertex;
     }
 
     /**
@@ -171,13 +203,125 @@ public class MapAgent {
      * @return the list of zones within range around the vertex
      */
     public ArrayList<Zone> getZonesInRange(Vertex vertex, int range) {
-        ArrayList<Vertex> neighbourhood = vertex.knownPaths.getVerticesUpToDistance(range);
+        ArrayList<Vertex> neighbourhood = vertex.getNeighbourhood(range);
         ArrayList<Zone> zones = new ArrayList<Zone>();
-        for (Vertex node : neighbourhood) {
-            // Zone zone = node.zoneMap.zones[0];
+        for (Vertex neighbour : neighbourhood) {
+            zones.add(neighbour.getBestMinimalZone());
+        }
+        return zones;
+    }
+
+    /**
+     * Retrieves the best zone (the one with the highest zone value per agent)
+     * from a list of zones.
+     * 
+     * @param zones
+     *            the list of zones to choose the best zone from
+     * @return the zone with the highest zone value per agent
+     */
+    public Zone getBestZone(ArrayList<Zone> zones) {
+        Zone bestZone = null;
+        for (Zone zone : zones) {
+            if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
+                bestZone = zone;
+            }
+        }
+        return bestZone;
+    }
+
+    /**
+     * Retrieves the best zone (the one with the highest zone value per agent)
+     * from a list of zones, but only those not exceeding the given maximum
+     * amount of required agents.
+     * 
+     * @param zones
+     *            the list of zones to choose the best zone from
+     * 
+     * @param maxAgents
+     *            the maximum number of agents for the zone
+     * @return the zone with the highest zone value per agent and at most
+     *         maxAgents agent positions
+     */
+    public Zone getBestZoneWithMaxAgents(ArrayList<Zone> zones, int maxAgents) {
+        for (int i = zones.size() - 1; i > 0; i--) {
+            Zone zone = zones.get(i);
+            if (zone.getPositions().size() > maxAgents) {
+                zones.remove(i);
+            }
+        }
+        if (zones.size() == 0) {
+            return null; // should probably throw an exception instead
+        } else {
+            Zone bestZone = zones.get(0);
+            for (Zone zone : zones) {
+                if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
+                    bestZone = zone;
+                }
+            }
+            return bestZone;
+        }
+    }
+
+    public boolean isVertexProbed(Vertex vertex) {
+        return vertex.isProbed();
+    }
+
+    public boolean isVertexSurveyed(Vertex vertex) {
+        return vertex.isSurveyed();
+    }
+
+    public Vertex getBestHopToVertex(Vertex position, Vertex destination) {
+        return position.getPath(destination).getNextHopVertex();
+    }
+
+    public Vertex getCheapestHopToVertex(Vertex position, Vertex destination) {
+        return position.getPath(destination).getNextBestCostVertex();
+    }
+
+    public int getHopsToVertex(Vertex position, Vertex destination) {
+        return position.getPath(destination).getPathHops();
+    }
+
+    public Vertex getClosestVertex(Vertex position, ArrayList<Vertex> vertices) {
+        if (vertices.size() > 0) {
+            Vertex closest = vertices.get(0);
+            for (Vertex destination : vertices) {
+                if (position.getPath(destination).getPathHops() < position.getPath(closest).getPathHops()) {
+                    closest = destination;
+                }
+            }
+            return closest;
+        } else {
+            return position;
+        }
+    }
+
+    public HashMap<String, Vertex> getAgentZonePositions(
+            Vertex zoneCenterVertex, ArrayList<String> agents) {
+        TreeMap<Integer, String> distances = new TreeMap<Integer, String>();
+        for (String agent : agents) {
+            Vertex vertex = agentPositions.get(agent);
+            int pathHops = vertex.getPath(zoneCenterVertex).getPathHops();
+            distances.put(pathHops, agent);
         }
 
-        return null;
-
+        Zone zone = zoneCenterVertex.getBestMinimalZone();
+        ArrayList<Vertex> positions = zone.getPositions();
+        HashMap<String, Vertex> map = new HashMap<String, Vertex>();
+        int key = distances.lastKey();
+        while (positions.size() > 0) {
+            String agent = distances.get(key);
+            key = distances.lowerKey(key);
+            Vertex position = agentPositions.get(agent);
+            Vertex closest = positions.get(0);
+            for (Vertex destination : positions) {
+                if (position.getPath(closest).getPathHops() > position.getPath(destination).getPathHops()) {
+                    closest = destination;
+                }
+            }
+            map.put(agent, closest);
+            positions.remove(closest);
+        }
+        return map;
     }
 }

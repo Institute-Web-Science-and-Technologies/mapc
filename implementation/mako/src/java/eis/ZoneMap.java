@@ -1,7 +1,6 @@
 package eis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -12,11 +11,11 @@ public class ZoneMap {
     private ArrayList<Vertex> optionalAgentPositions;
 
     // the number of agents required to build a zone, and the zones themselves
-    private HashMap<Integer, Zone> zones = new HashMap<Integer, Zone>();
+    private TreeMap<Integer, Zone> zones = new TreeMap<Integer, Zone>();
 
     public ZoneMap(PathMap pathMap) {
         this.pathMap = pathMap;
-        logger = new AgentLogger("PathMap - " + pathMap.getPosition().getIdentifier());
+        logger = new AgentLogger("PathMap - " + pathMap.getPosition());
     }
 
     public void calculateZoneValue() {
@@ -42,7 +41,7 @@ public class ZoneMap {
         logger.info("Minimal Zone Value is: " + zoneValue);
 
         // create zone
-        Zone zone = new Zone();
+        Zone zone = new Zone(pathMap.getPosition());
         zone.setZoneValue(zoneValue);
         zone.setPositions(agentPositions);
         this.zones.put(agentPositions.size(), zone);
@@ -59,7 +58,7 @@ public class ZoneMap {
                 ArrayList<Vertex> positions = zone.getPositions();
                 positions.add(bestEntry.getValue());
                 double newZoneValue = ((zone.getZoneValue() * (positions.size() - 1)) + bestEntry.getKey()) / positions.size();
-                zone = new Zone();
+                zone = new Zone(pathMap.getPosition());
                 zone.setPositions(positions);
                 zone.setZoneValue(newZoneValue);
                 this.zones.put(positions.size(), zone);
@@ -185,15 +184,20 @@ public class ZoneMap {
      *            up to how many zones to return
      * @return
      */
-    public HashMap<Integer, Zone> getZones(int howMany) {
-        HashMap<Integer, Zone> zoneList = new HashMap<Integer, Zone>();
-        ArrayList<Integer> keys = new ArrayList<Integer>();
-        keys.addAll(zones.keySet());
-        java.util.Collections.sort(keys);
-        for (int i = 0; i < Math.min(howMany, zones.size()); i++) {
-            Zone zone = zones.get(keys.get(i));
-            zoneList.put(keys.get(i), zone);
+    public TreeMap<Integer, Zone> getZones(int howMany) {
+        int count = 0;
+        TreeMap<Integer, Zone> zoneList = new TreeMap<Integer, Zone>();
+        int currentKey = zones.firstKey();
+        while (count < howMany && count < zoneList.size() - 1) {
+            zoneList.put(currentKey, zones.get(currentKey));
+            currentKey = zones.higherKey(currentKey);
+            count++;
         }
         return zoneList;
     }
+
+    public Zone getBestMinimalZone() {
+        return zones.firstEntry().getValue();
+    }
+
 }

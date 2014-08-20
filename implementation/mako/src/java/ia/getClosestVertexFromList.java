@@ -2,26 +2,35 @@
 
 package ia;
 
-import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ListTerm;
 import jason.asSyntax.Term;
 
-//input: position, List of Destination
-//output: closest destination which is reachable
+import java.util.ArrayList;
+
+import eis.JasonHelper;
+import eis.MapAgent;
+import eis.Vertex;
+
+// Call from AgentSpeak: getClosestVertexFromList(Position, List[Destination*], Vertex)
 public class getClosestVertexFromList extends DefaultInternalAction {
+    private static final long serialVersionUID = -7762150652742699602L;
 
     @Override
-    public Object execute(TransitionSystem ts, Unifier un, Term[] args)
+    public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
-        // execute the internal action
-        ts.getAg().getLogger().info("executing internal action 'ia.getClosestVertexFromList'");
-        if (true) { // just to show how to throw another kind of exception
-            throw new JasonException("not implemented!");
-        }
+        Vertex position = MapAgent.getInstance().getVertex(terms[0].toString());
+        ListTerm list = ((ListTerm) terms[1]);
+        Term vertexTerm = terms[2];
 
-        // everything ok, so returns true
-        return true;
+        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+        for (Term term : list) {
+            vertices.add(MapAgent.getInstance().getVertex(term.toString()));
+        }
+        Vertex vertex = MapAgent.getInstance().getClosestVertex(position, vertices);
+
+        return unifier.unifies(vertexTerm, JasonHelper.getTerm(vertex.getIdentifier()));
     }
 }

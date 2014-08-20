@@ -1,7 +1,7 @@
 package eis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Handles values and methods related to nodes.
@@ -21,8 +21,8 @@ public class Vertex {
     // been probed
     private int value = 0;
 
-    PathMap knownPaths;
-    ZoneMap zoneMap;
+    private PathMap knownPaths;
+    private ZoneMap zoneMap;
 
     /**
      * @param identifier
@@ -116,19 +116,71 @@ public class Vertex {
      * @return A list of vertices (empty if no unsurveyed vertices can be
      *         reached from this node).
      */
-    public HashMap<Vertex, Integer> getNextUnsurveyedVertices(int hop) {
-        HashMap<Vertex, Integer> unsurveyedVertices = new HashMap<Vertex, Integer>();
+    public TreeMap<Integer, Vertex> getNextUnsurveyedVertices(int hop) {
+        TreeMap<Integer, Vertex> unsurveyedVertices = new TreeMap<Integer, Vertex>();
         if (!knownPaths.containsPathsWithHop(hop)) {
             return unsurveyedVertices;
         }
         for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
-            int weight = knownPaths.getPath(vertex).getPathCosts();
-            unsurveyedVertices.put(vertex, weight);
+            if (!vertex.isSurveyed()) {
+                int pathCosts = knownPaths.getPath(vertex).getPathCosts();
+                unsurveyedVertices.put(pathCosts, vertex);
+            }
         }
         if (unsurveyedVertices.size() > 0) {
             return unsurveyedVertices;
         } else {
             return getNextUnsurveyedVertices(hop + 1);
+        }
+    }
+
+    public TreeMap<Integer, Vertex> getNextUnprobedVertices(int hop) {
+        TreeMap<Integer, Vertex> unprobedVertices = new TreeMap<Integer, Vertex>();
+        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+
+        // if there are no paths return an empty list
+        if (!knownPaths.containsPathsWithHop(hop)) {
+            return unprobedVertices;
+        }
+        // find all unprobed vertices
+        for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
+            if (!vertex.isProbed()) {
+                vertices.add(vertex);
+            }
+        }
+
+        // select only the vertex with most probed neighbours
+        int probedNeighbours = 0;
+        ArrayList<Vertex> verticesWithProbedNeighbours = new ArrayList<Vertex>();
+        for (Vertex vertex : vertices) {
+            // count the probed neighbours of the vertex
+            int count = 0;
+            for (Vertex neighbour : vertex.getNeighbours()) {
+                if (neighbour.isProbed()) {
+                    count++;
+                }
+            }
+            if (probedNeighbours == count) {
+                verticesWithProbedNeighbours.add(vertex);
+            }
+            if (probedNeighbours < count) {
+                probedNeighbours = count;
+                verticesWithProbedNeighbours.clear();
+                verticesWithProbedNeighbours.add(vertex);
+            }
+        }
+
+        // insert the nearest unprobed vertices with most already probed
+        // neighbours and sort them by path costs
+        for (Vertex vertex : verticesWithProbedNeighbours) {
+            int pathCosts = knownPaths.getPath(vertex).getPathCosts();
+            unprobedVertices.put(pathCosts, vertex);
+        }
+
+        if (unprobedVertices.size() > 0) {
+            return unprobedVertices;
+        } else {
+            return getNextUnprobedVertices(hop + 1);
         }
     }
 
@@ -200,5 +252,17 @@ public class Vertex {
 
     public ArrayList<Vertex> getNeighbours() {
         return this.knownPaths.getNeighbours();
+    }
+
+    public Path getPath(Vertex destination) {
+        return knownPaths.getPath(destination);
+    }
+
+    public ArrayList<Vertex> getNeighbourhood(int range) {
+        return knownPaths.getVerticesUpToDistance(range);
+    }
+
+    public Zone getBestMinimalZone() {
+        return zoneMap.getBestMinimalZone();
     }
 }

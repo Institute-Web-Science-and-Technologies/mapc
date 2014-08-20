@@ -10,22 +10,19 @@ import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
 
-// input: position, destination
-// output: totalHops
-
-// Call from AgentSpeak: getDistance(Position, Destination, TotalHops)
-public class getDistance extends DefaultInternalAction {
-    private static final long serialVersionUID = 3595982059266499907L;
+// Call from AgentSpeak: getBestHopToVertex(Position, Destination, NextHop) 
+public class getBestHopToVertex extends DefaultInternalAction {
+    private static final long serialVersionUID = 2412754008233388900L;
 
     @Override
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
         Vertex position = MapAgent.getInstance().getVertex(terms[0].toString());
         Vertex destination = MapAgent.getInstance().getVertex(terms[1].toString());
-        Term totalHopsTerm = terms[2];
+        Term nextHopTerm = terms[2];
 
-        int totalHops = MapAgent.getInstance().getHopsToVertex(position, destination);
+        Vertex nextHop = MapAgent.getInstance().getBestHopToVertex(position, destination);
 
-        return unifier.unifies(totalHopsTerm, JasonHelper.getTerm(totalHops));
+        return unifier.unifies(nextHopTerm, JasonHelper.getTerm(nextHop.getIdentifier()));
     }
 }
