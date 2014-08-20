@@ -44,7 +44,8 @@ zoneMode(false).
     	.send(cartographer,tell,vertex(Position, true))
 	}
     !!doAction;
-	.wait(WaitingTime);
+	.wait({+intendedAction(X)}, WaitingTime, ElapsedTime);
+	.print("Time elapsed: ", ElapsedTime);
 	?intendedAction(Action);
 	.print("I intend to do action: ", Action);
 	Action.
