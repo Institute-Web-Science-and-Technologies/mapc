@@ -103,42 +103,56 @@ isBusyZoning(false).
     bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
     // TODO: is the CentreNode as an identifier sufficient? I'm thinking of overlapping 1HNHs whose zone value got updated in the mean time:
     & BestZoneCentreNode == CentreNode
-    <- -positiveZoneReply(CentreNode, Distance)[source(WannabeCoach)];
+    <- -positiveZoneReply(CentreNode, Distance)[source(Minion)];
        +availableMinion(Minion);
-       //if we get a positive reply, we check if we now have enough minions 
-       //to build our zone. If that's the case, we tell the minions to which
-       //node they need to go to in order to build the zone.
-       .count(availableMinion(_), AvailableMinions);
-       if(.length(BestZoneUsedNodes) == AvailableMinions){
-       	  !tellMinionsTheirPosition(BestZoneUsedNodes);
-       };
-       //if more agents committed to the zone than actually needed, the coach
-       //will choose the minions which are close to the zone.
-       if(.length(BestZoneUsedNodes) < AvailableMinions){
-       	  !chooseClosestMinions(BestZoneUsedNodes, AvailableMinions);
-       }.
        
- //instead of telling the minions where to go, we just could send the list of nodes
- //where agents need to be placed to the minions and they will decide/negoiate to which
- //node they go depending on their current position
-+!tellMinionsTheirPosition(BestZoneUsedNodes):
-	.findall(Minion, availableMinion(Minion), Minions)
-	<- .send(Minions, tell, BestZoneUsedNodes).
+       // TODO: this must be put somewhere else now as we wait for all replies and choose only the best:
+       !choseClosestMinions;
+       !toldMinionsTheirPosition.
+       
+// Use an internal action that determines where to place the minions the best
+// and tell them:
++!toldMinionsTheirPosition:
+    .findall(Minion, zoneMinion(Minion), Minions)
+    & .bestZone(_, _, UsedNodes)
+    & .getPositionsForMinionsPLACEHOLDERiA(UsedNodes, Minions, PositionMinionMapping)
+    & .length(PositionMinionMapping, MappingLength)
+	<- for (.range(ControlVariable, 0, MappingLength - 1)) {
+	       .nth(ControlVariable, PositionMinionMapping, [Position, Minion]);
+	       .send(Minion, tell, Position);
+	   }.
 	
-//choose closest Minions in case that more agents committed themself
+//choose closest Minions in case that more agents committed themselves
 //to the zone than actually needed and tell the agents that are not needed
 //to look for another zone
-+!chooseClosestMinions(BestZoneUsedNodes, AvailableMinions):
-	.findall(Distance, positiveZoneReply(_ , Distance), Distances)
-	<- .sort(Distances, SortedDistanes);
-		while(.length(BestZoneUsedNodes) > AvailableMinions){
-			.max(Distances, MaxDistance);
-			.delete(Max, Distances);
-			.find(Minion, positiveZoneReply(_ , Max)[source(Minion)], UnnecessaryMinion);
-			.delete(UnnecessaryMinion, AvailableMinions);
-			.send(UnnecessaryMinion, tell, lookForOtherZone(true))
-		};
-		!tellMinionsTheirPosition(BestZoneUsedNodes).
++!choseClosestMinions:
+    .bestZone(_, _, UsedNodes)
+    & .findall(Minion, availableMinion(Minion), Minions)
+    & .length(UsedNodes) < Minions
+	& .findall([Distance, Minion], positiveZoneReply(_ , Distance)[source(Minion)], DistanceMinionList) // TODO: this is only possible if we keep the replies
+	<- .sort(DistanceMinionList, SortedMinions);
+	   for (.range(_, 0, .length(UsedNodes))) { // TODO: this is quite an imperative style, does .length get evaluated in this comparison?
+	       .nth(0, SortedMinions, [_, ClosestMinion]); // TODO: does [_, X] work in .nth?
+	       +zoneMinion(ClosestMinion);
+	       .delete(0, SortedMinions, _);
+	   };
+	   // Inform minions which are not needed anymore:
+	   // TODO: do we want to tell him already? We might need him if s.o. else drops off.
+	   for (.range(ControlVariable, 0, .length(SortedMinions))) {
+	       .nth(ControlVariable, SortedMinions, [_, UnnecessaryMinion]);
+	       .send(UnnecessaryMinion, tell, lookForOtherZone(true))
+	   }.
+
+// We have as many minions as we need:
++!choseClosestMinions:
+    .bestZone(_, _, UsedNodes)
+    & .findall(Minion, availableMinion(Minion), Minions)
+    & .length(UsedNodes) < Minions
+    <- true.
+
+// We don't have enough minions:
++!choseClosestMinions
+    <- false.
 		
 // If s.o. agreed to build a zone with us but we changed our
 // mind already, we tell him.
