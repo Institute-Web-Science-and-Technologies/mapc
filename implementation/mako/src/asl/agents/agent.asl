@@ -28,7 +28,7 @@ zoneMode(false).
     <-
 	survey;
 	+step(0);
-	+waitingTimeToPerformAction(Deadline - Timestamp - 750).
+	+waitingTimeToPerformAction(Deadline - Timestamp - 1000).
 
 @stepMaxPriority[priority(1000)]
 +step(Step)[source(percept)]:

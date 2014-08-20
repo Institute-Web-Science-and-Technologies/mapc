@@ -152,7 +152,7 @@ public class EISEnvironment extends Environment implements AgentListener {
                 delayedPerceptsMap.remove(jasonName);
             }
         }
-        Percept requestAction = null;
+        Percept stepPercept = null;
         clearPercepts(jasonName);
         // clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
@@ -163,8 +163,8 @@ public class EISEnvironment extends Environment implements AgentListener {
             // percept, it determines
             // which action to perform in the current step. By this point, all
             // other percepts need to have been handled properly already.
-            if (percept.getName().equalsIgnoreCase("requestAction")) {
-                requestAction = percept;
+            if (percept.getName().equalsIgnoreCase("step")) {
+                stepPercept = percept;
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
@@ -172,10 +172,9 @@ public class EISEnvironment extends Environment implements AgentListener {
                 addAgentPercept(jasonName, percept);
             }
         }
-        if (requestAction != null) {
-            addAgentPercept(jasonName, requestAction);
+        if (stepPercept != null) {
+            addAgentPercept(jasonName, stepPercept);
         }
-
     }
 
     private void addCartographerPercept(Percept percept) {
