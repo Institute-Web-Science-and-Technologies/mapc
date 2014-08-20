@@ -1,15 +1,11 @@
 /* Initial beliefs and rules */
 mustCommunicateZones(true).
-// If this belief is true, the agent is either forming
-// a zone or keeping one up and may deny any zone building
-// requests:
-isBusyZoning(false).
 
 // @all: If you are looking for something to do,
 //       search this file for the keyword "TODO".
 // TODO: replace the placeholder names for internal actions with their actual names.
 // TODO: split this file into several files (e.g. zone_negotiation and zone_forming).
-// TODO: activate and deactivate isBusyZoning.
+// TODO: a later plan/achievement should deal with searching the 1HNH for only .count(idleZoner) amount of agents
 
 /* Initial goals */
 
@@ -19,15 +15,21 @@ isBusyZoning(false).
 
 // Zoning mode has begun and the agent is now looking for possible zones
 // to build around him. It will retrieve the best in his
-// 1HNH (short for: one-hop-neighbourhood) and start communicating it.
-+!doAction:
-    zoneMode(true)
-    & mustCommunicateZones(true)
+// 1HNH (short for: one-hop-neighbourhood) and start broadcasting it.
+// It will also register as an idleZoner.
++zoneMode(true):
+    mustCommunicateZones(true)
     & position(PositionVertex)
+    & broadcastAgentList(BroadcastList)
+    & .my_name(MyName)
     <- -+mustCommunicateZones(false);
+       // tell all agents that I am ready to build zones:
+       .send(BroadcastList, tell, idleZoner(MyName));
        // start over new: clear all previous beliefs:
        -bestZone(_);
        -availableMinions(_);
+       -positiveZoneReply(_,_);
+       -negativeZoneReply;
        // ask Vertex for its zone as well as its neighbours
        // this will be done through one iA-call whose name
        // I don't know by heart:
@@ -36,8 +38,25 @@ isBusyZoning(false).
        .nth(1, BestZone, CentreNode);
        .nth(2, BestZone, UsedNodes);
        // trigger broadcasting:
-       +bestZone(Value, CentreNode, UsedNodes)[source(self)].
+       +bestZone(Value, CentreNode, UsedNodes)[source(self)];
+       .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes)).
 
+//--
+//  and reply
+// with our distance to the CentreNode.
+//
+// Also, we have to inform our minions about this.
+// code
+    +doSomething <-
+       // tell our minions to look for another zone:
+       .findall(Minion, availableMinion(Minion), Minions);
+       .send(Minions, tell, foreignBestZone(Value, CentreNode, UsedNodes, Coach));
+       -availableMinions(_).
+//--
+
+
+
+// TODO: change
 // Deny any zone building offers when we are busy building
 // or keeping up a zone already:
 +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
@@ -46,55 +65,45 @@ isBusyZoning(false).
         // TODO: is CentreNode sufficient as an identifier?
         .send(Coach, tell, negativeZoneReply(CentreNode)).
 
-// Our zone is better so we reply to the Coach with ours:
-+foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
-    bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
-    // my zone is better:
-    & Value < BestZoneValue
-    // or my the zones are identical but my name is alphabetically smaller:
-    | (Value == BestZoneValue
-        & .my_name(MyName)
-        & MyName < Coach // TODO: that will probably not work
-    )
-    <- -foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)];
-       .send(Coach, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)).
-
 // We have received a zone better than the one we know (or
-// didn't know any), so we throw our zone away and reply
-// with our distance to the CentreNode.
-//
-// Also, we have to inform our minions about this.
+// didn't know any), so we throw our zone away
+// We also calculate the distance to it and cache that value
+// as a belief. We discard better zones that are too far away.
 //
 // TODO: we must make a cut at some distance. Else all agents will want to go to one super-duper-awesome zone which is far away.
 @onlyAddOneBetterZoneAtATime[atomic]
 +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
     position(PositionVertex)
-    // call the internal action to calculate my distance:
     & .getDistancePLACEHOLDERiA(PositionVertex, CentreNode, Distance)
-    <- -foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)];
-    
-       // tell our minions to look for another zone:
-       .findall(Minion, availableMinion(Minion), Minions);
-       .send(Minions, tell, foreignBestZone(Value, CentreNode, UsedNodes, Coach));
-       -availableMinions(_);
-       
-       // if we were a minion ourselves, we should tell our master:
-       ?bestZone(_, _, _)[source(PreviousCoach)];
-       // TODO: would send to self fail or can we do it like this?:
-       .send(PreviousCoach, tell, foreignBestZone(Value, CentreNode, UsedNodes, Coach));
-       
-       
-       .send(Coach, tell, positiveZoneReply(CentreNode, Distance));
-       // TODO: does that properly clear all previous best zones?:
-       -+bestZone(Value, CentreNode, UsedNodes)[source(Coach)].
+    & Distance < 20 // TODO: do something reasonable
+    & bestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes)
+    // my zone is worse:
+    & BestZoneValue < Value
+    // or the zones are identical but my name is lexicographically bigger:
+    | (Value == BestZoneValue
+        & .my_name(MyName)
+        & Coach < MyName// TODO: that will probably not work
+    )
+    <- // TODO: does that properly clear all previous best zones?:
+       -+bestZone(Value, CentreNode, UsedNodes)[source(Coach)];
+       -+distanceToBestZone(Distance);
+       !receivedAllReplies.
 
-// Convert four parameter replies to three parameter replies. This
-// is a workaround as we cannot fake the sender of a reply.
-// This belief is set when an agent replies with knowledge about
-// a better zone where he is not the coach.
-+foreignBestZone(Value, CentreNode, UsedNodes, RemoteCoach)
-    <- -foreignBestZone(Value, CentreNode, UsedNodes, RemoteCoach);
-       +foreignBestZone(Value, CentreNode, UsedNodes)[source(RemoteCoach)].
+// We were informed about a worse zone. Do nothing.
++foreignBestZone(_, _, _)
+    <- true.
+
+// If all idleZoners have replied, we will have the best zone stored.
++!receivedAllReplies:
+    .count(foreignBestZone(_, _, _), broadcastRepliesAmount)
+    & .count(idleZoner(_), availableZonersAmount)
+    & broadcastRepliesAmount == availableZonersAmount
+    <- true.
+
+// We still have to wait.
+// TODO: should we fail silently with true or is false valid?
++!receivedAllReplies
+    <- false.
 
 // If s.o. agreed to build a zone with us, we memorise his
 // availability if he is replying to the zone which we still try
@@ -173,7 +182,7 @@ isBusyZoning(false).
 // Zoning broadcasts may begin if we have found ourselves the bestZone:
 //
 // TODO: start working on this part and revise the upper belief addition triggers.
-+bestZone(ZoneValue, UsedNodes, CentreNode)[source(self)]:
++bestZone(ZoneValue, CentreNode, UsedNodes)[source(self)]:
 	broadcastAgentList(BroadcastList)
 	& bestZone(ZoneValue, UsedNodes, CentreNode)
     <- .send(BroadcastList, tell, foreignBestZone(ZoneValue, UsedNodes, CentreNode)).
