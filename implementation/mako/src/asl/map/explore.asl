@@ -34,7 +34,7 @@
 	position(Vertex)
 	<-
 //	.send(cartographer, askOne, unsurveyedNeighbours(Vertex, _), unsurveyedNeighbours(_, UnsurveyedNeighbours));
-	ia.getNextUnsurveyedVertices(Vertex, unsurveyedVertexList);
+	ia.getNextUnsurveyedVertices(Vertex, UnsurveyedVertexList);
 	.print("I am currently on vertex ", Vertex, ". My unsurveyed neighbours are: ", UnsurveyedVertexList);
 	!chooseNextVertex(UnsurveyedVertexList).
 	

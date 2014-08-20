@@ -139,25 +139,26 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
-        String jasonName = serverAgentMap.get(agentName).getJasonName();
+        String jasonNameOfAgent = serverAgentMap.get(agentName).getJasonName();
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
         // but I can't think of any other way to fix this issue. -sewell
         if (percepts.toString().contains("role")) {
-            delayedPerceptsMap.put(jasonName, percepts);
+            delayedPerceptsMap.put(jasonNameOfAgent, percepts);
             return;
         } else {
-            if (delayedPerceptsMap.containsKey(jasonName)) {
-                percepts.addAll(delayedPerceptsMap.get(jasonName));
-                delayedPerceptsMap.remove(jasonName);
+            if (delayedPerceptsMap.containsKey(jasonNameOfAgent)) {
+                percepts.addAll(delayedPerceptsMap.get(jasonNameOfAgent));
+                delayedPerceptsMap.remove(jasonNameOfAgent);
             }
         }
 
         Percept requestAction = null;
-        clearPercepts(jasonName);
+        clearPercepts(jasonNameOfAgent);
         // clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
+        MapAgent mapAgentInstance = MapAgent.getInstance();
         for (Percept percept : percepts) {
             // Make sure that the requestAction percept is handled last by the
             // agents because when the agent receives the requestAction
@@ -170,15 +171,15 @@ public class EISEnvironment extends Environment implements AgentListener {
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
                 logger.info("Sending percept " + perceptToLiteral(percept) + " to agent MapAgent.");
-                MapAgent.getInstance().addPercept(percept);
-                addAgentPercept(jasonName, percept);
+                mapAgentInstance.addPercept(percept);
+                addAgentPercept(jasonNameOfAgent, percept);
             }
             if (percept.getName().equalsIgnoreCase("position")) {
-                MapAgent.getInstance().storePosition(jasonName, percept.getParameters().get(0).toString());
+                mapAgentInstance.storePosition(jasonNameOfAgent, percept.getParameters().get(0).toString());
             }
         }
         if (requestAction != null) {
-            addAgentPercept(jasonName, requestAction);
+            addAgentPercept(jasonNameOfAgent, requestAction);
         }
 
     }

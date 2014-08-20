@@ -4,8 +4,8 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.NumberTermImpl;
-import jason.asSyntax.Term;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -36,8 +36,14 @@ public class MapAgent {
         return mapAgent;
     }
 
+    /**
+     * Stores the position of an agent. Used for agents of both teams.
+     * 
+     * @param agent
+     * @param position
+     */
     public void storePosition(String agent, String position) {
-        agentPositions.put(agent, handleVertex(position));
+        agentPositions.put(agent, getVertex(position));
     }
 
     public void addPercept(Percept percept) {
@@ -89,8 +95,8 @@ public class MapAgent {
         String vertexNameB = percept.getParameters().get(1).toString();
         int edgeWeight = ((Numeral) percept.getParameters().get(2)).getValue().intValue();
 
-        Vertex vertexA = handleVertex(vertexNameA);
-        Vertex vertexB = handleVertex(vertexNameB);
+        Vertex vertexA = getVertex(vertexNameA);
+        Vertex vertexB = getVertex(vertexNameB);
 
         vertexA.setNeighbour(vertexB, edgeWeight);
         vertexB.setNeighbour(vertexA, edgeWeight);
@@ -100,8 +106,8 @@ public class MapAgent {
         String vertexNameA = percept.getParameters().get(0).toString();
         String vertexNameB = percept.getParameters().get(1).toString();
 
-        Vertex vertexA = handleVertex(vertexNameA);
-        Vertex vertexB = handleVertex(vertexNameB);
+        Vertex vertexA = getVertex(vertexNameA);
+        Vertex vertexB = getVertex(vertexNameB);
 
         vertexA.setNeighbour(vertexB, maxEdgeWeight);
         vertexB.setNeighbour(vertexA, maxEdgeWeight);
@@ -111,7 +117,7 @@ public class MapAgent {
         String vertexName = percept.getParameters().get(0).toString();
         int vertexValue = ((Numeral) percept.getParameters().get(1)).getValue().intValue();
 
-        Vertex vertex = handleVertex(vertexName);
+        Vertex vertex = getVertex(vertexName);
         vertex.setValue(vertexValue);
     }
 
@@ -119,11 +125,11 @@ public class MapAgent {
         String vertexName = percept.getParameters().get(0).toString();
         String team = percept.getParameters().get(1).toString();
 
-        Vertex vertex = handleVertex(vertexName);
+        Vertex vertex = getVertex(vertexName);
         vertex.setTeam(team);
     }
 
-    private Vertex handleVertex(String name) {
+    private Vertex getVertex(String name) {
         Vertex vertex;
         if (!vertexMap.containsKey(name)) {
             vertex = new Vertex(name);
@@ -134,7 +140,15 @@ public class MapAgent {
         return vertex;
     }
 
-    public Term getNextUnsurveyedVertices(String position) {
+    /**
+     * Returns the unsurveyed vertices near the given vertices as a Jason
+     * ListTerm.
+     * 
+     * @param position
+     *            the vertex to find nearby unsurveyed vertices for
+     * @return a Jason ListTerm of unsurveyed nearby vertices
+     */
+    public ListTerm getNextUnsurveyedVertices(String position) {
         ListTerm result = new ListTermImpl();
         if (vertexMap.containsKey(position)) {
             Vertex vertex = vertexMap.get(position);
@@ -147,5 +161,23 @@ public class MapAgent {
             }
         }
         return result;
+    }
+
+    /**
+     * @param vertex
+     *            the vertex to find nearby zones for
+     * @param range
+     *            the search distance from the given vertex
+     * @return the list of zones within range around the vertex
+     */
+    public ArrayList<Zone> getZonesInRange(Vertex vertex, int range) {
+        ArrayList<Vertex> neighbourhood = vertex.knownPaths.getVerticesUpToDistance(range);
+        ArrayList<Zone> zones = new ArrayList<Zone>();
+        for (Vertex node : neighbourhood) {
+            // Zone zone = node.zoneMap.zones[0];
+        }
+
+        return null;
+
     }
 }

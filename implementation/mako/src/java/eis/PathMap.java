@@ -89,6 +89,24 @@ public class PathMap {
         return vertices;
     }
 
+    /**
+     * Like getVerticesWithHop, but returns all vertices within the given hop
+     * distance. E.g. if distance == 3, returns all vertices reachable within 1,
+     * 2 or 3 steps.
+     * 
+     * @param distance
+     *            the maximum search range
+     * @return a list of vertices reachable within the given distance from the
+     *         given vertex
+     */
+    public ArrayList<Vertex> getVerticesUpToDistance(int distance) {
+        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+        for (int i = 1; i <= distance; i++) {
+            vertices.addAll(getVerticesWithHop(i));
+        }
+        return vertices;
+    }
+
     public Vertex getPosition() {
         return position;
     }

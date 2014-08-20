@@ -175,4 +175,25 @@ public class ZoneMap {
         logger.info("ZoneVertices: " + zoneVertices);
         return zoneVertices;
     }
+
+    /**
+     * Retrieves the first (sorted by agent count) howMany zones for this
+     * vertex. If less zones are available than requested, return the entire
+     * zone list.
+     * 
+     * @param howMany
+     *            up to how many zones to return
+     * @return
+     */
+    public HashMap<Integer, Zone> getZones(int howMany) {
+        HashMap<Integer, Zone> zoneList = new HashMap<Integer, Zone>();
+        ArrayList<Integer> keys = new ArrayList<Integer>();
+        keys.addAll(zones.keySet());
+        java.util.Collections.sort(keys);
+        for (int i = 0; i < Math.min(howMany, zones.size()); i++) {
+            Zone zone = zones.get(keys.get(i));
+            zoneList.put(keys.get(i), zone);
+        }
+        return zoneList;
+    }
 }
