@@ -32,6 +32,7 @@ zoneMode(false).
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
+    .drop_all_intentions;
 	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     if (Result == successful & Action == survey) {
     	.send(cartographer,tell,vertex(Position, true))
