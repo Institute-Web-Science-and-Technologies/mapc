@@ -4,8 +4,8 @@ mustCommunicateZones(true).
 // @all: If you are looking for something to do,
 //       search this file for the keyword "TODO".
 // TODO: replace the placeholder names for internal actions with their actual names.
-// TODO: split this file into several files (e.g. zone_negotiation and zone_forming).
 // TODO: a later plan/achievement should deal with searching the 1HNH for only .count(idleZoner) amount of agents
+// TODO: foundNewZone achievement goal needs to be written
 
 /* Plans */
 
@@ -36,19 +36,6 @@ mustCommunicateZones(true).
        // trigger broadcasting:
        +bestZone(Value, CentreNode, UsedNodes)[source(self)];
        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes)).
-
-//--
-//  and reply
-// with our distance to the CentreNode.
-//
-// Also, we have to inform our minions about this.
-// code
-    +doSomething <-
-       // tell our minions to look for another zone:
-       .findall(Minion, availableMinion(Minion), Minions);
-       .send(Minions, tell, foreignBestZone(Value, CentreNode, UsedNodes, Coach));
-       -availableMinions(_).
-//--
 
 // We have received a zone better than the one we know (or
 // didn't know any), so we throw our zone away
