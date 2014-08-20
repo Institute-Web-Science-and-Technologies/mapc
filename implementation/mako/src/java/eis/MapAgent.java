@@ -21,6 +21,7 @@ public class MapAgent {
     private int vertices = 1;
     private int step = 0;
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+    private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
     private AgentLogger logger = new AgentLogger("MapAgent");
 
     private HashSet<String> visibleVertices = new HashSet<String>();
@@ -33,6 +34,10 @@ public class MapAgent {
             mapAgent = new MapAgent();
         }
         return mapAgent;
+    }
+
+    public void storePosition(String agent, String position) {
+        agentPositions.put(agent, handleVertex(position));
     }
 
     public void addPercept(Percept percept) {
@@ -71,6 +76,8 @@ public class MapAgent {
     private void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > step) {
+            // clear reserved probed vertices
+            // clear reserved unsurveyed vertices
             step = newStep;
             logger.info("[" + step + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
             logger.info("[" + step + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");

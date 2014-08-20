@@ -173,6 +173,9 @@ public class EISEnvironment extends Environment implements AgentListener {
                 MapAgent.getInstance().addPercept(percept);
                 addAgentPercept(jasonName, percept);
             }
+            if (percept.getName().equalsIgnoreCase("position")) {
+                MapAgent.getInstance().storePosition(jasonName, percept.getParameters().get(0).toString());
+            }
         }
         if (requestAction != null) {
             addAgentPercept(jasonName, requestAction);

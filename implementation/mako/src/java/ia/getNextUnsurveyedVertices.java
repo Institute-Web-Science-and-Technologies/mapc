@@ -18,6 +18,8 @@ public class getNextUnsurveyedVertices extends DefaultInternalAction {
     private static final long serialVersionUID = 4113666835276193698L;
     private AgentLogger logger = new AgentLogger("getNextUnsurveyedVertices");
 
+    // input: position
+    // output: closest unsurveyed Vertex and next Hop
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] terms)
             throws Exception {
