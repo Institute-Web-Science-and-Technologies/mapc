@@ -34,6 +34,7 @@ isMinion(false).
       -bestZone(_)[source(_)];
       -positiveZoneReply(_)[source(_)];
       -negativeZoneReply[source(_)];
+      -zoneGoalVertex(_)[source(_)];
       -zoneNode(_)[source(_)];
       -foreignBestZone(_, _, _)[source(_)];
        

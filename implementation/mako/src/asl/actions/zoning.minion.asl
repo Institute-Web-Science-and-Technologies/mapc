@@ -29,13 +29,20 @@
     isMinion(true)
     <- true.
 
-// If we got a zoneNode, which is a node we should move to to build a zone, we
-// will move there.
+// If we got a zoneGoalVertex, which is a node we should move to to build a
+// zone, we will move there. If we'll reach it in the next step, we'll set a
+// flag.
 // TODO: this action will probably be either executed too early or too late. Place it at the correct place in agent.asl.
 +!doAction:
-    zoneNode(GoalVertex)
+    zoneGoalVertex(GoalVertex)
     & position(PositionVertex)
+    & GoalVertex \== PositionVertex
     <- ia.getBestHopToVertex(PositionVertex, GoalVertex, NextHop);
+       if (GoalVertex == NextHop) {
+           -zoneGoalVertex(GoalVertex)[source(_)];
+           -+zoneNode(GoalVertex);
+       };
+       // TODO: if Sergey merges his branch down, this will become -+intendedAction(goto(NextHop))
        goto(NextHop).
 
 // If our coach cancelled the zone, we go back to start zoning from scratch.

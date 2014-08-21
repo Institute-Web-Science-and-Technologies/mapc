@@ -52,11 +52,15 @@ zoneBuildingMode(false).
 // start moving towards the CentreNode. After that, we direct Minions where to
 // go.
 // We can directly go to the CentreNode as it is somewhere in our 1HNH.
+// We also set the zoneNode belief to express that we have reached our zoneNode
+// and to express which one it is – maybe needed if we happen to move away from
+// it.
 +positiveZoneReply(CentreNode)[source(Minion)]:
     isCoach(true)
     & bestZone(_, CentreNode, _)
     <- -+zoneBuildingMode(true);
        goto(CentreNode); // may fail if we are standing on it already.
+       -+zoneNode(CentreNode);
        !toldMinionsTheirPosition.
 
 // If s.o. wants to build a zone with us that we don't want to build (anymore),
@@ -74,7 +78,7 @@ zoneBuildingMode(false).
     & .length(PositionMinionMapping, MappingLength)
     <- for (.range(ControlVariable, 0, MappingLength - 1)) {
            .nth(ControlVariable, PositionMinionMapping, [PositionVertex, Minion]);
-           .send(Minion, tell, zoneNode(PositionVertex));
+           .send(Minion, tell, zoneGoalVertex(PositionVertex));
        }.
 
 // If we get a negative reply about a zone we don't want to build (anymore), we
