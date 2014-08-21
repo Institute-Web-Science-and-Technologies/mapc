@@ -1,5 +1,5 @@
 { include("agent.asl") }
-   
+{ include("../actions/parry.asl")}
 +!doAttack(Vehicle,Vertex):
     lastActionResult(failed_in_range)
     & lastAction(attack)

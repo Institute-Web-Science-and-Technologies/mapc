@@ -66,7 +66,7 @@ zoneMode(false).
  		!dealWithEnemy.
  		
 // React on not disabled enemy agents on the same position and attack them.
-+!doAction:
++!doAttack:
  	position(Vertex)
 	//& myTeam(MyTeam)
 	& role(saboteur)
@@ -76,7 +76,7 @@ zoneMode(false).
  	   !doAttack(Vehicle, Vertex).
  		
 // React on not disabled enemy agents on my one-step neighbour nodes (visibility range = 1)
-+!doAction:
++!doAttack:
  	position(Position)
  	& role(saboteur)
  	//& myTeam(MyTeam)
@@ -84,8 +84,31 @@ zoneMode(false).
 	& visibleEntity(Vehicle, Vertex, teamB, normal)
 	//& EnemyTeam \== MyTeam	
  	<- .print("My position is: ", Position, ", Enemy ",Vehicle, " stands at position.", Vertex);
- 	   !doAttack(Vehicle, Vertex).
- 		
+ 	   !doAttack(Vehicle, Vertex).  
+ 	   
+ 	   
+ // When saboteur, sentinel,and repairer are attacked, 
+ //and they are not disabled, they do parrying
+ +!doAction:
+ 	 health(Health)
+ 	 & (role(sentinel) | role(saboteur) | role(repairer))
+ 	 & lastActionResult(failed_attacked)
+ 	 & Health \== 0	
+ 	<- .print("I was attacked,my health is:",Health, " and I will do parry ");
+ 	   !doParry.
+ 	   
+//If a sentinel stands on a zoneNode, 
+//and see normal enemy on its position or on its neighbourhood,do parry
++!doAction:
+ 	position(Position)
+ 	& role(sentinel)
+ 	& zoneNode(Position)
+ 	//& myTeam(MyTeam)
+	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))	
+	& (visibleEntity(Vehicle, Position, teamB, normal) | visibleEntity(Vehicle, Vertex, teamB, normal))
+	//& EnemyTeam \== MyTeam	
+ 	<- .print("I am standing on a zoneNode, and I see enemy nearby. so I parry ");
+ 	   !doParry.
  
 // If an inspector sees an enemy
   +!doAction:
