@@ -84,8 +84,8 @@ zoneBuildingMode(false).
 // If we get a negative reply about a zone we don't want to build (anymore), we
 // remove the percept so that we don't count it as a refusal.
 +negativeZoneReply(CentreNode)[source(Sender)]:
-    not bestZone(_, CentreNode, _)
-    & isCoach(true)
+    isCoach(true)
+    & not bestZone(_, CentreNode, _)
     <- -negativeZoneReply(CentreNode)[source(Sender)].
 
 // If we get a negative zone reply and there aren't enough possible agents to

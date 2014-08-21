@@ -1,11 +1,17 @@
 /* Initial beliefs and rules */
 isCoach(false).
 isMinion(false).
+isAvailableForZoning :- isCoach(false) & isMinion(false).
+// This belief expresses the number of steps we plan to invest for getting and
+// staying in a zone. It is used in !calculateLongTermZoneValue.
+plannedZoneTimeInSteps(15).
+
 // @all: If you are looking for something to do, search this file as well as
 //       zoning.* for the keyword "TODO".
 // TODO [prio:low]: test that the internal actions work properly when JavaMap is merged onto master.
 // TODO [prio:high]: !foundNewZone achievement goal needs to be written. It expresses that an agent should either ask for expendable zones or start zoning anew. Its stub is located at the bottom of this file.
-// TODO [prio:medium]: we must make a cut at some distance. Else all agents will want to go to one super-duper-awesome zone which is far away. @see onlyAddOneBetterZoneAtATime
+// TODO [prio:medium]: we must modify plannedZoneTimeInSteps over time. Else the agent might never agree on zones farer away.
+// TODO [prio:medium]: when we have reached the plannedZoneTimeInSteps, we should start zoning again (needs to increment a counter in each step) – also see the zone movement idea which is located lower in this TODO list.
 // TODO [prio:low]: is zoneMode really only set once? Else, we will have to lock the zoneMode(true) belief trigger with a mustCommunicateZones(true) belief.
 // TODO [prio:low]: search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
 // TODO [prio:medium]: in zoning.coach.asl we tell Minions we don't need to search a different zone. Instead, we could have them extend our zone (if possible). The corresponding belief triggered event is marked with a TODO.
@@ -15,7 +21,7 @@ isMinion(false).
 // Zoning mode has begun and it will trigger the achievement goal builtZone.
 +zoneMode(true)
     <- !builtZone(false).
-    
+
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
 // broadcasting it. It will also register as an idleZoner.
@@ -40,19 +46,25 @@ isMinion(false).
        
       // ask Vertex for its zone as well as its neighbours:
       ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes);
+      // And calculate it in regard to the time we plan to spend for zoning. We
+      // assume 1 as a Distance to discount home zones (in 0HNH) at least a bit.
+      // Also it spares us from calculating the distance:
+      ?plannedZoneTimeInSteps(Steps);
+      ia.calculateLongTermZoneValue(Value, 1, Steps, PrognosedValue);
       // trigger broadcasting:
-      +bestZone(Value, CentreNode, UsedNodes)[source(self)];
+      +bestZone(PrognosedValue, CentreNode, UsedNodes)[source(self)];
+      
       if (Asynchronous) {
-        .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, UsedNodes));
+        .send(BroadcastList, tell, asyncForeignBestZone(PrognosedValue, CentreNode, UsedNodes));
       } else { // Initial broadcast storm when +zoneMode(true):
-        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
+        .send(BroadcastList, tell, foreignBestZone(PrognosedValue, CentreNode, UsedNodes));
       }.
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
 // Broadcaster doesn't know about our zone so we tell him as we haven't started
 // building one yet. We also deal with his zone information.
 +asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
-    isCoach(false) & isMinion(false)
+    isAvailableForZoning
     & bestZone(Value, CentreNode, UsedNodes)[source(self)]
     <- .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
        +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
@@ -72,34 +84,35 @@ isMinion(false).
 // We also tell our former coach that we are no longer interested in his zone!
 @onlyAddOneBetterZoneAtATime[atomic]
 +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
-    isCoach(false) & isMinion(false)
+    isAvailableForZoning
     & position(PositionVertex)
     & ia.getDistance(PositionVertex, CentreNode, Distance)
-    & Distance < 20
+    & plannedZoneTimeInSteps(Steps)
+    & ia.calculateLongTermZoneValue(Value, Distance, Steps, PrognosedValue)
     & bestZone(FormerZoneValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]
     // my zone is worse:
-    & FormerZoneValue < Value
+    & FormerZoneValue < PrognosedValue
     // or the zones are identical but my name is alphabetically bigger:
-    | (Value == FormerZoneValue
+    | (FormerZoneValue == PrognosedValue
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
     <- .send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
        -bestZone(FormerZoneValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
-       +bestZone(Value, CentreNode, UsedNodes)[source(Coach)];
+       +bestZone(PrognosedValue, CentreNode, UsedNodes)[source(Coach)];
        !receivedAllReplies.
 
 // We were informed about a worse zone. Or, we aren't even interested in zoning.
 // In both ways, tell the sender and test whether we have received all replies.
 +foreignBestZone(_, CentreNode, _)[source(Sender)]:
-    isCoach(false) & isMinion(false)
+    isAvailableForZoning
     <- .send(Sender, tell, negativeZoneReply(CentreNode));
        !receivedAllReplies.
 
 // Don't count the negative reply AND the broadcast of the same sender in the
 // !receivedAllReplies[2] achievement goal.
 +negativeZoneReply(_)[source(Sender)]:
-    isCoach(false) & isMinion(false)
+    isAvailableForZoning
     & foreignBestZone(_, _, _)[source(Sender)]
     <- -foreignBestZone(_, _, _)[source(Sender)];
        !receivedAllReplies.
@@ -107,7 +120,7 @@ isMinion(false).
 // We only got a negative zone reply. We will test if we now got replies from
 // every agent.
 +negativeZoneReply(_)[source(_)]:
-    isCoach(false) & isMinion(false)
+    isAvailableForZoning
     <- !receivedAllReplies.
 
 // If all idleZoners have replied, we will have the best zone stored.
