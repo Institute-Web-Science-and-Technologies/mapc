@@ -43,4 +43,4 @@
     isMinion(true) // TODO: cancel what we are doing, reset to zoning
     & bestZone(_, _, _)[source(Coach)]
     <- -+isMinion(false);
-       !builtZone.
+       !builtZone(true).

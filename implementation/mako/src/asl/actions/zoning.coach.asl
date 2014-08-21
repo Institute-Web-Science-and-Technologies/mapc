@@ -110,4 +110,4 @@ zoneBuildingMode(false).
     <- .difference(Minions, Sender, UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
        -+isCoach(false);
-       !builtZone.
+       !builtZone(true).

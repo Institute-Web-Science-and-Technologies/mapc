@@ -4,10 +4,9 @@ isMinion(false).
 // @all: If you are looking for something to do, search this file as well as
 //       zoning.* for the keyword "TODO".
 // TODO [prio:low]: test that the internal actions work properly when JavaMap is merged onto master.
-// TODO [prio:high]: !foundNewZone achievement goal needs to be written. It expresses that an agent should either ask for expendable zones or start zoning anew. Its stub is located at the bottom of this fail.
+// TODO [prio:high]: !foundNewZone achievement goal needs to be written. It expresses that an agent should either ask for expendable zones or start zoning anew. Its stub is located at the bottom of this file.
 // TODO [prio:medium]: we must make a cut at some distance. Else all agents will want to go to one super-duper-awesome zone which is far away. @see onlyAddOneBetterZoneAtATime
 // TODO [prio:low]: is zoneMode really only set once? Else, we will have to lock the zoneMode(true) belief trigger with a mustCommunicateZones(true) belief.
-// TODO [prio:high]: if we receive a broadcast from a new idleZoner which we haven't talked to yet, reply him our bestZone if we aren't building yet. Currently, we only process our own bestZone and send negativeZoneReplies to bestZones we abandon.
 // TODO [prio:low]: search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
 // TODO [prio:medium]: in zoning.coach.asl we tell Minions we don't need to search a different zone. Instead, we could have them extend our zone (if possible). The corresponding belief triggered event is marked with a TODO.
 // TODO [prio:low]: when a zone has been established, each zoner should look at zones with maximum .count(zoner,X) many nodes. If there is a better option, the whole zone or parts of it may be moved onto the better nearby zone.
@@ -15,30 +14,54 @@ isMinion(false).
 
 // Zoning mode has begun and it will trigger the achievement goal builtZone.
 +zoneMode(true)
-    <- !builtZone.
+    <- !builtZone(false).
     
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
 // broadcasting it. It will also register as an idleZoner.
-+!builtZone:
+//
+// The Asynchronous parameter is a switch to distinguish between the initial
+// broadcast storm that sets in when zoneMode is reached and all other calls
+// later on. Asynchronous may only be set to false once when zoneMode begins.
++!builtZone(Asynchronous):
     position(PositionVertex)
     & broadcastAgentList(BroadcastList)
     & .my_name(MyName)
     <- // tell all agents that I am ready to build zones:
-       .send(BroadcastList, tell, idleZoner(MyName));
+      .send(BroadcastList, tell, idleZoner(MyName));
        
-       // start over new: clear all previous beliefs:
-       -bestZone(_)[source(_)];
-       -positiveZoneReply(_)[source(_)];
-       -negativeZoneReply[source(_)];
-       -zoneNode(_)[source(_)];
-       -foreignBestZone(_, _, _)[source(_)];
+      // start over new: clear all previous beliefs:
+      -bestZone(_)[source(_)];
+      -positiveZoneReply(_)[source(_)];
+      -negativeZoneReply[source(_)];
+      -zoneNode(_)[source(_)];
+      -foreignBestZone(_, _, _)[source(_)];
        
-       // ask Vertex for its zone as well as its neighbours:
-       ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes);
-       // trigger broadcasting:
-       +bestZone(Value, CentreNode, UsedNodes)[source(self)];
-       .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes)).
+      // ask Vertex for its zone as well as its neighbours:
+      ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes);
+      // trigger broadcasting:
+      +bestZone(Value, CentreNode, UsedNodes)[source(self)];
+      if (Asynchronous) {
+        .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, UsedNodes));
+      } else { // Initial broadcast storm when +zoneMode(true):
+        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
+      }.
+
+// We received an asynchronous foreignBestZone percept. Chances are, the
+// Broadcaster doesn't know about our zone so we tell him as we haven't started
+// building one yet. We also deal with his zone information.
++asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
+    isCoach(false) & isMinion(false)
+    & bestZone(Value, CentreNode, UsedNodes)[source(self)]
+    <- .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
+       +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
+
+// We received an asynchronous foreignBestZone percept but don't know about our
+// own zone anymore as it was worse. Hence, we cannot tell him our zone but we
+// still take his zone into consideration when choosing the best one for us.
++asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
+    isCoach(false) & isMinion(false)
+    <- +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
 
 // We have received a zone better than the one we know (or
 // didn't know any), so we throw our zone away
