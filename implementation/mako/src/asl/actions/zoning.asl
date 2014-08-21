@@ -9,9 +9,8 @@ isMinion(false).
 // TODO [prio:low]: is zoneMode really only set once? Else, we will have to lock the zoneMode(true) belief trigger with a mustCommunicateZones(true) belief.
 // TODO [prio:high]: if we receive a broadcast from a new idleZoner which we haven't talked to yet, reply him our bestZone if we aren't building yet. Currently, we only process our own bestZone and send negativeZoneReplies to bestZones we abandon.
 // TODO [prio:low]: search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
-// TODO [prio:medium]: implement alphabetical comparison in @see onlyAddOneBetterZoneAtATime.
 // TODO [prio:medium]: in zoning.coach.asl we tell Minions we don't need to search a different zone. Instead, we could have them extend our zone (if possible). The corresponding belief triggered event is marked with a TODO.
-
+// TODO [prio:low]: when a zone has been established, each zoner should look at zones with maximum .count(zoner,X) many nodes. If there is a better option, the whole zone or parts of it may be moved onto the better nearby zone.
 /* Plans */
 
 // Zoning mode has begun and it will trigger the achievement goal builtZone.
@@ -59,7 +58,7 @@ isMinion(false).
     // or the zones are identical but my name is alphabetically bigger:
     | (Value == FormerZoneValue
         & .my_name(MyName)
-        & Coach < MyName// TODO: that will probably not work
+        & .sort([Coach, MyName], [Coach, MyName])
     )
     <- .send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
        -bestZone(FormerZoneValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
