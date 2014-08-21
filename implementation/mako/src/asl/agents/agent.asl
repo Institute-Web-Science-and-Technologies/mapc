@@ -66,7 +66,7 @@ zoneMode(false).
  		!dealWithEnemy.
  		
 // React on not disabled enemy agents on the same position and attack them.
-+!doAttack:
++!doAction:
  	position(Vertex)
 	//& myTeam(MyTeam)
 	& role(saboteur)
@@ -76,7 +76,7 @@ zoneMode(false).
  	   !doAttack(Vehicle, Vertex).
  		
 // React on not disabled enemy agents on my one-step neighbour nodes (visibility range = 1)
-+!doAttack:
++!doAction:
  	position(Position)
  	& role(saboteur)
  	//& myTeam(MyTeam)
