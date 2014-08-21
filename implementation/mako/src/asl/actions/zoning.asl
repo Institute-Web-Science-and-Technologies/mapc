@@ -1,4 +1,6 @@
 /* Initial beliefs and rules */
+isCoach(false).
+isMinion(false).
 // @all: If you are looking for something to do, search this file as well as
 //       zoning.* for the keyword "TODO".
 // TODO [prio:low]: test that the internal actions work properly when JavaMap is merged onto master.
@@ -7,7 +9,6 @@
 // TODO [prio:low]: is zoneMode really only set once? Else, we will have to lock the zoneMode(true) belief trigger with a mustCommunicateZones(true) belief.
 // TODO [prio:high]: if we receive a broadcast from a new idleZoner which we haven't talked to yet, reply him our bestZone if we aren't building yet. Currently, we only process our own bestZone and send negativeZoneReplies to bestZones we abandon.
 // TODO [prio:low]: search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
-// TODO [prio:highest]: !receivedAllReplies only works for the initial broadcast storm.
 // TODO [prio:medium]: implement alphabetical comparison in @see onlyAddOneBetterZoneAtATime.
 // TODO [prio:medium]: in zoning.coach.asl we tell Minions we don't need to search a different zone. Instead, we could have them extend our zone (if possible). The corresponding belief triggered event is marked with a TODO.
 
@@ -32,6 +33,7 @@
        -positiveZoneReply(_)[source(_)];
        -negativeZoneReply[source(_)];
        -zoneNode(_)[source(_)];
+       -foreignBestZone(_, _, _)[source(_)];
        
        // ask Vertex for its zone as well as its neighbours:
        ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes);
@@ -64,17 +66,43 @@
        +bestZone(Value, CentreNode, UsedNodes)[source(Coach)];
        !receivedAllReplies.
 
-// We were informed about a worse zone. Do nothing.
-// Or, we aren't even interested in zoning. In both ways, tell the sender.
-+foreignBestZone(_, CentreNode, _)[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply(CentreNode)).
+// We were informed about a worse zone. Or, we aren't even interested in zoning.
+// In both ways, tell the sender and test whether we have received all replies.
++foreignBestZone(_, CentreNode, _)[source(Sender)]:
+    isCoach(false) & isMinion(false)
+    <- .send(Sender, tell, negativeZoneReply(CentreNode));
+       !receivedAllReplies.
+
+// Don't count the negative reply AND the broadcast of the same sender in the
+// !receivedAllReplies[2] achievement goal.
++negativeZoneReply(_)[source(Sender)]:
+    isCoach(false) & isMinion(false)
+    & foreignBestZone(_, _, _)[source(Sender)]
+    <- -foreignBestZone(_, _, _)[source(Sender)];
+       !receivedAllReplies.
+
+// We only got a negative zone reply. We will test if we now got replies from
+// every agent.
++negativeZoneReply(_)[source(_)]:
+    isCoach(false) & isMinion(false)
+    <- !receivedAllReplies.
 
 // If all idleZoners have replied, we will have the best zone stored.
 // We will then choose our role for this zoning part (Coach vs. Minion).
 +!receivedAllReplies:
-    .count(foreignBestZone(_, _, _), broadcastRepliesAmount)
-    & .count(idleZoner(_), availableZonersAmount)
-    & broadcastRepliesAmount == availableZonersAmount
+    .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
+    & .count(idleZoner(_), AvailableZonersAmount)
+    & BroadcastRepliesAmount == AvailableZonersAmount
+    <- !choseZoningRole.
+
+// Or if all agents have replied with either a broadcast or a refusal. This
+// achievement goal is intended for zoners who appear after the first broadcast
+// storm.
++!receivedAllReplies:
+    .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
+    & .count(negativeZoneReply(_), RefusalAmount)
+    & .count(broadcastAgentList(BroadcastList), AgentsAmount) // or use 28 as a static measure :Þ
+    & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount
     <- !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.

@@ -24,6 +24,11 @@
     isMinion(true)
     <- .send(Sender, achieve, foundNewZone).
 
+// Negative zone replies have no meaning for minions. Hence they are ignored.
++negativeZoneReply(_)[source(_)]:
+    isMinion(true)
+    <- true.
+
 // If we got a zoneNode, which is a node we should move to to build a zone, we
 // will move there.
 // TODO: this action will probably be either executed too early or too late. Place it at the correct place in agent.asl.

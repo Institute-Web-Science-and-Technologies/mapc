@@ -20,6 +20,9 @@ zoneBuildingMode(false).
     & .length(UsedNodes) -1 >  (IdleZonersAmount + AvailableMinionsAmount)
     <- !cancelledZoneBuilding.
 
++!isZonePossible
+    <- true.
+
 // If we are already building a zone (which means directing minions, moving to
 // the centre mode and so on), we deny any further minions.
 //
@@ -95,7 +98,8 @@ zoneBuildingMode(false).
 
 // The sender won't be a part of our zone but there are still enough possible
 // minions. So we continue to wait for more replies.
-+negativeZoneReply(_)[source(_)]
++negativeZoneReply(_)[source(_)]:
+    isCoach(true)
     <- true.
 
 // If s.o. or ourselves cancelled the zone, we have to inform all our minions
