@@ -1,7 +1,7 @@
 // Agent baseAgent in project mako
 { include("storeBeliefs.asl") }
-{ include("../map/explore.asl") }
-{ include("../map/initialization.asl") }
+{ include("explore.asl") }
+{ include("initialization.asl") }
 
 zoneMode(false).
 
