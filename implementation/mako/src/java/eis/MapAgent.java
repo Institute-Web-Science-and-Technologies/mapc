@@ -242,17 +242,24 @@ public class MapAgent {
     }
 
     public Vertex getNextUnprobedVertex(Vertex position) {
+        logger.info("DEBUG: Entering getNextUnprobedVertex method. The vertex is " + position);
         Vertex vertex = position;
         TreeMap<Integer, Vertex> unprobedVertices = position.getNextUnprobedVertices(1);
+        logger.info("unprobedVertices is " + unprobedVertices);
         if (!unprobedVertices.isEmpty()) {
             int key = unprobedVertices.firstKey();
+            logger.info("key is " + key);
             vertex = unprobedVertices.get(key);
+            logger.info("vertex is " + vertex);
             while (reservedProbedVertices.contains(vertex)) {
                 key = unprobedVertices.higherKey(key);
+                logger.info("key2 is " + key);
                 vertex = unprobedVertices.get(key);
+                logger.info("vertex2 is " + vertex);
             }
             reservedProbedVertices.add(vertex);
         }
+        logger.info("returning vertex" + vertex);
         return vertex;
     }
 
