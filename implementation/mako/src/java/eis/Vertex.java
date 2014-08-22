@@ -271,4 +271,8 @@ public class Vertex {
     public Zone getBestMinimalZone() {
         return zoneMap.getBestMinimalZone();
     }
+
+    public ZoneMap getZoneMap() {
+        return zoneMap;
+    }
 }

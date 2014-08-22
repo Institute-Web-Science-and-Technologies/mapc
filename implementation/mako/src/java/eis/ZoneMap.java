@@ -200,4 +200,23 @@ public class ZoneMap {
         return zones.firstEntry().getValue();
     }
 
+    /**
+     * @param currentSize
+     *            the size (number of agents used) of the current zone
+     * @return the vertex that an agent should be placed on to optimally
+     *         increase the size of the zone by one agent
+     */
+    public Vertex getNextAgentPosition(int currentSize) {
+        if (!zones.containsKey(currentSize + 1)) {
+            return null;
+        } else {
+            Zone biggerZone = zones.get(currentSize + 1);
+            // this only works if the agent position we're looking for is
+            // actually the last vertex stored in the list of agent positions
+            // for the zone
+            Vertex agentPosition = biggerZone.getPositions().remove(biggerZone.getPositions().size() - 1);
+            return agentPosition;
+        }
+    }
+
 }
