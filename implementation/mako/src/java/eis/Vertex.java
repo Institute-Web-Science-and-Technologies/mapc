@@ -203,15 +203,21 @@ public class Vertex {
         if (changed) {
             logger.info("New or better path (setNeighbour): " + this + newPath);
             informNeighboursAboutPath(newPath);
+            informNeighbourAboutPaths(neighbour);
+        }
+    }
+
+    private void informNeighbourAboutPaths(Vertex neighbour) {
+        for (Path path : knownPaths.getAllPaths()) {
+            if (path.getDestination() != neighbour) {
+                neighbour.setPath(path, this);
+            }
         }
     }
 
     private void informNeighboursAboutPath(Path path) {
         ArrayList<Vertex> neighbours = this.getNeighbours();
         for (Vertex neighbour : neighbours) {
-            if (neighbours.contains(path.getDestination())) {
-                path.getDestination().setPath(knownPaths.getPath(neighbour), this);
-            }
             neighbour.setPath(path, this);
         }
     }

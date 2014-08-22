@@ -115,4 +115,12 @@ public class PathMap {
         this.position = position;
     }
 
+    public ArrayList<Path> getAllPaths() {
+        ArrayList<Path> paths = new ArrayList<Path>();
+        for (Path path : knownPaths.values()) {
+            paths.add(path);
+        }
+        return paths;
+    }
+
 }
