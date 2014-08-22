@@ -2,25 +2,26 @@
 
 package ia;
 
-import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import eis.Agent;
+import eis.MapAgent;
 
 // Call from AgentSpeak: isInspected(Vehicle)
 public class isInspected extends DefaultInternalAction {
+    private static final long serialVersionUID = 9032663067998146025L;
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        // execute the internal action
-        ts.getAg().getLogger().info("executing internal action 'ia.isInspected'");
-        if (true) { // just to show how to throw another kind of exception
-            throw new JasonException("not implemented!");
+        String agentName = args[0].toString();
+        Agent agent = MapAgent.getInstance().getEnemyInfo(agentName);
+        if (agent.isInspected() == true) {
+            return true;
+        } else {
+            return false;
         }
-
-        // everything ok, so returns true
-        return true;
     }
 }

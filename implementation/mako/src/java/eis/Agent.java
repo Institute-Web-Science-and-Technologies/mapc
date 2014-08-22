@@ -21,6 +21,8 @@ public class Agent {
     private int strength;
     private int visRange;
 
+    private boolean isInspected = false;
+
     public String getServerName() {
         return serverName;
     }
@@ -123,5 +125,13 @@ public class Agent {
 
     public void setVisRange(int visRange) {
         this.visRange = visRange;
+    }
+
+    public boolean isInspected() {
+        return isInspected;
+    }
+
+    public void setInspected(boolean isInspected) {
+        this.isInspected = isInspected;
     }
 }
