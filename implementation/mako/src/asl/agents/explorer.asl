@@ -16,34 +16,6 @@
     .delete(Name, AgentList, BroadcastList); 
     +explorerAgentList(BroadcastList).
 
-+probedVertex(Vertex, Value)[source(storeBeliefs)]:
-	not probedVertex(Vertex, Value)[source(self)]
-	<-
-	.print("I learned that the value of ", Vertex, " is ", Value, ".");
-	.print("Sending nodeValue(", Vertex, ",", Value, ") to ", Vertex);
-	.send(Vertex,tell,nodeValue(Vertex,Value)); // send node value info to respective node agent
-    ?explorerAgentList(ExplorerList);
-    .print("Sending message probedVertex(", Vertex, ",", Value, ") to ", ExplorerList, ".");
-    .send(ExplorerList, tell, probedVertex(Vertex,Value));
-	+probedVertex(Vertex, Value)[source(self)].
-	
-+probedVertex(Vertex, Value)[source(Agent)]
-	:
-	Agent \== self
-	<-
-	.print("Received message probedVertex(", Vertex, ",", Value, ") from agent ", Agent, ".");
-	.abolish(probedVertex(Vertex, Value));
-	+probedVertex(Vertex, Value)[source(self)].
-	
-+probedVertex(Vertex, Value)[source(Agent)]
-	:
-	probedVertex(Vertex, Value)[source(self)]
-	& Agent \== self
-	<-
-	.print("I already knew that the value of vertex ", Vertex, " is ", Value, ", ", Agent, "!");
-	.abolish(Vertex, Value);
-	+probedVertex(Vertex, Value)[source(self)].
-	
 // If the agent has enough energy than probe. Otherwise recharge.
 +!doProbing:
 	energy(Energy) & Energy > 1 & position(Position)
@@ -56,4 +28,11 @@
     	recharge.
 
 // Explorer has to flee from enemy agents.
-+!dealWithEnemy <- !avoidEnemy.
++!dealWithEnemy(Vehicle): 
+	ia.isSaboteur(Vehicle)
+<- !avoidEnemy.
+
++!dealWithEnemy(Vehicle)
+	<-
+	+ignoreEnemy(Vehicle);
+	!doAction.

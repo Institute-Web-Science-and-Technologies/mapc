@@ -26,6 +26,7 @@ zoneMode(false).
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
+    .abolish(ignoreEnemy);
 	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
@@ -35,15 +36,24 @@ zoneMode(false).
 	& myTeam(MyTeam)
 	& visibleEntity(Vehicle, Position, EnemyTeam, Disabled)
 	& EnemyTeam \== MyTeam
+	& not ignoreEnemy(Vehicle)
  	<- .print("Enemy at my position! Disabled -> ", Disabled, ". Vehicle: ", Vehicle );
- 		!dealWithEnemy.
+ 		!dealWithEnemy(Vehicle).
+
+// To avoid an enemy agent, ask MapAgent for best position.
+// TODO: Currently it is not guranteed that an agent jumps between two vertices forever.
++!avoidEnemy:
+	position(Position) 
+	& ia.getVertexToAvoidEnemy(Position, Destination)
+	<- 
+	!goto(Destination).
  
 // If an inspector sees an enemy
  +!doAction:
  	visibleEntity(Vehicle, Position, EnemyTeam, Disabled)
 	& myTeam(MyTeam)
 	& EnemyTeam \== MyTeam
-	& not enemy(Vehicle, _)
+	& ~ia.isInspected(Vehicle)
 	& role(inspector)
  	<- .print("Enemy at my position! Trying to inspect ", Vehicle );
  		!doInspecting(Vehicle).
@@ -52,7 +62,7 @@ zoneMode(false).
 +!doAction:
 	zoneMode(false)
 	& position(Position)
-	& not ia.isProbed(Position)
+	& ~ia.isProbed(Position)
 	& role(explorer)
 	<- .print(Position, " is not probed. I will probe.");
 	 	!doProbing.
@@ -61,10 +71,21 @@ zoneMode(false).
 +!doAction:
 	zoneMode(false)
 	& position(Position)
-	& not ia.isSurveyed(Position)
+	& ~ia.isSurveyed(Position)
 	<-
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
+
+// If the agent has enough energy than survey. Otherwise recharge.
++!doSurveying:
+ energy(Energy) & Energy < 1
+	<- .print("I have not enough energy to survey. I'll recharge first.");
+    	recharge.
+    	
++!doSurveying:
+	position(Position)
+	<- .print("Surveying vertex: ", Position, ".");
+		survey.
 
 // If the energy of the agent is over a threshold of 10 the agent can move to another node.	
 +!doAction:
@@ -78,66 +99,24 @@ zoneMode(false).
 	<- .print("I'm recharging.");
 		recharge.
 
-// To avoid an enemy agent, ask MapAgent for best position.
-+!avoidEnemy:
-	position(Position)
-	<-
-	.findall([Weight, Neighbour], surveyedEdge(Position, Neighbour, Weight), Neighbours);
-	.nth(0, Neighbours, Destination); 
-	!goto(Destination).
-
-+!avoidEnemy:
-	position(Position) & visibleEdge(Position, Destination)
-	<- .print("Avoiding enemy over visible edge."); 
-	!goto(Destination).
-	
-+!avoidEnemy:
-	position(Position) & visibleEdge(Destination, Position)
-	<- .print("Avoiding enemy over visible edge."); 
-	!goto(Destination).
-
-// If the agent has enough energy than survey. Otherwise recharge.
-+!doSurveying:
- energy(Energy) & Energy < 1
-	<- .print("I have not enough energy to survey. I'll recharge first.");
-    	recharge.
-    	
-+!doSurveying:
-	position(Position)
-	<- .print("Surveying from vertex ", Position, ".");
-		survey.
-    	
-//+!doExploring <- !exploreGraph.
-
-+enemy(Name, Role):
-	enemy(Name, Role)
-	<-
-	.print("I already was informed about this enemy").
-
-// Want to goto, but don't have enough energy -> recharge.
-+!goto(Destination):
-    position(CurrVertex) & energy(CurrEnergy) & surveyedEdge(CurrVertex, Destination, Weight) & CurrEnergy < Weight
-    <- .print("I have ", CurrEnergy, " energy, but need ", Weight, " to go, going to recharge first.");
-       recharge.
-
 //In the case where we for some reason get told to move to the node we're already on,
 //we perform a recharge action isntead.
 +!goto(Destination):
-	position(MyPosition) & Destination == MyPosition
+	position(Position)
+	& Destination == Position
 	<-
-	.print("I was told to move to the node I am already on (", MyPosition, "). Will recharge instead.");
+	.print("I was told to move to the node I am already on (", Position, "). Will recharge instead.");
 	recharge.
-
-// Goto if the destination is not a neighbour of the node we are currently on.
-// We have to ask the node agent for the next hop on the way to our destination.
+	
+// Want to goto, but don't have enough energy -> recharge.
 +!goto(Destination):
-	position(CurrVertex) & not (visibleEdge(CurrVertex, Destination) | visibleEdge(Destination, CurrVertex))
-	<-
-	.print("I am currently on ", CurrVertex, ". I want to move to ", Destination, ", but I do not see an edge to it. Will ask for the next hop.");
-	.send(CurrVertex, askOne, getNextHopToVertex(Destination, NextHop), getNextHopToVertex(_, NextHop));
-	!goto(NextHop).
-
-
+    position(Position)
+    & energy(Energy) 
+    & ia.getEdgeCost(Position, Destination, Costs)
+    & Costs < Energy
+    <- .print("I have ", Energy, " energy, but need ", Costs, " to go, going to recharge first.");
+       recharge.
+       
 // This is the default goto action if we want to move to one of our neighbor nodes.
 +!goto(Destination)
     <-
