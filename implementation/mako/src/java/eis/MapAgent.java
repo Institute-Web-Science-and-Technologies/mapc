@@ -38,6 +38,19 @@ public class MapAgent {
     }
 
     /**
+     * @param agentName
+     *            the name of the agent to look up
+     * @return an agent object with the known information about the enemy agent
+     */
+    public Agent getEnemyInfo(String agentName) {
+        if (enemyInfos.containsKey(agentName)) {
+            return enemyInfos.get(agentName);
+        } else {
+            return new Agent();
+        }
+    }
+
+    /**
      * Stores the position of an agent. Used for agents of both teams.
      * 
      * @param agent
