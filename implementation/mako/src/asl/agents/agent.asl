@@ -60,7 +60,7 @@ zoneMode(false).
 	& myTeam(MyTeam)
 	& EnemyTeam \== MyTeam
 	& step(CurrentStep)
-	& ~ia.isInspected(Vehicle, CurrentStep)
+	& ia.isNotInspected(Vehicle, CurrentStep)
 	& role(inspector)
  	<- .print("Enemy in range! Trying to inspect ", Vehicle );
  		!doInspecting(Vehicle).
@@ -69,7 +69,7 @@ zoneMode(false).
 +!doAction:
 	zoneMode(false)
 	& position(Position)
-	& ~ia.isProbed(Position)
+	& ia.isNotProbed(Position)
 	& role(explorer)
 	<- .print(Position, " is not probed. I will probe.");
 	 	!doProbing.
@@ -78,7 +78,7 @@ zoneMode(false).
 +!doAction:
 	zoneMode(false)
 	& position(Position)
-	& ~ia.isSurveyed(Position)
+	& ia.isNotSurveyed(Position)
 	<-
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
