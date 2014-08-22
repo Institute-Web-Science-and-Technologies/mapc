@@ -21,6 +21,6 @@ public class getEdgeCosts extends DefaultInternalAction {
         Vertex position = MapAgent.getInstance().getVertex(args[0].toString());
         Vertex destination = MapAgent.getInstance().getVertex(args[1].toString());
         int costs = position.getPath(destination).getPathCosts();
-        return un.unifies(args[1], JasonHelper.getTerm(costs));
+        return un.unifies(args[2], JasonHelper.getTerm(costs));
     }
 }

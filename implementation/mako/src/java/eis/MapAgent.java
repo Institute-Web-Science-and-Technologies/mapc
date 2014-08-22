@@ -38,6 +38,19 @@ public class MapAgent {
     }
 
     /**
+     * @param vertex
+     *            the vertex to return the list of enemy-free neighbour vertices
+     *            for
+     * @return the neighbour vertices of the given vertex that have no enemy
+     *         agent standing on them
+     */
+    public ArrayList<Vertex> getSafeNeighbours(Vertex vertex) {
+        ArrayList<Vertex> neighbours = vertex.getNeighbours();
+        neighbours.removeAll(enemyPositions.values());
+        return neighbours;
+    }
+
+    /**
      * @param agentName
      *            the name of the agent to look up
      * @return an agent object with the known information about the enemy agent

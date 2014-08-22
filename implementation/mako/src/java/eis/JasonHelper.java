@@ -44,7 +44,7 @@ public class JasonHelper {
 
     }
 
-    private static Term getTerm(Vertex vertex) {
+    public static Term getTerm(Vertex vertex) {
         return getTerm(vertex.getIdentifier());
     }
 
