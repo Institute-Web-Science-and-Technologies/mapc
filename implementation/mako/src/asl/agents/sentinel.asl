@@ -1,2 +1,2 @@
 { include("agent.asl") }
-{ include("../actions/parry.asl")}
+{ include("parry.asl")}
