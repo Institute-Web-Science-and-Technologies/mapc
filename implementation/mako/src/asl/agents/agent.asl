@@ -6,10 +6,6 @@
 zoneMode(false).
 
 /* Map Related Stuff */
-// Whenever an agent gets a new position percept, update the belief base, 
-// if the new position belief is not already in belief base. 
-// Furthermore tell the cartographer about agents current position.
-
 // Condition to start zoning phase
 +achievement(Identifier)[source(self)]:
     Identifier == surveyed1280
@@ -26,20 +22,12 @@ zoneMode(false).
 	& step(Step)
 	& energy(Energy)
     <-
-    .print("Received percept requestAction.");
+//	.print("Received percept requestAction.");
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
 	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
-    if (Result == successful & Action == survey) {
-    	.send(cartographer,tell,vertex(Position, true))
-	}
-//	Why doesn't this work?
-//	.findall([From, To], visibleEdge(From, To), visibleEdgeList);
-//	.print("List of visible edges: ", visibleEdgeList);
     !doAction.
-//    We have to abolish here, or the agent will ignore 
-//    .abolish(requestAction).
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.       
  +!doAction:
@@ -60,23 +48,22 @@ zoneMode(false).
  	<- .print("Enemy at my position! Trying to inspect ", Vehicle );
  		!doInspecting(Vehicle).
 
-// If an explorer is on a unprobed vertex, probe it. 
-+!doAction:
-	zoneMode(false)
-	& position(Vertex)
-	& not probedVertex(Vertex, _)
-	& role(explorer)
-	<- .print("I will probe ", Vertex, ".");
-	 	!doProbing.
-	 	
-// If an agent is on a vertex which has an edge to an adjacent not surveyed vertex, survey the position.
+// If an explorer is on an unprobed vertex, probe it. 
 +!doAction:
 	zoneMode(false)
 	& position(Position)
-	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
-	& not surveyedEdge(Position, Vertex, _)
+	& not ia.isProbed(Position)
+	& role(explorer)
+	<- .print(Position, " is not probed. I will probe.");
+	 	!doProbing.
+	 	
+// If an agent is on an unsurveyed vertex, survey it
++!doAction:
+	zoneMode(false)
+	& position(Position)
+	& not ia.isSurveyed(Position)
 	<-
-	.print("Found an unsurveyed edge ", Position, " - ", Vertex, ", will survey.");
+	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
 
 // If the energy of the agent is over a threshold of 10 the agent can move to another node.	
@@ -88,12 +75,12 @@ zoneMode(false).
 // If the agent has nothing to do, it can just recharge.
 +!doAction:
 	energy(Energy) & maxEnergy(Max) & Energy <= Max
-	<- .print("I'm idle. I'm recharging.");
+	<- .print("I'm recharging.");
 		recharge.
 
-// To avoid an enemy agent, we select a destination to go to.
+// To avoid an enemy agent, ask MapAgent for best position.
 +!avoidEnemy:
-	position(Position) & surveyedEdge(Position, _, _) | surveyedEdge(_, Position, _)
+	position(Position)
 	<-
 	.findall([Weight, Neighbour], surveyedEdge(Position, Neighbour, Weight), Neighbours);
 	.nth(0, Neighbours, Destination); 
