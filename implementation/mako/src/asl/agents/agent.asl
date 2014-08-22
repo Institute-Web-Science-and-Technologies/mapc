@@ -8,7 +8,7 @@ zoneMode(false).
 /* Map Related Stuff */
 // Condition to start zoning phase
 +achievement(Identifier)[source(self)]:
-    Identifier == surveyed1280
+    Identifier == surveyed640 // not very dynamic, but whatever
     <-
     .print("Done with surveying. Entering zone mode.");
     -+zoneMode(true).
@@ -26,34 +26,43 @@ zoneMode(false).
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
+//  The ignoreEnemy belief is used by inspector agents and must be abolished
+//  every step as well. 
     .abolish(ignoreEnemy);
 	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
-// If an agent sees an enemy on its position, it has to deal with the enemy.       
+// If an agent sees an enemy on its position, it has to deal with the enemy
+// before doing anything else.       
  +!doAction:
  	position(Position)
 	& myTeam(MyTeam)
-	& visibleEntity(Vehicle, Position, EnemyTeam, Disabled)
+	& visibleEntity(Vehicle, Position, EnemyTeam, State)
 	& EnemyTeam \== MyTeam
 	& not ignoreEnemy(Vehicle)
- 	<- .print("Enemy at my position! Disabled -> ", Disabled, ". Vehicle: ", Vehicle );
- 		!dealWithEnemy(Vehicle).
+ 	<-
+	.print("Enemy ", Vehicle, " at my position! Vehicle state: ", State);
+ 	!dealWithEnemy(Vehicle).
 
-// To avoid an enemy agent, ask MapAgent for best position.
-// TODO: Currently it is not guranteed that an agent jumps between two vertices forever.
+// To avoid an enemy agent, ask the MapAgent for best position.
+// TODO: Currently, an agent will cycle between two adjacent vertices when
+// avoiding an enemy that does not move.
 +!avoidEnemy:
 	position(Position) 
 	& ia.getVertexToAvoidEnemy(Position, Destination)
 	<- 
 	!goto(Destination).
  
-// If an inspector sees an enemy
+// If an inspector sees an enemy (that we haven't inspected before), inspect it.
+// TODO: Inspectors should probably re-inspect vehicles after some number of 
+// steps (e.g. 2). Not just because of the achievement points, but also because
+// their information might have changed. 
  +!doAction:
  	visibleEntity(Vehicle, Position, EnemyTeam, Disabled)
 	& myTeam(MyTeam)
 	& EnemyTeam \== MyTeam
-	& ~ia.isInspected(Vehicle)
+	& step(CurrentStep)
+	& ~ia.isInspected(Vehicle, CurrentStep)
 	& role(inspector)
  	<- .print("Enemy at my position! Trying to inspect ", Vehicle );
  		!doInspecting(Vehicle).

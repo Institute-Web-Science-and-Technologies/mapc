@@ -20,8 +20,8 @@ public class Agent {
     private String role;
     private int strength;
     private int visRange;
-
-    private boolean isInspected = false;
+    // the step # this agent was last inspected on
+    private int inspectionStep = -100;
 
     public String getServerName() {
         return serverName;
@@ -127,11 +127,17 @@ public class Agent {
         this.visRange = visRange;
     }
 
-    public boolean isInspected() {
-        return isInspected;
+    /**
+     * @param currentStep
+     *            the current step
+     * @return true if the agent has been inspected since a specific number of
+     *         steps (currently 1)
+     */
+    public boolean isInspected(int currentStep) {
+        return ((currentStep - this.inspectionStep) > 1);
     }
 
-    public void setInspected(boolean isInspected) {
-        this.isInspected = isInspected;
+    public void setInspectionStep(int inspectionStep) {
+        this.inspectionStep = inspectionStep;
     }
 }

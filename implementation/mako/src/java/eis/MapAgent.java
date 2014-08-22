@@ -137,7 +137,7 @@ public class MapAgent {
         enemy.setStrength(strength);
         enemy.setTeam(team);
         enemy.setVisRange(visRange);
-        enemy.setInspected(true);
+        enemy.setInspectionStep(step);
         enemyInfos.put(name, enemy);
     }
 
