@@ -19,7 +19,7 @@ public class MapAgent {
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
-    private HashMap<String, String> enemies = new HashMap<String, String>();
+    private HashMap<String, Agent> enemyInfos = new HashMap<String, Agent>();
     private AgentLogger logger = new AgentLogger("MapAgent");
 
     private HashSet<String> visibleVertices = new HashSet<String>();
@@ -49,6 +49,9 @@ public class MapAgent {
 
     public void addPercept(Percept percept) {
         switch (percept.getName()) {
+        case "inspectedEntity":
+            handleInspectedEntity(percept);
+            break;
         case "visibleVertex":
             handleVisibleVertex(percept);
             visibleVertices.add(percept.toProlog());
@@ -78,6 +81,37 @@ public class MapAgent {
             handleStep(percept);
             break;
         }
+    }
+
+    private void handleInspectedEntity(Percept percept) {
+        int energy = Integer.parseInt(percept.getParameters().get(0).toString()); // 8
+        int health = Integer.parseInt(percept.getParameters().get(1).toString()); // 9
+        int maxEnergy = Integer.parseInt(percept.getParameters().get(2).toString()); // 8
+        int maxHealth = Integer.parseInt(percept.getParameters().get(3).toString()); // 9
+        String name = percept.getParameters().get(4).toString(); // b5
+        Vertex node = getVertex(percept.getParameters().get(5).toString()); // v10
+        String role = percept.getParameters().get(6).toString(); // explorer
+        int strength = Integer.parseInt(percept.getParameters().get(7).toString()); // 6
+        String team = percept.getParameters().get(8).toString(); // teamB
+        int visRange = Integer.parseInt(percept.getParameters().get(9).toString()); // 2
+
+        Agent enemy;
+        if (!enemyInfos.containsKey(name)) {
+            enemy = new Agent();
+        } else {
+            enemy = enemyInfos.get(name);
+        }
+        enemy.setEnergy(energy);
+        enemy.setHealth(health);
+        enemy.setMaxEnergy(maxEnergy);
+        enemy.setMaxHealth(maxHealth);
+        enemy.setServerName(name);
+        enemy.setNode(node);
+        enemy.setRole(role);
+        enemy.setStrength(strength);
+        enemy.setTeam(team);
+        enemy.setVisRange(visRange);
+        enemyInfos.put(name, enemy);
     }
 
     private void handleVisibleEntity(Percept percept) {
