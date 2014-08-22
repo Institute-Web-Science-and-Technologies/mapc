@@ -1,16 +1,8 @@
 { include("agent.asl") }
-{ include("../actions/parry.asl")}
+{ include("parry.asl")}
 /* Initial beliefs and rules */
 
 /* Initial goals */
-
-/* Plans */
-//for repair, repair our team disabled agent who is on the same Vertex. spend 3 energy
-//ToDo: repairer can also repair the agent who is undisabled,and spend 2 energy
-+help(Vehicle, Vertex) 
-	<- //!goto(Vertex);
- 	   !doRepair(Vehicle).
-      
 
 // If energy is not enough - recharge 
 //ToDo: repairer can also repair the agent who is undisabled,and spend 2 energy    
