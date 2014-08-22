@@ -5,12 +5,12 @@
 	& role(explorer) 
 	& ia.getNextUnprobedVertex(Position, Destination)
 	<-
-	.print("I am currently on vertex ", Position, ". My next unprobed vertex is: ", Destination);
+	.print("I am currently on vertex ", Position, ". My nearest unprobed vertex is: ", Destination);
 	!goto(Destination).
 
 +!doExploring:
 	position(Position)
 	& ia.getNextUnsurveyedVertex(Position, Destination)
 	<-
-	.print("I am currently on vertex ", Position, ". My next unsurveyed vertex is: ", Destination);
+	.print("I am currently on vertex ", Position, ". My nearest unsurveyed vertex is: ", Destination);
 	!goto(Destination).

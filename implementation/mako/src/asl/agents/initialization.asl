@@ -1,17 +1,6 @@
-// Agent initialization in project mako
-
-/* Initial goals */
-
-!start.
-
-/* Plans */
-
-+!start
-    <- 
-//    !initExploreGraph;
-    !loadBroadcastAgentList.
+!loadBroadcastAgentList.
     
-// Store list of all agents except myself for broadcasting.    
+// Store list of all agents (excluding myself) for broadcasting.    
 +!loadBroadcastAgentList:
     .my_name(Name)
     <-

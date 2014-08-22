@@ -26,8 +26,8 @@ zoneMode(false).
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
-//  The ignoreEnemy belief is used by inspector agents and must be abolished
-//  every step as well. 
+//  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
+//	agents that aren't explorers) and must be abolished every step as well. 
     .abolish(ignoreEnemy);
 	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
@@ -40,6 +40,7 @@ zoneMode(false).
 	& visibleEntity(Vehicle, Position, EnemyTeam, State)
 	& EnemyTeam \== MyTeam
 	& not ignoreEnemy(Vehicle)
+	& State \== disabled
  	<-
 	.print("Enemy ", Vehicle, " at my position! Vehicle state: ", State);
  	!dealWithEnemy(Vehicle).
@@ -54,9 +55,6 @@ zoneMode(false).
 	!goto(Destination).
  
 // If an inspector sees an enemy (that we haven't inspected before), inspect it.
-// TODO: Inspectors should probably re-inspect vehicles after some number of 
-// steps (e.g. 2). Not just because of the achievement points, but also because
-// their information might have changed. 
  +!doAction:
  	visibleEntity(Vehicle, Position, EnemyTeam, Disabled)
 	& myTeam(MyTeam)
@@ -64,7 +62,7 @@ zoneMode(false).
 	& step(CurrentStep)
 	& ~ia.isInspected(Vehicle, CurrentStep)
 	& role(inspector)
- 	<- .print("Enemy at my position! Trying to inspect ", Vehicle );
+ 	<- .print("Enemy in range! Trying to inspect ", Vehicle );
  		!doInspecting(Vehicle).
 
 // If an explorer is on an unprobed vertex, probe it. 
@@ -85,51 +83,59 @@ zoneMode(false).
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
 
-// If the agent has enough energy than survey. Otherwise recharge.
+// If the agent has enough energy, then survey. Otherwise recharge.
 +!doSurveying:
  energy(Energy) & Energy < 1
-	<- .print("I have not enough energy to survey. I'll recharge first.");
+	<- .print("I don't have enough energy to survey. I'll recharge first.");
     	recharge.
     	
 +!doSurveying:
 	position(Position)
-	<- .print("Surveying vertex: ", Position, ".");
-		survey.
+	<-
+	.print("Surveying vertex: ", Position, ".");
+	survey.
 
 // If the energy of the agent is over a threshold of 10 the agent can move to another node.	
 +!doAction:
-	zoneMode(false) & energy(Energy) & Energy > 10
-	<- .print("I want to go to another vertex. My energy is ", Energy, ".");
-		!doExploring. 
+	zoneMode(false)
+	& energy(Energy)
+	& Energy > 10
+	<-
+	.print("I want to go to another vertex. My energy is ", Energy, ".");
+	!doExploring. 
 
-// If the agent has nothing to do, it can just recharge.
+// If the agent has nothing to do, it should recharge instead of doing nothing.
 +!doAction:
-	energy(Energy) & maxEnergy(Max) & Energy <= Max
-	<- .print("I'm recharging.");
-		recharge.
+	energy(Energy)
+	& maxEnergy(Max)
+	& Energy <= Max
+	<-
+	.print("I'm recharging.");
+	recharge.
 
-//In the case where we for some reason get told to move to the node we're already on,
-//we perform a recharge action isntead.
+// In the case where we for some reason get told to move to the node we're already on,
+// we perform a recharge action instead.
 +!goto(Destination):
 	position(Position)
 	& Destination == Position
 	<-
-	.print("I was told to move to the node I am already on (", Position, "). Will recharge instead.");
+	.print("Warning! I was told to move to the node I am already on (", Position, "). Will recharge instead.");
 	recharge.
 	
-// Want to goto, but don't have enough energy -> recharge.
+// Want to goto, but don't have enough energy? Recharge.
 +!goto(Destination):
     position(Position)
     & energy(Energy) 
     & ia.getEdgeCost(Position, Destination, Costs)
     & Costs < Energy
-    <- .print("I have ", Energy, " energy, but need ", Costs, " to go, going to recharge first.");
-       recharge.
+    <-
+	.print("I have ", Energy, " energy, but need ", Costs, " to move to ", Destination, ", going to recharge first.");
+    recharge.
 
-// This is the default goto action if we want to move to one of our neighbor nodes.
+// This is the default goto action if we want to move to one of our neighbour nodes.
 +!goto(Destination):
 	position(Position)
 	& ia.getBestHopToVertex(Position, Destination, NextHop)
     <-
-    .print("I will move to vertex ", Destination, " over vertex ", NextHop);
+    .print("I will move to vertex ", Destination, " through vertex ", NextHop);
 	goto(NextHop).
