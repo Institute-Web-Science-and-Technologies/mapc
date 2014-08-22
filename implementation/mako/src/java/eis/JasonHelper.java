@@ -1,9 +1,10 @@
 package eis;
 
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
+import jason.asSyntax.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,15 +13,33 @@ import java.util.Map.Entry;
 public class JasonHelper {
 
     public static Term getTerm(String string) {
-        return StringTermImpl.parseString(string);
+        try {
+            return ASSyntax.parseTerm(string);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Term getTerm(boolean bool) {
-        return StringTermImpl.parseString(String.valueOf(bool));
+        try {
+            return ASSyntax.parseTerm(String.valueOf(bool));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Term getTerm(double value) {
-        return StringTermImpl.parseString(String.valueOf(value));
+        try {
+            return ASSyntax.parseTerm(String.valueOf(value));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Term getTerm(ArrayList<Vertex> vertices) {

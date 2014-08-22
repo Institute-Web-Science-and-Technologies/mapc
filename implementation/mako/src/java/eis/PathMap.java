@@ -13,7 +13,7 @@ public class PathMap {
 
     public PathMap(Vertex vertex) {
         this.setPosition(vertex);
-        logger = new AgentLogger("PathMap " + vertex);
+        logger = new AgentLogger(vertex + " PathMap");
     }
 
     public boolean handlePath(Path newPath) {
