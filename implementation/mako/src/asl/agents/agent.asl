@@ -116,9 +116,11 @@ zoneMode(false).
     & Costs < Energy
     <- .print("I have ", Energy, " energy, but need ", Costs, " to go, going to recharge first.");
        recharge.
-       
+
 // This is the default goto action if we want to move to one of our neighbor nodes.
-+!goto(Destination)
++!goto(Destination):
+	position(Position)
+	& ia.getBestHopToVertex(Position, Destination, NextHop)
     <-
-    .print("I will move to my neighbour node ", Destination, ".");
-	goto(Destination).
+    .print("I will move to vertex ", Destination, " over vertex ", NextHop);
+	goto(NextHop).
