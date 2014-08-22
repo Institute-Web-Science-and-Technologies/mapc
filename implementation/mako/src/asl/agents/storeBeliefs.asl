@@ -18,9 +18,6 @@
 +deadline(Numeral)[source(percept)] <-
 	.print("Received percept deadline(", Numeral, ").");
 	-+deadline(Numeral)[source(self)].
-    
-+edges(Numeral)[source(percept)] <-
-	.print("Received percept edges(", Numeral, ").").
 	
 +energy(Numeral)[source(percept)] <-
 	.print("Received percept energy(", Numeral, ").");
@@ -40,9 +37,6 @@
 +lastActionResult(Identifier)[source(percept)] <-
 	.print("Received percept lastActionResult(", Identifier, ").");
 	-+lastActionResult(Identifier).
-
-+lastStepScore(Numeral)[source(percept)] <-
-	.print("Received percept lastStepScore(", Numeral, ").").
 	
 +maxEnergy(Numeral)[source(percept)] <-
 	.print("Received percept maxEnergy(", Numeral, ").");
@@ -69,17 +63,13 @@
     <- .print("Received percept position(", Vertex, ")."); 
        -+position(Identifier).
        
-+probedVertex(Vertex, Value)[source(percept)] <-
-	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
-	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
+//+probedVertex(Vertex, Value)[source(percept)] <-
+//	.print("Received percept probedVertex(", Vertex, ",", Value, ").");
+//	-+probedVertex(Vertex, Value)[source(storeBeliefs)].
 
 	
 +ranking(Numeral)[source(percept)] <-
 	.print("Received percept ranking(", Numeral, ").").
-	
-//The requestAction belief is handled by agent.asl.
-//+requestAction[source(percept)] <-
-//	.print("Received percept requestAction.").
 	
 +role(Identifier)[source(percept)] <-
 	.print("Received percept role(", Identifier, ").");
@@ -107,23 +97,11 @@
 +timestamp(Numeral)[source(percept)] <-
 	.print("Received percept timestamp(", Numeral, ").").
 
-+vertices(Numeral)[source(percept)] <-
-	.print("Received percept vertices(", Numeral, ").").
-
 +visRange(Numeral)[source(percept)] <-
 	.print("Received percept visRange(", Numeral, ").").
 	
-+visibleEdge(Vertex1, Vertex2)[source(percept)] <-
-	.print("Received percept visibleEdge(", Vertex1, ",", Vertex2, ").").
-	
 +visibleEntity(Agent,Vertex,Team,State)[source(percept)] <-
 	.print("Received percept visibleEntity(", Agent, ",", Vertex, ",", Team, ",", State, ").").
-	
-+visibleVertex(Vertex, Team)[source(percept)] <-
-	.print("Received percept visibleVertex(", Vertex, ",", Team, ").").
 
 +zoneScore(Numeral)[source(percept)] <-
 	.print("Received percept zoneScore(", Numeral, ").").
-
-+zonesScore(Numeral)[source(percept)] <-
-	.print("Received percept zonesScore(", Numeral, ").").
