@@ -1,6 +1,6 @@
 { include("agent.asl") }
 //for attack, attack enemy team agent who is on the same Vertex
-+!dealWithEnemy <- !doAttack.
++!dealWithEnemy(Vehicle) <- !doAttack(Vehicle).
     
 // If energy is not enough - recharge  
 + !doAttack(Vehicle):
