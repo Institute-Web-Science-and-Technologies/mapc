@@ -4,7 +4,7 @@ zoneBuildingMode(false).
 /* Plans */
 @becomeACoach
 +!choseZoningRole:
-    bestZone(_, _, _)[source(self)]
+    bestZone(_, _, _, _)[source(self)]
     & broadcastAgentList(BroadcastList)
     & .my_name(MyName)
     <- .send(BroadcastList, untell, idleZoner(MyName));
@@ -14,9 +14,9 @@ zoneBuildingMode(false).
 // Test whether this zone could actually be built, regarding available zoners
 // and minions. If not, cancel this zone building process.
 +!isZonePossible:
-    bestZone(_, _, UsedNodes)
+    bestZone(_, _, _, UsedNodes)
     & .count(idleZoner(_), IdleZonersAmount)
-    & .count(availableMinions(_), AvailableMinionsAmount)
+    & .count(positiveZoneReply(_), AvailableMinionsAmount)
     & .length(UsedNodes) -1 >  (IdleZonersAmount + AvailableMinionsAmount)
     <- !cancelledZoneBuilding.
 
@@ -42,7 +42,7 @@ zoneBuildingMode(false).
 // planned.
 +positiveZoneReply(CentreNode)[source(Minion)]:
     isCoach(true)
-    & bestZone(_, CentreNode, UsedNodes)
+    & bestZone(_, _, CentreNode, UsedNodes)
     & .count(positiveZoneReply(_), MinionsAmount)
     & (.length(UsedNodes) -1 > MinionsAmount)
     <- true.
@@ -57,7 +57,7 @@ zoneBuildingMode(false).
 // it.
 +positiveZoneReply(CentreNode)[source(Minion)]:
     isCoach(true)
-    & bestZone(_, CentreNode, _)
+    & bestZone(_, _, CentreNode, _)
     <- -+zoneBuildingMode(true);
        goto(CentreNode); // may fail if we are standing on it already.
        -+zoneNode(CentreNode);
@@ -73,7 +73,7 @@ zoneBuildingMode(false).
 // and tell them:
 +!toldMinionsTheirPosition:
     .findall(Minion, positiveZoneReply(CentreNode)[source(Minion)], Minions)
-    & bestZone(_, CentreNode, _)
+    & bestZone(_, _, CentreNode, _)
     & ia.placeAgentsOnZone(CentreNode, Minions, PositionMinionMapping)
     & .length(PositionMinionMapping, MappingLength)
     <- for (.range(ControlVariable, 0, MappingLength - 1)) {
@@ -85,7 +85,7 @@ zoneBuildingMode(false).
 // remove the percept so that we don't count it as a refusal.
 +negativeZoneReply(CentreNode)[source(Sender)]:
     isCoach(true)
-    & not bestZone(_, CentreNode, _)
+    & not bestZone(_, _, CentreNode, _)
     <- -negativeZoneReply(CentreNode)[source(Sender)].
 
 // If we get a negative zone reply and there aren't enough possible agents to
@@ -96,7 +96,7 @@ zoneBuildingMode(false).
     isCoach(true)
     & .count(negativeZoneReply(_), RefusalAmount)
     & .count(broadcastAgentList(BroadcastList), AgentsAmount) // or use 28 as a static measure :Þ
-    & bestZone(_, CentreNode, UsedNodes)
+    & bestZone(_, _, CentreNode, UsedNodes)
     & .length(UsedNodes) >  AgentsAmount - RefusalAmount
     <- !cancelledZoneBuilding.
 

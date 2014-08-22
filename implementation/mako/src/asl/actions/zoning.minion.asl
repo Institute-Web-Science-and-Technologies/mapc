@@ -9,7 +9,7 @@
 // Next, we tell our Coach how far it is for us to move to his CentreNode.
 @becomeAMinion
 +!choseZoningRole:
-    bestZone(_, CentreNode, _)[source(Coach)]
+    bestZone(_, _, CentreNode, _)[source(Coach)]
     & Coach \== self
     & broadcastAgentList(BroadcastList)
     & .my_name(MyName)
@@ -46,8 +46,12 @@
        goto(NextHop).
 
 // If our coach cancelled the zone, we go back to start zoning from scratch.
+// We also cancel directly leave zoning mode if we triggered this ourselves,
+// because we cannot wait for a reply – it might be a matter of life and death.
 +!cancelledZoneBuilding[source(Coach)]:
     isMinion(true) // TODO: cancel what we are doing, reset to zoning
-    & bestZone(_, _, _)[source(Coach)]
+    & (Coach == self
+        | bestZone(_, _, _, _)[source(Coach)]
+    )
     <- -+isMinion(false);
        !builtZone(true).

@@ -37,9 +37,9 @@ plannedZoneTimeInSteps(15).
       .send(BroadcastList, tell, idleZoner(MyName));
        
       // start over new: clear all previous beliefs:
-      -bestZone(_)[source(_)];
+      -bestZone(_, _, _, _)[source(_)];
       -positiveZoneReply(_)[source(_)];
-      -negativeZoneReply[source(_)];
+      -negativeZoneReply(_)[source(_)];
       -zoneGoalVertex(_)[source(_)];
       -zoneNode(_)[source(_)];
       -foreignBestZone(_, _, _)[source(_)];
@@ -52,12 +52,12 @@ plannedZoneTimeInSteps(15).
       ?plannedZoneTimeInSteps(Steps);
       ia.calculateLongTermZoneValue(Value, 1, Steps, PrognosedValue);
       // trigger broadcasting:
-      +bestZone(PrognosedValue, CentreNode, UsedNodes)[source(self)];
+      +bestZone(Value, PrognosedValue, CentreNode, UsedNodes)[source(self)];
       
       if (Asynchronous) {
-        .send(BroadcastList, tell, asyncForeignBestZone(PrognosedValue, CentreNode, UsedNodes));
+        .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, UsedNodes));
       } else { // Initial broadcast storm when +zoneMode(true):
-        .send(BroadcastList, tell, foreignBestZone(PrognosedValue, CentreNode, UsedNodes));
+        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
       }.
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
@@ -65,15 +65,15 @@ plannedZoneTimeInSteps(15).
 // building one yet. We also deal with his zone information.
 +asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
     isAvailableForZoning
-    & bestZone(Value, CentreNode, UsedNodes)[source(self)]
-    <- .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
+    & bestZone(BestZoneValue, _, BestZoneCentreNode, BestZoneUsedNodes)[source(self)]
+    <- .send(BroadcastList, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes));
        +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
 
 // We received an asynchronous foreignBestZone percept but don't know about our
 // own zone anymore as it was worse. Hence, we cannot tell him our zone but we
 // still take his zone into consideration when choosing the best one for us.
 +asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
-    isCoach(false) & isMinion(false)
+    isAvailableForZoning
     <- +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
 
 // We have received a zone better than the one we know (or
@@ -89,17 +89,17 @@ plannedZoneTimeInSteps(15).
     & ia.getDistance(PositionVertex, CentreNode, Distance)
     & plannedZoneTimeInSteps(Steps)
     & ia.calculateLongTermZoneValue(Value, Distance, Steps, PrognosedValue)
-    & bestZone(FormerZoneValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]
+    & bestZone(FormerZoneValue, FormerPrognosedValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]
     // my zone is worse:
-    & FormerZoneValue < PrognosedValue
+    & FormerPrognosedValue < PrognosedValue
     // or the zones are identical but my name is alphabetically bigger:
-    | (FormerZoneValue == PrognosedValue
+    | (FormerPrognosedValue == PrognosedValue
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
     <- .send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
-       -bestZone(FormerZoneValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
-       +bestZone(PrognosedValue, CentreNode, UsedNodes)[source(Coach)];
+       -bestZone(FormerZoneValue, FormerPrognosedValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
+       +bestZone(Value, PrognosedValue, CentreNode, UsedNodes)[source(Coach)];
        !receivedAllReplies.
 
 // We were informed about a worse zone. Or, we aren't even interested in zoning.
