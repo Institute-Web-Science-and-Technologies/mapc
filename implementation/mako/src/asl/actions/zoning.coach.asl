@@ -88,6 +88,11 @@ zoneBuildingMode(false).
     <- for (.range(ControlVariable, 0, MappingLength - 1)) {
            .nth(ControlVariable, PositionMinionMapping, [PositionVertex, Minion]);
            .send(Minion, tell, zoneGoalVertex(PositionVertex));
+       }
+       if(.length(Minions) > MappingLength){
+       	.range(ControlVariable, MappingLength - 1, .length(Minions));
+       	.nth(ControlVariable, PositionMinionMapping, [PositionVertex, Minion]);
+       	.send(Minion, achieve, foundNewZone);
        }.
 
 // If we get a negative reply about a zone we don't want to build (anymore), we
