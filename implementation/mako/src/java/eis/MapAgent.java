@@ -80,7 +80,7 @@ public class MapAgent {
             break;
         case "visibleVertex":
             handleVisibleVertex(percept);
-            visibleVertices.add(percept.toProlog());
+            visibleVertices.add(percept.getParameters().get(0).toString());
             break;
         case "probedVertex":
             handleProbedVertex(percept);
@@ -230,32 +230,36 @@ public class MapAgent {
         Vertex vertex = position;
         TreeMap<Integer, Vertex> unsurveyedVertices = position.getNextUnsurveyedVertices(1);
         if (!unsurveyedVertices.isEmpty()) {
-            int key = unsurveyedVertices.firstKey();
+            Integer key = unsurveyedVertices.firstKey();
             vertex = unsurveyedVertices.get(key);
             while (reservedUnsurveyedVertices.contains(vertex)) {
                 key = unsurveyedVertices.higherKey(key);
-                vertex = unsurveyedVertices.get(key);
+                if (key == null) {
+                    return position;
+                } else {
+                    vertex = unsurveyedVertices.get(key);
+                }
             }
             reservedUnsurveyedVertices.add(vertex);
+        } else {
+            logger.info("No known unsurveyed connected vertices. Returning my position");
         }
         return vertex;
     }
 
     public Vertex getNextUnprobedVertex(Vertex position) {
-        logger.info("DEBUG: Entering getNextUnprobedVertex method. The vertex is " + position);
         Vertex vertex = position;
         TreeMap<Integer, Vertex> unprobedVertices = position.getNextUnprobedVertices(1);
-        logger.info("unprobedVertices is " + unprobedVertices);
         if (!unprobedVertices.isEmpty()) {
-            int key = unprobedVertices.firstKey();
-            logger.info("key is " + key);
+            Integer key = unprobedVertices.firstKey();
             vertex = unprobedVertices.get(key);
-            logger.info("vertex is " + vertex);
             while (reservedProbedVertices.contains(vertex)) {
                 key = unprobedVertices.higherKey(key);
-                logger.info("key2 is " + key);
-                vertex = unprobedVertices.get(key);
-                logger.info("vertex2 is " + vertex);
+                if (key == null) {
+                    return position;
+                } else {
+                    vertex = unprobedVertices.get(key);
+                }
             }
             reservedProbedVertices.add(vertex);
         }
@@ -311,7 +315,7 @@ public class MapAgent {
      *         maxAgents agent positions
      */
     public Zone getBestZoneWithMaxAgents(ArrayList<Zone> zones, int maxAgents) {
-        for (int i = zones.size() - 1; i > 0; i--) {
+        for (int i = zones.size() - 1; i >= 0; i--) {
             Zone zone = zones.get(i);
             if (zone.getPositions().size() > maxAgents) {
                 zones.remove(i);
@@ -328,14 +332,6 @@ public class MapAgent {
             }
             return bestZone;
         }
-    }
-
-    public boolean isVertexProbed(Vertex vertex) {
-        return vertex.isProbed();
-    }
-
-    public boolean isVertexSurveyed(Vertex vertex) {
-        return vertex.isSurveyed();
     }
 
     public Vertex getBestHopToVertex(Vertex position, Vertex destination) {
