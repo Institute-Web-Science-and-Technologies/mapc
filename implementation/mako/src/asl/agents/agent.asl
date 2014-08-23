@@ -127,7 +127,7 @@ zoneMode(false).
     position(Position)
     & energy(Energy) 
     & ia.getEdgeCost(Position, Destination, Costs)
-    & Costs < Energy
+    & Costs > Energy
     <-
 	.print("I have ", Energy, " energy, but need ", Costs, " to move to ", Destination, ", going to recharge first.");
     recharge.
