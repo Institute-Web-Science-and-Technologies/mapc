@@ -15,7 +15,7 @@ public class ZoneMap {
 
     public ZoneMap(PathMap pathMap) {
         this.pathMap = pathMap;
-        logger = new AgentLogger("PathMap - " + pathMap.getPosition());
+        logger = new AgentLogger(pathMap.getPosition() + " PathMap");
     }
 
     public void calculateZoneValue() {
@@ -24,6 +24,103 @@ public class ZoneMap {
         calculateAgentPositions();
         // calculate zones
         calculateZones();
+    }
+
+    private void calculateAgentPositions() {
+        agentPositions = new ArrayList<Vertex>();
+
+        // Find all potential members for building a zone from this center
+        // vertex.
+        ArrayList<Vertex> neighbours = pathMap.getNeighbours();
+        ArrayList<Vertex> twoHops = pathMap.getVerticesWithHop(2);
+        logger.info("Neighbours: " + neighbours + ". Initial Two-Hops: " + twoHops);
+        if (twoHops.size() == 0 && neighbours.size() == 0) {
+            logger.info("I don't know about any neighbours, aborting zone calculation");
+            return;
+        }
+
+        // Find all vertices which are connected to at least 2 one-hop
+        // neighbours. Remove them from the two-hop list and add them to the
+        // agent position list.
+        for (int i = twoHops.size() - 1; i >= 0; i--) {
+            Vertex vertex = twoHops.get(i);
+            if (connectedWithVerticesInOneHop(vertex, neighbours) >= 2) {
+                twoHops.remove(vertex);
+                agentPositions.add(vertex);
+            }
+        }
+        logger.info("1) Agent Positions: " + agentPositions);
+        logger.info("1) Remaining Two-Hops: " + twoHops);
+
+        // Remove all vertices from the two-hop list, which are connected
+        // directly or indirectly (via a one-hop) to the center vertex.
+        for (int i = twoHops.size() - 1; i >= 0; i--) {
+            Vertex vertex = twoHops.get(i);
+            // directly connected
+            if (connectedWithVerticesInOneHop(vertex, agentPositions) >= 1) {
+                twoHops.remove(vertex);
+                continue;
+            }
+            // indirectly connected (via one-hop)
+            if (connectedWithVerticesInTwoHops(vertex, neighbours, agentPositions)) {
+                twoHops.remove(vertex);
+            }
+        }
+        logger.info("2) Remaining Two-Hops: " + twoHops);
+
+        // Add all two-hops to the agent position list, which are forming a
+        // bridge over an other two-hop.
+        // Remove the vertex which is under the bridge from the two-hop list.
+        for (int i = twoHops.size() - 1; i >= 0; i--) {
+            Vertex vertex = twoHops.get(i);
+            ArrayList<Vertex> bridge = buildBridge(vertex, twoHops);
+            if (bridge.size() == 2) {
+                twoHops.remove(vertex);
+                agentPositions.add(bridge.get(0));
+                agentPositions.add(bridge.get(1));
+            }
+        }
+
+        // Add center vertex to the list of agent positions
+        agentPositions.add(pathMap.getPosition());
+        logger.info("3) Agent Positions: " + agentPositions);
+        logger.info("3) Remaining Two-Hops: " + twoHops);
+
+        // Check every one-hop neighbour if it is connected to at least 1 agent
+        // positions and the center vertex. If not add the two-hop with highest
+        // value, which connects the one-hop to the zone, to the agent position
+        // list. If there exist no two-hop mark the one-hop as optional agent
+        // position.
+        optionalAgentPositions = new ArrayList<Vertex>();
+        for (Vertex oneHop : neighbours) {
+            ArrayList<Vertex> oneHopNeighbours = oneHop.getNeighbours();
+            oneHopNeighbours.retainAll(agentPositions);
+            if (oneHopNeighbours.size() == 1) {
+                oneHopNeighbours = oneHop.getNeighbours();
+                oneHopNeighbours.retainAll(pathMap.getVerticesWithHop(2));
+                TreeMap<Integer, Vertex> oneHopNeighboursWithNodeValues = new TreeMap<Integer, Vertex>();
+                for (Vertex oneHopNeighbour : oneHopNeighbours) {
+                    if (oneHopNeighbour != pathMap.getPosition()) {
+                        oneHopNeighboursWithNodeValues.put(oneHopNeighbour.getValue(), oneHopNeighbour);
+                    }
+                }
+                if (oneHopNeighboursWithNodeValues.size() > 0) {
+                    Vertex possibleDisconnectedNode = oneHopNeighboursWithNodeValues.lastEntry().getValue();
+                    agentPositions.add(possibleDisconnectedNode);
+                    logger.info("4) new agent position: " + possibleDisconnectedNode + " connects: " + oneHop);
+                } else {
+                    optionalAgentPositions.add(oneHop);
+                    logger.info("4) new optional agent position: " + oneHop);
+                }
+            }
+        }
+        logger.info("4) Agent Positions: " + agentPositions);
+
+        // All two-hops which are not in the agent position list, become
+        // optional positions.
+        optionalAgentPositions.addAll(pathMap.getVerticesWithHop(2));
+        optionalAgentPositions.removeAll(agentPositions);
+        logger.info("5) Optional Agent Positions: " + optionalAgentPositions);
     }
 
     private void calculateZones() {
@@ -38,7 +135,7 @@ public class ZoneMap {
             zoneValue += vertex.getValue();
         }
         zoneValue /= agentPositions.size();
-        logger.info("Minimal Zone Value is: " + zoneValue);
+        logger.info("Minimal Zone Value per agent is: " + zoneValue);
 
         // create zone
         Zone zone = new Zone(pathMap.getPosition());
@@ -65,59 +162,6 @@ public class ZoneMap {
                 logger.info("Optional Zone Value:" + newZoneValue + ". Positions: " + positions);
             }
         }
-    }
-
-    private void calculateAgentPositions() {
-        agentPositions = new ArrayList<Vertex>();
-        agentPositions.add(pathMap.getPosition());
-
-        ArrayList<Vertex> neighbours = pathMap.getNeighbours();
-        ArrayList<Vertex> twoHops = pathMap.getVerticesWithHop(2);
-        logger.info("Neighbours: " + neighbours + ". Initial Two-Hops: " + twoHops);
-
-        if (twoHops.size() == 0 && neighbours.size() == 0) {
-            logger.info("I don't know about any neighbours, aborting zone calculation");
-            return;
-        }
-
-        for (int i = twoHops.size() - 1; i > 0; i--) {
-            Vertex vertex = twoHops.get(i);
-            if (connectedWithVerticesInOneHop(vertex, neighbours) >= 2) {
-                twoHops.remove(vertex);
-                agentPositions.add(vertex);
-            }
-        }
-        logger.info("1) Agent Positions: " + agentPositions);
-        logger.info("1) Remaining Two-Hops: " + twoHops);
-
-        for (int i = twoHops.size() - 1; i > 0; i--) {
-            Vertex vertex = twoHops.get(i);
-            if (connectedWithVerticesInOneHop(vertex, agentPositions) >= 1) {
-                twoHops.remove(vertex);
-                continue;
-            }
-            if (connectedWithVerticesInTwoHops(vertex, neighbours, agentPositions)) {
-                twoHops.remove(vertex);
-            }
-        }
-        logger.info("2) Remaining Two-Hops: " + twoHops);
-
-        for (int i = twoHops.size() - 1; i > 0; i--) {
-            Vertex vertex = twoHops.get(i);
-            ArrayList<Vertex> bridge = buildBridge(vertex, twoHops);
-            if (bridge.size() == 2) {
-                twoHops.remove(vertex);
-                agentPositions.add(bridge.get(0));
-                agentPositions.add(bridge.get(1));
-            }
-        }
-        logger.info("3) Agent Positions: " + agentPositions);
-        logger.info("3) Remaining Two-Hops: " + twoHops);
-
-        optionalAgentPositions = new ArrayList<Vertex>();
-        optionalAgentPositions.addAll(pathMap.getVerticesWithHop(2));
-        optionalAgentPositions.removeAll(agentPositions);
-        logger.info("4) Optional Agent Positions: " + optionalAgentPositions);
     }
 
     public ArrayList<Vertex> buildBridge(Vertex vertex,
