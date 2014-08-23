@@ -138,8 +138,8 @@ zoneBuildingMode(false).
        //from the old zone and the newly available idleZoner), then we want to move the agents to the new zone.
        if (PrognosedValue > BestZonePrognosedValue & UsedNodes <= BestZoneUsedNodes+1){
        	-+bestZone(Value, PrognosedValue, CentreNode, UsedNodes);
-       	+positiveZoneReply(CentreNode)[source(Sender)];
        	+newMinion(Sender);
+       	+positiveZoneReply(CentreNode)[source(Sender)];
        	.send(Sender, tell, isMinion(true));
        	.send(Sender, untell, isCoach(true));
        	!movedToNewZone(CentreNode, UsedNodes);
