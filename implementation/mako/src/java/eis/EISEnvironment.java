@@ -170,7 +170,8 @@ public class EISEnvironment extends Environment implements AgentListener {
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                logger.info("Sending percept " + perceptToLiteral(percept) + " to agent MapAgent.");
+                // logger.info("Sending percept " + perceptToLiteral(percept) +
+                // " to agent MapAgent.");
                 mapAgentInstance.addPercept(percept);
                 addAgentPercept(jasonNameOfAgent, percept);
             }
@@ -186,7 +187,8 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     private void addAgentPercept(String jasonName, Percept percept) {
         Literal literal = perceptToLiteral(percept);
-        logger.info("Sending percept " + perceptToLiteral(percept) + " to agent " + jasonName + ".");
+        // logger.info("Sending percept " + perceptToLiteral(percept) +
+        // " to agent " + jasonName + ".");
         addPercept(jasonName, literal);
     }
 
