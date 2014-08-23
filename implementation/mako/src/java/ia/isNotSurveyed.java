@@ -17,6 +17,6 @@ public class isNotSurveyed extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
         Vertex vertex = MapAgent.getInstance().getVertex(terms[0].toString());
-        return !MapAgent.getInstance().isVertexSurveyed(vertex);
+        return !vertex.isSurveyed();
     }
 }
