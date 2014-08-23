@@ -23,16 +23,17 @@ public class PathMap {
             return false;
         if (knownPaths.containsKey(destination)) {
             Path currentPath = knownPaths.get(destination);
-            String oldPathInfo = "" + this.position + currentPath;
+            // String oldPathInfo = "" + this.position + currentPath;
             boolean hasHopsChanged = currentPath.setPathHops(newPath.getPathHops(), newPath.getNextHopVertex());
             boolean hasCostsChanged = currentPath.setPathCosts(newPath.getPathCosts(), newPath.getNextBestCostVertex());
             if (hasHopsChanged) {
                 updateHopPaths(newPath);
             }
 
-            if (hasHopsChanged || hasCostsChanged) {
-                logger.info("Updated path: " + this.position + currentPath + " (was: " + oldPathInfo + ")");
-            }
+            // if (hasHopsChanged || hasCostsChanged) {
+            // logger.info("Updated path: " + this.position + currentPath +
+            // " (was: " + oldPathInfo + ")");
+            // }
 
             // if (hasCostsChanged) {
             // updateCostPaths(path);
@@ -42,7 +43,7 @@ public class PathMap {
         } else {
             knownPaths.put(destination, newPath);
             updateHopPaths(newPath);
-            logger.info("New path: " + this.position + newPath);
+            // logger.info("New path: " + this.position + newPath);
             return true;
         }
     }
@@ -85,7 +86,8 @@ public class PathMap {
         if (this.containsPathsWithHop(hop)) {
             vertices.addAll(hopPaths.get(hop));
         }
-        logger.info("Asked for vertices(" + hop + "). Result is: " + vertices);
+        // logger.info("Asked for vertices(" + hop + "). Result is: " +
+        // vertices);
         return vertices;
     }
 
@@ -117,7 +119,9 @@ public class PathMap {
 
     public ArrayList<Path> getAllPaths() {
         ArrayList<Path> paths = new ArrayList<Path>();
-        for (Path path : knownPaths.values()) {
+        @SuppressWarnings("unchecked")
+        HashMap<Vertex, Path> knownPathsClone = (HashMap<Vertex, Path>) knownPaths.clone();
+        for (Path path : knownPathsClone.values()) {
             paths.add(path);
         }
         return paths;

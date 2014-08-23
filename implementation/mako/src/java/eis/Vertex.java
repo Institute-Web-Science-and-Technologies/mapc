@@ -47,7 +47,7 @@ public class Vertex {
     public void setTeam(String team) {
         if (!this.team.equalsIgnoreCase(team)) {
             this.team = team;
-            logger.info("Now occupied by " + team);
+            // logger.info("Now occupied by " + team);
         }
     }
 
@@ -100,7 +100,7 @@ public class Vertex {
      */
     public boolean isSurveyed() {
         for (Vertex neighbour : knownPaths.getNeighbours()) {
-            if (knownPaths.getPath(neighbour).getPathCosts() < 11) {
+            if (knownPaths.getPath(neighbour).getPathCosts() > 10) {
                 return false;
             }
         }
@@ -201,7 +201,8 @@ public class Vertex {
         newPath.setPathCosts(edgeWeight, neighbour);
         boolean changed = knownPaths.handlePath(newPath);
         if (changed) {
-            logger.info("New or better path (setNeighbour): " + this + newPath);
+            // logger.info("New or better path (setNeighbour): " + this +
+            // newPath);
             informNeighboursAboutPath(newPath);
             informNeighbourAboutPaths(neighbour);
         }
@@ -232,7 +233,7 @@ public class Vertex {
      *            the node telling this node about the new path
      */
     public void setPath(Path senderToDestination, Vertex sender) {
-        logger.info("Received path " + sender + senderToDestination);
+        // logger.info("Received path " + sender + senderToDestination);
         Vertex destination = senderToDestination.getDestination();
         if (destination == this) {
             return;
@@ -246,8 +247,11 @@ public class Vertex {
         boolean changed = knownPaths.handlePath(newPath);
         if (changed) {
             Path realNewPath = knownPaths.getPath(destination);
-            logger.info("SenderToDestinationHops: " + senderToDestination.getPathHops() + " - hereToSenderHops: " + hereToSender.getPathHops());
-            logger.info("New or better path: (setPath)" + this + realNewPath);
+            // logger.info("SenderToDestinationHops: " +
+            // senderToDestination.getPathHops() + " - hereToSenderHops: " +
+            // hereToSender.getPathHops());
+            // logger.info("New or better path: (setPath)" + this +
+            // realNewPath);
             informNeighboursAboutPath(realNewPath);
         }
     }
