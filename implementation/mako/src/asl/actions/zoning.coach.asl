@@ -22,7 +22,11 @@ zoneBuildingMode(false).
 
 +!isZonePossible
     <- true.
-
+    
+//positiveZoneReply from a newly available minion
++positiveZoneReply(CentreNode):
+	newMinion(NewMinion)
+	<-true.
 // If we are already building a zone (which means directing minions, moving to
 // the centre mode and so on), we deny any further minions.
 //
@@ -30,7 +34,8 @@ zoneBuildingMode(false).
 +positiveZoneReply(_)[source(Minion)]:
     isCoach(true)
     & zoneBuildingMode(true)
-    <- .send(Sender, achieve, foundNewZone).
+    <- .send(Sender, achieve, foundNewZone);
+       -positiveZoneReply(_)[source(Minion)].
 
 // If s.o. agreed to build a zone with us, we memorise his availability if he is
 // replying to the zone which we still try to build right now. Also, we do
@@ -58,8 +63,11 @@ zoneBuildingMode(false).
 +positiveZoneReply(CentreNode)[source(Minion)]:
     isCoach(true)
     & bestZone(_, _, CentreNode, _)
+    & position(MyPosition)
     <- -+zoneBuildingMode(true);
-       goto(CentreNode); // may fail if we are standing on it already.
+       if(MyPosition \== CentreNode){
+       	 goto(CentreNode);
+       }
        -+zoneNode(CentreNode);
        !toldMinionsTheirPosition.
 
@@ -67,7 +75,8 @@ zoneBuildingMode(false).
 // we tell him to look for a new zone.
 +positiveZoneReply(_)[source(Minion)]:
     isCoach(true)
-    <- .send(Sender, achieve, foundNewZone).
+    <- .send(Sender, achieve, foundNewZone)
+       -positiveZoneReply(_)[source(Minion)].
 
 // Use an internal action that determines where to place the minions the best
 // and tell them:
@@ -115,3 +124,35 @@ zoneBuildingMode(false).
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
        -+isCoach(false);
        !builtZone(true).
+       
++!asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Sender)]:
+	isCoach(true)
+	& bestZone(BestZoneValue, BestZonePrognosedValue, BestZoneCentreNode, BestZoneUsedNodes)
+	& position(PositionVertex)
+	<- ?plannedZoneTimeInSteps(Steps);
+	   ia.getDistance(PositionVertex, CentreNode, Distance);
+       ia.calculateLongTermZoneValue(Value, Distance, Steps, PrognosedValue);
+       .length(BestZoneUsedNodes, CurrentSize);
+       //If the zone of the idleZoner is better regarding the PrognosedValue and the number of agents that would be needed
+       //build that zone is less or equal than the number of agents in the current zone + 1 (because we have the agents
+       //from the old zone and the newly available idleZoner), then we want to move the agents to the new zone.
+       if (PrognosedValue > BestZonePrognosedValue & UsedNodes <= BestZoneUsedNodes+1){
+       	-+bestZone(Value, PrognosedValue, CentreNode, UsedNodes);
+       	+positiveZoneReply(CentreNode)[source(Sender)];
+       	+newMinion(Sender);
+       	.send(Sender, tell, isMinion(true));
+       	.send(Sender, untell, isCoach(true));
+       	!movedToNewZone(CentreNode, UsedNodes);
+       }
+       else{
+       	//If the zone of the idleZoner is not better than the current zone, the idleZoner will join the group
+       	//and extend the zone by moving to an optional vertex.
+       	//TODO: pass correct parameters/return values: make sure to use the right method signature
+       	ia.getExtraZoneSpot(BestZoneCenterNode, CurrentSize, OptionalVertex);
+       	.send(Sender, tell, zoneGoalVertex(OptionalVertex));
+       }.
+       
++!movedToNewZone(CentreNode, UsedNodes)
+	<-!goto(CentreNode);
+	  !toldMinionsTheirPosition;
+	  -newMinion(_).
