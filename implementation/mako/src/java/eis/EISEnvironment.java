@@ -152,6 +152,7 @@ public class EISEnvironment extends Environment implements AgentListener {
                 delayedPerceptsMap.remove(jasonName);
             }
         }
+
         Percept requestAction = null;
         clearPercepts(jasonName);
         // clearPercepts("cartographer");
@@ -168,7 +169,7 @@ public class EISEnvironment extends Environment implements AgentListener {
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                addCartographerPercept(percept);
+                MapAgent.getInstance().addPercept(percept);
                 addAgentPercept(jasonName, percept);
             }
         }
@@ -176,27 +177,6 @@ public class EISEnvironment extends Environment implements AgentListener {
             addAgentPercept(jasonName, requestAction);
         }
 
-    }
-
-    private void addCartographerPercept(Percept percept) {
-        Literal literal = perceptToLiteral(percept);
-        if (!cartographerPerceptSet.contains(percept)) {
-            switch (percept.getName()) {
-            // case "visibleEntity":
-            case "probedVertex":
-            case "visibleVertex":
-            case "visibleEdge":
-            case "surveyedEdge":
-            case "edges":
-            case "vertices":
-            case "step":
-                cartographerPerceptSet.add(percept);
-                // logger.info("Sending percept " + literal +
-                // " to cartographer.");
-                addPercept("cartographer", literal);
-                break;
-            }
-        }
     }
 
     private void addAgentPercept(String jasonName, Percept percept) {
