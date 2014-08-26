@@ -7,7 +7,6 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -29,7 +28,8 @@ public class EISEnvironment extends Environment implements AgentListener {
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
-    private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
+
+    // private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
 
     /*
      * jason lifecycle: init -> user-init -> compile -> run -> user-end
@@ -139,25 +139,26 @@ public class EISEnvironment extends Environment implements AgentListener {
     @Override
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
-        String jasonName = serverAgentMap.get(agentName).getJasonName();
+        String jasonNameOfAgent = serverAgentMap.get(agentName).getJasonName();
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
         // but I can't think of any other way to fix this issue. -sewell
         if (percepts.toString().contains("role")) {
-            delayedPerceptsMap.put(jasonName, percepts);
+            delayedPerceptsMap.put(jasonNameOfAgent, percepts);
             return;
         } else {
-            if (delayedPerceptsMap.containsKey(jasonName)) {
-                percepts.addAll(delayedPerceptsMap.get(jasonName));
-                delayedPerceptsMap.remove(jasonName);
+            if (delayedPerceptsMap.containsKey(jasonNameOfAgent)) {
+                percepts.addAll(delayedPerceptsMap.get(jasonNameOfAgent));
+                delayedPerceptsMap.remove(jasonNameOfAgent);
             }
         }
 
         Percept requestAction = null;
-        clearPercepts(jasonName);
+        clearPercepts(jasonNameOfAgent);
         // clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
+        MapAgent mapAgentInstance = MapAgent.getInstance();
         for (Percept percept : percepts) {
             // Make sure that the requestAction percept is handled last by the
             // agents because when the agent receives the requestAction
@@ -169,12 +170,17 @@ public class EISEnvironment extends Environment implements AgentListener {
                 continue;
             }
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                MapAgent.getInstance().addPercept(percept);
-                addAgentPercept(jasonName, percept);
+                // logger.info("Sending percept " + perceptToLiteral(percept) +
+                // " to agent MapAgent.");
+                mapAgentInstance.addPercept(percept);
+                addAgentPercept(jasonNameOfAgent, percept);
+            }
+            if (percept.getName().equalsIgnoreCase("position")) {
+                mapAgentInstance.storeAgentPosition(jasonNameOfAgent, percept.getParameters().get(0).toString());
             }
         }
         if (requestAction != null) {
-            addAgentPercept(jasonName, requestAction);
+            addAgentPercept(jasonNameOfAgent, requestAction);
         }
 
     }

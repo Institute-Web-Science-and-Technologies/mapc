@@ -1,18 +1,17 @@
 package eis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
- * This is the class that handles values and methods related to nodes.
+ * Handles values and methods related to nodes.
  * 
- * @author Artur Daudrich, Michael Sewell
+ * @author Artur Daudrich
+ * @author Michael Sewell
  * 
  */
 public class Vertex {
-
+    private AgentLogger logger;
     // The 'name' of the vertex, e.g. 'v81'
     private String identifier = "";
     // the team currently occupying the vertex, e.g. 'teamA'
@@ -22,45 +21,38 @@ public class Vertex {
     // been probed
     private int value = 0;
 
-    // destinations saves a list of all the other vertices we know a path to.
-    // the integer value is the minimal hop distance to the vertex
-    private HashMap<Integer, ArrayList<Vertex>> destinationMap = new HashMap<Integer, ArrayList<Vertex>>();
-    // for every destination, pathMap saves the path to it
-    private HashMap<Vertex, Path> pathMap = new HashMap<Vertex, Path>();
-    private HashMap<Vertex, Integer> zoneValueMap = new HashMap<Vertex, Integer>();
-    private HashMap<Integer, Zone> zones = new HashMap<Integer, Zone>();
+    private PathMap knownPaths;
+    private ZoneMap zoneMap;
 
     /**
-     * Constructor for the Vertex class.
-     * 
-     * @param vertexName
+     * @param identifier
      *            The name of the vertex, e.g. 'v31'.
      */
-    public Vertex(String vertexName) {
-        this.identifier = vertexName;
+    public Vertex(String identifier) {
+        this.identifier = identifier;
+        this.knownPaths = new PathMap(this);
+        this.zoneMap = new ZoneMap(knownPaths);
+        logger = new AgentLogger(identifier);
+        logger.setVisible(true);
     }
 
-    /**
-     * @return The identifier of the vertex.
-     */
     public String getIdentifier() {
         return this.identifier;
     }
 
     /**
-     * Tells the vertex about the team currently occupying it.
-     * 
      * @param team
      *            The identifier of the team currently occupying the node.
      */
     public void setTeam(String team) {
         if (!this.team.equalsIgnoreCase(team)) {
             this.team = team;
+            // logger.info("Now occupied by " + team);
         }
     }
 
     /**
-     * @return The node value (1-10).
+     * @return The vertex value (1-10).
      */
     public int getValue() {
         if (this.value == 0) {
@@ -70,7 +62,8 @@ public class Vertex {
     }
 
     /**
-     * Sets the node value. Used after probing.
+     * Sets the vertex value and triggers zone recalculation. Used after
+     * probing.
      * 
      * @param value
      *            The node value (1-10).
@@ -78,150 +71,21 @@ public class Vertex {
     public void setValue(int value) {
         if (this.value == 0) {
             this.value = value;
-            calculateZoneValue();
+            zoneMap.calculateZoneValue();
             informZoneAboutNodeValue();
         }
     }
 
     private void informZoneAboutNodeValue() {
-        ArrayList<Vertex> zoneVertices = new ArrayList<Vertex>();
-        zoneVertices.addAll(destinationMap.get(1));
-        zoneVertices.addAll(destinationMap.get(2));
+        ArrayList<Vertex> zoneVertices = zoneMap.getZoneVertices();
+        logger.info("Informing the nodes in my zone (" + zoneVertices + ") about my node value (" + this.value + ")");
         for (Vertex vertex : zoneVertices) {
-            vertex.setZoneNodeValue(this, this.getValue());
+            vertex.calculateZone();
         }
     }
 
-    /**
-     * Sets the node value of a node in the two-hop neighbourhood, which is used
-     * for calculating the zone value of this node.
-     * 
-     * @param vertex
-     *            the neighbour vertex
-     * @param vertexValue
-     *            the node value of the neighbour
-     */
-    public void setZoneNodeValue(Vertex vertex, int vertexValue) {
-        if (!zoneValueMap.containsKey(vertex) || zoneValueMap.get(vertex) < vertexValue) {
-            zoneValueMap.put(vertex, vertexValue);
-            calculateZoneValue();
-        }
-    }
-
-    private void calculateZoneValue() {
-        // calculate agent positions
-        ArrayList<Vertex> agentPositions = new ArrayList<Vertex>();
-        agentPositions.add(this);
-
-        ArrayList<Vertex> oneHops = destinationMap.get(1);
-        ArrayList<Vertex> twoHops = destinationMap.get(2);
-
-        for (int i = twoHops.size(); i > 0; i--) {
-            Vertex vertex = twoHops.get(i);
-            if (vertex.connectedWithVerticesInOneHop(oneHops) >= 2) {
-                twoHops.remove(vertex);
-                agentPositions.add(vertex);
-            }
-        }
-        for (int i = twoHops.size(); i > 0; i--) {
-            Vertex vertex = twoHops.get(i);
-            if (vertex.connectedWithVerticesInOneHop(agentPositions) >= 1) {
-                twoHops.remove(vertex);
-                continue;
-            }
-            if (vertex.connectedWithVerticesInTwoHops(oneHops, agentPositions)) {
-                twoHops.remove(vertex);
-            }
-        }
-        for (int i = twoHops.size(); i > 0; i--) {
-            Vertex vertex = twoHops.get(i);
-            ArrayList<Vertex> bridge = vertex.buildBridge(twoHops);
-            if (bridge.size() == 2) {
-                twoHops.remove(vertex);
-                agentPositions.add(bridge.get(0));
-                agentPositions.add(bridge.get(1));
-            }
-        }
-        ArrayList<Vertex> optionalAgentPositions = new ArrayList<Vertex>();
-        optionalAgentPositions.addAll(destinationMap.get(2));
-        optionalAgentPositions.removeAll(agentPositions);
-
-        // calculate zones
-        double zoneValue = 0.0;
-        ArrayList<Vertex> zoneVertices = new ArrayList<Vertex>();
-        zoneVertices.addAll(oneHops);
-        zoneVertices.addAll(agentPositions);
-        // calculate initial zone value
-        for (Vertex vertex : zoneVertices) {
-            zoneValue += vertex.getValue();
-        }
-        zoneValue /= agentPositions.size();
-        Zone zone = new Zone();
-        zone.setZoneValue(zoneValue);
-        zone.setPositions(agentPositions);
-        this.zones.put(agentPositions.size(), zone);
-
-        TreeMap<Integer, Vertex> optionalAgentsWithValues = new TreeMap<Integer, Vertex>();
-        for (Vertex optionalAgentPosition : optionalAgentPositions) {
-            optionalAgentsWithValues.put(zoneValueMap.get(optionalAgentPosition), optionalAgentPosition);
-        }
-        while (optionalAgentsWithValues.size() > 0) {
-            Entry<Integer, Vertex> bestEntry = optionalAgentsWithValues.pollLastEntry();
-            if (bestEntry.getKey() > zone.getZoneValue()) {
-                ArrayList<Vertex> positions = zone.getPositions();
-                positions.add(bestEntry.getValue());
-                double newZoneValue = ((zone.getZoneValue() * (positions.size() - 1)) + bestEntry.getKey()) / positions.size();
-                zone = new Zone();
-                zone.setPositions(positions);
-                zone.setZoneValue(newZoneValue);
-                this.zones.put(positions.size(), zone);
-            }
-        }
-    }
-
-    public ArrayList<Vertex> buildBridge(ArrayList<Vertex> vertices) {
-        ArrayList<Vertex> myOneHops = destinationMap.get(1);
-        myOneHops.retainAll(vertices);
-        ArrayList<Vertex> bridgeVertices = new ArrayList<Vertex>();
-        if (myOneHops.size() >= 2) {
-            bridgeVertices.add(myOneHops.get(0));
-            bridgeVertices.add(myOneHops.get(1));
-        }
-        return bridgeVertices;
-    }
-
-    /**
-     * Given a list of vertices, return the number of those vertices that this
-     * node is connected to in two steps.
-     * 
-     * @param vertices
-     *            the list of vertices to check for connectivity from this node
-     * @return the number of neighbours in the given vertex list
-     */
-    public boolean connectedWithVerticesInTwoHops(ArrayList<Vertex> vertices,
-            ArrayList<Vertex> agentPositions) {
-        ArrayList<Vertex> myOneHops = destinationMap.get(1);
-        myOneHops.retainAll(vertices); // blue to cyan
-        for (Vertex vertex : myOneHops) {
-            if (vertex.connectedWithVerticesInOneHop(agentPositions) >= 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Given a list of vertices, return the number of those vertices that this
-     * node has direct edges to.
-     * 
-     * @param vertices
-     *            the list of vertices to check for connectivity from this node
-     * @return the number of neighbours in the given vertex list
-     */
-    public int connectedWithVerticesInOneHop(ArrayList<Vertex> vertices) {
-        ArrayList<Vertex> myOneHops = destinationMap.get(1);
-        myOneHops.retainAll(vertices);
-        return myOneHops.size();
+    private void calculateZone() {
+        this.zoneMap.calculateZoneValue();
     }
 
     /**
@@ -235,8 +99,8 @@ public class Vertex {
      * @return True if all adjacent edges of the node have been surveyed.
      */
     public boolean isSurveyed() {
-        for (Vertex neighbour : this.destinationMap.get(1)) {
-            if (pathMap.get(neighbour).getPathCosts() < 11) {
+        for (Vertex neighbour : knownPaths.getNeighbours()) {
+            if (knownPaths.getPath(neighbour).getPathCosts() > 10) {
                 return false;
             }
         }
@@ -252,14 +116,16 @@ public class Vertex {
      * @return A list of vertices (empty if no unsurveyed vertices can be
      *         reached from this node).
      */
-    public HashMap<Vertex, Integer> getNextUnsurveyedVertices(int hop) {
-        HashMap<Vertex, Integer> unsurveyedVertices = new HashMap<Vertex, Integer>();
-        if (!this.destinationMap.containsKey(hop)) {
+    public TreeMap<Integer, Vertex> getNextUnsurveyedVertices(int hop) {
+        TreeMap<Integer, Vertex> unsurveyedVertices = new TreeMap<Integer, Vertex>();
+        if (!knownPaths.containsPathsWithHop(hop)) {
             return unsurveyedVertices;
         }
-        for (Vertex vertex : this.destinationMap.get(hop)) {
-            int weight = pathMap.get(vertex).getPathCosts();
-            unsurveyedVertices.put(vertex, weight);
+        for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
+            if (!vertex.isSurveyed()) {
+                int pathCosts = knownPaths.getPath(vertex).getPathCosts();
+                unsurveyedVertices.put(pathCosts, vertex);
+            }
         }
         if (unsurveyedVertices.size() > 0) {
             return unsurveyedVertices;
@@ -268,8 +134,61 @@ public class Vertex {
         }
     }
 
+    public TreeMap<Integer, Vertex> getNextUnprobedVertices(int hop) {
+        TreeMap<Integer, Vertex> unprobedVertices = new TreeMap<Integer, Vertex>();
+        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+
+        // if there are no paths return an empty list
+        if (!knownPaths.containsPathsWithHop(hop)) {
+            return unprobedVertices;
+        }
+        // find all unprobed vertices
+        for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
+            if (!vertex.isProbed()) {
+                vertices.add(vertex);
+            }
+        }
+
+        // select only the vertex with most probed neighbours
+        int probedNeighbours = 0;
+        ArrayList<Vertex> verticesWithProbedNeighbours = new ArrayList<Vertex>();
+        for (Vertex vertex : vertices) {
+            // count the probed neighbours of the vertex
+            int count = 0;
+            for (Vertex neighbour : vertex.getNeighbours()) {
+                if (neighbour.isProbed()) {
+                    count++;
+                }
+            }
+            if (probedNeighbours == count) {
+                verticesWithProbedNeighbours.add(vertex);
+            }
+            if (probedNeighbours < count) {
+                probedNeighbours = count;
+                verticesWithProbedNeighbours.clear();
+                verticesWithProbedNeighbours.add(vertex);
+            }
+        }
+
+        // insert the nearest unprobed vertices with most already probed
+        // neighbours and sort them by path costs
+        for (Vertex vertex : verticesWithProbedNeighbours) {
+            int pathCosts = knownPaths.getPath(vertex).getPathCosts();
+            unprobedVertices.put(pathCosts, vertex);
+        }
+
+        if (unprobedVertices.size() > 0) {
+            return unprobedVertices;
+        } else {
+            return getNextUnprobedVertices(hop + 1);
+        }
+    }
+
     /**
-     * Tells the vertex about the existence of a neighbour node.
+     * Tells the vertex about the existence of a neighbour node. If the vertex
+     * already knows about this neighbour, it will only update the information
+     * about the edge weight to its neighbour if the edgeWeight parameter is
+     * smaller than the stored edge weight.
      * 
      * @param neighbour
      *            the vertex to be added to the list of neighbours
@@ -277,15 +196,29 @@ public class Vertex {
      *            the weight of the edge to the node (1-10, or 11 if unsurveyed)
      */
     public void setNeighbour(Vertex neighbour, int edgeWeight) {
-        Path path = handlePath(neighbour);
-        path.setPathHops(1, neighbour);
-        path.setPathCosts(edgeWeight, neighbour);
-        addDestination(1, neighbour);
-        informNeighboursAboutPath(path);
+        Path newPath = new Path(neighbour);
+        newPath.setPathHops(1, neighbour);
+        newPath.setPathCosts(edgeWeight, neighbour);
+        boolean changed = knownPaths.handlePath(newPath);
+        if (changed) {
+            // logger.info("New or better path (setNeighbour): " + this +
+            // newPath);
+            informNeighboursAboutPath(newPath);
+            informNeighbourAboutPaths(neighbour);
+        }
+    }
+
+    private void informNeighbourAboutPaths(Vertex neighbour) {
+        for (Path path : knownPaths.getAllPaths()) {
+            if (path.getDestination() != neighbour) {
+                neighbour.setPath(path, this);
+            }
+        }
     }
 
     private void informNeighboursAboutPath(Path path) {
-        for (Vertex neighbour : this.destinationMap.get(1)) {
+        ArrayList<Vertex> neighbours = this.getNeighbours();
+        for (Vertex neighbour : neighbours) {
             neighbour.setPath(path, this);
         }
     }
@@ -294,51 +227,56 @@ public class Vertex {
      * Force the vertex to recalculate a path if told to do so by one of its
      * neighbours.
      * 
-     * @param path
+     * @param senderToDestination
      *            the path to check for improved hops/costs
      * @param sender
      *            the node telling this node about the new path
      */
-    public void setPath(Path path, Vertex sender) {
-        Path newPath = handlePath(path.getDestination());
-        int newCosts = path.getPathCosts() + pathMap.get(sender).getPathCosts();
-        int newHops = path.getPathHops() + pathMap.get(sender).getPathHops();
-        boolean hasBetterCosts = newPath.setPathCosts(newCosts, sender);
-        boolean hasBetterHops = newPath.setPathHops(newHops, sender);
-        if (hasBetterHops) {
-            addDestination(newHops, sender);
+    public void setPath(Path senderToDestination, Vertex sender) {
+        // logger.info("Received path " + sender + senderToDestination);
+        Vertex destination = senderToDestination.getDestination();
+        if (destination == this) {
+            return;
         }
-        if (hasBetterCosts || hasBetterHops) {
-            informNeighboursAboutPath(newPath);
-        }
-    }
-
-    private void addDestination(int hops, Vertex destination) {
-        // first remove existing vertices
-        for (int key : destinationMap.keySet()) {
-            if (destinationMap.get(key).contains(destination)) {
-                destinationMap.get(key).remove(destination);
-                break;
-            }
-        }
-        // then add vertex
-        if (!destinationMap.containsKey(hops)) {
-            destinationMap.put(hops, new ArrayList<Vertex>());
-        }
-        destinationMap.get(hops).add(destination);
-        if (hops <= 2) {
-            destination.setZoneNodeValue(this, this.getValue());
+        // call setNeighbour to guarantee that a path to the sender exists
+        setNeighbour(sender, 11);
+        Path hereToSender = knownPaths.getPath(sender);
+        int costs = senderToDestination.getPathCosts() + hereToSender.getPathCosts();
+        int hops = senderToDestination.getPathHops() + hereToSender.getPathHops();
+        Path newPath = new Path(destination, costs, sender, hops, sender);
+        boolean changed = knownPaths.handlePath(newPath);
+        if (changed) {
+            Path realNewPath = knownPaths.getPath(destination);
+            // logger.info("SenderToDestinationHops: " +
+            // senderToDestination.getPathHops() + " - hereToSenderHops: " +
+            // hereToSender.getPathHops());
+            // logger.info("New or better path: (setPath)" + this +
+            // realNewPath);
+            informNeighboursAboutPath(realNewPath);
         }
     }
 
-    private Path handlePath(Vertex destination) {
-        Path path;
-        if (!pathMap.containsKey(destination)) {
-            path = new Path(destination);
-            pathMap.put(destination, path);
-        } else {
-            path = pathMap.get(destination);
-        }
-        return path;
+    public String toString() {
+        return this.identifier;
+    }
+
+    public ArrayList<Vertex> getNeighbours() {
+        return this.knownPaths.getNeighbours();
+    }
+
+    public Path getPath(Vertex destination) {
+        return knownPaths.getPath(destination);
+    }
+
+    public ArrayList<Vertex> getNeighbourhood(int range) {
+        return knownPaths.getVerticesUpToDistance(range);
+    }
+
+    public Zone getBestMinimalZone() {
+        return zoneMap.getBestMinimalZone();
+    }
+
+    public ZoneMap getZoneMap() {
+        return zoneMap;
     }
 }
