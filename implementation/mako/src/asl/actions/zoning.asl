@@ -31,7 +31,7 @@ plannedZoneTimeInSteps(15).
 // later on. Asynchronous may only be set to false once when zoneMode begins.
 +!builtZone(Asynchronous):
     position(PositionVertex)
-    & broadcastAgentList(BroadcastList)
+    & broadcastAgentList(BroadcastList) //TODO: replace with internal action for getting idleZoner
     & .my_name(MyName)
     <- // tell all agents that I am ready to build zones:
       .send(BroadcastList, tell, idleZoner(MyName));
@@ -42,39 +42,46 @@ plannedZoneTimeInSteps(15).
       -negativeZoneReply(_)[source(_)];
       -zoneGoalVertex(_)[source(_)];
       -zoneNode(_)[source(_)];
-      -foreignBestZone(_, _, _)[source(_)];
+      -foreignBestZone(_, _, _, _)[source(_)];
+      -minions(_)[source(_)];
+      -closestAgents(_)[source(_)];
        
       // ask Vertex for its zone as well as its neighbours:
-      ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes);
+      ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes, ClosestAgents);
       // And calculate it in regard to the time we plan to spend for zoning. We
       // assume 1 as a Distance to discount home zones (in 0HNH) at least a bit.
       // Also it spares us from calculating the distance:
-      ?plannedZoneTimeInSteps(Steps);
-      ia.calculateLongTermZoneValue(Value, 1, Steps, PrognosedValue);
+      //?plannedZoneTimeInSteps(Steps);
+      //ia.calculateLongTermZoneValue(Value, 1, Steps, PrognosedValue);
       // trigger broadcasting:
-      +bestZone(Value, PrognosedValue, CentreNode, UsedNodes)[source(self)];
-      
+      +bestZone(Value, CentreNode)[source(self)];
+      +closestAgents(ClosestAgents)[source(Self)];
+      +minions(ClosestAgents);      
       if (Asynchronous) {
-        .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, UsedNodes));
+        .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode));
       } else { // Initial broadcast storm when +zoneMode(true):
-        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, UsedNodes));
+        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode));
       }.
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
 // Broadcaster doesn't know about our zone so we tell him as we haven't started
 // building one yet. We also deal with his zone information.
-+asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
++asyncForeignBestZone(Value, CentreNode, UsedNodes, ClosestAgents)[source(Broadcaster)]:
     isAvailableForZoning
-    & bestZone(BestZoneValue, _, BestZoneCentreNode, BestZoneUsedNodes)[source(self)]
-    <- .send(BroadcastList, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneUsedNodes));
-       +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
+    & bestZone(BestZoneValue, BestZoneCentreNode)[source(self)]
+    <- .send(BroadcastList, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode));
+       +foreignBestZone(Value, CentreNode)[source(Coach)];
+       ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes, ClosestAgents);
+       -+closestAgents(ClosestAgents).
 
 // We received an asynchronous foreignBestZone percept but don't know about our
 // own zone anymore as it was worse. Hence, we cannot tell him our zone but we
 // still take his zone into consideration when choosing the best one for us.
-+asyncForeignBestZone(Value, CentreNode, UsedNodes)[source(Broadcaster)]:
++asyncForeignBestZone(Value, CentreNode)[source(Broadcaster)]:
     isAvailableForZoning
-    <- +foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)].
+    <- +foreignBestZone(Value, CentreNode)[source(Coach)]
+    ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes, ClosestAgents);
+    -+closestAgents(ClosestAgents).
 
 // We have received a zone better than the one we know (or
 // didn't know any), so we throw our zone away
@@ -83,62 +90,64 @@ plannedZoneTimeInSteps(15).
 //
 // We also tell our former coach that we are no longer interested in his zone!
 @onlyAddOneBetterZoneAtATime[atomic]
-+foreignBestZone(Value, CentreNode, UsedNodes)[source(Coach)]:
++foreignBestZone(Value, CentreNode)[source(Coach)]:
     isAvailableForZoning
     & position(PositionVertex)
-    & ia.getDistance(PositionVertex, CentreNode, Distance)
-    & plannedZoneTimeInSteps(Steps)
-    & ia.calculateLongTermZoneValue(Value, Distance, Steps, PrognosedValue)
-    & bestZone(FormerZoneValue, FormerPrognosedValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]
+    //& ia.getDistance(PositionVertex, CentreNode, Distance)
+    //& plannedZoneTimeInSteps(Steps)
+    //& ia.calculateLongTermZoneValue(Value, Distance, Steps, PrognosedValue)
+    & bestZone(FormerZoneValue, FormerZoneCentreNode)[source(FormerCoach)]
     // my zone is worse:
-    & FormerPrognosedValue < PrognosedValue
+    & FormerValue < Value
     // or the zones are identical but my name is alphabetically bigger:
-    | (FormerPrognosedValue == PrognosedValue
+    | (FormerValue == Value
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- .send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
-       -bestZone(FormerZoneValue, FormerPrognosedValue, FormerZoneCentreNode, FormerZoneUsedNodes)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
-       +bestZone(Value, PrognosedValue, CentreNode, UsedNodes)[source(Coach)];
+    <- //.send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
+       -bestZone(FormerZoneValue, FormerZoneCentreNode)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
+       +bestZone(Value, CentreNode)[source(Coach)];
+       ia.getBestZone(PositionVertex, 1, Value, CentreNode, UsedNodes, ClosestAgents);
+       -+closestAgents(ClosestAgents);
        !receivedAllReplies.
 
-// We were informed about a worse zone. Or, we aren't even interested in zoning.
-// In both ways, tell the sender and test whether we have received all replies.
-+foreignBestZone(_, CentreNode, _)[source(Sender)]:
+// We were informed about a worse zone.
++foreignBestZone(_, CentreNode)[source(Sender)]:
     isAvailableForZoning
-    <- .send(Sender, tell, negativeZoneReply(CentreNode));
+    <- //.send(Sender, tell, negativeZoneReply(CentreNode));
        !receivedAllReplies.
 
 // Don't count the negative reply AND the broadcast of the same sender in the
 // !receivedAllReplies[2] achievement goal.
-+negativeZoneReply(_)[source(Sender)]:
-    isAvailableForZoning
-    & foreignBestZone(_, _, _)[source(Sender)]
-    <- -foreignBestZone(_, _, _)[source(Sender)];
-       !receivedAllReplies.
+//+negativeZoneReply(_)[source(Sender)]:
+//    isAvailableForZoning
+//    & foreignBestZone(_, _, _, _)[source(Sender)]
+//    <- -foreignBestZone(_, _, _, _)[source(Sender)];
+//       !receivedAllReplies.
 
 // We only got a negative zone reply. We will test if we now got replies from
 // every agent.
-+negativeZoneReply(_)[source(_)]:
-    isAvailableForZoning
-    <- !receivedAllReplies.
+//+negativeZoneReply(_)[source(_)]:
+//    isAvailableForZoning
+//    <- !receivedAllReplies.
 
 // If all idleZoners have replied, we will have the best zone stored.
 // We will then choose our role for this zoning part (Coach vs. Minion).
 +!receivedAllReplies:
-    .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
-    & .count(idleZoner(_), AvailableZonersAmount)
-    & BroadcastRepliesAmount == AvailableZonersAmount
+    .count(foreignBestZone(_, _), BroadcastRepliesAmount)
+    & ia.getIdleZoner(AvailableZoners)
+    & BroadcastRepliesAmount == .length(AvailableZoner)
     <- !choseZoningRole.
 
 // Or if all agents have replied with either a broadcast or a refusal. This
 // achievement goal is intended for zoners who appear after the first broadcast
 // storm.
 +!receivedAllReplies:
-    .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
-    & .count(negativeZoneReply(_), RefusalAmount)
+    .count(foreignBestZone(_, _), BroadcastRepliesAmount)
     & .count(broadcastAgentList(BroadcastList), AgentsAmount) // or use 28 as a static measure :Þ
-    & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount
+    & AgentsAmount ==  BroadcastRepliesAmount
+    & isCoach(false)
+    & isMinion(false)
     <- !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.
