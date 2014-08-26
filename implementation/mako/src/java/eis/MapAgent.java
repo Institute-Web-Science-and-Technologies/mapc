@@ -159,6 +159,12 @@ public class MapAgent {
     private void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > getStep()) {
+            for (Vertex vertex : reservedProbedVertices) {
+                vertex.setReservedForProbing(false);
+            }
+            for (Vertex vertex : reservedUnsurveyedVertices) {
+                vertex.setReservedForSurveying(false);
+            }
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
             setStep(newStep);
@@ -232,14 +238,7 @@ public class MapAgent {
         if (!unsurveyedVertices.isEmpty()) {
             Integer key = unsurveyedVertices.firstKey();
             vertex = unsurveyedVertices.get(key);
-            while (reservedUnsurveyedVertices.contains(vertex)) {
-                key = unsurveyedVertices.higherKey(key);
-                if (key == null) {
-                    return position;
-                } else {
-                    vertex = unsurveyedVertices.get(key);
-                }
-            }
+            vertex.setReservedForSurveying(true);
             reservedUnsurveyedVertices.add(vertex);
         } else {
             logger.info("No known unsurveyed connected vertices. Returning my position");
@@ -247,21 +246,24 @@ public class MapAgent {
         return vertex;
     }
 
+    /**
+     * Returns the nearest unprobed vertex. If there is more than one unprobed
+     * vertex with minimal hop distance, returns from those vertices the vertex
+     * with the highest number of connected probed vertices. If there is still a
+     * tie, return the vertex with the lowest path costs.
+     * 
+     * @param position
+     *            the vertex to start the search from
+     * @return a nearby unprobed vertex
+     */
     public Vertex getNextUnprobedVertex(Vertex position) {
         Vertex vertex = position;
         TreeMap<Integer, Vertex> unprobedVertices = position.getNextUnprobedVertices(1);
         if (!unprobedVertices.isEmpty()) {
             Integer key = unprobedVertices.firstKey();
             vertex = unprobedVertices.get(key);
-            while (reservedProbedVertices.contains(vertex)) {
-                key = unprobedVertices.higherKey(key);
-                if (key == null) {
-                    return position;
-                } else {
-                    vertex = unprobedVertices.get(key);
-                }
-            }
             reservedProbedVertices.add(vertex);
+            vertex.setReservedForProbing(true);
         }
         logger.info("returning vertex" + vertex);
         return vertex;

@@ -58,7 +58,7 @@ zoneMode(false).
 	& visibleEntity(Vehicle, Position, teamB, normal)
 	& not ignoreEnemy(Vehicle)
  	<-
-	.print("Enemy ", Vehicle, " at my position! Vehicle state: ", State);
+	.print("Non-disabled enemy ", Vehicle, " at my position!");
  	!dealWithEnemy(Vehicle).
 
 // Saboteurs attack active enemy agents when they see them.
@@ -163,7 +163,7 @@ zoneMode(false).
 	position(Position)
 	& ia.getBestHopToVertex(Position, Destination, NextHop)
     <-
-    .print("I will move to vertex ", Destination, " through vertex ", NextHop);
+    .print("I will move to ", Destination, " by way of ", NextHop);
 	goto(NextHop).
 
 // To avoid an enemy agent, ask the MapAgent for best position.

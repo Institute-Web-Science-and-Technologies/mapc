@@ -24,6 +24,9 @@ public class Vertex {
     private PathMap knownPaths;
     private ZoneMap zoneMap;
 
+    private boolean reservedForProbing = false;
+    private boolean reservedForSurveying = false;
+
     /**
      * @param identifier
      *            The name of the vertex, e.g. 'v31'.
@@ -122,7 +125,7 @@ public class Vertex {
             return unsurveyedVertices;
         }
         for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
-            if (!vertex.isSurveyed()) {
+            if (!vertex.isSurveyed() & !vertex.isReservedForSurveying()) {
                 int pathCosts = knownPaths.getPath(vertex).getPathCosts();
                 unsurveyedVertices.put(pathCosts, vertex);
             }
@@ -134,6 +137,17 @@ public class Vertex {
         }
     }
 
+    /**
+     * Returns the nearest unprobed vertex. If there is more than one unprobed
+     * vertex with minimal hop distance, returns from those vertices the vertex
+     * with the highest number of connected probed vertices. If there is still a
+     * tie, return the vertex with the lowest path costs.
+     * 
+     * @param int the hop distance to start the search for unprobed vertices
+     *        from. This gets incremented recursively if no unprobed vertices
+     *        are found.
+     * @return a nearby unprobed vertex
+     */
     public TreeMap<Integer, Vertex> getNextUnprobedVertices(int hop) {
         TreeMap<Integer, Vertex> unprobedVertices = new TreeMap<Integer, Vertex>();
         ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -142,9 +156,9 @@ public class Vertex {
         if (!knownPaths.containsPathsWithHop(hop)) {
             return unprobedVertices;
         }
-        // find all unprobed vertices
+        // find all unprobed and unreserved vertices
         for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
-            if (!vertex.isProbed()) {
+            if (!vertex.isProbed() & !vertex.isReservedForProbing()) {
                 vertices.add(vertex);
             }
         }
@@ -279,4 +293,21 @@ public class Vertex {
     public ZoneMap getZoneMap() {
         return zoneMap;
     }
+
+    public boolean isReservedForProbing() {
+        return reservedForProbing;
+    }
+
+    public void setReservedForProbing(boolean reservedForProbing) {
+        this.reservedForProbing = reservedForProbing;
+    }
+
+    public boolean isReservedForSurveying() {
+        return reservedForSurveying;
+    }
+
+    public void setReservedForSurveying(boolean reservedForSurveying) {
+        this.reservedForSurveying = reservedForSurveying;
+    }
+
 }
