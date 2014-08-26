@@ -4,9 +4,9 @@
 { include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
-{ include("../actions/zoning.asl") }
-{ include("../actions/zoning.minion.asl") }
-{ include("../actions/zoning.coach.asl") }
+//{ include("../actions/zoning.asl") }
+//{ include("../actions/zoning.minion.asl") }
+//{ include("../actions/zoning.coach.asl") }
 
 zoneMode(false).
 
@@ -46,7 +46,7 @@ zoneMode(false).
 +!doAction:
 	visibleEntity(Vehicle, Vertex, teamB, State)
 	& role(inspector)
-	& ia.isNotInspected(Vehicle, CurrentStep)
+	& ia.isNotInspected(Vehicle)
 	<-
 	.print("Inspecting ", Vehicle, " at ", Vertex);
 	!doInspecting(Vehicle).

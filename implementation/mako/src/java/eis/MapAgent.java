@@ -137,7 +137,7 @@ public class MapAgent {
         enemy.setStrength(strength);
         enemy.setTeam(team);
         enemy.setVisRange(visRange);
-        enemy.setInspectionStep(step);
+        enemy.setInspectionStep(getStep());
         enemyInfos.put(name, enemy);
     }
 
@@ -158,12 +158,12 @@ public class MapAgent {
 
     private void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
-        if (newStep > step) {
+        if (newStep > getStep()) {
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
-            step = newStep;
-            logger.info("[" + step + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
-            logger.info("[" + step + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
+            setStep(newStep);
+            logger.info("[" + getStep() + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
+            logger.info("[" + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
         }
     }
 
@@ -387,5 +387,13 @@ public class MapAgent {
             positions.remove(closest);
         }
         return map;
+    }
+
+    public int getStep() {
+        return step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 }
