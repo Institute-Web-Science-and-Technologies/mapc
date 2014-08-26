@@ -1,7 +1,7 @@
 // Agent baseAgent in project mako
-{ include("storeBeliefs.asl") }
-{ include("../map/explore.asl") }
-{ include("../map/initialization.asl") }
+{ include("../misc/storeBeliefs.asl") }
+{ include("../actions/explore.asl") }
+{ include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
 { include("../actions/zoning.asl") }
@@ -47,7 +47,7 @@ zoneMode(false).
 	<-
 	.print("I want to inspect (", Vehicle, ").");
 	!doInspect(Vehicle).
- +!doAction:
+
 +!doAction:
  	position(Position)
 	& myTeam(MyTeam)
@@ -170,7 +170,6 @@ zoneMode(false).
 
 // In the case where we for some reason get told to move to the node we're already on,
 // we perform a recharge action instead.
-+!goto(Destination):
 +!doAction:
 	zoneMode(false)
 	& position(Position)

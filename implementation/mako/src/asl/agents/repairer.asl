@@ -1,5 +1,5 @@
 { include("agent.asl") }
-{ include("parry.asl")}
+{ include("../actions/parry.asl")}
 
 // If energy is not enough - recharge 
 //Todo: repairer can also repair the agent who is undisabled,and spend 2 energy    
