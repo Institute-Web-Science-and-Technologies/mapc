@@ -12,6 +12,7 @@ zoneMode(false).
 
 /* Map Related Stuff */
 // Condition to start zoning phase
+// TODO: Make entering zone mode more dynamic
 +achievement(surveyed640)[source(self)]
     <-
     .print("Done with surveying. Entering zone mode.");
@@ -30,7 +31,7 @@ zoneMode(false).
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
-    .drop_all_intentions;
+//    .drop_all_intentions;
 //  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
 //	agents that aren't explorers) and must be abolished every step as well.
     .abolish(ignoreEnemy);
@@ -39,44 +40,34 @@ zoneMode(false).
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.
 
+// If an inspector sees an enemy that currently doesn't count as inspected, inspect it.
+// We keep track of the inspected state for enemy agents in the MapAgent.
+// TODO: Remove CurrentStep argument from isNotInspected (and get the current step from the MapAgent instead)
 +!doAction:
-	visibleEntity(Vehicle, Vertex, Team, Disabled)[source(percept)]
-	& Team == teamB
+	visibleEntity(Vehicle, Vertex, teamB, State)
 	& role(inspector)
-	& not roleOfAgent(Vehicle, _)
+	& ia.isNotInspected(Vehicle, CurrentStep)
 	<-
-	.print("I want to inspect (", Vehicle, ").");
-	!doInspect(Vehicle).
+	.print("Inspecting ", Vehicle, " at ", Vertex);
+	!doInspecting(Vehicle).
 
+// Plan to deal with the enemy if the enemy is not only in range, but currently on our position.
+// Ideally, this should never happen.
 +!doAction:
  	position(Position)
-	& myTeam(MyTeam)
-	& visibleEntity(Vehicle, Position, EnemyTeam, State)
-	& EnemyTeam \== MyTeam
- 	<- .print("Enemy at my position! Disabled -> ", State, ". Vehicle: ", Vehicle );
- 		!dealWithEnemy.
+	& visibleEntity(Vehicle, Position, teamB, normal)
+	& not ignoreEnemy(Vehicle)
+ 	<-
+	.print("Enemy ", Vehicle, " at my position! Vehicle state: ", State);
+ 	!dealWithEnemy(Vehicle).
 
-// React on not disabled enemy agents on the same position and attack them.
+// Saboteurs attack active enemy agents when they see them.
 +!doAction:
- 	position(Vertex)
-	//& myTeam(MyTeam)
+ 	position(Position)
 	& role(saboteur)
 	& visibleEntity(Vehicle, Vertex, teamB, normal)
-	//& EnemyTeam \== MyTeam
- 	<- .print("Enemy Vehicle ", Vehicle, " is on my position:", Vertex);
+ 	<- .print("Attacking ", Vehicle, " on ", Vertex, "from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
-
-// React on not disabled enemy agents on my one-step neighbour nodes (visibility range = 1)
-+!doAction:
- 	position(Position)
- 	& role(saboteur)
- 	//& myTeam(MyTeam)
-	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
-	& visibleEntity(Vehicle, Vertex, teamB, normal)
-	//& EnemyTeam \== MyTeam
- 	<- .print("My position is: ", Position, ", Enemy ",Vehicle, " stands at position.", Vertex);
- 	   !doAttack(Vehicle, Vertex).
-
 
  // When saboteur, sentinel,and repairer are attacked,
  //and they are not disabled, they do parrying
@@ -94,23 +85,10 @@ zoneMode(false).
  	position(Position)
  	& role(sentinel)
  	& zoneNode(Position)
- 	//& myTeam(MyTeam)
 	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
 	& (visibleEntity(Vehicle, Position, teamB, normal) | visibleEntity(Vehicle, Vertex, teamB, normal))
-	//& EnemyTeam \== MyTeam
  	<- .print("I am standing on a zoneNode, and I see enemy nearby. so I parry ");
  	   !doParry.
-
-// If an inspector sees an enemy
-  +!doAction:
- 	visibleEntity(Vehicle, Position, EnemyTeam, Disabled)
-	& myTeam(MyTeam)
-	& EnemyTeam \== MyTeam
-	& step(CurrentStep)
-	& ia.isNotInspected(Vehicle, CurrentStep)
-	& role(inspector)
- 	<- .print("Enemy in range! Trying to inspect ", Vehicle );
- 		!doInspecting(Vehicle).
 
 // If an explorer is on an unprobed vertex, probe it.
 +!doAction:
@@ -125,38 +103,17 @@ zoneMode(false).
 +!doAction:
 	zoneMode(false)
 	& position(Position)
-	& role(explorer)
-	<- .print(Position, " is not probed. I will probe.");
-	 	!doProbing.
-
-// If an agent is on an unsurveyed vertex, survey it
-+!doAction:
-	zoneMode(false)
-	& position(Position)
 	& ia.isNotSurveyed(Position)
 	<-
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
 
-// If the agent has enough energy, then survey. Otherwise recharge.
-+!doSurveying:
- energy(Energy) & Energy < 1
-	<- .print("I don't have enough energy to survey. I'll recharge first.");
-    	recharge.
 
-+!doSurveying:
-	position(Position)
-	<-
-	.print("Surveying vertex: ", Position, ".");
-	survey.
-
-// If the energy of the agent is over a threshold of 10 the agent can move to another node.
+// If we're not in zone mode yet, explore.
 +!doAction:
 	zoneMode(false)
-	& energy(Energy)
-	& Energy > 10
 	<-
-	.print("I want to go to another vertex. My energy is ", Energy, ".");
+	.print("I will explore.");
 	!doExploring.
 
 // If the agent has nothing to do, it should recharge instead of doing nothing.
@@ -165,48 +122,22 @@ zoneMode(false).
 	& maxEnergy(Max)
 	& Energy <= Max
 	<-
-	.print("I'm recharging.");
+	.print("I'm recharging because I don't know what else to do.");
 	recharge.
-
-// In the case where we for some reason get told to move to the node we're already on,
-// we perform a recharge action instead.
-+!doAction:
-	zoneMode(false)
-	& position(Position)
-	& ia.isNotSurveyed(Position)
-	<-
-	.print(Position, " is not surveyed. I will survey.");
-	!doSurveying.
-
+	
+	
 // If the agent has enough energy, then survey. Otherwise recharge.
 +!doSurveying:
- energy(Energy) & Energy < 1
+	energy(Energy)
+	& Energy < 1
 	<- .print("I don't have enough energy to survey. I'll recharge first.");
     	recharge.
 
 +!doSurveying:
 	position(Position)
 	<-
-	.print("Surveying vertex: ", Position, ".");
+	.print("Surveying ", Position);
 	survey.
-
-// If the energy of the agent is over a threshold of 10 the agent can move to another node.
-+!doAction:
-	zoneMode(false)
-	& energy(Energy)
-	& Energy > 10
-	<-
-	.print("I want to go to another vertex. My energy is ", Energy, ".");
-	!doExploring.
-
-// If the agent has nothing to do, it should recharge instead of doing nothing.
-+!doAction:
-	energy(Energy)
-	& maxEnergy(Max)
-	& Energy <= Max
-	<-
-	.print("I'm recharging.");
-	recharge.
 
 // In the case where we for some reason get told to move to the node we're already on,
 // we perform a recharge action instead.
@@ -216,7 +147,7 @@ zoneMode(false).
 	<-
 	.print("Warning! I was told to move to the node I am already on (", Position, "). Will recharge instead.");
 	recharge.
-
+	
 // Want to goto, but don't have enough energy? Recharge.
 +!goto(Destination):
     position(Position)
@@ -232,5 +163,14 @@ zoneMode(false).
 	position(Position)
 	& ia.getBestHopToVertex(Position, Destination, NextHop)
     <-
-    .print("I will move to my neighbour node ", Destination, ".");
-	goto(Destination).
+    .print("I will move to vertex ", Destination, " through vertex ", NextHop);
+	goto(NextHop).
+
+// To avoid an enemy agent, ask the MapAgent for best position.
+// TODO: Currently, an agent will cycle between two adjacent vertices when
+// avoiding an enemy that does not move.
++!avoidEnemy:
+	position(Position) 
+	& ia.getVertexToAvoidEnemy(Position, Destination)
+	<- 
+	!goto(Destination).
