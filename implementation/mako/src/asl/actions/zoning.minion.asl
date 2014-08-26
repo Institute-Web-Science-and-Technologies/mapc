@@ -4,29 +4,10 @@
 
 // if a minion has to leave the zone, it will send its Coach !cancelledZoneBuilding
 
-// We lock ourselves to fully obey our coach. Hence, we unregister us from the
-// idleZoner list.
-// Next, we tell our Coach how far it is for us to move to his CentreNode.
-@becomeAMinion
-+!choseZoningRole:
-    bestZone(_, CentreNode)[source(Coach)]
-    & Coach \== self
-    & broadcastAgentList(BroadcastList)
-    & .my_name(MyName)
-    & .member(MyName, closestAgents(ClosestAgents))
-    <- //.send(BroadcastList, untell, idleZoner(MyName));
-       -+isMinion(true).
-
-// If we had been a coach in our previous life or if the sender is just
-// confused, tell him to find a new zone on his own and leave us alone.
-//+positiveZoneReply(_)[source(Sender)]:
-//    isMinion(true)
-//    <- .send(Sender, achieve, foundNewZone).
-
 // Negative zone replies have no meaning for minions. Hence they are ignored.
-//+negativeZoneReply(_)[source(_)]:
-//    isMinion(true)
-//    <- true.
++negativeZoneReply(_)[source(_)]:
+    isMinion(true)
+    <- true.
 
 // If we got a zoneGoalVertex, which is a node we should move to to build a
 // zone, we will move there. If we'll reach it in the next step, we'll set a
@@ -47,10 +28,10 @@
 // If our coach cancelled the zone, we go back to start zoning from scratch.
 // We also cancel directly leave zoning mode if we triggered this ourselves,
 // because we cannot wait for a reply – it might be a matter of life and death.
-+!cancelledZoneBuilding[source(Coach)]:
-    isMinion(true) // TODO: cancel what we are doing, reset to zoning
-    & (Coach == self
-        | bestZone(_, _)[source(Coach)]
++!cancelledZoneBuilding[source(Sender)]:
+    isMinion(true)
+    & (Sender == self
+        | bestZone(_, _, _)[source(Sender)]
     )
     <- -+isMinion(false);
        !builtZone(true).
