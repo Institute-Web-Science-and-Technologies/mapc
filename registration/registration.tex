@@ -1,0 +1,104 @@
+\documentclass{llncs}
+
+\usepackage{hyperref}
+
+%% Set the metadata for the PDF document and the colors of the internal links.
+%% All colors are set to black in order to avoid unnecessary colorfulness.
+\hypersetup{
+  pdftitle    = {Multi-Agent Programming Contest 2014 Participation Registration},
+  pdfauthor   = {Michael Ruster},
+  pdfkeywords = {MAKo, Multiagent, Agent contest, 2014, Koblenz},
+  colorlinks  = true,
+  unicode     = true,
+  linkcolor   = black,
+  citecolor   = black,
+  filecolor   = black,
+  urlcolor    = black,
+}
+
+\begin{document}
+\title{Multi-Agent Programming Contest 2014\\Participation Registration}
+\author{Michael Ruster}
+\institute{University Koblenz $\cdot$ Landau}
+\maketitle
+
+\section*{Introduction}
+
+\begin{enumerate}
+\item What is the name of your team?
+  \begin{itemize}
+    \item Our team is called MAKo. It is an acronym for \emph{Multi-Agents Koblenz}.
+  \end{itemize}
+\item Who are the members of your team? Please provide names, academic degrees and institutions.
+  \begin{itemize}
+    \item All of our team members are from the University Koblenz-Landau.\begin{itemize}
+    \item Artur Daudrich, Bachelor of Science
+    \item Sergey Dedukh, Diploma
+    \item Manuel Mittler, Bachelor of Science
+    \item Michael Ruster, Bachelor of Science
+    \item Michael Sewell, Bachelor of Science
+    \item Yuan Sun, Bachelor of Management
+  \end{itemize}
+  \end{itemize}
+\item Who is the main-contact? Please also provide an Email address.
+  \begin{itemize}
+    \item The main contact is Michael Ruster, \href{mailto:mruster@uni-koblenz.de}{mruster@uni-koblenz.de}.
+  \end{itemize}
+\item How much time (man hours) will you have invested (approximately) until the tournament?
+  % from 28.04.2014 to 15.09.2014 it's 140 days or 20 weeks
+  % let's assume everybody (6 persons) worked 11 hours a week on average
+  % that's 1100 man hours. It disregards the time we've spent before
+  % the official start of the research lab.
+  \begin{itemize}
+    \item Every team member will have invested about 1100 (wo-)man hours until the tournament. This also includes time spent familiarising with multi agent programming in general as our members were inexperienced in this field.
+  \end{itemize}
+
+\end{enumerate}
+
+\section*{System Analysis and Design}
+
+\begin{enumerate}
+  \item Will you use any existing multi-agent system methodology such as Prometheus, O-MaSE, or Tropos?
+   \begin{itemize}
+%     \item We did not strictly follow any methodology. As we developed the agents in AgentSpeak(L), we vaguely followed the BDI software model.
+     \item We did not strictly follow any methodology.
+   \end{itemize}
+ \item Do you plan to distribute your agents over several machines during the competition?
+   \begin{itemize}
+     \item We had thought about this due to performance problems we encountered earlier. In the end, we refrained from distributing our agents over several machines.
+   \end{itemize}
+ \item Is the strategic decision making of your team centralized (e.g. on one single agent) or distributed among the agents?
+   \begin{itemize}
+     \item We do not have a dedicated leader who commands the team at all times. Instead, agents decide on their own based on various factors and negotiate when necessary. However, our zoning approach has one designated leader per zone group. This agent sends orders to the other agents in her group to form the zone.
+   \end{itemize}
+ \item Describe the communication strategy among agents in your team. Can you estimate the communication complexity in your approach?
+   \begin{itemize}
+     \item We found communication to be a very expensive part. Hence, we tried to make agents more independent and reduce the communication this way. Additionally, we have map calculations being done outside of agents on which agents may reason. Due to the agent's independence, the communication is confined to only a few message exchanges e.g. calling an agent for help or negotiating who may travel to a given node. There are more examples but in any case we try to let agents make decisions as quickly as possible.
+   \end{itemize}
+\end{enumerate}
+
+
+\section*{Software Architecture}
+
+\begin{enumerate}
+\item Which programming language do you plan to use to implement the multi-agent system? (e.g. 2APL, Jason, Jadex, JIAC, Goal, Java, C++, $\ldots$)
+  \begin{itemize}
+    \item We developed our agents in AgentSpeak(L) and Jason. Map generation and processing is done in Java.
+  \end{itemize}
+\item Which development platform and tools are you planning to use?
+  \begin{itemize}
+    \item We used Eclipse as most team members were familiar with this IDE. Furthermore, we used the Jason mind inspector.
+  \end{itemize}
+\item Which runtime platform and tools are you planning to use? (e.g. Jade, AgentScape, simply Java, $\ldots$)
+  \begin{itemize}
+    \item We use Java and Jason's centralised infrastructure.
+  \end{itemize}
+
+\end{enumerate}
+
+
+
+
+
+\end{document}
+
