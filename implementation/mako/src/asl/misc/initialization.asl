@@ -1,4 +1,5 @@
 !loadBroadcastAgentList.
+!loadSaboteurList.
     
 // Store list of all agents (excluding myself) for broadcasting.    
 +!loadBroadcastAgentList:
@@ -36,3 +37,21 @@
     ];
     .delete(Name, AgentList, BroadcastList); 
     +broadcastAgentList(BroadcastList).
+    
++!loadSaboteurList:
+    .my_name(Name)
+    <-
+    AgentList = [
+    	saboteur1,
+    	saboteur2,
+    	saboteur3,
+    	saboteur4
+    ];
+    if(role(saboteur)){
+    	.delete(Name, AgentList, SaboteurList); 
+    }
+    else{
+    	SaboteurList = AgentList;
+    };
+    +saboteurList(SaboteurList).
+    
