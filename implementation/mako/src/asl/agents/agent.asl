@@ -29,7 +29,7 @@ zoneMode(false).
 //  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
 //	agents that aren't explorers) and must be abolished every step as well.
     .abolish(ignoreEnemy);
-	.print("[Step ", Step, "] My position is (", Position, "). My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
+	.print("[Step ", Step, "] My position is ", Position, ". My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
 // If an agent sees an enemy on its position, it has to deal with the enemy.
@@ -60,6 +60,17 @@ zoneMode(false).
  	!dealWithEnemy(Vehicle).
 
 // Saboteurs attack active enemy agents when they see them.
+// We need two plans here because saboteurs should prefer attacking enemy
+// agents that are on their own node.
++!doAction:
+ 	position(Position)
+	& role(saboteur)
+	& visibleEntity(Vehicle, Position, Team, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Vehicle, " on my position ", Vertex);
+ 	   !doAttack(Vehicle, Vertex).
+ 	   
 +!doAction:
  	position(Position)
 	& role(saboteur)

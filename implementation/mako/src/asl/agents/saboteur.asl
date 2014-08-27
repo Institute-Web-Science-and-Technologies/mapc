@@ -17,5 +17,5 @@ role(saboteur).
 
 // If energy is enough - attack
 +!doAttack(Vehicle, Vertex)
-    <- .print("Attacking (", Vehicle, ").");
+    <- .print("Attacking ", Vehicle);
        attack(Vehicle).
