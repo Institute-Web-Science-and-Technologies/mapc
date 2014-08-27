@@ -2,12 +2,13 @@ package eis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 public class PathMap {
 
     // private AgentLogger logger;
     private Vertex position;
-    private HashMap<Vertex, Path> knownPaths = new HashMap<Vertex, Path>();
+    private Hashtable<Vertex, Path> knownPaths = new Hashtable<Vertex, Path>();
     private HashMap<Vertex, Integer> hopMapping = new HashMap<Vertex, Integer>();
     private HashMap<Integer, ArrayList<Vertex>> hopPaths = new HashMap<Integer, ArrayList<Vertex>>();
 
