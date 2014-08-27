@@ -32,6 +32,14 @@ zoneMode(false).
 	.print("[Step ", Step, "] My position is ", Position, ". My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
+//Fallback action in the case where we didn't pay attention and tried to perform
+//an action without having the energy for it.
++doAction:
+	lastActionResult(failed_resources)
+	<-
+	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
+	recharge.
+
 // If an agent sees an enemy on its position, it has to deal with the enemy.
 
 // If an inspector sees an enemy that currently doesn't count as inspected, inspect it.
@@ -191,8 +199,9 @@ zoneMode(false).
 +!goto(Destination):
 	position(Position)
 	& ia.getBestHopToVertex(Position, Destination, NextHop)
+	& ia.getEdgeCost(Position, Destination, Costs)
     <-
-    .print("I will move to ", Destination, " by way of ", NextHop);
+    .print("I will use ", Costs, " energy to move to ", Destination, " by way of ", NextHop);
 	goto(NextHop).
 
 // To avoid an enemy agent, ask the MapAgent for best position.
