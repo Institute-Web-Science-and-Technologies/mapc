@@ -11,10 +11,10 @@ reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendi
     & ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition) & ia.getDistance(Position, EnemyPosition, Distance)
     & Distance < 2.
 
-// If there is a new zone defense request, but we already defending a zone - skip processing, busy
+// If there is a new zone defence request, but we already defending a zone - skip processing, busy
 +requestZoneDefence(ZoneCentre): strategy(zoneDefence).
 
-// If there is a new zone defense request - do bidding for this zone defense
+// If there is a new zone defence request - do bidding for this zone defence
 +requestZoneDefence(ZoneCentre):
     position(Position) & saboteurList(SaboteurList) & .my_name(Name)
     <-
@@ -24,7 +24,7 @@ reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendi
     .wait(400);
     !evaluateBiddingOutcome(ZoneCentre).
  
-// Check bids, assign defense strategy if won.  
+// Check bids, assign defence strategy if won.  
 +!evaluateBiddingOutcome(ZoneCentre):
     .my_name(MyName)
     <-
@@ -38,8 +38,8 @@ reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendi
     // Clear the bids
     .abolish(defendZoneBid(ZoneCentre, _, _)).
 
-// If the zone is no longer require defense - return to regular strategy.
-+cancelZoneDefense(ZoneCentre)   
+// If the zone is no longer require defence - return to regular strategy.
++cancelZoneDefence(ZoneCentre)   
     <-
     .abolish(requestZoneDefence(ZoneCentre));
     if(strategy(zoneDefence) & defendingZone(ZoneCentre)){
