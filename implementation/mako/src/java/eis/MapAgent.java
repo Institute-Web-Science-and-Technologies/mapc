@@ -398,4 +398,24 @@ public class MapAgent {
     public void setStep(int step) {
         this.step = step;
     }
+
+    public Vertex getClosestEnemyPosition(Vertex position) {
+        Vertex enemyPosition = position;
+        if (enemyPositions.size() > 0) {
+            int currentHops = 0;
+            for (String key : enemyPositions.keySet()) {
+                Vertex vertex = enemyPositions.get(key);
+                if (enemyPosition == position) {
+                    enemyPosition = vertex;
+                    currentHops = position.getPath(enemyPosition).getPathHops();
+                } else {
+                    Path path = position.getPath(vertex);
+                    if (path.getPathHops() < currentHops) {
+                        enemyPosition = vertex;
+                    }
+                }
+            }
+        }
+        return enemyPosition;
+    }
 }
