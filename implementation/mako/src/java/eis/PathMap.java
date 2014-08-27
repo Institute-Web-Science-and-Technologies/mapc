@@ -2,18 +2,19 @@ package eis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 public class PathMap {
 
-    private AgentLogger logger;
+    // private AgentLogger logger;
     private Vertex position;
-    private HashMap<Vertex, Path> knownPaths = new HashMap<Vertex, Path>();
+    private Hashtable<Vertex, Path> knownPaths = new Hashtable<Vertex, Path>();
     private HashMap<Vertex, Integer> hopMapping = new HashMap<Vertex, Integer>();
     private HashMap<Integer, ArrayList<Vertex>> hopPaths = new HashMap<Integer, ArrayList<Vertex>>();
 
     public PathMap(Vertex vertex) {
         this.setPosition(vertex);
-        logger = new AgentLogger(vertex + " PathMap");
+        // logger = new AgentLogger(vertex + " PathMap");
     }
 
     public boolean handlePath(Path newPath) {
@@ -118,13 +119,7 @@ public class PathMap {
     }
 
     public ArrayList<Path> getAllPaths() {
-        ArrayList<Path> paths = new ArrayList<Path>();
-        @SuppressWarnings("unchecked")
-        HashMap<Vertex, Path> knownPathsClone = (HashMap<Vertex, Path>) knownPaths.clone();
-        for (Path path : knownPathsClone.values()) {
-            paths.add(path);
-        }
-        return paths;
+        return new ArrayList<Path>(knownPaths.values());
     }
 
 }
