@@ -65,7 +65,7 @@ zoneMode(false).
 	& role(saboteur)
 	& visibleEntity(Vehicle, Vertex, Team, normal)
 	& myTeam(MyTeam)
-	& MyTeam \== EnemyTeam
+	& MyTeam \== Team
  	<- .print("Attacking ", Vehicle, " on ", Vertex, "from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
 
