@@ -241,7 +241,7 @@ public class MapAgent {
             vertex.setReservedForSurveying(true);
             reservedUnsurveyedVertices.add(vertex);
         } else {
-            logger.info("No known unsurveyed connected vertices. Returning my position");
+            logger.info("No known unsurveyed vertices connected to " + position);
         }
         return vertex;
     }

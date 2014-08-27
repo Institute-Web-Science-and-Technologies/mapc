@@ -13,6 +13,11 @@ import eis.Vertex;
 //Call from AgentSpeak: getClosestEnemyPosition(Position, EnemyPosition)
 public class getClosestEnemyPosition extends DefaultInternalAction {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5971894875840931912L;
+
     @Override
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
