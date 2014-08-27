@@ -77,6 +77,18 @@ zoneMode(false).
  	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
  	   !goto(EnemyPosition).
 
+// In defending zone mode saboteur should attack the disturbing enemy once he sees it
++!doAction:
+	role(saboteur)
+	& strategy(zoneDefence)
+	& defendingZone(ZoneCentre)  
+	& ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, EnemyPosition, Team, _)
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Vehicle, " disturbing zone on ", EnemyPosition);
+ 	   !doAttack(Vehicle, EnemyPosition).
+
 // Saboteurs attack active enemy agents when they see them.
 // We need two plans here because saboteurs should prefer attacking enemy
 // agents that are on their own node.
