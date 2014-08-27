@@ -58,6 +58,19 @@ reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendi
     <- .print("I have ", Energy, " energy, but I need 2 energy to attack. Going to recharge first.");
        recharge.
 
+// If an enemy agent is outside of our attacking range, perform a goto instead
+// of an attack.
+// TODO: In the case where we spend points to buy upgrades for saboteurs,
+// their visibility range and thus their attacking range will increase, which
+// we will then have to take into account.
++!doAttack(Vehicle, Vertex):
+	position(Position)
+	& ia.getDistance(Position, Vertex, Distance)
+	& Distance > 1
+	<-
+	.print("I want to attack ", Vehicle, ", but it is ", Distance, " steps away.");
+	!goto(Vertex).
+
 // If energy is enough - attack
 +!doAttack(Vehicle, Vertex)
     <- .print("Attacking ", Vehicle);
