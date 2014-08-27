@@ -1,5 +1,7 @@
 { include("agent.asl") }
 
+role(inspector).
+
 // If the agent has enough energy, then inspect. Otherwise recharge.
 +!doInspecting(Vehicle):
 	energy(Energy)

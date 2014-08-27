@@ -1,5 +1,7 @@
 { include("agent.asl") }
 
+role(explorer).
+
 // If the agent has enough energy, then probe. Otherwise recharge.
 +!doProbing:
 	energy(Energy)

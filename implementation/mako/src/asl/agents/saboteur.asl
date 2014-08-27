@@ -1,5 +1,8 @@
 { include("agent.asl") }
 { include("../actions/parry.asl")}
+
+role(saboteur).
+
 +!doAttack(Vehicle,Vertex):
     lastActionResult(failed_in_range)
     & lastAction(attack)

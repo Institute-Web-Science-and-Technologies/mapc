@@ -31,7 +31,6 @@ zoneMode(false).
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
-//    .drop_all_intentions;
 //  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
 //	agents that aren't explorers) and must be abolished every step as well.
     .abolish(ignoreEnemy);
