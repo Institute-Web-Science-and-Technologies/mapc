@@ -19,7 +19,7 @@ public class MapAgent {
     private int step = 0;
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
-    private ArrayList<String> availableZoners = new ArrayList<String>();
+    private HashSet<String> availableZoners = new HashSet<String>();
     // access enemy agent position by the agent name
     private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
     private HashMap<String, Agent> enemyInfos = new HashMap<String, Agent>();
@@ -394,6 +394,7 @@ public class MapAgent {
             Vertex vertex = agentPositions.get(agent);
             int pathHops = vertex.getPath(zoneCenterVertex).getPathHops();
             distances.put(pathHops, agent);
+            availableZoners.remove(agent);
         }
 
         Zone zone = zoneCenterVertex.getBestMinimalZone();
@@ -499,5 +500,9 @@ public class MapAgent {
             return closestAgents.subList(0, count - 1);
         }
         return closestAgents;
+    }
+
+    public void registerForZoning(String agent) {
+        availableZoners.add(agent);
     }
 }

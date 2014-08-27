@@ -26,10 +26,6 @@ public class isSaboteur extends DefaultInternalAction {
             throws Exception {
         String agentName = args[0].toString();
         Agent agent = MapAgent.getInstance().getEnemyInfo(agentName);
-        if (agent.getRole() == "saboteur") {
-            return true;
-        } else {
-            return false;
-        }
+        return (agent.getRole() == "saboteur");
     }
 }

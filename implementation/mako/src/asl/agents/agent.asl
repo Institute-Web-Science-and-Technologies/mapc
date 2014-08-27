@@ -77,6 +77,18 @@ zoneMode(false).
  	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
  	   !goto(EnemyPosition).
 
+// In defending zone mode saboteur should attack the disturbing enemy once he sees it
++!doAction:
+	role(saboteur)
+	& strategy(zoneDefence)
+	& defendingZone(ZoneCentre)  
+	& ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, EnemyPosition, Team, _)
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Vehicle, " disturbing zone on ", EnemyPosition);
+ 	   !doAttack(Vehicle, EnemyPosition).
+
 // Saboteurs attack active enemy agents when they see them.
 // We need two plans here because saboteurs should prefer attacking enemy
 // agents that are on their own node.
@@ -126,6 +138,18 @@ zoneMode(false).
 	.print("Moving to attack enemy on ", EnemyPosition, " from my position ", Position);
 	!doAttack(Vehicle, Vertex).
 	
+
+// If the saboteur in zone mode, have an attack_chase strategy and there are no enemies in the visible range -
+// then go to the closest enemy
++!doAction:
+ 	position(Position)
+	& role(saboteur)
+	& zoneMode(true)
+	& strategy(attack_chase)
+	& ia.getClosestEnemyPosition(Position, EnemyPosition)
+	& EnemyPosition \== Position // ensure that there is a path to the enemy
+	<- .print("Going to the closest enemy on vertex ", EnemyPosition);
+ 	!goto(EnemyPosition).
 
  // When saboteur, sentinel,and repairer are attacked,
  //and they are not disabled, they do parrying
