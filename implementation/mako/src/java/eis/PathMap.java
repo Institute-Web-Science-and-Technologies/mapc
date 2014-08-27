@@ -1,20 +1,19 @@
 package eis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 public class PathMap {
 
-    // private AgentLogger logger;
+    private AgentLogger logger;
     private Vertex position;
     private Hashtable<Vertex, Path> knownPaths = new Hashtable<Vertex, Path>();
-    private HashMap<Vertex, Integer> hopMapping = new HashMap<Vertex, Integer>();
-    private HashMap<Integer, ArrayList<Vertex>> hopPaths = new HashMap<Integer, ArrayList<Vertex>>();
+    private Hashtable<Vertex, Integer> hopMapping = new Hashtable<Vertex, Integer>();
+    private Hashtable<Integer, ArrayList<Vertex>> hopPaths = new Hashtable<Integer, ArrayList<Vertex>>();
 
     public PathMap(Vertex vertex) {
         this.setPosition(vertex);
-        // logger = new AgentLogger(vertex + " PathMap");
+        logger = new AgentLogger(vertex + " PathMap");
     }
 
     public boolean handlePath(Path newPath) {
@@ -66,7 +65,9 @@ public class PathMap {
     }
 
     public ArrayList<Vertex> getNeighbours() {
-        return getVerticesWithHop(1);
+        ArrayList<Vertex> neighbours = getVerticesWithHop(1);
+        logger.info("Survey debug: getNeighbours() -> getVerticesWithHop(1) = " + neighbours);
+        return neighbours;
     }
 
     /**
@@ -78,6 +79,10 @@ public class PathMap {
         return knownPaths.get(vertex);
     }
 
+    /**
+     * @param hop
+     * @return true if we know about a connected node that is hop steps away
+     */
     public boolean containsPathsWithHop(int hop) {
         return hopPaths.get(hop) != null && hopPaths.get(hop).size() > 0;
     }
@@ -87,8 +92,7 @@ public class PathMap {
         if (this.containsPathsWithHop(hop)) {
             vertices.addAll(hopPaths.get(hop));
         }
-        // logger.info("Asked for vertices(" + hop + "). Result is: " +
-        // vertices);
+        logger.info("Survey debug: getVerticesWithHop(" + hop + "): vertices = " + vertices);
         return vertices;
     }
 

@@ -6,6 +6,10 @@ role(saboteur).
 // Saboteur current strategy: attack_chase or zoneDefence
 strategy(attack_chase).
 
+reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendingZone(ZoneCentre) 
+    & ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition) & ia.getDistance(Position, EnemyPosition, Distance)
+    & Distance < 2.
+
 // If there is a new zone defense request, but we already defending a zone - skip processing, busy
 +requestZoneDefence(ZoneCentre): strategy(zoneDefence).
 
