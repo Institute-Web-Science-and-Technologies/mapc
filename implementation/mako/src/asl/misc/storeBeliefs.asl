@@ -62,6 +62,8 @@
 //  .print("Received percept probedVertex(", Vertex, ",", Value, ").");
 //  -+probedVertex(Vertex, Value)[source(storeBeliefs)].
 
++myTeam(Team)[source(percept)]
+<- -+myTeam(Team).
 
 //+ranking(Numeral)[source(percept)] <-
 //  .print("Received percept ranking(", Numeral, ").").
