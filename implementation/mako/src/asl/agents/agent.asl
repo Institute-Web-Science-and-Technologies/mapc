@@ -43,9 +43,9 @@ zoneMode(false).
 // We keep track of the inspected state for enemy agents in the MapAgent.
 // TODO: Remove CurrentStep argument from isNotInspected (and get the current step from the MapAgent instead)
 +!doAction:
-	visibleEntity(Vehicle, Vertex, EnemyTeam, State)
-	& myTeam(Team)
-	& Team \== EnemyTeam
+	visibleEntity(Vehicle, Vertex, Team, State)
+	& myTeam(MyTeam)
+	& MyTeam \== Team
 	& role(inspector)
 	& ia.isNotInspected(Vehicle)
 	<-
@@ -56,9 +56,9 @@ zoneMode(false).
 // Ideally, this should never happen.
 +!doAction:
  	position(Position)
-	& visibleEntity(Vehicle, Position, EnemyTeam, normal)
-	& myTeam(Team)
-	& Team \== EnemyTeam
+	& visibleEntity(Vehicle, Position, Team, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== Team
 	& not ignoreEnemy(Vehicle)
  	<-
 	.print("Non-disabled enemy ", Vehicle, " at my position!");
@@ -68,9 +68,9 @@ zoneMode(false).
 +!doAction:
  	position(Position)
 	& role(saboteur)
-	& visibleEntity(Vehicle, Vertex, EnemyTeam, normal)
-	& myTeam(Team)
-	& Team \== EnemyTeam
+	& visibleEntity(Vehicle, Vertex, Team, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== EnemyTeam
  	<- .print("Attacking ", Vehicle, " on ", Vertex, "from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
 
