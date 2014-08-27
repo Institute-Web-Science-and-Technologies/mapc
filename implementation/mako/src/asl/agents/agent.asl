@@ -67,6 +67,16 @@ zoneMode(false).
 	.print("Non-disabled enemy ", Vehicle, " at my position!");
  	!dealWithEnemy(Vehicle).
 
+// Saboteurs in defending zone mode should go directly to the disturbing enemy
++!doAction:
+	role(saboteur)
+	& strategy(zoneDefence)
+	& defendingZone(ZoneCentre)  
+	& not reached_disturbing_enemy &
+	ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+ 	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
+ 	   !goto(EnemyPosition).
+
 // Saboteurs attack active enemy agents when they see them.
 // We need two plans here because saboteurs should prefer attacking enemy
 // agents that are on their own node.
