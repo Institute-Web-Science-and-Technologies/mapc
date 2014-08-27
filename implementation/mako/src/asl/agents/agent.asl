@@ -87,6 +87,7 @@ zoneMode(false).
  	& zoneNode(Position)
 	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
 	& (visibleEntity(Vehicle, Position, Team, normal) | visibleEntity(Vehicle, Vertex, Team, normal))
+	& ia.isSaboteur(Vehicle)
 	& myTeam(MyTeam)
 	& MyTeam \== Team
  	<- .print("I am standing on a zoneNode, and I see enemy nearby. so I parry ");
