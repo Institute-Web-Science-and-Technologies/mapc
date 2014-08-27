@@ -11,10 +11,7 @@ role(explorer).
 	.print("Probing vertex ", Position, ".");
 	probe.
 	
-+!doProbing:
-	energy(Energy)
-	& Energy < 1
-	<-
++!doProbing<-
 	.print("I do not have enough energy to probe. I'll recharge first.");
     recharge.
 
