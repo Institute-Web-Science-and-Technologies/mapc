@@ -11,12 +11,7 @@
 zoneMode(false).
 
 /* Map Related Stuff */
-// Condition to start zoning phase
-// TODO: Make entering zone mode more dynamic
-+achievement(surveyed640)[source(self)]
-    <-
-    .print("Done with surveying. Entering zone mode.");
-    -+zoneMode(true).
+
 
 /*Actions*/
 // Try to do an action in every step.
@@ -91,7 +86,9 @@ zoneMode(false).
  	& role(sentinel)
  	& zoneNode(Position)
 	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
-	& (visibleEntity(Vehicle, Position, teamB, normal) | visibleEntity(Vehicle, Vertex, teamB, normal))
+	& (visibleEntity(Vehicle, Position, Team, normal) | visibleEntity(Vehicle, Vertex, Team, normal))
+	& myTeam(MyTeam)
+	& MyTeam \== Team
  	<- .print("I am standing on a zoneNode, and I see enemy nearby. so I parry ");
  	   !doParry.
 
@@ -125,11 +122,26 @@ zoneMode(false).
 +!doAction:
 	energy(Energy)
 	& maxEnergy(Max)
-	& Energy <= Max
+	& Energy < Max
 	<-
 	.print("I'm recharging because I don't know what else to do.");
 	recharge.
+
+// Condition to start zoning phase
+// TODO: Make entering zone mode more dynamic
++achievement(surveyed640)[source(self)]
+    <-
+    .print("Done with surveying. Entering zone mode.");
+    -+zoneMode(true).
 	
++!doAction:
+	energy(Energy)
+	& maxEnergy(Max)
+	& Energy == Max
+	& zoneMode(false)
+	<- 
+	-+zoneMode(true).
+
 	
 // If the agent has enough energy, then survey. Otherwise recharge.
 +!doSurveying:
