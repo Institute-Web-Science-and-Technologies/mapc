@@ -5,7 +5,7 @@
 // if a minion has to leave the zone, it will send its Coach !cancelledZoneBuilding
 
 // Negative zone replies have no meaning for minions. Hence they are ignored.
-+negativeZoneReply(_)[source(_)]:
++negativeZoneReply[source(_)]:
     isMinion(true)
     <- true.
 

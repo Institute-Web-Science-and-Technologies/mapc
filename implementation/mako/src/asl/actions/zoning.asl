@@ -29,28 +29,46 @@ plannedZoneTimeInSteps(15).
 // The Asynchronous parameter is a switch to distinguish between the initial
 // broadcast storm that sets in when zoneMode is reached and all other calls
 // later on. Asynchronous may only be set to false once when zoneMode begins.
-+!builtZone(Asynchronous):
++!builtZone(IsAsynchronous):
     position(PositionVertex)
     & .my_name(MyName)
+    // ask for best zone in his 1HNH (if any)
+    & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
+    & broadcastAgentList(BroadcastList)
     <- ia.registerForZoning(MyName);
        
        // start over new: clear all previous beliefs:
        -bestZone(_, _, _)[source(_)];
-       -negativeZoneReply(_)[source(_)];
+       -negativeZoneReply[source(_)];
        -zoneGoalVertex(_)[source(_)];
        -zoneNode(_)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
        -closestAgents(_)[source(_)];
        
-       // ask Vertex for its zone as well as its neighbours:
-       ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents);
        // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
-       if (Asynchronous) {
+       if (IsAsynchronous) {
          .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, ClosestAgents));
        } else { // Initial broadcast storm when +zoneMode(true):
          .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, ClosestAgents));
        }.
+
+// No zone could be found in this agent's 1HNH that could have been built with
+// the currently available amount of agents. We need to ask others for zones.
++!builtZone(_):
+    broadcastAgentList(BroadcastList)
+    <- .send(BroadcastList, tell, bestZoneRequest).
+
+// Inform the sender about our zone – if we still know our zone.
++bestZoneRequest[source(Sender)]:
+    isAvailableForZoning
+    & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
+    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
+
+// Reply "no" in any other case – no matter if we are interested in zoning or
+// not.
++bestZoneRequest[source(Sender)]
+    <- .send(Sender, tell, negativeZoneReply).
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
 // Broadcaster doesn't know about our zone so we tell him as we haven't started
@@ -64,8 +82,10 @@ plannedZoneTimeInSteps(15).
 // We received an asynchronous foreignBestZone percept but don't know about our
 // own zone anymore as it was worse. Hence, we cannot tell him our zone but we
 // still take his zone into consideration when choosing the best one for us.
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
-    isAvailableForZoning
+//
+// It could even be that we aren't available for zoning. But we will then still
+// have to reply (which is done on foreignBestZone percept addition).
++asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]
     <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
 
 // We have received a zone better than the one we know (or
@@ -86,7 +106,7 @@ plannedZoneTimeInSteps(15).
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- //.send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
+    <- .send(FormerCoach, tell, negativeZoneReply);
        -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        !receivedAllReplies.
@@ -94,17 +114,17 @@ plannedZoneTimeInSteps(15).
 // We were informed about a worse zone.
 +foreignBestZone(_, CentreNode, _)[source(Sender)]:
     isAvailableForZoning
-    <- .send(Sender, tell, negativeZoneReply(CentreNode));
+    <- .send(Sender, tell, negativeZoneReply);
        !receivedAllReplies.
 
 // It doesn't matter if aren't interested in zoning. We have to reply no in any
 // case.
 +foreignBestZone(_, CentreNode, _)[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply(CentreNode)).
+    <- .send(Sender, tell, negativeZoneReply).
 
 // Don't count the negative reply AND the broadcast of the same sender in the
 // !receivedAllReplies[1] achievement goal.
-+negativeZoneReply(_)[source(Sender)]:
++negativeZoneReply[source(Sender)]:
     isAvailableForZoning
     & foreignBestZone(_, _, _)[source(Sender)]
     <- -foreignBestZone(_, _, _)[source(Sender)];
@@ -112,7 +132,7 @@ plannedZoneTimeInSteps(15).
 
 // We only got a negative zone reply. We will test if we now got replies from
 // every agent.
-+negativeZoneReply(_)[source(_)]:
++negativeZoneReply[source(_)]:
     isAvailableForZoning
     <- !receivedAllReplies.
 
@@ -121,7 +141,7 @@ plannedZoneTimeInSteps(15).
 +!receivedAllReplies:
     isAvailableForZoning
     & .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
-    & .count(negativeZoneReply(_), RefusalAmount)
+    & .count(negativeZoneReply, RefusalAmount)
     & broadcastAgentList(BroadcastList)
     & .count(BroadcastList, AgentsAmount) // or use 28 as a static measure :Þ
     & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount

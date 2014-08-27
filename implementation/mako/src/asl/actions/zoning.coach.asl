@@ -15,7 +15,7 @@ zoneBuildingMode(false).
        }.
 
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
-+negativeZoneReply(_)[source(_)]:
++negativeZoneReply[source(_)]:
     isCoach(true)
     <- true.
 
