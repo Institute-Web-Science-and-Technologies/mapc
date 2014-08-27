@@ -66,16 +66,20 @@ public class PathMap {
 
     public ArrayList<Vertex> getNeighbours() {
         ArrayList<Vertex> neighbours = getVerticesWithHop(1);
-        logger.info("Survey debug: getNeighbours() -> getVerticesWithHop(1) = " + neighbours);
+        // logger.info("Survey debug: getNeighbours() -> getVerticesWithHop(1) = "
+        // + neighbours);
         return neighbours;
     }
 
     /**
      * @param vertex
      *            the vertex to return the path to
-     * @return the path to the given vertex
+     * @return the path to the given vertex (null if not known)
      */
     public Path getPath(Vertex vertex) {
+        // logger.info("getDistance debug: getPath(" + vertex + ")");
+        // Path blah = knownPaths.get(vertex);
+        // logger.info("getDistance debug: path = " + blah);
         return knownPaths.get(vertex);
     }
 
@@ -92,7 +96,8 @@ public class PathMap {
         if (this.containsPathsWithHop(hop)) {
             vertices.addAll(hopPaths.get(hop));
         }
-        logger.info("Survey debug: getVerticesWithHop(" + hop + "): vertices = " + vertices);
+        // logger.info("Survey debug: getVerticesWithHop(" + hop +
+        // "): vertices = " + vertices);
         return vertices;
     }
 

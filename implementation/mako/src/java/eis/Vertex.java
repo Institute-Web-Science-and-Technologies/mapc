@@ -104,7 +104,8 @@ public class Vertex {
     public boolean isSurveyed() {
         for (Vertex neighbour : knownPaths.getNeighbours()) {
             if (knownPaths.getPath(neighbour).getPathCosts() > 10) {
-                logger.info("Survey debug: path with costs > 10 found: " + knownPaths.getPath(neighbour));
+                // logger.info("Survey debug: path with costs > 10 found: " +
+                // knownPaths.getPath(neighbour));
                 return false;
             }
         }
@@ -123,7 +124,7 @@ public class Vertex {
     public TreeMap<Integer, Vertex> getNextUnsurveyedVertices(int hop) {
         TreeMap<Integer, Vertex> unsurveyedVertices = new TreeMap<Integer, Vertex>();
         if (!knownPaths.containsPathsWithHop(hop)) {
-            logger.info("Survey debug: !knownPaths.containsPathsWithHop(hop)");
+            // logger.info("Survey debug: !knownPaths.containsPathsWithHop(hop)");
             return unsurveyedVertices;
         }
         for (Vertex vertex : knownPaths.getVerticesWithHop(hop)) {
@@ -133,7 +134,7 @@ public class Vertex {
             }
         }
         if (unsurveyedVertices.size() > 0) {
-            logger.info("Survey debug: unsurveyedVertices.size() > 0");
+            // logger.info("Survey debug: unsurveyedVertices.size() > 0");
             return unsurveyedVertices;
         } else {
             return getNextUnsurveyedVertices(hop + 1);
@@ -282,6 +283,9 @@ public class Vertex {
     }
 
     public Path getPath(Vertex destination) {
+        // logger.info("getDistance debug: getPath(" + destination + ")");
+        // Path blah = knownPaths.getPath(destination);
+        // logger.info("getDistance debug: path = " + blah);
         return knownPaths.getPath(destination);
     }
 

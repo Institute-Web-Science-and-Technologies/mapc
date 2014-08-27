@@ -70,7 +70,20 @@ reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendi
 	<-
 	.print("I want to attack ", Vehicle, ", but it is ", Distance, " steps away.");
 	!goto(Vertex).
-
+	
+// It is possible that we don't know a path from our position to the
+// enemy agent. In this case, ia.getdistance returns the distance 0.
++!doAttack(Vehicle, Vertex):
+	position(Position)
+	& Position \== Vertex
+	& ia.getDistance(Position, Vertex, Distance)
+	& Distance == 0
+	<-
+	.print("I wanted to attack ", Vehicle, ", but there is no known path to ", Vertex, " from ", Position, ".");
+	+ignoreEnemy(Vehicle);
+	!doAction.
+	
+	
 // If energy is enough - attack
 +!doAttack(Vehicle, Vertex)
     <- .print("Attacking ", Vehicle);

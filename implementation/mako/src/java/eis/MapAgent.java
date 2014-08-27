@@ -20,6 +20,7 @@ public class MapAgent {
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
     private ArrayList<String> availableZoners = new ArrayList<String>();
+    // access enemy agent position by the agent name
     private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
     private HashMap<String, Agent> enemyInfos = new HashMap<String, Agent>();
     private AgentLogger logger = new AgentLogger("MapAgent");
@@ -63,6 +64,18 @@ public class MapAgent {
         } else {
             return new Agent();
         }
+    }
+
+    /**
+     * Used by the internal action removeEnemyGhost to update the MapAgent's
+     * knowledge about the locations of enemy agents. Removes an enemy agent
+     * from the list of enemy agent positions.
+     * 
+     * @param enemyName
+     *            the Jason name of the enemy agent.
+     */
+    public void removeFromEnemyPositions(String enemyName) {
+        enemyPositions.remove(enemyName);
     }
 
     /**
@@ -145,13 +158,18 @@ public class MapAgent {
 
     private void handleVisibleEntity(Percept percept) {
         String vehicle = percept.getParameters().get(0).toString();
-        String position = percept.getParameters().get(1).toString();
+        Vertex position = getVertex(percept.getParameters().get(1).toString());
         String team = percept.getParameters().get(2).toString();
-        String state = percept.getParameters().get(3).toString();
+        boolean disabled = percept.getParameters().get(3).toString().equalsIgnoreCase("disabled");
 
         if (team.equalsIgnoreCase(AgentHandler.enemyTeam)) {
-            if (state.equalsIgnoreCase("normal")) {
-                enemyPositions.put(vehicle, getVertex(position));
+            Agent enemyAgent = getEnemyInfo(vehicle);
+            enemyAgent.setJasonName(vehicle);
+            enemyAgent.setPosition(position);
+            enemyAgent.setTeam(team);
+            enemyAgent.setDisabled(disabled);
+            if (!disabled) {
+                enemyPositions.put(vehicle, position);
             } else {
                 enemyPositions.remove(vehicle);
             }
@@ -346,8 +364,13 @@ public class MapAgent {
         return position.getPath(destination).getNextBestCostVertex();
     }
 
-    public int getHopsToVertex(Vertex position, Vertex destination) {
-        return position.getPath(destination).getPathHops();
+    public Integer getHopsToVertex(Vertex position, Vertex destination) {
+        Path path = position.getPath(destination);
+        if (path == null) {
+            return null;
+        } else {
+            return path.getPathHops();
+        }
     }
 
     public Vertex getClosestVertex(Vertex position, ArrayList<Vertex> vertices) {
@@ -419,6 +442,34 @@ public class MapAgent {
             }
         }
         return enemyPosition;
+    }
+
+    public Agent getClosestEnemy(Vertex position) {
+        // logger.info("Closest enemy debug: Entering getClosestEnemy(" +
+        // position + ")");
+        Vertex enemyPosition = position;
+        String agentName = null;
+        if (enemyPositions.size() > 0) {
+            int currentHops = 0;
+            for (String key : enemyPositions.keySet()) {
+                Vertex vertex = enemyPositions.get(key);
+                if (enemyPosition == position) {
+                    agentName = key;
+                    enemyPosition = vertex;
+                    currentHops = position.getPath(enemyPosition).getPathHops();
+                } else {
+                    Path path = position.getPath(vertex);
+                    if (path.getPathHops() < currentHops) {
+                        agentName = key;
+                        enemyPosition = vertex;
+                    }
+                }
+            }
+        }
+        Agent enemy = getEnemyInfo(agentName);
+        // logger.info("Closest enemy debug: Leaving getClosestEnemy(" +
+        // position + "). Enemy is " + enemy);
+        return enemy;
     }
 
     public List<String> getClosestAgentsToZone(Vertex center, int count) {

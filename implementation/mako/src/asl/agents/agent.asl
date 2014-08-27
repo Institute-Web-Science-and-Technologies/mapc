@@ -86,8 +86,8 @@ zoneMode(false).
 	& visibleEntity(Vehicle, Position, Team, normal)
 	& myTeam(MyTeam)
 	& MyTeam \== Team
- 	<- .print("Attacking ", Vehicle, " on my position ", Vertex);
- 	   !doAttack(Vehicle, Vertex).
+ 	<- .print("Attacking ", Vehicle, " on my position ", Position);
+ 	   !doAttack(Vehicle, Position).
  	   
 +!doAction:
  	position(Position)
@@ -98,6 +98,34 @@ zoneMode(false).
 	& MyTeam \== Team
  	<- .print("Attacking ", Vehicle, " on ", Vertex, " from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
+ 	
+// In the case where we have sent a saboteur (or any other agent) to an enemy 'ghost' location (a location
+// where an enemy agent used to be, but no longer occupies), we need to tell the
+// MapAgent to update its list of enemy positions.
++!doAction:
+	position(MyPosition)
+//	& role(saboteur)
+	& ia.getClosestEnemy(MyPosition, EnemyPosition, Enemy)
+	& ia.getDistance(MyPosition, EnemyPosition, Distance)
+	& Distance == 1 //better: < visibilityRange
+	& not visibleEntity(Enemy, EnemyPosition, _, normal)
+	<-
+	.print("No enemy agent found at ", EnemyPosition, ". Informing MapAgent.");
+	ia.removeEnemyGhost(Enemy);
+	!doAction.
+	
+// Saboteurs should perform aggressively, preferring to attack enemy agents over exploring.
+// In the case where they can't see an enemy agent themselves, they get help
+// from the MapAgent.
++!doAction:
+	role(saboteur)
+	& position(MyPosition)
+	& ia.getClosestEnemyPosition(MyPosition, EnemyPosition)
+	& not ignoreEnemy(Vehicle)
+	<-
+	.print("Moving to attack enemy on ", EnemyPosition, " from my position ", Position);
+	!doAttack(Vehicle, Vertex).
+	
 
  // When saboteur, sentinel,and repairer are attacked,
  //and they are not disabled, they do parrying
@@ -198,11 +226,12 @@ zoneMode(false).
 // Want to goto, but don't have enough energy? Recharge.
 +!goto(Destination):
     position(Position)
-    & energy(Energy)
+    & ia.getBestHopToVertex(Position, Destination, NextHop)
     & ia.getEdgeCost(Position, Destination, Costs)
+    & energy(Energy)
     & Costs > Energy
     <-
-	.print("I have ", Energy, " energy, but need ", Costs, " to move to ", Destination, ", going to recharge first.");
+	.print("I have ", Energy, " energy, but need ", Costs, " to move to ", Destination, " by way of ", NextHop, ", going to recharge first.");
     recharge.
 
 // This is the default goto action if we want to move to one of our neighbour nodes.

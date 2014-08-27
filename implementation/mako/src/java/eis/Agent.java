@@ -22,6 +22,9 @@ public class Agent {
     private int visRange;
     // the step # this agent was last inspected on
     private int inspectionStep = -100;
+    private boolean disabled = false;
+
+    private Vertex position;
 
     public String getServerName() {
         return serverName;
@@ -141,4 +144,26 @@ public class Agent {
     public void setInspectionStep(int inspectionStep) {
         this.inspectionStep = inspectionStep;
     }
+
+    public Vertex getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vertex position) {
+        this.position = position;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public String toString() {
+        return jasonName;
+
+    }
+
 }
