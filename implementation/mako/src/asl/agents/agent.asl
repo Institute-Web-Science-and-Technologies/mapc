@@ -64,9 +64,10 @@ zoneMode(false).
  	position(Position)
 	& role(saboteur)
 	& visibleEntity(Vehicle, Vertex, Team, normal)
+	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
 	& myTeam(MyTeam)
-	& MyTeam \== EnemyTeam
- 	<- .print("Attacking ", Vehicle, " on ", Vertex, "from my position ", Position);
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Vehicle, " on ", Vertex, " from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
 
  // When saboteur, sentinel,and repairer are attacked,
