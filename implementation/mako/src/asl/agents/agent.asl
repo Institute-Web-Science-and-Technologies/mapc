@@ -64,9 +64,10 @@ zoneMode(false).
  	position(Position)
 	& role(saboteur)
 	& visibleEntity(Vehicle, Vertex, Team, normal)
+	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
 	& myTeam(MyTeam)
-	& MyTeam \== EnemyTeam
- 	<- .print("Attacking ", Vehicle, " on ", Vertex, "from my position ", Position);
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Vehicle, " on ", Vertex, " from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
 
  // When saboteur, sentinel,and repairer are attacked,
@@ -87,7 +88,6 @@ zoneMode(false).
  	& zoneNode(Position)
 	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
 	& (visibleEntity(Vehicle, Position, Team, normal) | visibleEntity(Vehicle, Vertex, Team, normal))
-	& ia.isSaboteur(Vehicle)
 	& myTeam(MyTeam)
 	& MyTeam \== Team
  	<- .print("I am standing on a zoneNode, and I see enemy nearby. so I parry ");
