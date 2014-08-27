@@ -3,15 +3,15 @@ zoneBuildingMode(false).
 
 /* Plans */
 
-// Use an internal action that determines where to place the minions the best
-// and tell them:
-+!toldMinionsTheirPosition:
-    bestZone(_, CentreNode, Minions)
-    & ia.placeAgentsOnZone(CentreNode, Minions, PositionMinionMapping)
-    & .length(PositionMinionMapping, MappingLength)
+// Use an internal action that determines where to place the agents the best
+// and tell them. The agents include all the coach's minions as well as himself.
++!assignededAgentsTheirPosition:
+    bestZone(_, CentreNode, ClosestAgents)
+    & ia.placeAgentsOnZone(CentreNode, ClosestAgents, PositionAgentMapping)
+    & .length(PositionAgentMapping, MappingLength)
     <- for (.range(ControlVariable, 0, MappingLength - 1)) {
-           .nth(ControlVariable, PositionMinionMapping, [PositionVertex, Minion]);
-           .send(Minion, tell, zoneGoalVertex(PositionVertex));
+           .nth(ControlVariable, PositionAgentMapping, [PositionVertex, Agent]);
+           .send(Agent, tell, zoneGoalVertex(PositionVertex));
        }.
 
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
@@ -23,20 +23,21 @@ zoneBuildingMode(false).
 // about it and go back to start zoning from scratch.
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
-    & bestZone(_, _, Minions)
-    <- .difference(Minions, Sender, UnawareMinions);
+    & .my_name(Coach)
+    & bestZone(_, _, ClosestAgents)
+    <- .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
        -+isCoach(false);
        !builtZone(true).
 
 // This is a part @manuelmittler started to tackle extension of zones. It is not
 // finished yet.
-+!asyncForeignBestZone(Value, CentreNode, Minions)[source(Sender)]:
++!asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Sender)]:
 	isCoach(true)
-	& bestZone(BestZoneValue, BestZoneCentreNode, BestZoneMinions)
+	& bestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents)
 	& position(PositionVertex)
-	& .length(Minions, ZoneSize)
-	& .length(BestZoneMinions, BestZoneSize)
+	& .length(ClosestAgents, ZoneSize)
+	& .length(BestZoneClosestAgents, BestZoneSize)
 	& Value > BestZoneValue
 	& ZoneSize <= BestZoneSize+1
 	<- //?plannedZoneTimeInSteps(Steps);
@@ -52,10 +53,10 @@ zoneBuildingMode(false).
        .send(Sender, untell, isCoach(true));
        !movedToNewZone(CentreNode, UsedNodes).
     	
-+!asyncForeignBestZone(Value, CentreNode, Minions)[source(Sender)]:
++!asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Sender)]:
     isCoach(true)
-    & bestZone(_, BestZoneCentreNode, BestZoneMinions)
-    & .length(BestZoneMinions, BestZoneSize)
+    & bestZone(_, BestZoneCentreNode, BestZoneClosestAgents)
+    & .length(BestZoneClosestAgents, BestZoneSize)
     <- //If the zone of the idleZoner is not better than the current zone, the idleZoner will join the group
        //and extend the zone by moving to an optional vertex.
        //TODO: pass correct parameters/return values: make sure to use the right method signature
@@ -64,4 +65,4 @@ zoneBuildingMode(false).
 
 +!movedToNewZone(CentreNode, UsedNodes)
 	<-!goto(CentreNode);
-	  !toldMinionsTheirPosition.
+	  !assignededAgentsTheirPosition.

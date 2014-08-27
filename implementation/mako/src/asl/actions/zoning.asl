@@ -9,12 +9,12 @@ plannedZoneTimeInSteps(15).
 // @all: If you are looking for something to do, search this file as well as
 //       zoning.* for the keyword "TODO".
 // TODO [prio:low]: test that the internal actions work properly when JavaMap is merged onto master.
-// TODO [prio:high, #28]: !foundNewZone achievement goal needs to be written. It expresses that an agent should either ask for expendable zones or start zoning anew. Its stub is located at the bottom of this file.
-// TODO [prio:medium, #26]: we must incorporate plannedZoneTimeInSteps to split up zones after some time.
+// TODO [prio:medium, #28]: !foundNewZone achievement goal needs to be written. It expresses that an agent should either ask for expendable zones or start zoning anew. Its stub is located at the bottom of this file.
+// TODO [prio:high, #26]: we must incorporate plannedZoneTimeInSteps to split up zones after some time.
 // TODO [prio:medium, #27]: when we have reached the plannedZoneTimeInSteps, we should start zoning again (needs to increment a counter in each step) – also see the zone movement idea which is located lower in this TODO list.
 // TODO [prio:low]: is zoneMode really only set once? Else, we will have to lock the zoneMode(true) belief trigger with a mustCommunicateZones(true) belief.
-// TODO [prio:low, #27]: @wontfix search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
-// TODO [prio:medium, #28]: in zoning.coach.asl we could have free agents extend our zone (if possible).
+// TODO [prio:none, #27]: @wontfix search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
+// TODO [prio:none, #28]: @wontfix in zoning.coach.asl we could have free agents extend our zone (if possible). — instead, harass enemies and go to wells.
 // TODO [prio:low, #27]: when a zone has been established, each zoner should look at zones with maximum .count(zoner,X) many nodes. If there is a better option, the whole zone or parts of it may be moved onto the better nearby zone.
 /* Plans */
 
@@ -32,43 +32,41 @@ plannedZoneTimeInSteps(15).
 +!builtZone(Asynchronous):
     position(PositionVertex)
     & .my_name(MyName)
-    <- // TODO: register as being able for zoning:
-      // ia.registerForZoning(MyName);
-      .print("[WARNING]: Zoning was triggered but is not ready for execution yet.");
+    <- ia.registerForZoning(MyName);
        
-      // start over new: clear all previous beliefs:
-      -bestZone(_, _, _)[source(_)];
-      -negativeZoneReply(_)[source(_)];
-      -zoneGoalVertex(_)[source(_)];
-      -zoneNode(_)[source(_)];
-      -foreignBestZone(_, _, _)[source(_)];
-      -closestAgents(_)[source(_)];
+       // start over new: clear all previous beliefs:
+       -bestZone(_, _, _)[source(_)];
+       -negativeZoneReply(_)[source(_)];
+       -zoneGoalVertex(_)[source(_)];
+       -zoneNode(_)[source(_)];
+       -foreignBestZone(_, _, _)[source(_)];
+       -closestAgents(_)[source(_)];
        
-      // ask Vertex for its zone as well as its neighbours:
-      ia.getBestZone(PositionVertex, 1, Value, CentreNode, Minions);
-      // trigger broadcasting:
-      +bestZone(Value, CentreNode, Minions)[source(self)];
-      if (Asynchronous) {
-        .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, Minions));
-      } else { // Initial broadcast storm when +zoneMode(true):
-        .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, Minions));
-      }.
+       // ask Vertex for its zone as well as its neighbours:
+       ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents);
+       // trigger broadcasting:
+       +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
+       if (Asynchronous) {
+         .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, ClosestAgents));
+       } else { // Initial broadcast storm when +zoneMode(true):
+         .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, ClosestAgents));
+       }.
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
 // Broadcaster doesn't know about our zone so we tell him as we haven't started
 // building one yet. We also deal with his zone information.
-+asyncForeignBestZone(Value, CentreNode, Minions)[source(Broadcaster)]:
++asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
     isAvailableForZoning
-    & bestZone(BestZoneValue, BestZoneCentreNode, BestZoneMinions)[source(self)]
-    <- .send(Broadcaster, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneMinions));
-       +foreignBestZone(Value, CentreNode, Minions)[source(Broadcaster)].
+    & bestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents)[source(self)]
+    <- .send(Broadcaster, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents));
+       +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
 
 // We received an asynchronous foreignBestZone percept but don't know about our
 // own zone anymore as it was worse. Hence, we cannot tell him our zone but we
 // still take his zone into consideration when choosing the best one for us.
-+asyncForeignBestZone(Value, CentreNode, Minions)[source(Broadcaster)]:
++asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
     isAvailableForZoning
-    <- +foreignBestZone(Value, CentreNode, Minions)[source(Broadcaster)].
+    <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
 
 // We have received a zone better than the one we know (or
 // didn't know any), so we throw our zone away
@@ -77,10 +75,10 @@ plannedZoneTimeInSteps(15).
 //
 // We also tell our former coach that we are no longer interested in his zone!
 @onlyAddOneBetterZoneAtATime[atomic]
-+foreignBestZone(Value, CentreNode, Minions)[source(Coach)]:
++foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
     isAvailableForZoning
     & position(PositionVertex)
-    & bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneMinions)[source(FormerCoach)]
+    & bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]
     // my zone is worse:
     & FormerValue < Value
     // or the zones are identical but my name is alphabetically bigger:
@@ -89,8 +87,8 @@ plannedZoneTimeInSteps(15).
         & .sort([Coach, MyName], [Coach, MyName])
     )
     <- //.send(FormerCoach, tell, negativeZoneReply(FormerZoneCentreNode));
-       -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneMinions)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
-       +bestZone(Value, CentreNode, Minions)[source(Coach)];
+       -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
+       +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        !receivedAllReplies.
 
 // We were informed about a worse zone.
@@ -145,16 +143,15 @@ plannedZoneTimeInSteps(15).
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
     & .my_name(MyName)
-    <- //TODO: tell the JavaMap to unregister this agent and all his minions(X) from the available zoners
-       -+isCoach(true);
-       !toldMinionsTheirPosition;
-       !goto(CentreNode). // only works, when CentreNode in 1HNH.
+    <- -+isCoach(true);
+       !assignededAgentsTheirPosition.
 
 // We aren't this round's coach. But we are a minion.
 @becomeAMinion
 +!choseZoningRole:
     .my_name(MyName)
-    & .member(MyName, Minions)
+    & bestZone(_, _, ClosestAgents)[source(self)]
+    & .member(MyName, ClosestAgents)
     <- +isMinion(true).
 
 +!choseZoningRole

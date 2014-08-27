@@ -12,6 +12,8 @@
 // If we got a zoneGoalVertex, which is a node we should move to to build a
 // zone, we will move there. If we'll reach it in the next step, we'll set a
 // flag.
+// This method is used by minions and coaches alike. Coaches will only have to
+// to 0-1 steps to reach their goal though.
 // TODO: this action will probably be either executed too early or too late. Place it at the correct place in agent.asl.
 +!doAction:
     zoneGoalVertex(GoalVertex)
