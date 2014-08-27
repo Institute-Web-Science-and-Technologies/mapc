@@ -3,6 +3,7 @@ package eis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeMap;
 
 import eis.iilang.Numeral;
@@ -18,6 +19,7 @@ public class MapAgent {
     private int step = 0;
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
+    private ArrayList<String> availableZoners = new ArrayList<String>();
     private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
     private HashMap<String, Agent> enemyInfos = new HashMap<String, Agent>();
     private AgentLogger logger = new AgentLogger("MapAgent");
@@ -417,5 +419,34 @@ public class MapAgent {
             }
         }
         return enemyPosition;
+    }
+
+    public List<String> getClosestAgentsToZone(Vertex center, int count) {
+        ArrayList<String> closestAgents = new ArrayList<String>();
+
+        // sort agents in regard of their distance to the center of the zone
+        TreeMap<Integer, ArrayList<String>> distanceFromZone = new TreeMap<Integer, ArrayList<String>>();
+        for (String agent : availableZoners) {
+            Vertex agentPosition = agentPositions.get(agent);
+            int distance = agentPosition.getPath(center).getPathHops();
+            if (!distanceFromZone.containsKey(distance)) {
+                distanceFromZone.put(distance, new ArrayList<String>());
+            }
+            distanceFromZone.get(distance).add(agent);
+        }
+
+        // select closest agents to the center of the zone
+        Integer key = distanceFromZone.firstKey();
+        while (closestAgents.size() < count) {
+            closestAgents.addAll(distanceFromZone.get(key));
+            key = distanceFromZone.higherKey(key);
+            if (key == null) {
+                break;
+            }
+        }
+        if (closestAgents.size() > count) {
+            return closestAgents.subList(0, count - 1);
+        }
+        return closestAgents;
     }
 }

@@ -6,8 +6,8 @@ import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.parser.ParseException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class JasonHelper {
@@ -42,13 +42,20 @@ public class JasonHelper {
         return null;
     }
 
-    public static Term getTerm(ArrayList<Vertex> vertices) {
+    public static Term getTerm(List<Vertex> vertices) {
         ListTerm listTerm = new ListTermImpl();
         for (Vertex vertex : vertices) {
             listTerm.add(getTerm(vertex.getIdentifier()));
         }
         return listTerm;
+    }
 
+    public static Term getStringList(List<String> list) {
+        ListTerm listTerm = new ListTermImpl();
+        for (String item : list) {
+            listTerm.add(getTerm(item));
+        }
+        return listTerm;
     }
 
     public static Term getTerm(HashMap<String, Vertex> positions) {

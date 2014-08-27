@@ -8,6 +8,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import eis.JasonHelper;
@@ -15,7 +16,7 @@ import eis.MapAgent;
 import eis.Vertex;
 import eis.Zone;
 
-//Call from AgentSpeak: getBestZone(Position, Range, ZoneValuePerAgent, CenterVertex, ListOfVertices)
+//Call from AgentSpeak: getBestZone(Position, Range, ZoneValuePerAgent, CenterVertex, ListOfAgents)
 public class getBestZone extends DefaultInternalAction {
     private static final long serialVersionUID = -6937681288781906625L;
 
@@ -31,16 +32,19 @@ public class getBestZone extends DefaultInternalAction {
 
         Term zoneValuePerAgent = args[2];
         Term centerVertex = args[3];
-        Term listOfVertices = args[4];
+        Term listOfAgents = args[4];
 
         MapAgent mapAgent = MapAgent.getInstance();
         int range = (int) ((NumberTerm) args[1]).solve();
         Vertex vertex = mapAgent.getVertex(args[0].toString());
         Zone zone = mapAgent.getBestZone(mapAgent.getZonesInRange(vertex, range));
 
+        List<String> closestAgents = mapAgent.getClosestAgentsToZone(zone.getCenter(), zone.getPositions().size());
+
         un.unifies(zoneValuePerAgent, JasonHelper.getTerm(zone.getZoneValuePerAgent()));
         un.unifies(centerVertex, JasonHelper.getTerm(zone.getCenter().getIdentifier()));
-        un.unifies(listOfVertices, JasonHelper.getTerm(zone.getPositions()));
-        return true;
+        un.unifies(listOfAgents, JasonHelper.getStringList(closestAgents));
+        return closestAgents.size() == zone.getPositions().size();
     }
+
 }
