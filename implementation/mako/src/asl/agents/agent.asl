@@ -111,6 +111,18 @@ zoneMode(false).
  	<- .print("Attacking ", Vehicle, " on ", Vertex, " from my position ", Position);
  	   !doAttack(Vehicle, Vertex).
 
+// If the saboteur in zone mode, have an attack_chase strategy and there are no enemies in the visible range -
+// then go to the closest enemy
++!doAction:
+ 	position(Position)
+	& role(saboteur)
+	& zoneMode(true)
+	& strategy(attack_chase)
+	& ia.getClosestEnemyPosition(Position, EnemyPosition)
+	& EnemyPosition \== Position // ensure that there is a path to the enemy
+	<- .print("Going to the closest enemy on vertex ", EnemyPosition);
+ 	!goto(EnemyPosition).
+
  // When saboteur, sentinel,and repairer are attacked,
  //and they are not disabled, they do parrying
  +!doAction:
