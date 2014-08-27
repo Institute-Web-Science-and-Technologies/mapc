@@ -5,8 +5,8 @@ import jason.asSyntax.Structure;
 import jason.environment.Environment;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -15,6 +15,7 @@ import eis.exceptions.RelationException;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
 import eis.iilang.Percept;
+import eis.iilang.PrologVisitor;
 
 /**
  * @author Artur Daudrich
@@ -27,7 +28,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     private AgentLogger logger = new AgentLogger(EISEnvironment.NAME);
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
-    private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
+    private HashMap<String, LinkedList<Percept>> delayedPerceptsMap = new HashMap<String, LinkedList<Percept>>();
 
     // private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
 
@@ -123,64 +124,60 @@ public class EISEnvironment extends Environment implements AgentListener {
         }
     }
 
-    @Override
-    public void handlePercept(String agentName, Percept percept) {
-        logger.info("Kommen wir hier jemals rein?");
-        String jasonName = serverAgentMap.get(agentName).getJasonName();
-        Literal literal = Literal.parseLiteral(percept.toProlog());
-        // removePercept(jasonName, literal);
-        addPercept(jasonName, literal);
-    }
-
     /**
      * This method clears earlier percepts with {@code [source(percept)]} of the
      * respective agents and then adds the new ones from the current step.
      */
     @Override
-    public void handlePercept(String agentName, Collection<Percept> percepts) {
+    public synchronized void handlePercept(String agentName, Percept percept) {
         // agentName: agentA1, jasonName: explorer1
         String jasonNameOfAgent = serverAgentMap.get(agentName).getJasonName();
+
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
         // but I can't think of any other way to fix this issue. -sewell
-        if (percepts.toString().contains("role")) {
-            delayedPerceptsMap.put(jasonNameOfAgent, percepts);
+        LinkedList<Percept> delayedPercepts = new LinkedList<>();
+        delayedPercepts.add(percept);
+        if (PrologVisitor.staticVisit(percept).contains("role")) {
+            delayedPerceptsMap.put(jasonNameOfAgent, delayedPercepts);
             return;
         } else {
             if (delayedPerceptsMap.containsKey(jasonNameOfAgent)) {
-                percepts.addAll(delayedPerceptsMap.get(jasonNameOfAgent));
+                delayedPercepts.addAll(delayedPerceptsMap.get(jasonNameOfAgent));
                 delayedPerceptsMap.remove(jasonNameOfAgent);
             }
         }
 
         Percept requestAction = null;
         clearPercepts(jasonNameOfAgent);
-        // clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
         MapAgent mapAgentInstance = MapAgent.getInstance();
-        for (Percept percept : percepts) {
+        for (Percept delayedPercept : delayedPercepts) {
             // Make sure that the requestAction percept is handled last by the
             // agents because when the agent receives the requestAction
             // percept, it determines
             // which action to perform in the current step. By this point, all
             // other percepts need to have been handled properly already.
-            if (percept.getName().equalsIgnoreCase("requestAction")) {
-                requestAction = percept;
+            if (delayedPercept.getName().equalsIgnoreCase("requestAction")) {
+                requestAction = delayedPercept;
                 continue;
             }
-            if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
-                // logger.info("Sending percept " + perceptToLiteral(percept) +
+            if (!delayedPercept.getName().equalsIgnoreCase("lastActionParam")) {
+                // logger.info("Sending percept " +
+                // perceptToLiteral(percept) +
                 // " to agent MapAgent.");
-                mapAgentInstance.addPercept(percept);
-                addAgentPercept(jasonNameOfAgent, percept);
+                mapAgentInstance.addPercept(delayedPercept);
+                addAgentPercept(jasonNameOfAgent, delayedPercept);
             }
-            if (percept.getName().equalsIgnoreCase("position")) {
-                mapAgentInstance.storeAgentPosition(jasonNameOfAgent, percept.getParameters().get(0).toString());
+            if (delayedPercept.getName().equalsIgnoreCase("position")) {
+                String position = PrologVisitor.staticVisit(delayedPercept.getParameters().get(0));
+                mapAgentInstance.storeAgentPosition(jasonNameOfAgent, position);
             }
         }
         if (requestAction != null) {
             addAgentPercept(jasonNameOfAgent, requestAction);
+            System.err.println(requestAction);
         }
 
     }
@@ -197,12 +194,14 @@ public class EISEnvironment extends Environment implements AgentListener {
         case "role":
             return Literal.parseLiteral(percept.toProlog().toLowerCase());
         case "visibleVertex":
-        case "visibleEntity":
+        case "visibleEntity": {
             String escaped = percept.toProlog().replace("A", "teamA").replace("B", "teamB");
             return Literal.parseLiteral(escaped);
-        case "inspectedEntity":
-            String escaped2 = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
-            return Literal.parseLiteral(escaped2);
+        }
+        case "inspectedEntity": {
+            String escaped = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
+            return Literal.parseLiteral(escaped);
+        }
         default:
             return Literal.parseLiteral(percept.toProlog());
         }
