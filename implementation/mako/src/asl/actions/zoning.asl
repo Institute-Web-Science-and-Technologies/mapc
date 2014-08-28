@@ -21,6 +21,20 @@ plannedZoneTimeInSteps(15).
 // Zoning mode has begun and it will trigger the achievement goal builtZone.
 +zoneMode(true)
     <- !builtZone(false).
+    
+//After some agents formed a zone a new round of zoning for all the
+//other agents will start. Before that all previous beliefs regarding
+//zoning will be deleted.
++!newZoningRound:
+	isAvailableForZoning
+	<-  -bestZone(_, _, _)[source(_)];
+       -negativeZoneReply[source(_)];
+       -zoneGoalVertex(_)[source(_)];
+       -zoneNode(_)[source(_)];
+       -foreignBestZone(_, _, _)[source(_)];
+       -closestAgents(_)[source(_)];
+       -bestZoneRequest[source(_)];
+       !builtZone(true).
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
@@ -36,16 +50,7 @@ plannedZoneTimeInSteps(15).
     // ask for best zone in his 1HNH (if any)
     & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
     & broadcastAgentList(BroadcastList)
-    <- ia.registerForZoning(MyName);
-       
-       // start over new: clear all previous beliefs:
-       -bestZone(_, _, _)[source(_)];
-       -negativeZoneReply[source(_)];
-       -zoneGoalVertex(_)[source(_)];
-       -zoneNode(_)[source(_)];
-       -foreignBestZone(_, _, _)[source(_)];
-       -closestAgents(_)[source(_)];
-       
+    <- ia.registerForZoning(MyName);       
        // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
        if (IsAsynchronous) {

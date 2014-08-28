@@ -36,4 +36,4 @@
         | bestZone(_, _, _)[source(Sender)]
     )
     <- -+isMinion(false);
-       !builtZone(true).
+       !newZoningRound.

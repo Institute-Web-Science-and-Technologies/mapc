@@ -20,7 +20,7 @@ zoneBuildingMode(false).
 //After that all remaining idle agents are told to start a new round of zoning.
 +!startedNewRoundOfZoning:
 	broadcastAgentList(BroadcastList)
-	<- .send(BroadcastList, achieve, builtZone(true)).
+	<- .send(BroadcastList, achieve, newZoningRound).
 	
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
 +negativeZoneReply[source(_)]:
@@ -36,7 +36,7 @@ zoneBuildingMode(false).
     <- .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
        -+isCoach(false);
-       !builtZone(true).
+       !newZoningRound.
 
 // This is a part @manuelmittler started to tackle extension of zones. It is not
 // finished yet.
