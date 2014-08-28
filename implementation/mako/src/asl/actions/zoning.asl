@@ -34,7 +34,7 @@ plannedZoneTimeInSteps(15).
        -foreignBestZone(_, _, _)[source(_)];
        -closestAgents(_)[source(_)];
        -bestZoneRequest[source(_)];
-       !builtZone(true).
+       !builtZone(false).
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
@@ -174,7 +174,6 @@ plannedZoneTimeInSteps(15).
 @becomeACoach
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
-    & .my_name(MyName)
     <- -+isCoach(true);
        !assignededAgentsTheirPosition.
 
