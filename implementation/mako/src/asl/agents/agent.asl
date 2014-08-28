@@ -1,6 +1,9 @@
 // Agent baseAgent in project mako
 { include("../misc/storeBeliefs.asl") }
 { include("../actions/explore.asl") }
+{ include("../actions/goto.asl") }
+{ include("../actions/doSurveying.asl") }
+{ include("../actions/avoidEnemy.asl") }
 { include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
@@ -202,7 +205,8 @@ isInterestedInZoning(true).
 
 // Condition to start zoning phase
 // TODO: Make entering zone mode more dynamic
-+achievement(surveyed640)[source(self)]
++achievement(surveyed640)[source(self)]:
+    zoneMode(false)
     <-
     .print("Done with surveying. Entering zone mode.");
     -+zoneMode(true).
@@ -214,55 +218,3 @@ isInterestedInZoning(true).
 	& zoneMode(false)
 	<- 
 	-+zoneMode(true).
-
-	
-// If the agent has enough energy, then survey. Otherwise recharge.
-+!doSurveying:
-	energy(Energy)
-	& Energy < 1
-	<- .print("I don't have enough energy to survey. I'll recharge first.");
-    	recharge.
-
-+!doSurveying:
-	position(Position)
-	<-
-	.print("Surveying ", Position);
-	survey.
-
-// In the case where we for some reason get told to move to the node we're already on,
-// we perform a recharge action instead.
-+!goto(Destination):
-	position(Position)
-	& Destination == Position
-	<-
-	.print("Warning! I was told to move to the node I am already on (", Position, "). Will recharge instead.");
-	recharge.
-	
-// Want to goto, but don't have enough energy? Recharge.
-+!goto(Destination):
-    position(Position)
-    & ia.getBestHopToVertex(Position, Destination, NextHop)
-    & ia.getEdgeCost(Position, Destination, Costs)
-    & energy(Energy)
-    & Costs > Energy
-    <-
-	.print("I have ", Energy, " energy, but need ", Costs, " to move to ", Destination, " by way of ", NextHop, ", going to recharge first.");
-    recharge.
-
-// This is the default goto action if we want to move to one of our neighbour nodes.
-+!goto(Destination):
-	position(Position)
-	& ia.getBestHopToVertex(Position, Destination, NextHop)
-	& ia.getEdgeCost(Position, Destination, Costs)
-    <-
-    .print("I will use ", Costs, " energy to move to ", Destination, " by way of ", NextHop);
-	goto(NextHop).
-
-// To avoid an enemy agent, ask the MapAgent for best position.
-// TODO: Currently, an agent will cycle between two adjacent vertices when
-// avoiding an enemy that does not move.
-+!avoidEnemy:
-	position(Position) 
-	& ia.getVertexToAvoidEnemy(Position, Destination)
-	<- 
-	!goto(Destination).
