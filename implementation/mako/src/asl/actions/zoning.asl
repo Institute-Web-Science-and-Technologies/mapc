@@ -21,20 +21,30 @@ plannedZoneTimeInSteps(15).
 // Zoning mode has begun and it will trigger the achievement goal builtZone if
 // an agent is interested in zoning. This belief is set by the corresponding
 // agents themselves.
+// Before starting to build any zone, register to the JavaMap to be an available
+// zoner.
 +zoneMode(true):
     isInterestedInZoning(true)
-    <- !builtZone(false).
+    & .my_name(MyName)
+    <- ia.registerForZoning(MyName);
+       !builtZone(false).
     
 // After some agents formed a zone a new round of zoning for all the other
 // agents will start. Before that, all previous beliefs regarding zoning will be
 // deleted.
+//
 // When zoning, do it asynchronously because we might be too late and have
 // mistakenly deleted percepts from the new zoning round. Doing !builtZone
 // asynchronously then ensures that we will get any left over zone information
 // and in the end will know about the overall best zone.
+//
+// Before starting to build any zone, register to the JavaMap to be an available
+// zoner.
 +!preparedNewZoningRound:
     isInterestedInZoning(true)
-	<- !clearedZoningPercepts;
+    & .my_name(MyName)
+	<- ia.registerForZoning(MyName);
+	   !clearedZoningPercepts;
 	   !builtZone(true).
 
 // If an agent is not interested in zoning, he will still clear his percepts as
@@ -66,8 +76,7 @@ plannedZoneTimeInSteps(15).
     // ask for best zone in his 1HNH (if any)
     & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
     & broadcastAgentList(BroadcastList)
-    <- ia.registerForZoning(MyName);       
-       // trigger broadcasting:
+    <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
        if (IsAsynchronous) {
          .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, ClosestAgents));
