@@ -3,12 +3,6 @@
 
 role(saboteur).
 
-!start.
-
-// Saboteurs will be busy attacking and harassing enemies and are hence never
-// interest in zoning.
-+!start <- -+isInterestedInZoning(false).
-
 // Saboteur current strategy: attack_chase or zoneDefence
 strategy(attack_chase).
 
@@ -16,6 +10,12 @@ strategy(attack_chase).
 reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendingZone(ZoneCentre) 
     & ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition) & ia.getDistance(Position, EnemyPosition, Distance)
     & Distance < 2.
+
+!start.
+
+// Saboteurs will be busy attacking and harassing enemies and are hence never
+// interest in zoning.
++!start <- -+isInterestedInZoning(false).
 
 // If there is a new zone defence request, but we already defending a zone - skip processing, busy
 +requestZoneDefence(ZoneCentre): strategy(zoneDefence).
