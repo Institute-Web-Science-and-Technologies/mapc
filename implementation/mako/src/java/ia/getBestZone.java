@@ -39,14 +39,17 @@ public class getBestZone extends DefaultInternalAction {
         Vertex vertex = mapAgent.getVertex(args[0].toString());
         Zone zone = mapAgent.getBestZone(mapAgent.getZonesInRange(vertex, range));
 
-        List<String> closestAgents = mapAgent.getClosestAgentsToZone(zone.getCenter(), zone.getPositions().size());
-        if (closestAgents.size() > 0) {
-            Double zoneValue = zone.getZoneValuePerAgent() / closestAgents.size();
-            un.unifies(zoneValuePerAgent, JasonHelper.getTerm(zoneValue));
-            un.unifies(centerVertex, JasonHelper.getTerm(zone.getCenter().getIdentifier()));
-            un.unifies(listOfAgents, JasonHelper.getStringList(closestAgents));
+        if (zone != null) {
+            List<String> closestAgents = mapAgent.getClosestAgentsToZone(zone.getCenter(), zone.getPositions().size());
+            if (closestAgents.size() > 0) {
+                Double zoneValue = zone.getZoneValuePerAgent() / closestAgents.size();
+                un.unifies(zoneValuePerAgent, JasonHelper.getTerm(zoneValue));
+                un.unifies(centerVertex, JasonHelper.getTerm(zone.getCenter().getIdentifier()));
+                un.unifies(listOfAgents, JasonHelper.getStringList(closestAgents));
+            }
+            return closestAgents.size() == zone.getPositions().size();
         }
-        return closestAgents.size() == zone.getPositions().size();
+        return false;
     }
 
 }

@@ -3,6 +3,7 @@ package eis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -300,7 +301,10 @@ public class MapAgent {
         ArrayList<Vertex> neighbourhood = vertex.getNeighbourhood(range);
         ArrayList<Zone> zones = new ArrayList<Zone>();
         for (Vertex neighbour : neighbourhood) {
-            zones.add(neighbour.getBestMinimalZone());
+            Zone bestMinimalZone = neighbour.getBestMinimalZone();
+            if (bestMinimalZone != null) {
+                zones.add(neighbour.getBestMinimalZone());
+            }
         }
         return zones;
     }
@@ -311,16 +315,24 @@ public class MapAgent {
      * 
      * @param zones
      *            the list of zones to choose the best zone from
-     * @return the zone with the highest zone value per agent
+     * @return the zone with the highest zone value per agent or {@code null} if
+     *         {@code zones} does not contain any zone.
      */
     public Zone getBestZone(ArrayList<Zone> zones) {
-        Zone bestZone = null;
-        for (Zone zone : zones) {
-            if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
-                bestZone = zone;
+        if (zones.size() > 0) {
+            Iterator<Zone> it = zones.iterator();
+            Zone bestZone = it.next();
+
+            while (it.hasNext()) {
+                Zone zone = it.next();
+                if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
+                    bestZone = zone;
+                }
             }
+            return bestZone;
+        } else {
+            return null;
         }
-        return bestZone;
     }
 
     /**
@@ -387,6 +399,10 @@ public class MapAgent {
         }
     }
 
+    /**
+     * @return the agent positions in a {@link HashMap} or an empty one if there
+     *         was no best minimal zone.
+     */
     public HashMap<String, Vertex> getAgentZonePositions(
             Vertex zoneCenterVertex, ArrayList<String> agents) {
         TreeMap<Integer, String> distances = new TreeMap<Integer, String>();
@@ -400,19 +416,21 @@ public class MapAgent {
         Zone zone = zoneCenterVertex.getBestMinimalZone();
         ArrayList<Vertex> positions = zone.getPositions();
         HashMap<String, Vertex> map = new HashMap<String, Vertex>();
-        int key = distances.lastKey();
-        while (positions.size() > 0) {
-            String agent = distances.get(key);
-            key = distances.lowerKey(key);
-            Vertex position = agentPositions.get(agent);
-            Vertex closest = positions.get(0);
-            for (Vertex destination : positions) {
-                if (position.getPath(closest).getPathHops() > position.getPath(destination).getPathHops()) {
-                    closest = destination;
+        if (zone != null) {
+            int key = distances.lastKey();
+            while (positions.size() > 0) {
+                String agent = distances.get(key);
+                key = distances.lowerKey(key);
+                Vertex position = agentPositions.get(agent);
+                Vertex closest = positions.get(0);
+                for (Vertex destination : positions) {
+                    if (position.getPath(closest).getPathHops() > position.getPath(destination).getPathHops()) {
+                        closest = destination;
+                    }
                 }
+                map.put(agent, closest);
+                positions.remove(closest);
             }
-            map.put(agent, closest);
-            positions.remove(closest);
         }
         return map;
     }

@@ -240,8 +240,15 @@ public class ZoneMap {
         return zoneList;
     }
 
+    /**
+     * @return best minimal zone; can be {@code null}.
+     */
     public Zone getBestMinimalZone() {
-        return zones.firstEntry().getValue();
+        try {
+            return zones.firstEntry().getValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**
