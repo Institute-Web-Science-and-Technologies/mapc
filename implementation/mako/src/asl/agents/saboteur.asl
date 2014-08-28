@@ -3,6 +3,12 @@
 
 role(saboteur).
 
+!start.
+
+// Saboteurs will be busy attacking and harassing enemies and are hence never
+// interest in zoning.
++!start <- -+isInterestedInZoning(false).
+
 // Saboteur current strategy: attack_chase or zoneDefence
 strategy(attack_chase).
 

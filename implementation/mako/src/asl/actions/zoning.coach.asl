@@ -5,23 +5,20 @@ zoneBuildingMode(false).
 
 // Use an internal action that determines where to place the agents the best
 // and tell them. The agents include all the coach's minions as well as himself.
+//
+//After that all remaining idle agents are told to start a new round of zoning.
 +!assignededAgentsTheirPosition:
     bestZone(_, CentreNode, ClosestAgents)
     & ia.placeAgentsOnZone(CentreNode, ClosestAgents, PositionAgentMapping)
     & .length(PositionAgentMapping, MappingLength)
+    & broadcastAgentList(BroadcastList)
     <- for (.range(ControlVariable, 0, MappingLength - 1)) {
            .nth(ControlVariable, PositionAgentMapping, [PositionVertex, Agent]);
            .send(Agent, tell, zoneGoalVertex(PositionVertex));
        }
-       !startedNewRoundOfZoning.
+       .difference(BroadcastList, ClosestAgents, NonZoners);
+       .send(NonZoners, achieve, preparedNewZoningRound).
 
-//A round of zoning finsihed and agents were placed on their positions.
-//Also the used agents are removed from the list of idle zoners.
-//After that all remaining idle agents are told to start a new round of zoning.
-+!startedNewRoundOfZoning:
-	broadcastAgentList(BroadcastList)
-	<- .send(BroadcastList, achieve, newZoningRound).
-	
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
 +negativeZoneReply[source(_)]:
     isCoach(true)
@@ -36,7 +33,7 @@ zoneBuildingMode(false).
     <- .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
        -+isCoach(false);
-       !newZoningRound.
+       !preparedNewZoningRound.
 
 // This is a part @manuelmittler started to tackle extension of zones. It is not
 // finished yet.

@@ -18,23 +18,39 @@ plannedZoneTimeInSteps(15).
 // TODO [prio:low, #27]: when a zone has been established, each zoner should look at zones with maximum .count(zoner,X) many nodes. If there is a better option, the whole zone or parts of it may be moved onto the better nearby zone.
 /* Plans */
 
-// Zoning mode has begun and it will trigger the achievement goal builtZone.
-+zoneMode(true)
+// Zoning mode has begun and it will trigger the achievement goal builtZone if
+// an agent is interested in zoning. This belief is set by the corresponding
+// agents themselves.
++zoneMode(true):
+    isInterestedInZoning(true)
     <- !builtZone(false).
     
-//After some agents formed a zone a new round of zoning for all the
-//other agents will start. Before that all previous beliefs regarding
-//zoning will be deleted.
-+!newZoningRound:
-	isAvailableForZoning
-	<-  -bestZone(_, _, _)[source(_)];
+// After some agents formed a zone a new round of zoning for all the other
+// agents will start. Before that, all previous beliefs regarding zoning will be
+// deleted.
+// When zoning, do it asynchronously because we might be too late and have
+// mistakenly deleted percepts from the new zoning round. Doing !builtZone
+// asynchronously then ensures that we will get any left over zone information
+// and in the end will know about the overall best zone.
++!preparedNewZoningRound:
+    isInterestedInZoning(true)
+	<- !clearedZoningPercepts;
+	   !builtZone(true).
+
+// If an agent is not interested in zoning, he will still clear his percepts as
+// a precaution.
++!preparedNewZoningRound
+    <- !clearedZoningPercepts.
+
+// Clear all percepts which are generated during zone building and formation.
++!clearedZoningPercepts
+    <- -bestZone(_, _, _)[source(_)];
        -negativeZoneReply[source(_)];
        -zoneGoalVertex(_)[source(_)];
        -zoneNode(_)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
        -closestAgents(_)[source(_)];
-       -bestZoneRequest[source(_)];
-       !builtZone(false).
+       -bestZoneRequest[source(_)].
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
@@ -98,6 +114,15 @@ plannedZoneTimeInSteps(15).
 // have to reply (which is done on foreignBestZone percept addition).
 +asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]
     <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
+
+// If we didn't find a bestZone in our 1HNH ourselves, we will thankfully take
+// the first foreignBestZone that is offered to us.
+@onlyAddOneFirstBestZone[atomic]
++foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
+    isAvailableForZoning
+    & not bestZone(_, _, _)
+    <- +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
+       !receivedAllReplies.
 
 // We have received a zone better than the one we know (or
 // didn't know any), so we throw our zone away
@@ -184,6 +209,14 @@ plannedZoneTimeInSteps(15).
     & bestZone(_, _, ClosestAgents)[source(self)]
     & .member(MyName, ClosestAgents)
     <- +isMinion(true).
+
+// If there actually was no best zone, then all agents couldn't find a zone in
+// their 1HNH that could be built. We try zoning again the hope it will get
+// better but TODO: we should be smarter and start going to wells or so because trying zoning again will most likely not help!?
+@noBestZoneExisting
++!choseZoningRole:
+    not bestZone(_, _, _)
+    <- !preparedNewZoningRound.
 
 +!choseZoningRole
     <- true.

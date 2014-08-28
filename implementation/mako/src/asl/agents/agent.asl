@@ -9,6 +9,10 @@
 //{ include("../actions/zoning.coach.asl") }
 
 zoneMode(false).
+// Agents in general want to form zones. Some agents like explorers might want
+// to stay busier for longer and may turn this flag false. Others dynamically
+// flip this switch depending on their availability. 
+isInterestedInZoning(true).
 
 /* Map Related Stuff */
 
