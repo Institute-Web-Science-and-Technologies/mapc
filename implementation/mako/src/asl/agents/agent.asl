@@ -210,7 +210,7 @@ isInterestedInZoning(true).
     <-
     .print("Done with surveying. Entering zone mode.");
     -+zoneMode(true).
-	
+
 +!doAction:
 	energy(Energy)
 	& maxEnergy(Max)
@@ -218,3 +218,6 @@ isInterestedInZoning(true).
 	& zoneMode(false)
 	<- 
 	-+zoneMode(true).
+
++!doAction
+    <- true.
