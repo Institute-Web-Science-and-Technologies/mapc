@@ -12,8 +12,16 @@ zoneBuildingMode(false).
     <- for (.range(ControlVariable, 0, MappingLength - 1)) {
            .nth(ControlVariable, PositionAgentMapping, [PositionVertex, Agent]);
            .send(Agent, tell, zoneGoalVertex(PositionVertex));
-       }.
+       }
+       !startedNewRoundOfZoning.
 
+//A round of zoning finsihed and agents were placed on their positions.
+//Also the used agents are removed from the list of idle zoners.
+//After that all remaining idle agents are told to start a new round of zoning.
++!startedNewRoundOfZoning:
+	broadcastAgentList(BroadcastList)
+	<- .send(BroadcastList, achieve, builtZone).
+	
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
 +negativeZoneReply[source(_)]:
     isCoach(true)

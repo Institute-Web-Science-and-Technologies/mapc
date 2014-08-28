@@ -31,6 +31,7 @@ plannedZoneTimeInSteps(15).
 // later on. Asynchronous may only be set to false once when zoneMode begins.
 +!builtZone(IsAsynchronous):
     position(PositionVertex)
+    & isAvailableForZoning
     & .my_name(MyName)
     // ask for best zone in his 1HNH (if any)
     & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
@@ -57,7 +58,12 @@ plannedZoneTimeInSteps(15).
 // the currently available amount of agents. We need to ask others for zones.
 +!builtZone(_):
     broadcastAgentList(BroadcastList)
+    & isAvailableForZoning
     <- .send(BroadcastList, tell, bestZoneRequest).
+    
+//if we receive a builtZone achievement goal, but were are not available for zoning, do nothing
++!builtZone(_)
+    <- true.
 
 // Inform the sender about our zone – if we still know our zone.
 +bestZoneRequest[source(Sender)]:
@@ -142,9 +148,10 @@ plannedZoneTimeInSteps(15).
     isAvailableForZoning
     & .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
     & .count(negativeZoneReply, RefusalAmount)
+    & .count(bestZoneRequest, BestZoneRequest)
     & broadcastAgentList(BroadcastList)
     & .count(BroadcastList, AgentsAmount) // or use 28 as a static measure :Þ
-    & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount
+    & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount + BestZoneRequest
     <- !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.
@@ -175,4 +182,4 @@ plannedZoneTimeInSteps(15).
     <- +isMinion(true).
 
 +!choseZoningRole
-    <- !builtZone(true).
+    <- true.
