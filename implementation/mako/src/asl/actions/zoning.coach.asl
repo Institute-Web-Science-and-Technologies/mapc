@@ -20,7 +20,7 @@ zoneBuildingMode(false).
 //After that all remaining idle agents are told to start a new round of zoning.
 +!startedNewRoundOfZoning:
 	broadcastAgentList(BroadcastList)
-	<- .send(BroadcastList, achieve, builtZone).
+	<- .send(BroadcastList, achieve, builtZone(true)).
 	
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
 +negativeZoneReply[source(_)]:
