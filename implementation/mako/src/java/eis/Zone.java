@@ -1,11 +1,11 @@
 package eis;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class Zone {
     private double zoneValue = 1.0;
-    private HashSet<Vertex> positions = new HashSet<Vertex>();
-    private HashSet<Vertex> zoneNodes = new HashSet<Vertex>();
+    private ArrayList<Vertex> positions = new ArrayList<Vertex>();
+    private ArrayList<Vertex> zoneNodes = new ArrayList<Vertex>();
     private Vertex center;
 
     public Zone(Vertex center) {
@@ -22,11 +22,11 @@ public class Zone {
     }
 
     @SuppressWarnings("unchecked")
-    public HashSet<Vertex> getPositions() {
-        return (HashSet<Vertex>) positions.clone();
+    public ArrayList<Vertex> getPositions() {
+        return (ArrayList<Vertex>) positions.clone();
     }
 
-    public void setPositions(HashSet<Vertex> positions) {
+    public void setPositions(ArrayList<Vertex> positions) {
         this.positions = positions;
     }
 
@@ -43,11 +43,11 @@ public class Zone {
     }
 
     @SuppressWarnings("unchecked")
-    public HashSet<Vertex> getZoneNodes() {
-        return (HashSet<Vertex>) zoneNodes.clone();
+    public ArrayList<Vertex> getZoneNodes() {
+        return (ArrayList<Vertex>) zoneNodes.clone();
     }
 
-    public void setZoneNodes(HashSet<Vertex> zoneNodes) {
+    public void setZoneNodes(ArrayList<Vertex> zoneNodes) {
         this.zoneNodes = zoneNodes;
     }
 }
