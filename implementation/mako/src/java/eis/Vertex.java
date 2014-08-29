@@ -1,6 +1,7 @@
 package eis;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
@@ -311,6 +312,16 @@ public class Vertex {
 
     public void setReservedForSurveying(boolean reservedForSurveying) {
         this.reservedForSurveying = reservedForSurveying;
+    }
+
+    public Zone getZone(int size) {
+        TreeMap<Integer, Zone> zones = zoneMap.getZones(size);
+        Entry<Integer, Zone> ceilingEntry = zones.ceilingEntry(size);
+        if (ceilingEntry != null) {
+            return ceilingEntry.getValue();
+        } else {
+            return null;
+        }
     }
 
 }

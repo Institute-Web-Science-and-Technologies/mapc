@@ -3,7 +3,6 @@ package eis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -18,19 +17,22 @@ public class MapAgent {
     private int edges = 1;
     private int vertices = 1;
     private int step = 0;
+    private AgentLogger logger = new AgentLogger("MapAgent");
+
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
     private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
     private HashSet<String> availableZoners = new HashSet<String>();
+
     // access enemy agent position by the agent name
     private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
     private HashMap<String, Agent> enemyInfos = new HashMap<String, Agent>();
-    private AgentLogger logger = new AgentLogger("MapAgent");
 
     private HashSet<String> visibleVertices = new HashSet<String>();
     private HashSet<String> probedVertices = new HashSet<String>();
     private HashSet<String> visibleEdges = new HashSet<String>();
     private HashSet<String> surveyedEdges = new HashSet<String>();
 
+    private HashSet<Vertex> currentZoneVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedUnsurveyedVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedProbedVertices = new HashSet<Vertex>();
 
@@ -319,20 +321,21 @@ public class MapAgent {
      *         {@code zones} does not contain any zone.
      */
     public Zone getBestZone(ArrayList<Zone> zones) {
+        Zone bestZone = null;
         if (zones.size() > 0) {
-            Iterator<Zone> it = zones.iterator();
-            Zone bestZone = it.next();
-
-            while (it.hasNext()) {
-                Zone zone = it.next();
-                if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
-                    bestZone = zone;
+            for (Zone zone : zones) {
+                ArrayList<Vertex> zonePointVertices = zone.getZonePointVertices();
+                zonePointVertices.retainAll(currentZoneVertices);
+                if (zonePointVertices.size() == 0) {
+                    if (bestZone == null) {
+                        bestZone = zone;
+                    } else if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
+                        bestZone = zone;
+                    }
                 }
             }
-            return bestZone;
-        } else {
-            return null;
         }
+        return bestZone;
     }
 
     /**
@@ -355,17 +358,7 @@ public class MapAgent {
                 zones.remove(i);
             }
         }
-        if (zones.size() == 0) {
-            return null; // should probably throw an exception instead
-        } else {
-            Zone bestZone = zones.get(0);
-            for (Zone zone : zones) {
-                if (bestZone.getZoneValuePerAgent() < zone.getZoneValuePerAgent()) {
-                    bestZone = zone;
-                }
-            }
-            return bestZone;
-        }
+        return getBestZone(zones);
     }
 
     public Vertex getBestHopToVertex(Vertex position, Vertex destination) {
@@ -432,6 +425,11 @@ public class MapAgent {
                 positions.remove(closest);
             }
         }
+        // save vertices which are now in a zone to prevent overlapping of zones
+        ArrayList<Vertex> zonePointVertices = zone.getZonePointVertices();
+        currentZoneVertices.addAll(zonePointVertices);
+
+        // return the mapping of agents to positions
         return map;
     }
 
@@ -522,5 +520,10 @@ public class MapAgent {
 
     public void registerForZoning(String agent) {
         availableZoners.add(agent);
+    }
+
+    public void destroyZone(Vertex center, int size) {
+        Zone zone = center.getZone(size);
+        currentZoneVertices.removeAll(zone.getZonePointVertices());
     }
 }
