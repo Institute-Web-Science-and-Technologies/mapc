@@ -41,7 +41,7 @@ isInterestedInZoning(true).
 
 //Fallback action in the case where we didn't pay attention and tried to perform
 //an action without having the energy for it.
-+doAction:
++!doAction:
 	lastActionResult(failed_resources)
 	<-
 	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
@@ -202,15 +202,7 @@ isInterestedInZoning(true).
 	<-
 	.print("I'm recharging because I don't know what else to do.");
 	recharge.
-
-// Condition to start zoning phase
-// TODO: Make entering zone mode more dynamic
-+achievement(surveyed640)[source(self)]:
-    zoneMode(false)
-    <-
-    .print("Done with surveying. Entering zone mode.");
-    -+zoneMode(true).
-
+	
 +!doAction:
 	energy(Energy)
 	& maxEnergy(Max)
