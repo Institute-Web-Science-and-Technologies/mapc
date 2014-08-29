@@ -26,16 +26,11 @@ plannedZoneTimeInSteps(15).
     isInterestedInZoning(true)
     & .my_name(MyName)
     <- ia.registerForZoning(MyName);
-       !builtZone(false).
+       !builtZone.
     
 // After some agents formed a zone a new round of zoning for all the other
 // agents will start. Before that, all previous beliefs regarding zoning will be
 // deleted.
-//
-// When zoning, do it asynchronously because we might be too late and have
-// mistakenly deleted percepts from the new zoning round. Doing !builtZone
-// asynchronously then ensures that we will get any left over zone information
-// and in the end will know about the overall best zone.
 //
 // Before starting to build any zone, register to the JavaMap to be an available
 // zoner.
@@ -44,7 +39,7 @@ plannedZoneTimeInSteps(15).
     & .my_name(MyName)
 	<- ia.registerForZoning(MyName);
 	   !clearedZoningPercepts;
-	   !builtZone(true).
+	   !builtZone.
 
 // If an agent is not interested in zoning, he will still clear his percepts as
 // a precaution.
@@ -65,10 +60,11 @@ plannedZoneTimeInSteps(15).
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
 // broadcasting it. It will also register as an idleZoner.
 //
-// The Asynchronous parameter is a switch to distinguish between the initial
-// broadcast storm that sets in when zoneMode is reached and all other calls
-// later on. Asynchronous may only be set to false once when zoneMode begins.
-+!builtZone(IsAsynchronous):
+// When zoning, do it asynchronously because we might be too late and have
+// mistakenly deleted percepts from the new zoning round. Doing !builtZone
+// asynchronously then ensures that we will get any left over zone information
+// and in the end will know about the overall best zone.
++!builtZone:
     position(PositionVertex)
     & isAvailableForZoning
     & .my_name(MyName)
@@ -77,21 +73,17 @@ plannedZoneTimeInSteps(15).
     & broadcastAgentList(BroadcastList)
     <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
-       if (IsAsynchronous) {
-         .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, ClosestAgents));
-       } else { // Initial broadcast storm when +zoneMode(true):
-         .send(BroadcastList, tell, foreignBestZone(Value, CentreNode, ClosestAgents));
-       }.
+       .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, ClosestAgents)).
 
 // No zone could be found in this agent's 1HNH that could have been built with
 // the currently available amount of agents. We need to ask others for zones.
-+!builtZone(_):
++!builtZone:
     broadcastAgentList(BroadcastList)
     & isAvailableForZoning
     <- .send(BroadcastList, tell, bestZoneRequest).
     
 //if we receive a builtZone achievement goal, but were are not available for zoning, do nothing
-+!builtZone(_)
++!builtZone
     <- true.
 
 // Inform the sender about our zone – if we still know our zone.
