@@ -440,13 +440,17 @@ public class MapAgent {
     }
 
     public Agent getClosestEnemy(Vertex position) {
-        Agent[] enemyAgents = (Agent[]) getEnemyAgents().toArray();
-        if (enemyAgents.length == 0) {
+        HashSet<Agent> enemyAgents = getEnemyAgents();
+        if (enemyAgents.size() == 0) {
             return null;
         }
-        Agent closestEnemy = enemyAgents[0];
-        int distanceToClosestEnemy = position.getPath(closestEnemy.getPosition()).getPathHops();
+        Agent closestEnemy = null;
+        Integer distanceToClosestEnemy = null;
         for (Agent enemy : enemyAgents) {
+            if (closestEnemy == null) {
+                closestEnemy = enemy;
+                distanceToClosestEnemy = position.getPath(closestEnemy.getPosition()).getPathHops();
+            }
             int distanceToThisEnemy = position.getPath(enemy.getPosition()).getPathHops();
             if (distanceToClosestEnemy > distanceToThisEnemy) {
                 closestEnemy = enemy;
