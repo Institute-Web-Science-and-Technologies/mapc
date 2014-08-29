@@ -1,6 +1,7 @@
 package eis;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 public class PathMap {
@@ -9,7 +10,7 @@ public class PathMap {
     private Vertex position;
     private Hashtable<Vertex, Path> knownPaths = new Hashtable<Vertex, Path>();
     private Hashtable<Vertex, Integer> hopMapping = new Hashtable<Vertex, Integer>();
-    private Hashtable<Integer, ArrayList<Vertex>> hopPaths = new Hashtable<Integer, ArrayList<Vertex>>();
+    private Hashtable<Integer, HashSet<Vertex>> hopPaths = new Hashtable<Integer, HashSet<Vertex>>();
 
     public PathMap(Vertex vertex) {
         this.setPosition(vertex);
@@ -59,15 +60,13 @@ public class PathMap {
             hopPaths.get(currentHop).remove(path.getDestination());
         }
         if (!hopPaths.containsKey(path.getPathHops())) {
-            hopPaths.put(path.getPathHops(), new ArrayList<Vertex>());
+            hopPaths.put(path.getPathHops(), new HashSet<Vertex>());
         }
         hopPaths.get(path.getPathHops()).add(path.getDestination());
     }
 
     public ArrayList<Vertex> getNeighbours() {
         ArrayList<Vertex> neighbours = getVerticesWithHop(1);
-        // logger.info("Survey debug: getNeighbours() -> getVerticesWithHop(1) = "
-        // + neighbours);
         return neighbours;
     }
 
@@ -96,8 +95,6 @@ public class PathMap {
         if (this.containsPathsWithHop(hop)) {
             vertices.addAll(hopPaths.get(hop));
         }
-        // logger.info("Survey debug: getVerticesWithHop(" + hop +
-        // "): vertices = " + vertices);
         return vertices;
     }
 
