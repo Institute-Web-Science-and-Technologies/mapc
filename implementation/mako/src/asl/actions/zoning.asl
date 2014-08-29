@@ -180,8 +180,8 @@ plannedZoneTimeInSteps(15).
     & .count(negativeZoneReply, RefusalAmount)
     & .count(bestZoneRequest, BestZoneRequest)
     & broadcastAgentList(BroadcastList)
-    & .count(BroadcastList, AgentsAmount) // or use 28 as a static measure :Þ
-    & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount + BestZoneRequest
+    //& .count(BroadcastList, AgentsAmount) // use 28 as a static measure, because .count() over a list throws exception
+    & 28 ==  BroadcastRepliesAmount + RefusalAmount + BestZoneRequest
     <- !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.
