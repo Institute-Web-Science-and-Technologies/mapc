@@ -6,25 +6,31 @@ package eis;
  */
 public class Agent {
 
-    private String serverName;
+    private String serverName; // e.g. "a16"
     private String team; // teamA or teamB
-    private String enemyTeam;
+    private String enemyTeam; // TODO: remove this
     private String entity; // e.g. connectionA1
-    private String jasonName;
+    private String jasonName; // e.g. "explorer1"
 
     private int energy;
     private int health;
     private int maxEnergy;
     private int maxHealth;
-    private Vertex node;
+    private Vertex position;
     private String role;
     private int strength;
     private int visRange;
+
+    // if the agent is available for zoning tasks
+    private boolean availableForZoning = false;
+    // a sub-state of availableForZoning: true if we're currently building a
+    // zone
+    private boolean buildingZone = false;
+    private Zone zone;
+
     // the step # this agent was last inspected on
     private int inspectionStep = -100;
     private boolean disabled = false;
-
-    private Vertex position;
 
     public String getServerName() {
         return serverName;
@@ -58,14 +64,6 @@ public class Agent {
         this.jasonName = type;
     }
 
-    public String getEnemyTeam() {
-        return enemyTeam;
-    }
-
-    public void setEnemyTeam(String enemyTeam) {
-        this.enemyTeam = enemyTeam;
-    }
-
     public int getEnergy() {
         return energy;
     }
@@ -96,14 +94,6 @@ public class Agent {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
-    }
-
-    public Vertex getNode() {
-        return node;
-    }
-
-    public void setNode(Vertex node) {
-        this.node = node;
     }
 
     public String getRole() {
@@ -164,6 +154,39 @@ public class Agent {
     public String toString() {
         return jasonName;
 
+    }
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
+    }
+
+    public String getEnemyTeam() {
+        return enemyTeam;
+    }
+
+    public void setEnemyTeam(String enemyTeam) {
+        this.enemyTeam = enemyTeam;
+    }
+
+    public boolean isAvailableForZoning() {
+        return availableForZoning;
+    }
+
+    public void setAvailableForZoning(boolean availableForZoning) {
+        this.availableForZoning = availableForZoning;
+        setBuildingZone(false);
+    }
+
+    public boolean isBuildingZone() {
+        return buildingZone;
+    }
+
+    public void setBuildingZone(boolean buildingZone) {
+        this.buildingZone = buildingZone;
     }
 
 }

@@ -14,18 +14,15 @@ public class MapAgent {
     private static MapAgent mapAgent;
 
     private final int maxEdgeWeight = 11;
+    private final int resetStep = 10;
+
     private int edges = 1;
     private int vertices = 1;
     private int step = 0;
     private AgentLogger logger = new AgentLogger("MapAgent");
 
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
-    private HashMap<String, Vertex> agentPositions = new HashMap<String, Vertex>();
-    private HashSet<String> availableZoners = new HashSet<String>();
-
-    // access enemy agent position by the agent name
-    private HashMap<String, Vertex> enemyPositions = new HashMap<String, Vertex>();
-    private HashMap<String, Agent> enemyInfos = new HashMap<String, Agent>();
+    private HashMap<String, Agent> agents = new HashMap<String, Agent>();
 
     private HashSet<String> visibleVertices = new HashSet<String>();
     private HashSet<String> probedVertices = new HashSet<String>();
@@ -44,51 +41,50 @@ public class MapAgent {
     }
 
     /**
+     * Adds an Agent object to the list of agents.
+     * 
+     * @param serverName
+     *            the serverName of the agent, e.g. "a1"
+     * @param agent
+     *            the Agent object to add
+     */
+    public void addAgent(String serverName, Agent agent) {
+        agents.put(serverName, agent);
+    }
+
+    private HashSet<Agent> getEnemyAgents() {
+        HashSet<Agent> enemies = new HashSet<Agent>();
+        for (Agent agent : agents.values()) {
+            if (agent.getTeam() == AgentHandler.enemyTeam) {
+                enemies.add(agent);
+            }
+        }
+        return enemies;
+    }
+
+    private HashSet<Agent> getFriendlyAgents() {
+        HashSet<Agent> result = new HashSet<Agent>();
+        for (Agent agent : agents.values()) {
+            if (agent.getTeam() == AgentHandler.selectedTeam) {
+                result.add(agent);
+            }
+        }
+        return result;
+    }
+
+    /**
      * @param vertex
      *            the vertex to return the list of enemy-free neighbour vertices
      *            for
      * @return the neighbour vertices of the given vertex that have no enemy
-     *         agent standing on them
+     *         agent standing on them (possibly empty)
      */
     public ArrayList<Vertex> getSafeNeighbours(Vertex vertex) {
         ArrayList<Vertex> neighbours = vertex.getNeighbours();
-        neighbours.removeAll(enemyPositions.values());
-        return neighbours;
-    }
-
-    /**
-     * @param agentName
-     *            the name of the agent to look up
-     * @return an agent object with the known information about the enemy agent
-     */
-    public Agent getEnemyInfo(String agentName) {
-        if (enemyInfos.containsKey(agentName)) {
-            return enemyInfos.get(agentName);
-        } else {
-            return new Agent();
+        for (Agent enemy : getEnemyAgents()) {
+            neighbours.remove(enemy.getPosition());
         }
-    }
-
-    /**
-     * Used by the internal action removeEnemyGhost to update the MapAgent's
-     * knowledge about the locations of enemy agents. Removes an enemy agent
-     * from the list of enemy agent positions.
-     * 
-     * @param enemyName
-     *            the Jason name of the enemy agent.
-     */
-    public void removeFromEnemyPositions(String enemyName) {
-        enemyPositions.remove(enemyName);
-    }
-
-    /**
-     * Stores the position of an agent. Used for agents of both teams.
-     * 
-     * @param agent
-     * @param position
-     */
-    public void storeAgentPosition(String agent, String position) {
-        agentPositions.put(agent, getVertex(position));
+        return neighbours;
     }
 
     public void addPercept(Percept percept) {
@@ -128,57 +124,49 @@ public class MapAgent {
     }
 
     private void handleInspectedEntity(Percept percept) {
-        int energy = Integer.parseInt(percept.getParameters().get(0).toString()); // 8
-        int health = Integer.parseInt(percept.getParameters().get(1).toString()); // 9
-        int maxEnergy = Integer.parseInt(percept.getParameters().get(2).toString()); // 8
-        int maxHealth = Integer.parseInt(percept.getParameters().get(3).toString()); // 9
-        String name = percept.getParameters().get(4).toString(); // b5
-        Vertex node = getVertex(percept.getParameters().get(5).toString()); // v10
-        String role = percept.getParameters().get(6).toString(); // explorer
-        int strength = Integer.parseInt(percept.getParameters().get(7).toString()); // 6
-        String team = percept.getParameters().get(8).toString(); // teamB
-        int visRange = Integer.parseInt(percept.getParameters().get(9).toString()); // 2
+        // e.g. 8
+        int energy = Integer.parseInt(percept.getParameters().get(0).toString());
+        // e.g. 9
+        int health = Integer.parseInt(percept.getParameters().get(1).toString());
+        // e.g. 8
+        int maxEnergy = Integer.parseInt(percept.getParameters().get(2).toString());
+        // e.g. 9
+        int maxHealth = Integer.parseInt(percept.getParameters().get(3).toString());
+        // e.g. b5
+        String name = percept.getParameters().get(4).toString();
+        // e.g. explorer
+        String role = percept.getParameters().get(6).toString();
+        // e.g. 6
+        int strength = Integer.parseInt(percept.getParameters().get(7).toString());
+        // e.g. teamB
+        String team = percept.getParameters().get(8).toString();
+        // e.g. 2
+        int visRange = Integer.parseInt(percept.getParameters().get(9).toString());
 
-        Agent enemy;
-        if (!enemyInfos.containsKey(name)) {
-            enemy = new Agent();
-        } else {
-            enemy = enemyInfos.get(name);
-        }
+        Agent enemy = getAgent(name);
         enemy.setEnergy(energy);
         enemy.setHealth(health);
         enemy.setMaxEnergy(maxEnergy);
         enemy.setMaxHealth(maxHealth);
         enemy.setServerName(name);
-        enemy.setNode(node);
         enemy.setRole(role);
         enemy.setStrength(strength);
         enemy.setTeam(team);
         enemy.setVisRange(visRange);
         enemy.setInspectionStep(getStep());
-        enemyInfos.put(name, enemy);
     }
 
     private void handleVisibleEntity(Percept percept) {
         String vehicle = percept.getParameters().get(0).toString();
         Vertex position = getVertex(percept.getParameters().get(1).toString());
-        String team = percept.getParameters().get(2).toString();
         boolean disabled = percept.getParameters().get(3).toString().equalsIgnoreCase("disabled");
 
-        if (team.equalsIgnoreCase(AgentHandler.enemyTeam)) {
-            Agent enemyAgent = getEnemyInfo(vehicle);
-            enemyAgent.setJasonName(vehicle);
-            enemyAgent.setPosition(position);
-            enemyAgent.setTeam(team);
-            enemyAgent.setDisabled(disabled);
-            if (!disabled) {
-                enemyPositions.put(vehicle, position);
-            } else {
-                enemyPositions.remove(vehicle);
-            }
-        }
+        Agent agent = getAgent(vehicle);
+        agent.setPosition(position);
+        agent.setDisabled(disabled);
     }
 
+    @SuppressWarnings("unchecked")
     private void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > getStep()) {
@@ -193,6 +181,14 @@ public class MapAgent {
             setStep(newStep);
             logger.info("[" + getStep() + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
             logger.info("[" + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
+            logger.info("[" + getStep() + "] Remaining unsurveyed vertices: " + ((HashSet<String>) visibleEdges.clone()).remove(surveyedEdges));
+            // Reset every zone periodically
+            if (newStep % resetStep == 0) {
+                currentZoneVertices.clear();
+                for (Agent agent : getFriendlyAgents()) {
+                    agent.setBuildingZone(false);
+                }
+            }
         }
     }
 
@@ -399,11 +395,12 @@ public class MapAgent {
     public HashMap<String, Vertex> getAgentZonePositions(
             Vertex zoneCenterVertex, ArrayList<String> agents) {
         TreeMap<Integer, String> distances = new TreeMap<Integer, String>();
-        for (String agent : agents) {
-            Vertex vertex = agentPositions.get(agent);
+        for (String agentName : agents) {
+            Agent agent = getAgent(agentName);
+            Vertex vertex = agent.getPosition();
             int pathHops = vertex.getPath(zoneCenterVertex).getPathHops();
-            distances.put(pathHops, agent);
-            availableZoners.remove(agent);
+            distances.put(pathHops, agentName);
+            agent.setBuildingZone(true);
         }
 
         Zone zone = zoneCenterVertex.getBestMinimalZone();
@@ -412,16 +409,17 @@ public class MapAgent {
         if (zone != null) {
             int key = distances.lastKey();
             while (positions.size() > 0) {
-                String agent = distances.get(key);
+                String agentName = distances.get(key);
+                Agent agent = getAgent(agentName);
                 key = distances.lowerKey(key);
-                Vertex position = agentPositions.get(agent);
+                Vertex position = agent.getPosition();
                 Vertex closest = positions.get(0);
                 for (Vertex destination : positions) {
                     if (position.getPath(closest).getPathHops() > position.getPath(destination).getPathHops()) {
                         closest = destination;
                     }
                 }
-                map.put(agent, closest);
+                map.put(agentName, closest);
                 positions.remove(closest);
             }
         }
@@ -441,52 +439,21 @@ public class MapAgent {
         this.step = step;
     }
 
-    public Vertex getClosestEnemyPosition(Vertex position) {
-        Vertex enemyPosition = position;
-        if (enemyPositions.size() > 0) {
-            int currentHops = 0;
-            for (String key : enemyPositions.keySet()) {
-                Vertex vertex = enemyPositions.get(key);
-                if (enemyPosition == position) {
-                    enemyPosition = vertex;
-                    currentHops = position.getPath(enemyPosition).getPathHops();
-                } else {
-                    Path path = position.getPath(vertex);
-                    if (path.getPathHops() < currentHops) {
-                        enemyPosition = vertex;
-                    }
-                }
-            }
-        }
-        return enemyPosition;
-    }
-
     public Agent getClosestEnemy(Vertex position) {
-        // logger.info("Closest enemy debug: Entering getClosestEnemy(" +
-        // position + ")");
-        Vertex enemyPosition = position;
-        String agentName = null;
-        if (enemyPositions.size() > 0) {
-            int currentHops = 0;
-            for (String key : enemyPositions.keySet()) {
-                Vertex vertex = enemyPositions.get(key);
-                if (enemyPosition == position) {
-                    agentName = key;
-                    enemyPosition = vertex;
-                    currentHops = position.getPath(enemyPosition).getPathHops();
-                } else {
-                    Path path = position.getPath(vertex);
-                    if (path.getPathHops() < currentHops) {
-                        agentName = key;
-                        enemyPosition = vertex;
-                    }
-                }
+        Agent[] enemyAgents = (Agent[]) getEnemyAgents().toArray();
+        if (enemyAgents.length == 0) {
+            return null;
+        }
+        Agent closestEnemy = enemyAgents[0];
+        int distanceToClosestEnemy = position.getPath(closestEnemy.getPosition()).getPathHops();
+        for (Agent enemy : enemyAgents) {
+            int distanceToThisEnemy = position.getPath(enemy.getPosition()).getPathHops();
+            if (distanceToClosestEnemy > distanceToThisEnemy) {
+                closestEnemy = enemy;
+                distanceToClosestEnemy = distanceToThisEnemy;
             }
         }
-        Agent enemy = getEnemyInfo(agentName);
-        // logger.info("Closest enemy debug: Leaving getClosestEnemy(" +
-        // position + "). Enemy is " + enemy);
-        return enemy;
+        return closestEnemy;
     }
 
     public List<String> getClosestAgentsToZone(Vertex center, int count) {
@@ -494,13 +461,19 @@ public class MapAgent {
 
         // sort agents in regard of their distance to the center of the zone
         TreeMap<Integer, ArrayList<String>> distanceFromZone = new TreeMap<Integer, ArrayList<String>>();
-        for (String agent : availableZoners) {
-            Vertex agentPosition = agentPositions.get(agent);
+        HashSet<Agent> availableZoners = new HashSet<Agent>();
+        for (Agent agent : getFriendlyAgents()) {
+            if (agent.isAvailableForZoning() & !agent.isBuildingZone()) {
+                availableZoners.add(agent);
+            }
+        }
+        for (Agent agent : availableZoners) {
+            Vertex agentPosition = agent.getPosition();
             int distance = agentPosition.getPath(center).getPathHops();
             if (!distanceFromZone.containsKey(distance)) {
                 distanceFromZone.put(distance, new ArrayList<String>());
             }
-            distanceFromZone.get(distance).add(agent);
+            distanceFromZone.get(distance).add(agent.getServerName());
         }
 
         // select closest agents to the center of the zone
@@ -518,12 +491,16 @@ public class MapAgent {
         return closestAgents;
     }
 
-    public void registerForZoning(String agent) {
-        availableZoners.add(agent);
-    }
-
     public void destroyZone(Vertex center, int size) {
         Zone zone = center.getZone(size);
         currentZoneVertices.removeAll(zone.getZonePointVertices());
+    }
+
+    public Agent getAgent(String name) {
+        Agent agent = agents.get(name);
+        if (agent == null) {
+            logger.info("Could not find Agent");
+        }
+        return agent;
     }
 }

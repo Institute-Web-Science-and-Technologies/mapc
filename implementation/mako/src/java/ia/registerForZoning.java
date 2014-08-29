@@ -6,6 +6,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import eis.Agent;
 import eis.MapAgent;
 
 // Call from AgentSpeak: registerForZoning(Agent)
@@ -16,8 +17,8 @@ public class registerForZoning extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        String agent = args[0].toString();
-        MapAgent.getInstance().registerForZoning(agent);
+        Agent agent = MapAgent.getInstance().getAgent(args[0].toString());
+        agent.setAvailableForZoning(true);
         return true;
     }
 }

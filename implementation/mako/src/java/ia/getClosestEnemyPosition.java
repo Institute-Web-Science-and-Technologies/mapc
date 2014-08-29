@@ -6,6 +6,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import eis.Agent;
 import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
@@ -21,10 +22,10 @@ public class getClosestEnemyPosition extends DefaultInternalAction {
         Vertex position = MapAgent.getInstance().getVertex(terms[0].toString());
         Term enemyPositionTerm = terms[1];
 
-        Vertex enemyPosition = MapAgent.getInstance().getClosestEnemyPosition(position);
+        Agent enemyAgent = MapAgent.getInstance().getClosestEnemy(position);
+        Vertex enemyPosition = enemyAgent.getPosition();
 
         unifier.unifies(enemyPositionTerm, JasonHelper.getTerm(enemyPosition.getIdentifier()));
-
         return enemyPosition != position;
     }
 }

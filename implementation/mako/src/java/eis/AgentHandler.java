@@ -79,6 +79,7 @@ public class AgentHandler {
                         String enemy = (team.equalsIgnoreCase(selectedTeam)) ? enemyTeam : selectedTeam;
                         agent.setEnemyTeam(enemy);
                         agent.setJasonName(jasonName);
+                        MapAgent.getInstance().addAgent(serverName, agent);
                         if (team.equalsIgnoreCase(selectedTeam)) {
                             agents.put(serverName, agent);
                         }
