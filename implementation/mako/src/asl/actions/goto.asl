@@ -11,7 +11,7 @@
 +!goto(Destination):
     position(Position)
     & ia.getBestHopToVertex(Position, Destination, NextHop)
-    & ia.getEdgeCost(Position, Destination, Costs)
+    & ia.getEdgeCost(Position, NextHop, Costs)
     & energy(Energy)
     & Costs > Energy
     <-
