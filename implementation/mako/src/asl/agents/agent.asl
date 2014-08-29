@@ -212,4 +212,5 @@ isInterestedInZoning(true).
 	-+zoneMode(true).
 
 +!doAction
-    <- skip.
+    <- .print("I have nothing to do. I'll skip."); 
+    skip.
