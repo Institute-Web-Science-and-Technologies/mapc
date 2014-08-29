@@ -24,8 +24,7 @@ public class isSaboteur extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        String agentName = args[0].toString();
-        Agent agent = MapAgent.getInstance().getEnemyInfo(agentName);
+        Agent agent = MapAgent.getInstance().getAgent(args[0].toString());
         return (agent.getRole() == "saboteur");
     }
 }

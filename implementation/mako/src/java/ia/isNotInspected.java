@@ -17,7 +17,7 @@ public class isNotInspected extends DefaultInternalAction {
             throws Exception {
         String agentName = args[0].toString();
         // int currentStep = Integer.parseInt(args[1].toString());
-        boolean isInspected = MapAgent.getInstance().getEnemyInfo(agentName).isInspected();
+        boolean isInspected = MapAgent.getInstance().getAgent(agentName).isInspected();
         if (isInspected) {
             return false;
         } else {

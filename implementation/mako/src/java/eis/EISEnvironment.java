@@ -158,7 +158,6 @@ public class EISEnvironment extends Environment implements AgentListener {
         // clearPercepts("cartographer");
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
-        MapAgent mapAgentInstance = MapAgent.getInstance();
         for (Percept percept : percepts) {
             // Make sure that the requestAction percept is handled last by the
             // agents because when the agent receives the requestAction
@@ -172,11 +171,13 @@ public class EISEnvironment extends Environment implements AgentListener {
             if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
                 // logger.info("Sending percept " + perceptToLiteral(percept) +
                 // " to agent MapAgent.");
-                mapAgentInstance.addPercept(percept);
+                MapAgent.getInstance().addPercept(percept);
                 addAgentPercept(jasonNameOfAgent, percept);
             }
             if (percept.getName().equalsIgnoreCase("position")) {
-                mapAgentInstance.storeAgentPosition(jasonNameOfAgent, percept.getParameters().get(0).toString());
+                Agent agent = MapAgent.getInstance().getAgent(agentName);
+                Vertex position = MapAgent.getInstance().getVertex(percept.getParameters().get(0).toString());
+                agent.setPosition(position);
             }
         }
         if (requestAction != null) {
