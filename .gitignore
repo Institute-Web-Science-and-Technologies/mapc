@@ -19,4 +19,4 @@ bin/
 # Added by NetBeans (binaries and machine-specific files)
 /implementation/beenutsFW/nbproject/private/
 /implementation/beenutsFW/build/
-implementation/mako/logging.properties
+/implementation/mako/logging.properties
