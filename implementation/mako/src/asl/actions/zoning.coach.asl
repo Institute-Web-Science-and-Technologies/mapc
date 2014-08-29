@@ -28,7 +28,7 @@ zoneBuildingMode(false).
 // about it and go back to start zoning from scratch.
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
-    & .my_name(Coach)
+    & myName(Coach)
     & bestZone(CentreVertex, _, ClosestAgents)
     & .length(ClosestAgents, ZoneSize)
     <- ia.destroyZone(CentreVertex, ZoneSize);

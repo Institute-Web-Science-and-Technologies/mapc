@@ -24,7 +24,7 @@ plannedZoneTimeInSteps(15).
 // zoner.
 +zoneMode(true):
     isInterestedInZoning(true)
-    & .my_name(MyName)
+    & myName(MyName)
     <- ia.registerForZoning(MyName);
        !builtZone.
     
@@ -36,7 +36,7 @@ plannedZoneTimeInSteps(15).
 // zoner.
 +!preparedNewZoningRound:
     isInterestedInZoning(true)
-    & .my_name(MyName)
+    & myName(MyName)
 	<- ia.registerForZoning(MyName);
 	   !clearedZoningPercepts;
 	   !builtZone.
@@ -67,7 +67,7 @@ plannedZoneTimeInSteps(15).
 +!builtZone:
     position(PositionVertex)
     & isAvailableForZoning
-    & .my_name(MyName)
+    & myName(MyName)
     // ask for best zone in his 1HNH (if any)
     & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
     & broadcastAgentList(BroadcastList)
@@ -139,7 +139,7 @@ plannedZoneTimeInSteps(15).
     & FormerValue < Value
     // or the zones are identical but my name is alphabetically bigger:
     | (FormerValue == Value
-        & .my_name(MyName)
+        & myName(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
     <- .send(FormerCoach, tell, negativeZoneReply);
@@ -205,7 +205,7 @@ plannedZoneTimeInSteps(15).
 // We aren't this round's coach. But we are a minion.
 @becomeAMinion
 +!choseZoningRole:
-    .my_name(MyName)
+    myName(MyName)
     & bestZone(_, _, ClosestAgents)[source(self)]
     & .member(MyName, ClosestAgents)
     <- +isMinion(true).

@@ -460,6 +460,10 @@ public class MapAgent {
         return closestEnemy;
     }
 
+    /**
+     * @return closest agents to the zone identified by {@code center}; can be
+     *         empty if there are none.
+     */
     public List<String> getClosestAgentsToZone(Vertex center, int count) {
         ArrayList<String> closestAgents = new ArrayList<String>();
 
@@ -480,17 +484,19 @@ public class MapAgent {
             distanceFromZone.get(distance).add(agent.getServerName());
         }
 
-        // select closest agents to the center of the zone
-        Integer key = distanceFromZone.firstKey();
-        while (closestAgents.size() < count) {
-            closestAgents.addAll(distanceFromZone.get(key));
-            key = distanceFromZone.higherKey(key);
-            if (key == null) {
-                break;
+        if (distanceFromZone.size() > 0) {
+            // select closest agents to the center of the zone
+            Integer key = distanceFromZone.firstKey();
+            while (closestAgents.size() < count) {
+                closestAgents.addAll(distanceFromZone.get(key));
+                key = distanceFromZone.higherKey(key);
+                if (key == null) {
+                    break;
+                }
             }
-        }
-        if (closestAgents.size() > count) {
-            return closestAgents.subList(0, count - 1);
+            if (closestAgents.size() > count) {
+                return closestAgents.subList(0, count - 1);
+            }
         }
         return closestAgents;
     }
