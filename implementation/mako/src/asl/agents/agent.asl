@@ -220,4 +220,4 @@ isInterestedInZoning(true).
 	-+zoneMode(true).
 
 +!doAction
-    <- true.
+    <- skip.
