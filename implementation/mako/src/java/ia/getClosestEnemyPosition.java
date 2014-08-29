@@ -16,6 +16,11 @@ public class getClosestEnemyPosition extends DefaultInternalAction {
 
     private static final long serialVersionUID = 5971894875840931912L;
 
+    /**
+     * @return {@code false} if there is no enemy agent or {@code true} if the
+     *         enemy's position is not the given {@code Position}; {@code false}
+     *         else.
+     */
     @Override
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
@@ -23,6 +28,9 @@ public class getClosestEnemyPosition extends DefaultInternalAction {
         Term enemyPositionTerm = terms[1];
 
         Agent enemyAgent = MapAgent.getInstance().getClosestEnemy(position);
+        if (enemyAgent == null) {
+            return false;
+        }
         Vertex enemyPosition = enemyAgent.getPosition();
 
         unifier.unifies(enemyPositionTerm, JasonHelper.getTerm(enemyPosition.getIdentifier()));
