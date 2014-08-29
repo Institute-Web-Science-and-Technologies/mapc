@@ -198,12 +198,14 @@ public class EISEnvironment extends Environment implements AgentListener {
         case "role":
             return Literal.parseLiteral(percept.toProlog().toLowerCase());
         case "visibleVertex":
-        case "visibleEntity":
+        case "visibleEntity": {
             String escaped = percept.toProlog().replace("A", "teamA").replace("B", "teamB");
             return Literal.parseLiteral(escaped);
-        case "inspectedEntity":
-            String escaped2 = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
-            return Literal.parseLiteral(escaped2);
+        }
+        case "inspectedEntity": {
+            String escaped = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
+            return Literal.parseLiteral(escaped);
+        }
         default:
             return Literal.parseLiteral(percept.toProlog());
         }

@@ -29,8 +29,10 @@ zoneBuildingMode(false).
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & .my_name(Coach)
-    & bestZone(_, _, ClosestAgents)
-    <- .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
+    & bestZone(CentreVertex, _, ClosestAgents)
+    & .length(ClosestAgents, ZoneSize)
+    <- ia.destroyZone(CentreVertex, ZoneSize);
+       .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
        -+isCoach(false);
        !preparedNewZoningRound.
@@ -45,11 +47,7 @@ zoneBuildingMode(false).
 	& .length(BestZoneClosestAgents, BestZoneSize)
 	& Value > BestZoneValue
 	& ZoneSize <= BestZoneSize+1
-	<- //?plannedZoneTimeInSteps(Steps);
-	   //ia.getDistance(PositionVertex, CentreNode, Distance);
-       //ia.calculateLongTermZoneValue(Value, Distance, Steps, PrognosedValue);
-       //.length(BestZoneUsedNodes, CurrentSize);
-       //If the zone of the idleZoner is better regarding the PrognosedValue and the number of agents that would be needed
+	<- //If the zone of the idleZoner is better regarding the PrognosedValue and the number of agents that would be needed
        //build that zone is less or equal than the number of agents in the current zone + 1 (because we have the agents
        //from the old zone and the newly available idleZoner), then we want to move the agents to the new zone.
        -+bestZone(Value, CentreNode); // TODO: nb that this does not work if [source(Sender \== self)].
