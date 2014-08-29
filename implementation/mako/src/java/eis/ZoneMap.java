@@ -244,10 +244,10 @@ public class ZoneMap {
      * @return best minimal zone; can be {@code null}.
      */
     public Zone getBestMinimalZone() {
-        try {
-            return zones.firstEntry().getValue();
-        } catch (NullPointerException e) {
+        if (zones.size() == 0) {
             return null;
+        } else {
+            return zones.firstEntry().getValue();
         }
     }
 
