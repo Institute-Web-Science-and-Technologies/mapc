@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Zone {
     private double zoneValue = 1.0;
     private ArrayList<Vertex> positions = new ArrayList<Vertex>();
-    private ArrayList<Vertex> zoneNodes = new ArrayList<Vertex>();
+    private ArrayList<Vertex> zonePointVertices = new ArrayList<Vertex>();
     private Vertex center;
 
     public Zone(Vertex center) {
@@ -43,11 +43,11 @@ public class Zone {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<Vertex> getZoneNodes() {
-        return (ArrayList<Vertex>) zoneNodes.clone();
+    public ArrayList<Vertex> getZonePointVertices() {
+        return (ArrayList<Vertex>) zonePointVertices.clone();
     }
 
-    public void setZoneNodes(ArrayList<Vertex> zoneNodes) {
-        this.zoneNodes = zoneNodes;
+    public void setZonePointVertices(ArrayList<Vertex> zonePointVertices) {
+        this.zonePointVertices = zonePointVertices;
     }
 }

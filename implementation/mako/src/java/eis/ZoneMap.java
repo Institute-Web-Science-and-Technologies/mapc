@@ -141,6 +141,7 @@ public class ZoneMap {
         Zone zone = new Zone(pathMap.getPosition());
         zone.setZoneValue(zoneValue);
         zone.setPositions(agentPositions);
+        zone.setZonePointVertices(zonePointVertices);
         this.zones.put(agentPositions.size(), zone);
 
         // calculate additional zones
@@ -152,12 +153,23 @@ public class ZoneMap {
         while (optionalAgentsWithValues.size() > 0) {
             Entry<Integer, Vertex> bestEntry = optionalAgentsWithValues.pollLastEntry();
             if (bestEntry.getKey() > zone.getZoneValue()) {
+                // add next best optimal position to agent positions of new zone
                 ArrayList<Vertex> positions = zone.getPositions();
                 positions.add(bestEntry.getValue());
+
+                // add next best optimal position to zone point vertices of new
+                // zone
+                ArrayList<Vertex> newZonePointVertices = zone.getZonePointVertices();
+                newZonePointVertices.add(bestEntry.getValue());
+
+                // calculate new zone value of new zone
                 double newZoneValue = ((zone.getZoneValue() * (positions.size() - 1)) + bestEntry.getKey()) / positions.size();
+
+                // create new zone and assign values
                 zone = new Zone(pathMap.getPosition());
                 zone.setPositions(positions);
                 zone.setZoneValue(newZoneValue);
+                zone.setZonePointVertices(newZonePointVertices);
                 this.zones.put(positions.size(), zone);
                 logger.info("Optional Zone Value:" + newZoneValue + ". Positions: " + positions);
             }
