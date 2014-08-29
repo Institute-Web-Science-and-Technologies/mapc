@@ -35,7 +35,7 @@ public class getClosestEnemy extends DefaultInternalAction {
         // Vertex enemyPosition =
         // MapAgent.getInstance().getClosestEnemyPosition(position);
         Agent enemyVehicle = MapAgent.getInstance().getClosestEnemy(position);
-        if (enemyVehicle.getJasonName() == null) {
+        if (enemyVehicle == null) {
             logger.info("No reachable enemy found.");
             return false;
         }
