@@ -166,7 +166,7 @@ public class MapAgent {
         agent.setDisabled(disabled);
     }
 
-    @SuppressWarnings("unchecked")
+    // @SuppressWarnings("unchecked")
     private void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > getStep()) {
@@ -179,18 +179,41 @@ public class MapAgent {
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
             setStep(newStep);
-            logger.info("[Step " + getStep() + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
-            logger.info("[Step " + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
-            HashSet<String> unsurveyedEdges = (HashSet<String>) visibleEdges.clone();
-            unsurveyedEdges.removeAll(surveyedEdges);
-            logger.info("[Step" + getStep() + "] Remaining unsurveyed edges: " + unsurveyedEdges);
             // Reset every zone periodically
             if (newStep % resetStep == 0) {
                 currentZoneVertices.clear();
                 for (Agent agent : getFriendlyAgents()) {
                     agent.setBuildingZone(false);
                 }
+
             }
+
+            // Debug output.
+            int numSeenVertices = vertexMap.size();
+            int probedVertices = 0;
+            for (Vertex vertex : vertexMap.values()) {
+                if (vertex.isProbed()) {
+                    probedVertices++;
+                }
+            }
+
+            logger.info("[Step " + getStep() + "] Total Vertices: " + vertices + ". Seen: " + numSeenVertices + "(" + numSeenVertices * 100.0 / vertices + "%) Probed: " + probedVertices + "(" + probedVertices * 100.0 / vertices + "%)");
+            // logger.info("[Step " + getStep() + "] TotalEdges: " + edges +
+            // ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() *
+            // 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" +
+            // surveyedEdges.size() * 100.0 / edges + "%)");
+            // HashSet<String> unsurveyedEdges = (HashSet<String>)
+            // visibleEdges.clone();
+            // unsurveyedEdges.removeAll(surveyedEdges);
+            // logger.info("[Step" + getStep() +
+            // "] Remaining unsurveyed edges: " + unsurveyedEdges);
+            HashSet<Vertex> unsurveyedVertices = new HashSet<Vertex>();
+            for (Vertex vertex : vertexMap.values()) {
+                if (!vertex.isSurveyed()) {
+                    unsurveyedVertices.add(vertex);
+                }
+            }
+            logger.info("[Step " + getStep() + "] Remaining unsurveyed vertices: " + unsurveyedVertices);
         }
     }
 
