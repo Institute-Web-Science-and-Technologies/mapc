@@ -69,3 +69,31 @@ zoneBuildingMode(false).
 +!movedToNewZone(CentreNode, UsedNodes)
 	<-!goto(CentreNode);
 	  !assignededAgentsTheirPosition.
+
+// If the enemy is inside the zone - call saboteur to help if the request was not send earlier.
++!checkZoneUnderAttack(CentreNode):
+    isCoach(true)
+    & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
+    & ia.getDistance(CentreNode, EnemyPosition, Distance)
+    & (Distance <= 2) & (Distance >= 0)
+    & not zoneProtectRequestSend(CentreNode)
+    & saboteurList(SaboteurList)
+    <-
+	.send(SaboteurList, tell, requestZoneDefence(ZoneCentre));
+    +zoneProtectRequestSend(CentreNode). 
+
+// If the enemy left the zone, but we called the saboteur to help - cancel help request.     
++!checkZoneUnderAttack(CentreNode):
+    isCoach(true)
+    & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
+    & ia.getDistance(CentreNode, EnemyPosition, Distance)
+    & (Distance > 2)
+    & zoneProtectRequestSend(CentreNode)
+    & saboteurList(SaboteurList)
+    <-
+	.send(SaboteurList, tell, cancelZoneDefence(ZoneCentre));
+    .abolish(zoneProtectRequestSend(CentreNode)).
+
+// Fallback plan
++!checkZoneUnderAttack(CentreNode).
+    
