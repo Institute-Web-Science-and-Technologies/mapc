@@ -28,26 +28,14 @@ public class getClosestEnemy extends DefaultInternalAction {
         Vertex position = MapAgent.getInstance().getVertex(terms[0].toString());
         Term enemyPositionTerm = terms[1];
         Term enemyVehicleTerm = terms[2];
-        // logger.info("Closest enemy debug: Entering ia.getClosestEnemy(" +
-        // position + "," + enemyPositionTerm.toString() + "," +
-        // enemyVehicleTerm.toString() + ")");
-
-        // Vertex enemyPosition =
-        // MapAgent.getInstance().getClosestEnemyPosition(position);
         Agent enemyVehicle = MapAgent.getInstance().getClosestEnemy(position);
         if (enemyVehicle == null) {
             logger.info("No reachable enemy found.");
             return false;
         }
         Vertex enemyPosition = enemyVehicle.getPosition();
-        // logger.info("enemyVehicle: " + enemyVehicle + ". enemyPosition: " +
-        // enemyPosition);
-
         unifier.unifies(enemyPositionTerm, JasonHelper.getTerm(enemyPosition.getIdentifier()));
         unifier.unifies(enemyVehicleTerm, JasonHelper.getTerm(enemyVehicle.getServerName()));
-        // logger.info("Closest enemy debug: Leaving ia.getClosestEnemy(" +
-        // position + "," + enemyPositionTerm.toString() + "," +
-        // enemyVehicleTerm.toString() + ")");
         return true;
     }
 }

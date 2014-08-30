@@ -79,7 +79,7 @@ isInterestedInZoning(true).
 	role(saboteur)
 	& strategy(zoneDefence)
 	& defendingZone(ZoneCentre)  
-	& ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, Enemy)
 	& position(Position)
 	& (visibleEdge(Position, EnemyPosition) | visibleEdge(EnemyPosition, Position) | EnemyPosition == Position)
 	& myTeam(MyTeam)
@@ -93,7 +93,7 @@ isInterestedInZoning(true).
 	role(saboteur)
 	& strategy(zoneDefence)
 	& defendingZone(ZoneCentre)  
-	& ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, Enemy)
  	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
  	   !goto(EnemyPosition).
 
@@ -140,11 +140,11 @@ isInterestedInZoning(true).
 +!doAction:
 	role(saboteur)
 	& position(MyPosition)
-	& ia.getClosestEnemyPosition(MyPosition, EnemyPosition)
+	& ia.getClosestEnemy(MyPosition, EnemyPosition, Enemy)
 	& not ignoreEnemy(Vehicle)
 	<-
-	.print("Moving to attack enemy on ", EnemyPosition, " from my position ", Position);
-	!doAttack(Vehicle, Vertex).
+	.print("Moving to attack ", Enemy, " on ", EnemyPosition, " from my position ", MyPosition);
+	!doAttack(Enemy, EnemyPosition).
 
  // When saboteur, sentinel,and repairer are attacked,
  //and they are not disabled, they do parrying
