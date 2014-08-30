@@ -55,7 +55,7 @@ public class MapAgent {
     private HashSet<Agent> getEnemyAgents() {
         HashSet<Agent> enemies = new HashSet<Agent>();
         for (Agent agent : agents.values()) {
-            if (agent.getTeam() == AgentHandler.enemyTeam) {
+            if (!agent.isInOurTeam()) {
                 enemies.add(agent);
             }
         }
@@ -65,7 +65,7 @@ public class MapAgent {
     private HashSet<Agent> getFriendlyAgents() {
         HashSet<Agent> result = new HashSet<Agent>();
         for (Agent agent : agents.values()) {
-            if (agent.getTeam() == AgentHandler.selectedTeam) {
+            if (agent.isInOurTeam()) {
                 result.add(agent);
             }
         }
@@ -481,7 +481,7 @@ public class MapAgent {
             if (!distanceFromZone.containsKey(distance)) {
                 distanceFromZone.put(distance, new ArrayList<String>());
             }
-            distanceFromZone.get(distance).add(agent.getServerName());
+            distanceFromZone.get(distance).add(agent.getJasonName());
         }
 
         if (distanceFromZone.size() > 0) {
@@ -507,10 +507,16 @@ public class MapAgent {
     }
 
     public Agent getAgent(String name) {
-        Agent agent = agents.get(name);
-        if (agent == null) {
-            logger.info("Could not find Agent");
+        if (agents.containsKey(name)) {
+            return agents.get(name);
+        } else {
+            for (Agent agent : agents.values()) {
+                if (agent.isInOurTeam() && agent.getJasonName().equalsIgnoreCase(name)) {
+                    return agent;
+                }
+            }
         }
-        return agent;
+        logger.info("Could not find agent with name: " + name);
+        return null;
     }
 }

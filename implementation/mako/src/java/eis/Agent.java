@@ -189,4 +189,8 @@ public class Agent {
         this.buildingZone = buildingZone;
     }
 
+    public boolean isInOurTeam() {
+        return team.equalsIgnoreCase(AgentHandler.selectedTeam);
+    }
+
 }

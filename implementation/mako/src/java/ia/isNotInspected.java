@@ -16,7 +16,6 @@ public class isNotInspected extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
         String agentName = args[0].toString();
-        // int currentStep = Integer.parseInt(args[1].toString());
         boolean isInspected = MapAgent.getInstance().getAgent(agentName).isInspected();
         if (isInspected) {
             return false;
