@@ -33,7 +33,7 @@ public class getDistance extends DefaultInternalAction {
         Integer totalHops = MapAgent.getInstance().getHopsToVertex(position, destination);
         // logger.info("getDistance debug: totalHops = " + totalHops);
         if (totalHops == null) {
-            totalHops = 0;
+            totalHops = -1;
         }
         return unifier.unifies(totalHopsTerm, JasonHelper.getTerm(totalHops));
     }

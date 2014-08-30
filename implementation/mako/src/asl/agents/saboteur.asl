@@ -77,9 +77,8 @@ strategy(attack_chase).
 // enemy agent. In this case, ia.getdistance returns the distance 0.
 +!doAttack(Vehicle, Vertex):
 	position(Position)
-	& Position \== Vertex
 	& ia.getDistance(Position, Vertex, Distance)
-	& Distance == 0
+	& Distance == -1
 	<-
 	.print("I wanted to attack ", Vehicle, ", but there is no known path to ", Vertex, " from ", Position, ".");
 	+ignoreEnemy(Vehicle);
