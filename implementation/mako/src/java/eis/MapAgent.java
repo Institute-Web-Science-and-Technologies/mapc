@@ -457,21 +457,21 @@ public class MapAgent {
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
         for (Agent enemy : enemyAgentsWithKnownPositions) {
+            // Check if a path to the enemy even exists.
+            Path pathToEnemy = position.getPath(enemy.getPosition());
+            if (pathToEnemy == null) {
+                continue;
+            }
             // If we haven't found a suitable enemy yet...
             if (closestEnemy == null) {
-                // Check if a path to the enemy even exists.
-                Path pathToEnemy = position.getPath(enemy.getPosition());
-                if (pathToEnemy == null) {
-                    continue;
-                } else {
-                    closestEnemy = enemy;
-                    distanceToClosestEnemy = pathToEnemy.getPathHops();
-                }
+                closestEnemy = enemy;
+                distanceToClosestEnemy = pathToEnemy.getPathHops();
+                continue;
             }
 
             // Compare the distances for the agent we currently think is
             // closest and this one.
-            int distanceToThisEnemy = position.getPath(enemy.getPosition()).getPathHops();
+            int distanceToThisEnemy = pathToEnemy.getPathHops();
             if (distanceToClosestEnemy > distanceToThisEnemy) {
                 closestEnemy = enemy;
                 distanceToClosestEnemy = distanceToThisEnemy;
