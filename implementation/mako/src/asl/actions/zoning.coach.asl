@@ -9,11 +9,11 @@ zoneBuildingMode(false).
 //After that all remaining idle agents are told to start a new round of zoning.
 +!assignededAgentsTheirPosition:
     bestZone(_, CentreNode, ClosestAgents)
-    & ia.placeAgentsOnZone(CentreNode, ClosestAgents, PositionAgentMapping)
-    & .length(PositionAgentMapping, MappingLength)
     & broadcastAgentList(BroadcastList)
-    <- for (.range(ControlVariable, 0, MappingLength - 1)) {
-           .nth(ControlVariable, PositionAgentMapping, [PositionVertex, Agent]);
+    <- ia.placeAgentsOnZone(CentreNode, ClosestAgents, PositionAgentMapping);
+       .length(PositionAgentMapping, MappingLength);
+       for (.range(ControlVariable, 0, MappingLength - 1)) {
+           .nth(ControlVariable, PositionAgentMapping, [Agent, PositionVertex]);
            .send(Agent, tell, zoneGoalVertex(PositionVertex));
        }
        .difference(BroadcastList, ClosestAgents, NonZoners);
@@ -28,7 +28,7 @@ zoneBuildingMode(false).
 // about it and go back to start zoning from scratch.
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
-    & myName(Coach)
+    & .my_name(Coach)
     & bestZone(CentreVertex, _, ClosestAgents)
     & .length(ClosestAgents, ZoneSize)
     <- ia.destroyZone(CentreVertex, ZoneSize);

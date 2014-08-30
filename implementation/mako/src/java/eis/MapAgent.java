@@ -435,8 +435,8 @@ public class MapAgent {
         ArrayList<Vertex> positions = zone.getPositions();
         HashMap<String, Vertex> map = new HashMap<String, Vertex>();
         if (zone != null) {
-            int key = distances.lastKey();
-            while (positions.size() > 0) {
+            Integer key = distances.lastKey();
+            while (positions.size() > 0 && key != null) {
                 String agentName = distances.get(key);
                 Agent agent = getAgent(agentName);
                 key = distances.lowerKey(key);

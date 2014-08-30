@@ -24,7 +24,7 @@ plannedZoneTimeInSteps(15).
 // zoner.
 +zoneMode(true):
     isInterestedInZoning(true)
-    & myName(MyName)
+    & .my_name(MyName)
     <- ia.registerForZoning(MyName);
        !builtZone.
     
@@ -36,7 +36,7 @@ plannedZoneTimeInSteps(15).
 // zoner.
 +!preparedNewZoningRound:
     isInterestedInZoning(true)
-    & myName(MyName)
+    & .my_name(MyName)
 	<- ia.registerForZoning(MyName);
 	   !clearedZoningPercepts;
 	   !builtZone.
@@ -67,7 +67,7 @@ plannedZoneTimeInSteps(15).
 +!builtZone:
     position(PositionVertex)
     & isAvailableForZoning
-    & myName(MyName)
+    & .my_name(MyName)
     // ask for best zone in his 1HNH (if any)
     & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
     & broadcastAgentList(BroadcastList)
@@ -90,12 +90,14 @@ plannedZoneTimeInSteps(15).
 +bestZoneRequest[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
-    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
+    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
+       !receivedAllReplies.
 
 // Reply "no" in any other case – no matter if we are interested in zoning or
 // not.
 +bestZoneRequest[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply).
+    <- .send(Sender, tell, negativeZoneReply);
+       !receivedAllReplies.
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
 // Broadcaster doesn't know about our zone so we tell him as we haven't started
@@ -139,7 +141,7 @@ plannedZoneTimeInSteps(15).
     & FormerValue < Value
     // or the zones are identical but my name is alphabetically bigger:
     | (FormerValue == Value
-        & myName(MyName)
+        & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
     <- .send(FormerCoach, tell, negativeZoneReply);
@@ -148,14 +150,14 @@ plannedZoneTimeInSteps(15).
        !receivedAllReplies.
 
 // We were informed about a worse zone.
-+foreignBestZone(_, CentreNode, _)[source(Sender)]:
++foreignBestZone(_, _, _)[source(Sender)]:
     isAvailableForZoning
     <- .send(Sender, tell, negativeZoneReply);
        !receivedAllReplies.
 
 // It doesn't matter if aren't interested in zoning. We have to reply no in any
 // case.
-+foreignBestZone(_, CentreNode, _)[source(Sender)]
++foreignBestZone(_, _, _)[source(Sender)]
     <- .send(Sender, tell, negativeZoneReply).
 
 // Don't count the negative reply AND the broadcast of the same sender in the
@@ -177,16 +179,15 @@ plannedZoneTimeInSteps(15).
 +!receivedAllReplies:
     isAvailableForZoning
     & .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
-    & .count(negativeZoneReply, RefusalAmount)
-    & .count(bestZoneRequest, BestZoneRequest)
+    & .count(negativeZoneReply[source(_)], RefusalAmount)
+    & .count(bestZoneRequest[source(_)], BestZoneRequestAmount)
     & broadcastAgentList(BroadcastList)
     & .length(BroadcastList, AgentsAmount) // use 28 as a static measure, because .count() over a list throws exception
-    & AgentsAmount ==  BroadcastRepliesAmount + RefusalAmount + BestZoneRequest
+    & AgentsAmount <=  BroadcastRepliesAmount + RefusalAmount + BestZoneRequestAmount
     <- !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.
-+!receivedAllReplies
-    <- true.
++!receivedAllReplies.
 
 // If we get told (or decide ourselves) to cancel our current process and start
 // a different approach.
@@ -205,7 +206,7 @@ plannedZoneTimeInSteps(15).
 // We aren't this round's coach. But we are a minion.
 @becomeAMinion
 +!choseZoningRole:
-    myName(MyName)
+    .my_name(MyName)
     & bestZone(_, _, ClosestAgents)[source(self)]
     & .member(MyName, ClosestAgents)
     <- +isMinion(true).
@@ -216,7 +217,10 @@ plannedZoneTimeInSteps(15).
 @noBestZoneExisting
 +!choseZoningRole:
     not bestZone(_, _, _)
-    <- !preparedNewZoningRound.
+    <- // TODO: find the closest best vertex and move to it
+       !preparedNewZoningRound.
 
+// A zone was properly built but this agent wasn't part of it. He'll try his
+// luck with a new round of zoning.
 +!choseZoningRole
-    <- true.
+    <- !preparedNewZoningRound.
