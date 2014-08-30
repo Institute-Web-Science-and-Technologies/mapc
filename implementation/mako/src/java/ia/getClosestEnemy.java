@@ -44,7 +44,7 @@ public class getClosestEnemy extends DefaultInternalAction {
         // enemyPosition);
 
         unifier.unifies(enemyPositionTerm, JasonHelper.getTerm(enemyPosition.getIdentifier()));
-        unifier.unifies(enemyVehicleTerm, JasonHelper.getTerm(enemyVehicle.getJasonName()));
+        unifier.unifies(enemyVehicleTerm, JasonHelper.getTerm(enemyVehicle.getServerName()));
         // logger.info("Closest enemy debug: Leaving ia.getClosestEnemy(" +
         // position + "," + enemyPositionTerm.toString() + "," +
         // enemyVehicleTerm.toString() + ")");

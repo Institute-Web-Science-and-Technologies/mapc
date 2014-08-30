@@ -130,7 +130,7 @@ isInterestedInZoning(true).
 	& Distance == 1 //better: < visibilityRange
 	& not visibleEntity(Enemy, EnemyPosition, _, normal)
 	<-
-	.print("No enemy agent found at ", EnemyPosition, ". Informing MapAgent.");
+	.print("Expected ", Enemy, " at at ", EnemyPosition, ", but I don't see him from ", MyPosition, " (or he's been disabled). Informing MapAgent.");
 	ia.removeEnemyGhost(Enemy);
 	!doAction.
 	
