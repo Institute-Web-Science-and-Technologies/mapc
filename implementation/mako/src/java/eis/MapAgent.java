@@ -368,6 +368,9 @@ public class MapAgent {
     }
 
     public Integer getHopsToVertex(Vertex position, Vertex destination) {
+        if (position == destination) {
+            return 0;
+        }
         Path path = position.getPath(destination);
         if (path == null) {
             return null;
