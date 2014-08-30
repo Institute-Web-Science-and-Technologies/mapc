@@ -15,7 +15,8 @@ public class ZoneMap {
 
     public ZoneMap(PathMap pathMap) {
         this.pathMap = pathMap;
-        logger = new AgentLogger(pathMap.getPosition() + " PathMap");
+        logger = new AgentLogger(pathMap.getPosition() + " ZoneMap");
+        logger.setVisible(false); // set to true for debug output
     }
 
     public void calculateZoneValue() {
