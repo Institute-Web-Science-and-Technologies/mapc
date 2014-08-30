@@ -179,9 +179,11 @@ public class MapAgent {
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
             setStep(newStep);
-            logger.info("[" + getStep() + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
-            logger.info("[" + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
-            logger.info("[" + getStep() + "] Remaining unsurveyed vertices: " + ((HashSet<String>) visibleEdges.clone()).remove(surveyedEdges));
+            logger.info("[Step " + getStep() + "] Total Vertices: " + vertices + ". Visible: " + visibleVertices.size() + "(" + visibleVertices.size() * 100.0 / vertices + "%) Probed: " + probedVertices.size() + "(" + probedVertices.size() * 100.0 / vertices + "%)");
+            logger.info("[Step " + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
+            HashSet<String> unsurveyedEdges = (HashSet<String>) visibleEdges.clone();
+            unsurveyedEdges.removeAll(surveyedEdges);
+            logger.info("[Step" + getStep() + "] Remaining unsurveyed edges: " + unsurveyedEdges);
             // Reset every zone periodically
             if (newStep % resetStep == 0) {
                 currentZoneVertices.clear();
@@ -440,25 +442,15 @@ public class MapAgent {
     }
 
     public Agent getClosestEnemy(Vertex position) {
-        // Generate a list of enemies whose positions are known.
-        HashSet<Agent> enemyAgentsWithKnownPositions = new HashSet<Agent>();
-        for (Agent enemy : getEnemyAgents()) {
-            if (enemy.getPosition() != null) {
-                enemyAgentsWithKnownPositions.add(enemy);
-            }
-        }
-
-        // Return null if no enemies with known positions are known.
-        if (enemyAgentsWithKnownPositions.size() == 0) {
-            return null;
-        }
-
-        // Find the closest enemy.
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
-        for (Agent enemy : enemyAgentsWithKnownPositions) {
+        for (Agent enemy : getEnemyAgents()) {
             // Check if a path to the enemy even exists.
-            Path pathToEnemy = position.getPath(enemy.getPosition());
+            Vertex enemyPosition = enemy.getPosition();
+            if (enemyPosition == null) {
+                continue;
+            }
+            Path pathToEnemy = position.getPath(enemyPosition);
             if (pathToEnemy == null) {
                 continue;
             }

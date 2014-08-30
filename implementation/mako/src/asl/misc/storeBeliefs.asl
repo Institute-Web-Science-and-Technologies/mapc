@@ -51,7 +51,7 @@
 //myName is a custom percept
 +myName(Name)[source(percept)] <-
     .my_name(JName);
-    .print("My Server Name is ", Name, ". My Jason name is ", JName);
+//    .print("My Server Name is ", Name, ". My Jason name is ", JName);
     -+myName(Name)[source(self)].
 
 +position(Identifier)[source(percept)]
