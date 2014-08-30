@@ -66,7 +66,7 @@ isInterestedInZoning(true).
 +!doAction:
 	role(saboteur)
 	& strategy(zoneDefence)
- 	<- .print("I'm in zone defnding mode.");
+ 	<- .print("I'm in zone defending mode.");
  	   !defendZone.
 
 // Plan to deal with the enemy if the enemy is not only in range, but currently on our position.
