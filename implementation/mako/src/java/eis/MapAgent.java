@@ -87,7 +87,7 @@ public class MapAgent {
         return neighbours;
     }
 
-    public void addPercept(Percept percept) {
+    public synchronized void addPercept(Percept percept) {
         switch (percept.getName()) {
         case "inspectedEntity":
             handleInspectedEntity(percept);
@@ -167,7 +167,7 @@ public class MapAgent {
     }
 
     // @SuppressWarnings("unchecked")
-    private void handleStep(Percept percept) {
+    private synchronized void handleStep(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > getStep()) {
             for (Vertex vertex : reservedProbedVertices) {
@@ -515,11 +515,14 @@ public class MapAgent {
         }
         for (Agent agent : availableZoners) {
             Vertex agentPosition = agent.getPosition();
-            int distance = agentPosition.getPath(center).getPathHops();
-            if (!distanceFromZone.containsKey(distance)) {
-                distanceFromZone.put(distance, new ArrayList<String>());
+            Path pathToAgent = agentPosition.getPath(center);
+            if (pathToAgent != null) {
+                int distance = pathToAgent.getPathHops();
+                if (!distanceFromZone.containsKey(distance)) {
+                    distanceFromZone.put(distance, new ArrayList<String>());
+                }
+                distanceFromZone.get(distance).add(agent.getJasonName());
             }
-            distanceFromZone.get(distance).add(agent.getJasonName());
         }
 
         if (distanceFromZone.size() > 0) {
