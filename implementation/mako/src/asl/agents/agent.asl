@@ -74,27 +74,28 @@ isInterestedInZoning(true).
 	.print("Non-disabled enemy ", Vehicle, " at my position!");
  	!dealWithEnemy(Vehicle).
 
-// Saboteurs in defending zone mode should go directly to the disturbing enemy
-+!doAction:
-	role(saboteur)
-	& strategy(zoneDefence)
-	& defendingZone(ZoneCentre)  
-	& not reached_disturbing_enemy &
-	ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
- 	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
- 	   !goto(EnemyPosition).
-
 // In defending zone mode saboteur should attack the disturbing enemy once he sees it
 +!doAction:
 	role(saboteur)
 	& strategy(zoneDefence)
 	& defendingZone(ZoneCentre)  
 	& ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+	& position(Position)
+	& (visibleEdge(Position, EnemyPosition) | visibleEdge(EnemyPosition, Position) | EnemyPosition == Position)
 	& myTeam(MyTeam)
 	& visibleEntity(Vehicle, EnemyPosition, Team, _)
 	& MyTeam \== Team
  	<- .print("Attacking ", Vehicle, " disturbing zone on ", EnemyPosition);
  	   !doAttack(Vehicle, EnemyPosition).
+
+// Saboteurs in defending zone mode should go directly to the disturbing enemy
++!doAction:
+	role(saboteur)
+	& strategy(zoneDefence)
+	& defendingZone(ZoneCentre)  
+	& ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition)
+ 	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
+ 	   !goto(EnemyPosition).
 
 // Saboteurs attack active enemy agents when they see them.
 // We need two plans here because saboteurs should prefer attacking enemy
