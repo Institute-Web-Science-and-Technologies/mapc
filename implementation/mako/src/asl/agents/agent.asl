@@ -62,6 +62,13 @@ isInterestedInZoning(true).
 	.print("Inspecting ", Vehicle, " at ", Vertex);
 	!doInspecting(Vehicle).
 
+// Saboteur In defending zone mode 
++!doAction:
+	role(saboteur)
+	& strategy(zoneDefence)
+ 	<- .print("I'm in zone defending mode.");
+ 	   !defendZone.
+
 // Plan to deal with the enemy if the enemy is not only in range, but currently on our position.
 // Ideally, this should never happen.
 +!doAction:
@@ -73,29 +80,6 @@ isInterestedInZoning(true).
  	<-
 	.print("Non-disabled enemy ", Vehicle, " at my position!");
  	!dealWithEnemy(Vehicle).
-
-// In defending zone mode saboteur should attack the disturbing enemy once he sees it
-+!doAction:
-	role(saboteur)
-	& strategy(zoneDefence)
-	& defendingZone(ZoneCentre)  
-	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, Enemy)
-	& position(Position)
-	& (visibleEdge(Position, EnemyPosition) | visibleEdge(EnemyPosition, Position) | EnemyPosition == Position)
-	& myTeam(MyTeam)
-	& visibleEntity(Vehicle, EnemyPosition, Team, _)
-	& MyTeam \== Team
- 	<- .print("Attacking ", Vehicle, " disturbing zone on ", EnemyPosition);
- 	   !doAttack(Vehicle, EnemyPosition).
-
-// Saboteurs in defending zone mode should go directly to the disturbing enemy
-+!doAction:
-	role(saboteur)
-	& strategy(zoneDefence)
-	& defendingZone(ZoneCentre)  
-	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, Enemy)
- 	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
- 	   !goto(EnemyPosition).
 
 // Saboteurs attack active enemy agents when they see them.
 // We need two plans here because saboteurs should prefer attacking enemy
@@ -187,7 +171,6 @@ isInterestedInZoning(true).
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
 
-
 // If we're not in zone mode yet, explore.
 +!doAction:
 	zoneMode(false)
@@ -203,7 +186,7 @@ isInterestedInZoning(true).
 	<-
 	.print("I'm recharging because I don't know what else to do.");
 	recharge.
-	
+  	
 // Condition to start zoning phase
 // TODO: Make entering zone mode more dynamic
 +achievement(surveyed640)[source(self)]:

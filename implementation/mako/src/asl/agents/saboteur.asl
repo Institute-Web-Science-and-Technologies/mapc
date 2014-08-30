@@ -20,6 +20,10 @@ strategy(attack_chase).
     position(Position) & saboteurList(SaboteurList) & .my_name(Name)
     <-
     ia.getDistance(Position, ZoneCentre, Distance);
+    if(Distance == -1){
+    	.print("The target zone with centere in ", ZoneCentre," is unreachable - ignoring zone defence request");
+    	.fail;
+    };
     +defendZoneBid(ZoneCentre, Distance, Name);
     .send(SaboteurList, tell, defendZoneBid(ZoneCentre, Distance, Name));
     .wait(400);
@@ -46,7 +50,36 @@ strategy(attack_chase).
     if(strategy(zoneDefence) & defendingZone(ZoneCentre)){
     	-+strategy(attack_chase);
         -defendingZone(ZoneCentre);
-    }. 
+    };
+    .abolish(cancelZoneDefence(ZoneCentre)). 
+
+// In defending zone mode saboteur should attack the disturbing enemy once he sees it    
++!defendZone:
+	defendingZone(ZoneCentre)  
+	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, _)
+	& position(Position)
+	& (visibleEdge(Position, EnemyPosition) | visibleEdge(EnemyPosition, Position) | EnemyPosition == Position)
+	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, EnemyPosition, Team, _)
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Vehicle, " disturbing zone on ", EnemyPosition);
+ 	   !doAttack(Vehicle, EnemyPosition).
+
+// Saboteurs in defending zone mode should go directly to the disturbing enemy
++!defendZone:
+	defendingZone(ZoneCentre)  
+	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, _)
+ 	<- .print("Going to the disturbing enemy on vertex ", EnemyPosition);
+ 	   !goto(EnemyPosition).
+
+// Saboteur can't see the enemy - returning to attack/chase strategy    
++!defendZone:
+    defendingZone(ZoneCentre) 
+    & saboteurList(SaboteurList)
+    <- .print("I can't see the enemy near the protected zone, cancelling zone defence.");
+    +cancelZoneDefence(ZoneCentre);
+    .send(SaboteurList, tell, cancelZoneDefence(ZoneCentre));
+    !doAction.
     
 +!doAttack(Vehicle,Vertex):
     lastActionResult(failed_in_range)
@@ -77,6 +110,7 @@ strategy(attack_chase).
 // enemy agent. In this case, ia.getdistance returns the distance 0.
 +!doAttack(Vehicle, Vertex):
 	position(Position)
+	& Position \== Vertex
 	& ia.getDistance(Position, Vertex, Distance)
 	& Distance == -1
 	<-
