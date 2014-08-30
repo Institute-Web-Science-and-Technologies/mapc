@@ -29,7 +29,7 @@ public class getClosestEnemy extends DefaultInternalAction {
         Term enemyPositionTerm = terms[1];
         Term enemyVehicleTerm = terms[2];
         Agent enemyVehicle = MapAgent.getInstance().getClosestEnemy(position);
-        if (enemyVehicle == null) {
+        if (enemyVehicle == null || enemyVehicle.getPosition() == null) {
             logger.info("No reachable enemy found.");
             return false;
         }

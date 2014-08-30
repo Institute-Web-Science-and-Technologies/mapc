@@ -6,9 +6,6 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
-
-import java.util.logging.Logger;
-
 import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
@@ -23,7 +20,7 @@ public class getDistance extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
-        Logger logger = ts.getAg().getLogger();
+        // Logger logger = ts.getAg().getLogger();
         Vertex position = MapAgent.getInstance().getVertex(terms[0].toString());
         // logger.info("getDistance debug: position = " + position);
         Vertex destination = MapAgent.getInstance().getVertex(terms[1].toString());

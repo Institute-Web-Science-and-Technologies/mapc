@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 public class PathMap {
 
-    private AgentLogger logger;
+    // private AgentLogger logger;
     private Vertex position;
     private Hashtable<Vertex, Path> knownPaths = new Hashtable<Vertex, Path>();
     private Hashtable<Vertex, Integer> hopMapping = new Hashtable<Vertex, Integer>();
@@ -14,7 +14,7 @@ public class PathMap {
 
     public PathMap(Vertex vertex) {
         this.setPosition(vertex);
-        logger = new AgentLogger(vertex + " PathMap");
+        // logger = new AgentLogger(vertex + " PathMap");
     }
 
     public boolean handlePath(Path newPath) {
