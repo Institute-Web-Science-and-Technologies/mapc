@@ -6,11 +6,6 @@ role(saboteur).
 // Saboteur current strategy: attack_chase or zoneDefence
 strategy(attack_chase).
 
-// Saboteur is reached the disturbing zone enemy in zone defending mode if the distance to it is < 2
-reached_disturbing_enemy :- strategy(zoneDefence) & position(Position) & defendingZone(ZoneCentre) 
-    & ia.getClosestEnemyPosition(ZoneCentre, EnemyPosition) & ia.getDistance(Position, EnemyPosition, Distance)
-    & Distance < 2.
-
 !start.
 
 // Saboteurs will be busy attacking and harassing enemies and are hence never
