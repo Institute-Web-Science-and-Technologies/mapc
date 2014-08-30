@@ -7,9 +7,9 @@
 { include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
-{ include("../actions/zoning.asl") }
-{ include("../actions/zoning.minion.asl") }
-{ include("../actions/zoning.coach.asl") }
+//{ include("../actions/zoning.asl") }
+//{ include("../actions/zoning.minion.asl") }
+//{ include("../actions/zoning.coach.asl") }
 
 zoneMode(false).
 // Agents in general want to form zones. Some agents like explorers might want

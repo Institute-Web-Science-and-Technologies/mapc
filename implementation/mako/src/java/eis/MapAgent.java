@@ -440,17 +440,37 @@ public class MapAgent {
     }
 
     public Agent getClosestEnemy(Vertex position) {
-        HashSet<Agent> enemyAgents = getEnemyAgents();
-        if (enemyAgents.size() == 0) {
+        // Generate a list of enemies whose positions are known.
+        HashSet<Agent> enemyAgentsWithKnownPositions = new HashSet<Agent>();
+        for (Agent enemy : getEnemyAgents()) {
+            if (enemy.getPosition() != null) {
+                enemyAgentsWithKnownPositions.add(enemy);
+            }
+        }
+
+        // Return null if no enemies with known positions are known.
+        if (enemyAgentsWithKnownPositions.size() == 0) {
             return null;
         }
+
+        // Find the closest enemy.
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
-        for (Agent enemy : enemyAgents) {
+        for (Agent enemy : enemyAgentsWithKnownPositions) {
+            // If we haven't found a suitable enemy yet...
             if (closestEnemy == null) {
-                closestEnemy = enemy;
-                distanceToClosestEnemy = position.getPath(closestEnemy.getPosition()).getPathHops();
+                // Check if a path to the enemy even exists.
+                Path pathToEnemy = position.getPath(enemy.getPosition());
+                if (pathToEnemy == null) {
+                    continue;
+                } else {
+                    closestEnemy = enemy;
+                    distanceToClosestEnemy = pathToEnemy.getPathHops();
+                }
             }
+
+            // Compare the distances for the agent we currently think is
+            // closest and this one.
             int distanceToThisEnemy = position.getPath(enemy.getPosition()).getPathHops();
             if (distanceToClosestEnemy > distanceToThisEnemy) {
                 closestEnemy = enemy;
