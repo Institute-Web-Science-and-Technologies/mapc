@@ -17,16 +17,13 @@ plannedZoneTimeInSteps(15).
 // TODO [prio:low, #27]: when a zone has been established, each zoner should look at zones with maximum .count(zoner,X) many nodes. If there is a better option, the whole zone or parts of it may be moved onto the better nearby zone.
 /* Plans */
 
-// Zoning mode has begun and it will trigger the achievement goal builtZone if
-// an agent is interested in zoning. This belief is set by the corresponding
-// agents themselves.
-// Before starting to build any zone, register to the JavaMap to be an available
-// zoner.
+// Zoning mode has begun and it will trigger the achievement goal
+// preparedNewZoningRound if an agent is interested in zoning. This belief is
+// set by the corresponding agents themselves.
 +zoneMode(true):
     isInterestedInZoning(true)
     & .my_name(MyName)
-    <- ia.registerForZoning(MyName);
-       !builtZone.
+    <- !preparedNewZoningRound.
     
 // After some agents formed a zone a new round of zoning for all the other
 // agents will start. Before that, all previous beliefs regarding zoning will be
@@ -90,14 +87,22 @@ plannedZoneTimeInSteps(15).
 +bestZoneRequest[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
-    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
+    <- !clearedNonBestZoneRequestBeliefs(Sender);
+       .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
        !receivedAllReplies.
 
 // Reply "no" in any other case – no matter if we are interested in zoning or
 // not.
 +bestZoneRequest[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply);
+    <- !clearedNonBestZoneRequestBeliefs(Sender);
+       .send(Sender, tell, negativeZoneReply);
        !receivedAllReplies.
+
+// When adding a bestZoneRequest, make sure that there are no other beliefs
+// which from the same sender.
++!clearedNonBestZoneRequestBeliefs(Sender)
+    <- -negativeZoneReply[source(Sender)];
+       -foreignBestZone(_, _, _)[source(Sender)].
 
 // We received an asynchronous foreignBestZone percept. Chances are, the
 // Broadcaster doesn't know about our zone so we tell him as we haven't started
@@ -123,7 +128,8 @@ plannedZoneTimeInSteps(15).
 +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
     isAvailableForZoning
     & not bestZone(_, _, _)
-    <- +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
+    <- !clearedNonForeignBestZoneBeliefs(Coach);
+       +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        !receivedAllReplies.
 
 // We have received a zone better than the one we know (or
@@ -144,7 +150,8 @@ plannedZoneTimeInSteps(15).
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- .send(FormerCoach, tell, negativeZoneReply);
+    <- !clearedNonForeignBestZoneBeliefs(Coach);
+       .send(FormerCoach, tell, negativeZoneReply);
        -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        !receivedAllReplies.
@@ -152,27 +159,34 @@ plannedZoneTimeInSteps(15).
 // We were informed about a worse zone.
 +foreignBestZone(_, _, _)[source(Sender)]:
     isAvailableForZoning
-    <- .send(Sender, tell, negativeZoneReply);
+    <- !clearedNonForeignBestZoneBeliefs(Sender);
+       .send(Sender, tell, negativeZoneReply);
        !receivedAllReplies.
 
-// It doesn't matter if aren't interested in zoning. We have to reply no in any
-// case.
+// It doesn't matter if we aren't interested in zoning. We have to reply no in
+// any case. As we don't care, we also don't clear our negativeZoneReply and
+// bestZoneRequest beliefs.
 +foreignBestZone(_, _, _)[source(Sender)]
     <- .send(Sender, tell, negativeZoneReply).
 
-// Don't count the negative reply AND the broadcast of the same sender in the
-// !receivedAllReplies[1] achievement goal.
+// When adding a foreign best zone, make sure that there are no other beliefs
+// which from the same sender.
++!clearedNonForeignBestZoneBeliefs(Sender)
+    <- -negativeZoneReply[source(Sender)];
+       -bestZoneRequest[source(Sender)].
+
+// Don't count the negative reply AND the broadcast/request of the same sender
+// in the !receivedAllReplies[1] achievement goal.
+//
+//  We will test if we now got replies from every agent.
 +negativeZoneReply[source(Sender)]:
     isAvailableForZoning
-    & foreignBestZone(_, _, _)[source(Sender)]
     <- -foreignBestZone(_, _, _)[source(Sender)];
+       -bestZoneRequest[source(Sender)];
        !receivedAllReplies.
 
-// We only got a negative zone reply. We will test if we now got replies from
-// every agent.
-+negativeZoneReply[source(_)]:
-    isAvailableForZoning
-    <- !receivedAllReplies.
+// We aren't zoning so we ignore this message.
++negativeZoneReply[source(_)].
 
 // If all agents have replied with either a broadcast or a refusal, we're done
 // waiting.
@@ -184,7 +198,8 @@ plannedZoneTimeInSteps(15).
     & broadcastAgentList(BroadcastList)
     & .length(BroadcastList, AgentsAmount) // use 28 as a static measure, because .count() over a list throws exception
     & AgentsAmount <=  BroadcastRepliesAmount + RefusalAmount + BestZoneRequestAmount
-    <- !choseZoningRole.
+    <- .print("[zoning] ", AgentsAmount, " <= ", BroadcastRepliesAmount,"+", RefusalAmount,"+", BestZoneRequestAmount);
+       !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.
 +!receivedAllReplies.
@@ -201,6 +216,7 @@ plannedZoneTimeInSteps(15).
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
     <- -+isCoach(true);
+       .print("[zoning] I'm now a coach.");
        !assignededAgentsTheirPosition.
 
 // We aren't this round's coach. But we are a minion.
@@ -209,7 +225,8 @@ plannedZoneTimeInSteps(15).
     .my_name(MyName)
     & bestZone(_, _, ClosestAgents)[source(self)]
     & .member(MyName, ClosestAgents)
-    <- +isMinion(true).
+    <- +isMinion(true);
+       .print("[zoning] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
 // their 1HNH that could be built. We try zoning again the hope it will get
@@ -217,7 +234,8 @@ plannedZoneTimeInSteps(15).
 @noBestZoneExisting
 +!choseZoningRole:
     not bestZone(_, _, _)
-    <- // TODO: find the closest best vertex and move to it
+    <- .print("[zoning] No zone was found this round.");
+       // TODO: find the closest best vertex and move to it
        !preparedNewZoningRound.
 
 // A zone was properly built but this agent wasn't part of it. He'll try his

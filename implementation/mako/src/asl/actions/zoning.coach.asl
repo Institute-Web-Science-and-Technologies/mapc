@@ -19,6 +19,9 @@ zoneBuildingMode(false).
        .difference(BroadcastList, ClosestAgents, NonZoners);
        .send(NonZoners, achieve, preparedNewZoningRound).
 
++!assignededAgentsTheirPosition
+    <- .print("[zoning] Assigning agents a position failed.").
+
 // Negative zone replies have no meaning for coaches. Hence they are ignored.
 +negativeZoneReply[source(_)]:
     isCoach(true)

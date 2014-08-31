@@ -443,11 +443,19 @@ public class MapAgent {
                 Vertex position = agent.getPosition();
                 Vertex closest = positions.get(0);
                 for (Vertex destination : positions) {
-                    if (position.getPath(closest).getPathHops() > position.getPath(destination).getPathHops()) {
+                    Path closestPath = position.getPath(closest);
+                    if (closestPath == null) {
                         closest = destination;
+                    } else { // there is a closestPath
+                        Path destinationPath = position.getPath(destination);
+                        if (destinationPath != null) {
+                            if (closestPath.getPathHops() > destinationPath.getPathHops()) {
+                                closest = destination;
+                            }
+                        }
                     }
                 }
-                map.put(agentName, closest);
+                map.put(agentName, closest); // TODO: closest can be null.
                 positions.remove(closest);
             }
         }

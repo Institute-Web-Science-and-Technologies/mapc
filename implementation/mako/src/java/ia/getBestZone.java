@@ -9,7 +9,6 @@ import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import eis.JasonHelper;
 import eis.MapAgent;
@@ -23,13 +22,6 @@ public class getBestZone extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        Logger logger = ts.getAg().getLogger();
-        logger.info("executing internal action 'ia.getbestZone'");
-
-        for (int i = 0; i < args.length; i++) {
-            logger.info("terms[" + i + "]: " + args[i]);
-        }
-
         Term zoneValuePerAgent = args[2];
         Term centerVertex = args[3];
         Term listOfAgents = args[4];
