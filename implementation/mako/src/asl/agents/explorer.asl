@@ -2,11 +2,6 @@
 
 role(explorer).
 
-!start.
-
-// TODO: Switch the interest for zoning to true when the map is fully probed.
-+!start <- -+isInterestedInZoning(false).
-
 // If the agent has enough energy, then probe. Otherwise recharge.
 +!doProbing:
 	energy(Energy)

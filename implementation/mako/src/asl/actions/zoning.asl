@@ -1,7 +1,8 @@
 /* Initial beliefs and rules */
 isCoach(false).
 isMinion(false).
-isAvailableForZoning :- isCoach(false) & isMinion(false).
+isLocked(false).
+isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
 plannedZoneTimeInSteps(15).
@@ -9,7 +10,6 @@ plannedZoneTimeInSteps(15).
 // @all: If you are looking for something to do, search this file as well as
 //       zoning.* for the keyword "TODO".
 // TODO [prio:low]: test that the internal actions work properly when JavaMap is merged onto master.
-// TODO [prio:medium, #28]: !foundNewZone achievement goal needs to be written. It expresses that an agent should either ask for expendable zones or start zoning anew. Its stub is located at the bottom of this file.
 // TODO [prio:high, #26]: we must incorporate plannedZoneTimeInSteps to split up zones after some time.
 // TODO [prio:medium, #27]: when we have reached the plannedZoneTimeInSteps, we should start zoning again (needs to increment a counter in each step) – also see the zone movement idea which is located lower in this TODO list.
 // TODO [prio:none, #27]: @wontfix search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
@@ -21,7 +21,7 @@ plannedZoneTimeInSteps(15).
 // preparedNewZoningRound if an agent is interested in zoning. This belief is
 // set by the corresponding agents themselves.
 +zoneMode(true):
-    isInterestedInZoning(true)
+    isAvailableForZoning
     & .my_name(MyName)
     <- !preparedNewZoningRound.
     
@@ -32,7 +32,7 @@ plannedZoneTimeInSteps(15).
 // Before starting to build any zone, register to the JavaMap to be an available
 // zoner.
 +!preparedNewZoningRound:
-    isInterestedInZoning(true)
+    isAvailableForZoning
     & .my_name(MyName)
 	<- ia.registerForZoning(MyName);
 	   !clearedZoningPercepts;
@@ -50,8 +50,8 @@ plannedZoneTimeInSteps(15).
        -zoneGoalVertex(_)[source(_)];
        -zoneNode(_)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
-       -closestAgents(_)[source(_)];
-       -bestZoneRequest[source(_)].
+       -bestZoneRequest[source(_)];
+       -+isLocked(false).
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
@@ -91,12 +91,17 @@ plannedZoneTimeInSteps(15).
        .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
        !receivedAllReplies.
 
-// Reply "no" in any other case – no matter if we are interested in zoning or
-// not.
-+bestZoneRequest[source(Sender)]
+// Reply "no", clear possible duplicate beliefs and check if we are done
+// waiting.
++bestZoneRequest[source(Sender)]:
+    isAvailableForZoning
     <- !clearedNonBestZoneRequestBeliefs(Sender);
        .send(Sender, tell, negativeZoneReply);
        !receivedAllReplies.
+
+// Reply "no" in any other case
++bestZoneRequest[source(Sender)]
+    <- .send(Sender, tell, negativeZoneReply).
 
 // When adding a bestZoneRequest, make sure that there are no other beliefs
 // which from the same sender.
@@ -190,29 +195,26 @@ plannedZoneTimeInSteps(15).
 
 // If all agents have replied with either a broadcast or a refusal, we're done
 // waiting.
+@testForAllReplies[priority(1), atomic]
 +!receivedAllReplies:
     isAvailableForZoning
     & .count(foreignBestZone(_, _, _), BroadcastRepliesAmount)
     & .count(negativeZoneReply[source(_)], RefusalAmount)
     & .count(bestZoneRequest[source(_)], BestZoneRequestAmount)
     & broadcastAgentList(BroadcastList)
-    & .length(BroadcastList, AgentsAmount) // use 28 as a static measure, because .count() over a list throws exception
+    & .length(BroadcastList, AgentsAmount)
     & AgentsAmount <=  BroadcastRepliesAmount + RefusalAmount + BestZoneRequestAmount
-    <- .print("[zoning] ", AgentsAmount, " <= ", BroadcastRepliesAmount,"+", RefusalAmount,"+", BestZoneRequestAmount);
+    <- -+isLocked(true);
+       .print("[zoning] ", AgentsAmount, " <= ", BroadcastRepliesAmount,"+", RefusalAmount,"+", BestZoneRequestAmount);
+       // TODO this should be an equation but in most cases, LHS < RHS. I just can't figure out how to prevent duplicate counts/calls.
        !choseZoningRole.
 
 // We still have to wait and fail this achievement goal silently as true.
 +!receivedAllReplies.
 
-// If we get told (or decide ourselves) to cancel our current process and start
-// a different approach.
-// The current behaviour is just a placeholder.
-+!foundNewZone
-    <- !cancelledZoneBuilding.
-
 // This agent becomes a coach because the bestZone is his. He will inform his
 // minions about it and move to the CentreNode.
-@becomeACoach
+@becomeACoach[priority(2)]
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
     <- -+isCoach(true);
@@ -220,18 +222,19 @@ plannedZoneTimeInSteps(15).
        !assignededAgentsTheirPosition.
 
 // We aren't this round's coach. But we are a minion.
-@becomeAMinion
+@becomeAMinion[priority(2)]
 +!choseZoningRole:
     .my_name(MyName)
-    & bestZone(_, _, ClosestAgents)[source(self)]
+    & bestZone(_, _, ClosestAgents)
+    & .print("[zoning] I am ", MyName, " and the zoners are ", ClosestAgents)
     & .member(MyName, ClosestAgents)
-    <- +isMinion(true);
+    <- -+isMinion(true);
        .print("[zoning] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
 // their 1HNH that could be built. We try zoning again the hope it will get
 // better but TODO: we should be smarter and start going to wells or so because trying zoning again will most likely not help!?
-@noBestZoneExisting
+@noBestZoneExisting[priority(2)]
 +!choseZoningRole:
     not bestZone(_, _, _)
     <- .print("[zoning] No zone was found this round.");
@@ -239,6 +242,8 @@ plannedZoneTimeInSteps(15).
        !preparedNewZoningRound.
 
 // A zone was properly built but this agent wasn't part of it. He'll try his
-// luck with a new round of zoning.
-+!choseZoningRole
-    <- !preparedNewZoningRound.
+// luck with a new round of zoning when the coach allows him to. This is to
+// ensure that the agents needed for zoning are successfully unregistered from
+// the available zoners.
+@waitingForNextZoneRound[priority(2)]
++!choseZoningRole.

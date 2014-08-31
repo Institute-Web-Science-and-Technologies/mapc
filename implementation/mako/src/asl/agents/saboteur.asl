@@ -6,12 +6,6 @@ role(saboteur).
 // Saboteur current strategy: attack_chase or zoneDefence
 strategy(attack_chase).
 
-!start.
-
-// Saboteurs will be busy attacking and harassing enemies and are hence never
-// interest in zoning.
-+!start <- -+isInterestedInZoning(false).
-
 // If there is a new zone defence request, but we already defending a zone - skip processing, busy
 +requestZoneDefence(ZoneCentre): strategy(zoneDefence).
 

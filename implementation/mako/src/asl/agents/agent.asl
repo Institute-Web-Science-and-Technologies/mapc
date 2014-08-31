@@ -7,15 +7,11 @@
 { include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
-//{ include("../actions/zoning.asl") }
-//{ include("../actions/zoning.minion.asl") }
-//{ include("../actions/zoning.coach.asl") }
+// { include("../actions/zoning.asl") }
+// { include("../actions/zoning.minion.asl") }
+// { include("../actions/zoning.coach.asl") }
 
 zoneMode(false).
-// Agents in general want to form zones. Some agents like explorers might want
-// to stay busier for longer and may turn this flag false. Others dynamically
-// flip this switch depending on their availability. 
-isInterestedInZoning(true).
 
 /* Map Related Stuff */
 
@@ -177,6 +173,27 @@ isInterestedInZoning(true).
 	<-
 	.print("I will explore.");
 	!doExploring.
+
+// If we are finally standing on our zone vertex, we clear the command to get
+// there and remember our node. Also, we look what else there is left for us to
+// do.
++!doAction:
+    zoneGoalVertex(GoalVertex)
+    & position(PositionVertex)
+    & GoalVertex == PositionVertex
+    <- -zoneGoalVertex(GoalVertex)[source(_)];
+       -+zoneNode(GoalVertex);
+       .print("[zoning] I am now standing on my zone node.");
+       !doAction.
+
+// If we got a zoneGoalVertex, which is a node we should move to to build a
+// zone, we will move there.
+// This method is used by minions and coaches alike. Coaches will only have to
+// to 0-1 steps to reach their goal though.
++!doAction:
+    zoneGoalVertex(GoalVertex)
+    <- .print("[zoning] I'm going to build a zone at ", GoalVertex);
+       !goto(GoalVertex).
 
 // If the agent has nothing to do, it should recharge instead of doing nothing.
 +!doAction:
