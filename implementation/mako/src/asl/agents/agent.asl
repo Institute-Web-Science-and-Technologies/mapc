@@ -3,6 +3,7 @@
 { include("../actions/goto.asl") }
 { include("../actions/doSurveying.asl") }
 { include("../actions/avoidEnemy.asl") }
+{ include("../actions/getRepaired.asl") }
 { include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
