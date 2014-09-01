@@ -88,7 +88,7 @@ strategy(attack_chase).
     energy(MyEnergy)
     & position(MyPosition)
     & ia.getDistance(MyPosition, EnemyPosition, Distance)
-	& Distance > MyEnergy
+	& MyEnergy < (2 + Distance)
     <- .print("I have ", MyEnergy, " energy, but I need ", 2 + Distance, " energy to attack ", Enemy, ". I will recharge.");
        recharge.
 
