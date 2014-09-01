@@ -3,15 +3,17 @@
 role(inspector).
 
 // If the agent has enough energy, then inspect. Otherwise recharge.
-+!doInspecting(Vehicle):
++!doInspecting(Vehicle, VehiclePosition):
 	energy(Energy)
-	& Energy < 2
+	& position(MyPosition)
+	& ia.getDistance(MyPosition, VehiclePosition, Distance)
+	& Energy < (2 + Distance)
 	<-
-    .print("I have ", CurrEnergy, " energy, but I need 2 to inspect. Going to recharge first.");
+    .print("I have ", Energy, " energy, but I need ", 2 + Distance, " to inspect ", Vehicle, ". Will recharge.");
     recharge.
 
 // Inspect if enough energy.
-+!doInspecting(Vehicle)
++!doInspecting(Vehicle, _)
 	<-
     .print("Inspecting ", Vehicle);
     inspect(Vehicle).
