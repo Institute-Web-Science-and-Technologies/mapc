@@ -98,7 +98,7 @@ strategy(attack_chase).
 	position(MyPosition)
 	& ia.getDistance(MyPosition, EnemyPosition, Distance)
 	& visRange(MyRange)
-	& Distance > MyRange
+	& Distance >= (MyRange / 2)
 	<-
 	.print("I want to attack ", Enemy, ", but it is ", Distance, " steps away, and my visibility range is only ", MyRange);
 	!goto(Vertex).
