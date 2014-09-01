@@ -22,7 +22,7 @@
 +!goto(Destination):
     position(Position)
     & ia.getBestHopToVertex(Position, Destination, NextHop)
-    & ia.getEdgeCost(Position, Destination, Costs)
+    & ia.getEdgeCost(Position, NextHop, Costs)
     <-
     .print("I will use ", Costs, " energy to move to ", Destination, " by way of ", NextHop);
     goto(NextHop).
