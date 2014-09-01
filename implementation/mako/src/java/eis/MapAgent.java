@@ -424,47 +424,58 @@ public class MapAgent {
      */
     public HashMap<String, Vertex> getAgentZonePositions(
             Vertex zoneCenterVertex, ArrayList<String> agents) {
+        // order agent by distance to center vertex of the zone
         TreeMap<Integer, String> distances = new TreeMap<Integer, String>();
         for (String agentName : agents) {
             Agent agent = getAgent(agentName);
-            Vertex vertex = agent.getPosition();
-            int pathHops = vertex.getPath(zoneCenterVertex).getPathHops();
-            distances.put(pathHops, agentName);
-            agent.setBuildingZone(true);
+            if (agent != null) {
+                Vertex vertex = agent.getPosition();
+                Path path = vertex.getPath(zoneCenterVertex);
+                if (path != null) {
+                    int pathHops = path.getPathHops();
+                    distances.put(pathHops, agentName);
+                    agent.setBuildingZone(true);
+                }
+            }
         }
 
-        Zone zone = zoneCenterVertex.getBestMinimalZone();
-        ArrayList<Vertex> positions = zone.getPositions();
+        // map agents to zone positions
         HashMap<String, Vertex> map = new HashMap<String, Vertex>();
-        if (zone != null) {
+        Zone zone = zoneCenterVertex.getBestMinimalZone();
+        if (zone != null || distances.isEmpty()) {
+            ArrayList<Vertex> positions = zone.getPositions();
             Integer key = distances.lastKey();
             while (positions.size() > 0 && key != null) {
                 String agentName = distances.get(key);
                 Agent agent = getAgent(agentName);
                 key = distances.lowerKey(key);
                 Vertex position = agent.getPosition();
-                Vertex closest = positions.get(0);
+                Vertex closest = null;
+                Path closestPath = null;
                 for (Vertex destination : positions) {
-                    Path closestPath = position.getPath(closest);
-                    if (closestPath == null) {
-                        closest = destination;
-                    } else { // there is a closestPath
-                        Path destinationPath = position.getPath(destination);
-                        if (destinationPath != null) {
-                            if (closestPath.getPathHops() > destinationPath.getPathHops()) {
-                                closest = destination;
-                            }
+                    Path destinationPath = position.getPath(destination);
+                    // there is a closestPath
+                    if (destinationPath != null) {
+                        if (closest == null || closestPath.getPathHops() > destinationPath.getPathHops()) {
+                            closest = destination;
+                            closestPath = destinationPath;
                         }
                     }
                 }
-                map.put(agentName, closest); // TODO: closest can be null.
-                positions.remove(closest);
+                if (closest != null) {
+                    map.put(agentName, closest);
+                    positions.remove(closest);
+                }
             }
         }
         // save vertices which are now in a zone to prevent overlapping of zones
-        ArrayList<Vertex> zonePointVertices = zone.getZonePointVertices();
-        currentZoneVertices.addAll(zonePointVertices);
-
+        if (map.size() == agents.size()) {
+            ArrayList<Vertex> zonePointVertices = zone.getZonePointVertices();
+            currentZoneVertices.addAll(zonePointVertices);
+        } else {
+            logger.info("Some agents have no known path to zone.");
+            map = new HashMap<String, Vertex>();
+        }
         // return the mapping of agents to positions
         return map;
     }

@@ -32,6 +32,10 @@ public class placeAgentsOnZone extends DefaultInternalAction {
         }
         HashMap<String, Vertex> agentPositions = MapAgent.getInstance().getAgentZonePositions(vertex, agents);
 
-        return unifier.unifies(agentPositionsTerm, JasonHelper.getTerm(agentPositions));
+        if (agentPositions.isEmpty()) {
+            return false;
+        } else {
+            return unifier.unifies(agentPositionsTerm, JasonHelper.getTerm(agentPositions));
+        }
     }
 }
