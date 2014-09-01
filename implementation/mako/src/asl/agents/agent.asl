@@ -38,6 +38,13 @@ zoneMode(false).
 	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
 	recharge.
 
+// If agent is disabled - get repaired.
+ +!doAction:
+ 	 health(Health)
+ 	 & Health == 0
+    <-
+    !getRepaired.
+
 // Testing action: What happens if saboteurs extend their visiblity range?
 +!doAction:
 	role(saboteur)
