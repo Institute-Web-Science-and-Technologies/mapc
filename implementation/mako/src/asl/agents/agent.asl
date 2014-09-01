@@ -37,13 +37,15 @@ zoneMode(false).
 	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
 	recharge.
 
-// Testing action: What happens if saboteurs extend their visiblity range?
+// Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
 	role(saboteur)
 	& money(Money)
-	& Money > 12
+	& Money > 11
 	& visRange(VisRange)
-	& VisRange < 10
+	& VisRange < 2
+	& energy(MyEnergy)
+	& MyEnergy > 2
 	<-
 	.print("Current money is ", Money, ". Current visRange is ", VisRange, ". Will buy sensor upgrade.");
 	buy(sensor).
