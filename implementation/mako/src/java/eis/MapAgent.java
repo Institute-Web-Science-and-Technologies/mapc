@@ -383,11 +383,13 @@ public class MapAgent {
     }
 
     public Vertex getBestHopToVertex(Vertex position, Vertex destination) {
-        return position.getPath(destination).getNextHopVertex();
+        Path path = position.getPath(destination);
+        return (path == null) ? null : path.getNextHopVertex();
     }
 
     public Vertex getCheapestHopToVertex(Vertex position, Vertex destination) {
-        return position.getPath(destination).getNextBestCostVertex();
+        Path path = position.getPath(destination);
+        return (path == null) ? null : path.getNextBestCostVertex();
     }
 
     public Integer getHopsToVertex(Vertex position, Vertex destination) {
@@ -552,8 +554,12 @@ public class MapAgent {
     }
 
     public void destroyZone(Vertex center, int size) {
-        Zone zone = center.getZone(size);
-        currentZoneVertices.removeAll(zone.getZonePointVertices());
+        if (size == 1) {
+            currentZoneVertices.remove(center);
+        } else {
+            Zone zone = center.getZone(size);
+            currentZoneVertices.removeAll(zone.getZonePointVertices());
+        }
     }
 
     public Agent getAgent(String name) {
@@ -567,6 +573,11 @@ public class MapAgent {
             }
         }
         logger.info("Could not find agent with name: " + name);
+        return null;
+    }
+
+    public Vertex getNextBestValueVertex(Vertex position, int range) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

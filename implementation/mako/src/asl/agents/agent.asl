@@ -3,6 +3,7 @@
 { include("../actions/goto.asl") }
 { include("../actions/doSurveying.asl") }
 { include("../actions/avoidEnemy.asl") }
+{ include("../actions/getRepaired.asl") }
 { include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
@@ -37,7 +38,14 @@ zoneMode(false).
 	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
 	recharge.
 
-// Test plan for buying: What happens if saboteurs extend their visiblity range?
+// If agent is disabled - get repaired.
+ +!doAction:
+ 	 health(Health)
+ 	 & Health == 0
+    <-
+    !getRepaired.
+
+Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
 	role(saboteur)
 	& money(Money)
