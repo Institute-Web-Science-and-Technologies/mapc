@@ -5,7 +5,8 @@ isLocked(false).
 isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
-plannedZoneTimeInSteps(15).
+plannedZoneTimeInSteps(3).
+defaultRangeForSingleZones(3).
 
 // @all: If you are looking for something to do, search this file as well as
 //       zoning.* for the keyword "TODO".
@@ -20,10 +21,13 @@ plannedZoneTimeInSteps(15).
 // Zoning mode has begun and it will trigger the achievement goal
 // preparedNewZoningRound if an agent is interested in zoning. This belief is
 // set by the corresponding agents themselves.
+// Initialise the range we use to look for single zones.
 +zoneMode(true):
     isAvailableForZoning
     & .my_name(MyName)
-    <- !preparedNewZoningRound.
+    & defaultRangeForSingleZones(Range)
+    <- -+currentRange(Range);
+       !preparedNewZoningRound.
     
 // After some agents formed a zone a new round of zoning for all the other
 // agents will start. Before that, all previous beliefs regarding zoning will be
@@ -46,7 +50,6 @@ plannedZoneTimeInSteps(15).
 +!clearedZoningPercepts
     <- -bestZone(_, _, _)[source(_)];
        -negativeZoneReply[source(_)];
-       -zoneGoalVertex(_)[source(_)];
        -zoneNode(_)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
        -bestZoneRequest[source(_)];
@@ -213,14 +216,23 @@ plannedZoneTimeInSteps(15).
 
 // This agent becomes a coach because the bestZone is his. He will inform his
 // minions about it and move to the CentreNode.
+//
+// We also set a lock to make sure that assignededAgentsTheirPosition can be
+// called without the periodic zone breakup interfering with it.
+// Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
+// zone.
 @becomeACoach[priority(2)]
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
     <- -+isCoach(true);
+       -+isLocked(true);
+       -zoneGoalVertex(_)[source(self)];
        .print("[zoning] I'm now a coach.");
        !assignededAgentsTheirPosition.
 
 // We aren't this round's coach. But we are a minion.
+// Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
+// zone.
 @becomeAMinion[priority(2)]
 +!choseZoningRole:
     .my_name(MyName)
@@ -228,6 +240,7 @@ plannedZoneTimeInSteps(15).
     & .print("[zoning] I am ", MyName, " and the zoners are ", ClosestAgents)
     & .member(MyName, ClosestAgents)
     <- -+isMinion(true);
+       -zoneGoalVertex(_)[source(self)];
        .print("[zoning] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
@@ -236,9 +249,16 @@ plannedZoneTimeInSteps(15).
 @noBestZoneExisting[priority(2)]
 +!choseZoningRole:
     not bestZone(_, _, _)
-    <- .print("[zoning] No zone was found this round.");
-       // TODO: find the closest best vertex and move to it
-       !preparedNewZoningRound.
+    & currentRange(Range)
+    & position(Position)
+    <- // TODO: remove comments once getNextBestValueVertex is implemented
+       //ia.getNextBestValueVertex(Position, Range, GoalVertex);
+       //+zoneGoalVertex(GoalVertex);
+       IncreasedRange = Range + 1;
+       -+currentRange(IncreasedRange);
+       
+      .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range);
+      !preparedNewZoningRound.
 
 // A zone was properly built but this agent wasn't part of it. He'll try his
 // luck with a new round of zoning when the coach allows him to. This is to
