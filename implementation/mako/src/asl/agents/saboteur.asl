@@ -101,7 +101,7 @@ strategy(attack_chase).
 	& Distance >= (MyRange / 2)
 	<-
 	.print("I want to attack ", Enemy, ", but it is ", Distance, " steps away, and my visibility range is only ", MyRange);
-	!goto(Vertex).
+	!goto(EnemyPosition).
 	
 // It is possible that we don't know a path from our position to the
 // enemy agent. In this case, ia.getdistance returns the distance 0.
