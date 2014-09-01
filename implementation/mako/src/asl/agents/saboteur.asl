@@ -100,7 +100,7 @@ strategy(attack_chase).
 	& visRange(MyRange)
 	& Distance > MyRange
 	<-
-	.print("I want to attack ", Vehicle, ", but it is ", Distance, " steps away, and my visibility range is only ", MyRange);
+	.print("I want to attack ", Enemy, ", but it is ", Distance, " steps away, and my visibility range is only ", MyRange);
 	!goto(Vertex).
 	
 // It is possible that we don't know a path from our position to the

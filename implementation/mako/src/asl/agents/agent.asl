@@ -1,4 +1,3 @@
-// Agent baseAgent in project mako
 { include("../misc/storeBeliefs.asl") }
 { include("../actions/explore.asl") }
 { include("../actions/goto.asl") }
@@ -13,10 +12,6 @@
 
 zoneMode(false).
 
-/* Map Related Stuff */
-
-
-/*Actions*/
 // Try to do an action in every step.
 +requestAction:
     position(Position)
@@ -25,12 +20,11 @@ zoneMode(false).
 	& step(Step)
 	& energy(Energy)
     <-
-//	.print("Received percept requestAction.");
 //	We have to abolish here because we need to make sure that requestAction
 //	gets processed in every step.
     .abolish(requestAction);
 //  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
-//	agents that aren't explorers) and must be abolished every step as well.
+//	enemy agents that aren't saboteurs) and must be abolished every step as well.
     .abolish(ignoreEnemy);
 	.print("[Step ", Step, "] My position is ", Position, ". My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
@@ -43,20 +37,30 @@ zoneMode(false).
 	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
 	recharge.
 
+// Testing action: What happens if saboteurs extend their visiblity range?
++!doAction:
+	role(saboteur)
+	& money(Money)
+	& Money > 12
+	& visRange(VisRange)
+	& VisRange < 10
+	<-
+	.print("Current money is ", Money, ". Current visRange is ", VisRange, ". Will buy sensor upgrade.");
+	buy(sensor).
+	
 // If an agent sees an enemy on its position, it has to deal with the enemy.
 
 // If an inspector sees an enemy that currently doesn't count as inspected, inspect it.
 // We keep track of the inspected state for enemy agents in the MapAgent.
-// TODO: Remove CurrentStep argument from isNotInspected (and get the current step from the MapAgent instead)
 +!doAction:
-	visibleEntity(Vehicle, Vertex, Team, State)
+	role(inspector)
+	& visibleEntity(Vehicle, Vertex, Team, _)
 	& myTeam(MyTeam)
 	& MyTeam \== Team
-	& role(inspector)
 	& ia.isNotInspected(Vehicle)
 	<-
 	.print("Inspecting ", Vehicle, " at ", Vertex);
-	!doInspecting(Vehicle).
+	!doInspecting(Vehicle, Vertex).
 
 // Saboteur In defending zone mode 
 +!doAction:
@@ -65,8 +69,8 @@ zoneMode(false).
  	<- .print("I'm in zone defending mode.");
  	   !defendZone.
 
-// Plan to deal with the enemy if the enemy is not only in range, but currently on our position.
-// Ideally, this should never happen.
+// Print a warning if an active enemy is on our position.
+// TODO: Call a saboteur to deal with the enemy.
 +!doAction:
  	position(Position)
 	& visibleEntity(Vehicle, Position, Team, normal)
@@ -77,42 +81,34 @@ zoneMode(false).
 	.print("Non-disabled enemy ", Vehicle, " at my position!");
  	!dealWithEnemy(Vehicle).
 
-// Saboteurs attack active enemy agents when they see them.
-// We need two plans here because saboteurs should prefer attacking enemy
-// agents that are on their own node.
-+!doAction:
- 	position(Position)
-	& role(saboteur)
-	& visibleEntity(Vehicle, Position, Team, normal)
-	& myTeam(MyTeam)
-	& MyTeam \== Team
- 	<- .print("Attacking ", Vehicle, " on my position ", Position);
- 	   !doAttack(Vehicle, Position).
- 	   
-+!doAction:
- 	position(Position)
-	& role(saboteur)
-	& visibleEntity(Vehicle, Vertex, Team, normal)
-	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
-	& myTeam(MyTeam)
-	& MyTeam \== Team
- 	<- .print("Attacking ", Vehicle, " on ", Vertex, " from my position ", Position);
- 	   !doAttack(Vehicle, Vertex).
- 	
 // In the case where we have sent a saboteur (or any other agent) to an enemy 'ghost' location (a location
 // where an enemy agent used to be, but no longer occupies), we need to tell the
 // MapAgent to update its list of enemy positions.
 +!doAction:
 	position(MyPosition)
-//	& role(saboteur)
 	& ia.getClosestEnemy(MyPosition, EnemyPosition, Enemy)
+	& not visibleEntity(Enemy, EnemyPosition, _, _)
 	& ia.getDistance(MyPosition, EnemyPosition, Distance)
-	& Distance == 1 //better: < visibilityRange
-	& not visibleEntity(Enemy, EnemyPosition, _, normal)
+	& visRange(MyRange)
+	& Distance <= MyRange
 	<-
-	.print("Expected ", Enemy, " at at ", EnemyPosition, ", but I don't see him from ", MyPosition, " (or he's been disabled). Informing MapAgent.");
+	.print("Expected ", Enemy, " at ", EnemyPosition, ", but I don't see him from ", MyPosition, ". Informing MapAgent.");
 	ia.removeEnemyGhost(Enemy);
 	!doAction.
+	
+// Saboteurs attack active enemy agents when they see them.
++!doAction:
+	role(saboteur)
+ 	& position(MyPosition)
+	& ia.getClosestEnemy(MyPosition, EnemyPosition, Enemy)
+	& ia.getDistance(MyPosition, EnemyPosition, Distance)
+	& visRange(MyRange)
+	& Distance <= MyRange
+	& myTeam(MyTeam)
+	& MyTeam \== Team
+ 	<- .print("Attacking ", Enemy, " on ", EnemyPosition, " from my position ", MyPosition);
+ 	   !doAttack(Enemy, EnemyPosition).
+ 	   
 	
 // Saboteurs should perform aggressively, preferring to attack enemy agents over exploring.
 // In the case where they can't see an enemy agent themselves, they get help
