@@ -237,7 +237,6 @@ defaultRangeForSingleZones(3).
 +!choseZoningRole:
     .my_name(MyName)
     & bestZone(_, _, ClosestAgents)
-    & .print("[zoning] I am ", MyName, " and the zoners are ", ClosestAgents)
     & .member(MyName, ClosestAgents)
     <- -+isMinion(true);
        -zoneGoalVertex(_)[source(self)];

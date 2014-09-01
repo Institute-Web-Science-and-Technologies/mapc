@@ -25,12 +25,18 @@
 
 // The achievement goal failed for some reason. Tell all agents to restart
 // zoning.
-+!assignededAgentsTheirPosition
++!assignededAgentsTheirPosition:
+    .my_name(Coach)
     <- ?broadcastAgentList(BroadcastList);
        .send(BroadcastList, achieve, preparedNewZoningRound);
+       
+       ?bestZone(_, _, ClosestAgents);
+       .difference(ClosestAgents, [Coach], Minions);
+       .send(Minions, achieve, cancelledZoneBuilding);
+       
+       -+isLocked(false);
        !preparedNewZoningRound;
-       .print("[zoning] Assigning agents a position failed.");
-       -+isLocked(false).
+       .print("[zoning] Assigning agents a position failed.").
 
 // If s.o. or ourselves cancelled the zone, we have to inform all our minions
 // about it and go back to start zoning from scratch.
