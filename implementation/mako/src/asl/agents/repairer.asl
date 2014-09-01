@@ -4,8 +4,9 @@
 role(repairer).
 
 // Initialize the list of agents to repair
-+repairQueue([]).
+repairQueue([]).
 
+// When a repair request is received from the agent - start negotiating about the closest less busy repairer
 +requestRepair(DisabledAgentPosition)[source(Agent)]:
     position(Position)
     & ia.getDistance(Position, DisabledAgentPosition, Distance)
@@ -22,6 +23,11 @@ role(repairer).
     .wait(400);
     !decideWhoWillRepair(Agent).
 
+// If the path to the agent is unknown - don't negotiate.
++requestRepair(DisabledAgentPosition)[source(Agent)]
+    <- .abolish(requestRepair(_)[source(Agent)]).
+    
+// The less busy or (if equal) the closest or (if equal) with less name repairer will respond to the repair request.
 +!decideWhoWillRepair(Agent):
     .my_name(MyName)
     & repairQueue(RepairQueue)
@@ -33,6 +39,7 @@ role(repairer).
     	.send(Agent, tell, closestRepairer(MyName));
     	.concat(RepairQueue, [Agent], NewRepairQueue);
     	-+repairQueue(NewRepairQueue);
+    	.print("I will repair ", Agent, " when he will be nearby.");
     };
     // Clear the bids
     .abolish(repairBid(Agent, _, _, _)).

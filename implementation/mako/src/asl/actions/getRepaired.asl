@@ -2,30 +2,14 @@
 
 // Initialize repair - send help request to repairers, recharge to be ready for the journey.
 +!getRepaired:
-    not sentHelpRequest
+    not closestRepairer(_)
     & position(Position)
     & repairerList(RepairerList)
     <-
     .abolish(closestRepairer(_));
     .print("Asking repairers about the closest less busy repairer and recharge while waiting for the answer.");
-    +sentHelpRequest;
     .send(RepairerList, tell, requestRepair(Position));
     recharge.
-
-// Still didn't received the answer from repairers. Normally shouldn't get in here.    
-+!getRepaired:
-   not closestRepairer(_)
-   <-
-   .print("Still waiting for repairer answer, will recharge.");
-   recharge.
-
-// Delete sentHelpRequest when we got an answer from repairer.
-+!getRepaired:
-    closestRepairer(Repairer)
-    & sentHelpRequest
-    <-
-    .abolish(sentHelpRequest);
-    !!getRepaired.
 
 // If not reached the target - go to the repairer position.
 +!getRepaired:
