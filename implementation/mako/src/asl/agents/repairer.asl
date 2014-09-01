@@ -6,6 +6,13 @@ role(repairer).
 // Initialize the list of agents to repair
 repairQueue([]).
 
+// If the repairer is disabled, he cannot repair others => don't process repair request.
++requestRepair(DisabledAgentPosition)[source(Agent)]:
+ 	 health(Health)
+ 	 & Health == 0
+    <-
+    .abolish(requestRepair(_)[source(Agent)]).
+
 // When a repair request is received from the agent - start negotiating about the closest less busy repairer
 +requestRepair(DisabledAgentPosition)[source(Agent)]:
     position(Position)
@@ -17,7 +24,7 @@ repairQueue([]).
     & .my_name(Name)
     <-
     .abolish(requestRepair(_)[source(Agent)]);
-    .print("Got repair request for agent ", Agent, " on position ", Position);
+    //.print("Got repair request for agent ", Agent, " on position ", Position);
     +repairBid(Agent, Name, Distance, RepairQuequeLength);
     .send(RepairerList, tell, repairBid(Agent, Name, Distance, RepairQuequeLength));
     .wait(400);
@@ -60,3 +67,12 @@ repairQueue([]).
 	<-
     .print("Repairing ", Vehicle);
     repair(Vehicle).
+
+// When the agent is repaired - update repairQueue belief.  
++successfullyRepaired[source(Agent)]:
+    repairQueue(RepairQueue)
+    <-
+    .abolish(successfullyRepaired);
+    .delete(Agent, RepairQueue, NewRepairQueue);
+    -+repairQueue(NewRepairQueue).
+    

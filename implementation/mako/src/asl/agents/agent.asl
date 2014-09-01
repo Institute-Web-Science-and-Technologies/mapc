@@ -30,25 +30,20 @@ zoneMode(false).
 	.print("[Step ", Step, "] My position is ", Position, ". My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
-
 // If agent is disabled - get repaired.
  +!doAction:
  	 health(Health)
  	 & Health == 0
     <-
     !getRepaired.
-
-// Check if the visible agent is on our RepairQueue and is not disabled - remove it from the queue
-+!doAction:
-	role(repairer)
-	& position(Position)
-	& myTeam(MyTeam)
-	& visibleEntity(Vehicle, VehiclePosition, MyTeam, normal)
-    & repairQueue(RepairQueue)
-    & .member(Vehicle, RepairQueue)	
+    
+// If I have closestRepairer belief - I've just been repaired. Need to update the repairer on that.
+ +!doAction:
+    closestRepairer(Repairer)
     <-
-    .delete([Vehicle], RepairQueue, NewRepairQueue);
-    -+repairQueue(NewRepairQueue).
+    .abolish(closestRepairer(_));
+    .send(Repairer, tell, successfullyRepaired);
+    !!doAction.
 
 // If the disabled agent from the RepairQueue is within the 1 hop distance from repairer - do repairing.
 +!doAction:
@@ -57,10 +52,8 @@ zoneMode(false).
 	& myTeam(MyTeam)
 	& visibleEntity(Vehicle, VehiclePosition, MyTeam, disabled)
 	& (visibleEdge(Position, VehiclePosition) | visibleEdge(VehiclePosition, Position) | VehiclePosition == Position)
-    & repairQueue(RepairQueue)
-    & .member(Vehicle, RepairQueue)	
 	<-
-	.print("I see the disabled agent ", Vehicle, " which is on my RepairQueue - will try to repair it.");
+	.print("I see the disabled agent ", Vehicle, " - will try to repair it.");
 	!doRepair(Vehicle, Position).
     
 //Fallback action in the case where we didn't pay attention and tried to perform
@@ -138,7 +131,6 @@ zoneMode(false).
  	<- .print("Attacking ", Enemy, " on ", EnemyPosition, " from my position ", MyPosition);
  	   !doAttack(Enemy, EnemyPosition).
  	   
-	
 // Saboteurs should perform aggressively, preferring to attack enemy agents over exploring.
 // In the case where they can't see an enemy agent themselves, they get help
 // from the MapAgent.

@@ -31,4 +31,5 @@
     .print("Reached the repairer, waiting to get repaired, will recharge.");
     recharge.   
     
++closestRepairer(Repairer) <- .print(Repairer, " will repair me. Going towards his location.").
     
