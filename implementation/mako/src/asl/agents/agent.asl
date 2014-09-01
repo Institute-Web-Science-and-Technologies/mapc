@@ -79,17 +79,6 @@ zoneMode(false).
  	<- .print("I'm in zone defending mode.");
  	   !defendZone.
 
-// Print a warning if an active enemy is on our position.
-// TODO: Call a saboteur to deal with the enemy.
-+!doAction:
- 	position(Position)
-	& visibleEntity(Vehicle, Position, Team, normal)
-	& myTeam(MyTeam)
-	& MyTeam \== Team
-	& not ignoreEnemy(Vehicle)
- 	<-
-	.print("Non-disabled enemy ", Vehicle, " at my position!");
- 	!dealWithEnemy(Vehicle).
 
 // In the case where we have sent a saboteur (or any other agent) to an enemy 'ghost' location (a location
 // where an enemy agent used to be, but no longer occupies), we need to tell the
@@ -132,6 +121,30 @@ zoneMode(false).
 	.print("Moving to attack ", Enemy, " on ", EnemyPosition, " from my position ", MyPosition);
 	!doAttack(Enemy, EnemyPosition).
 
+// If you're in range of what could be an active enemy saboteur, get out of there.
++!doAction:
+	position(MyPosition)
+	& visibleEntity(Vehicle, VehiclePosition, VehicleTeam, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== VehicleTeam
+	& not ignoreEnemy(Vehicle)
+	& ia.couldBeSaboteur(Vehicle)
+	<-
+	.print("Danger! Active enemy saboteur", Vehicle, "on ", VehiclePosition, " is in attacking range!");
+	!avoidEnemy.
+	
+// Print a warning if an active enemy is on our position.
+// TODO: Call a saboteur to deal with the enemy.
++!doAction:
+ 	position(Position)
+	& visibleEntity(Vehicle, Position, Team, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== Team
+	& not ignoreEnemy(Vehicle)
+ 	<-
+	.print("Non-disabled non-sabteur enemy ", Vehicle, " at my position!");
+ 	!dealWithEnemy(Vehicle).
+ 	
  // When saboteur, sentinel,and repairer are attacked,
  //and they are not disabled, they do parrying
  +!doAction:
