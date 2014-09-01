@@ -552,8 +552,12 @@ public class MapAgent {
     }
 
     public void destroyZone(Vertex center, int size) {
-        Zone zone = center.getZone(size);
-        currentZoneVertices.removeAll(zone.getZonePointVertices());
+        if (size == 1) {
+            currentZoneVertices.remove(center);
+        } else {
+            Zone zone = center.getZone(size);
+            currentZoneVertices.removeAll(zone.getZonePointVertices());
+        }
     }
 
     public Agent getAgent(String name) {
@@ -567,6 +571,11 @@ public class MapAgent {
             }
         }
         logger.info("Could not find agent with name: " + name);
+        return null;
+    }
+
+    public Vertex getNextBestValueVertex(Vertex position, int range) {
+        // TODO Auto-generated method stub
         return null;
     }
 }
