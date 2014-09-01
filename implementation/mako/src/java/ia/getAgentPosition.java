@@ -22,7 +22,7 @@ public class getAgentPosition extends DefaultInternalAction {
         Vertex position = agent.getPosition();
 
         if (position != null) {
-            return un.unifies(args[2], JasonHelper.getTerm(position));
+            return un.unifies(args[1], JasonHelper.getTerm(position));
         } else {
             return false;
         }
