@@ -81,23 +81,26 @@ strategy(attack_chase).
     <- .print("I failed to attack ", Vehicle, ". But I will follow it.");
        !goto(Vertex).
 
-// If energy is not enough - recharge
-+!doAttack(Vehicle, Vertex):
-    energy(Energy) & Energy < 2
-    <- .print("I have ", Energy, " energy, but I need 2 energy to attack. Going to recharge first.");
+// Recharge if we want to attack but don't have the required energy.
+// Energy costs increase with distance for ranged actions, so we have to take that
+// into account.
++!doAttack(Enemy, EnemyPosition):
+    energy(MyEnergy)
+    & position(MyPosition)
+    & ia.getDistance(MyPosition, EnemyPosition, Distance)
+	& Distance > MyEnergy
+    <- .print("I have ", MyEnergy, " energy, but I need ", 2 + Distance, " energy to attack ", Enemy, ". I will recharge.");
        recharge.
 
 // If an enemy agent is outside of our attacking range, perform a goto instead
 // of an attack.
-// TODO: In the case where we spend points to buy upgrades for saboteurs,
-// their visibility range and thus their attacking range will increase, which
-// we will then have to take into account.
-+!doAttack(Vehicle, Vertex):
-	position(Position)
-	& ia.getDistance(Position, Vertex, Distance)
-	& Distance > 1
++!doAttack(Enemy, EnemyPosition):
+	position(MyPosition)
+	& ia.getDistance(MyPosition, EnemyPosition, Distance)
+	& visRange(MyRange)
+	& Distance > MyRange
 	<-
-	.print("I want to attack ", Vehicle, ", but it is ", Distance, " steps away.");
+	.print("I want to attack ", Vehicle, ", but it is ", Distance, " steps away, and my visibility range is only ", MyRange);
 	!goto(Vertex).
 	
 // It is possible that we don't know a path from our position to the
