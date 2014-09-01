@@ -15,6 +15,7 @@ role(repairer).
     & .length(RepairQueue, RepairQuequeLength)
     & .my_name(Name)
     <-
+    .abolish(requestRepair(_)[source(Agent)]);
     .print("Got repair request for agent ", Agent, " on position ", Position);
     +repairBid(Agent, Name, Distance, RepairQuequeLength);
     .send(RepairerList, tell, repairBid(Agent, Name, Distance, RepairQuequeLength));
