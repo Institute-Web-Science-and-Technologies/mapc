@@ -87,6 +87,15 @@
 //+simStart[source(percept)] <-
 //  .print("Received percept simStart.").
 
+// Wake up all coaches and tell them to destroy their current zone properly by
+// also informing JavaMap and their minions.
+// +step(Numeral)[source(percept)]:
+//     isCoach(true)
+//     & plannedZoneTimeInSteps(Steps)
+//     & Numeral mod Steps == 0
+//     <- !cancelledZoneBuilding;
+//        -+step(Numeral).
+
 +step(Numeral)[source(percept)] <-
 //  .print("Received percept step(", Numeral, ").");
   -+step(Numeral).

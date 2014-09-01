@@ -12,7 +12,6 @@
     <- ia.placeAgentsOnZone(CentreNode, ClosestAgents, AgentPositionMapping);
     
        .difference(BroadcastList, ClosestAgents, NonZoners);
-       .print("[zoning] I'm allowing the following agents to start looking for zones: ", NonZoners);
        .send(NonZoners, achieve, preparedNewZoningRound);
        
        .length(AgentPositionMapping, MappingLength);
@@ -35,13 +34,23 @@
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & .my_name(Coach)
-    & bestZone(CentreVertex, _, ClosestAgents)
+    & bestZone(_, CentreNode, ClosestAgents)
     & .length(ClosestAgents, ZoneSize)
-    <- ia.destroyZone(CentreVertex, ZoneSize);
-       .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
+    <- ia.destroyZone(CentreNode, ZoneSize);
+       .difference(ClosestAgents, [Coach, Sender], UnawareMinions);print(">>>>6!");
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
+       .print("[zoning] I am destroying this zone and informing ", UnawareMinions);
        -+isCoach(false);
        !preparedNewZoningRound.
+
++!cancelledZoneBuilding[source(_)]:
+    isCoach(true)
+    & bestZone(_, CentreNode, ClosestAgents)
+    <- .print("[zoning] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
+    
++!cancelledZoneBuilding[source(_)]:
+    isCoach(true)
+    <- .print("[zoning] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
 
 // If the enemy is inside the zone - call saboteur to help if the request was not send earlier.
 +!checkZoneUnderAttack(CentreNode):

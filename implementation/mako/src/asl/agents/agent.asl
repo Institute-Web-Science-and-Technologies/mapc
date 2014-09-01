@@ -4,12 +4,12 @@
 { include("../actions/doSurveying.asl") }
 { include("../actions/avoidEnemy.asl") }
 { include("../actions/getRepaired.asl") }
-{ include("../misc/initialization.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
 // { include("../actions/zoning.asl") }
 // { include("../actions/zoning.minion.asl") }
 // { include("../actions/zoning.coach.asl") }
+{ include("../misc/initialization.asl") }
 
 zoneMode(false).
 
@@ -254,7 +254,14 @@ zoneMode(false).
 	<-
 	.print("I'm recharging because I don't know what else to do.");
 	recharge.
-  	
+	
+// If we can't reach the goal vertex, we are not going to build this zone.
+-!goto(_):
+    zoneGoalVertex(GoalVertex)
+    <- .print("[zoning] This should not be triggered because only agents get selected that could reach their zone node.");
+       -zoneGoalVertex(GoalVertex)[source(_)];
+       !cancelledZoneBuilding.
+
 // Condition to start zoning phase
 // TODO: Make entering zone mode more dynamic
 +achievement(surveyed640)[source(self)]:

@@ -38,10 +38,9 @@ plannedZoneTimeInSteps(15).
 	   !clearedZoningPercepts;
 	   !builtZone.
 
-// If an agent is not interested in zoning, he will still clear his percepts as
-// a precaution.
-+!preparedNewZoningRound
-    <- !clearedZoningPercepts.
+// Agents that are still happily zoning or doing something else, don't have to
+// do anything.
++!preparedNewZoningRound.
 
 // Clear all percepts which are generated during zone building and formation.
 +!clearedZoningPercepts
@@ -80,8 +79,7 @@ plannedZoneTimeInSteps(15).
     <- .send(BroadcastList, tell, bestZoneRequest).
     
 //if we receive a builtZone achievement goal, but were are not available for zoning, do nothing
-+!builtZone
-    <- true.
++!builtZone.
 
 // Inform the sender about our zone – if we still know our zone.
 +bestZoneRequest[source(Sender)]:
@@ -124,7 +122,8 @@ plannedZoneTimeInSteps(15).
 //
 // It could even be that we aren't available for zoning. But we will then still
 // have to reply (which is done on foreignBestZone percept addition).
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]
++asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
+    isAvailableForZoning
     <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
 
 // If we didn't find a bestZone in our 1HNH ourselves, we will thankfully take
@@ -247,3 +246,7 @@ plannedZoneTimeInSteps(15).
 // the available zoners.
 @waitingForNextZoneRound[priority(2)]
 +!choseZoningRole.
+
+// This means nothing to a non zoner.
++!cancelledZoneBuilding:
+    isAvailableForZoning.

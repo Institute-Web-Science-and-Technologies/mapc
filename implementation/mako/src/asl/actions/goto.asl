@@ -26,3 +26,6 @@
     <-
     .print("I will use ", Costs, " energy to move to ", Destination, " by way of ", NextHop);
     goto(NextHop).
+
++!goto(Destination)
+    <- .fail_goal(goto(Destination)).
