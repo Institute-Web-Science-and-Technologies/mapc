@@ -97,7 +97,7 @@ zoneMode(false).
 	& position(MyPosition)
 	& ia.getDistance(MyPosition, VehiclePosition, Distance)
 	& visRange(MyRange)
-	& Distance <= MyRange
+	& Distance <= (MyRange / 2)
 	<-
 	.print("Inspecting ", Vehicle, " at ", VehiclePosition);
 	!doInspecting(Vehicle, VehiclePosition).

@@ -5,7 +5,7 @@ package eis;
  * @author Michael Sewell
  */
 public class Agent {
-
+    // private AgentLogger logger = new AgentLogger("MapAgent");
     private String serverName; // e.g. "a16"
     private String team; // teamA or teamB
     private String enemyTeam; // TODO: remove this
@@ -124,11 +124,11 @@ public class Agent {
      * @param currentStep
      *            the current step
      * @return true if the agent has been inspected since a specific number of
-     *         steps (currently 2)
+     *         steps (currently 5)
      */
     public boolean isInspected() {
         int currentStep = MapAgent.getInstance().getStep();
-        return ((inspectionStep != 0) && (currentStep - inspectionStep) > 2);
+        return ((inspectionStep != 0) && (currentStep - inspectionStep) < 5);
     }
 
     public void setInspectionStep(int inspectionStep) {
