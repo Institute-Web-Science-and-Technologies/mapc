@@ -30,13 +30,6 @@ zoneMode(false).
 	.print("[Step ", Step, "] My position is ", Position, ". My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
-//Fallback action in the case where we didn't pay attention and tried to perform
-//an action without having the energy for it.
-+!doAction:
-	lastActionResult(failed_resources)
-	<-
-	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
-	recharge.
 
 // If agent is disabled - get repaired.
  +!doAction:
@@ -44,6 +37,14 @@ zoneMode(false).
  	 & Health == 0
     <-
     !getRepaired.
+    
+//Fallback action in the case where we didn't pay attention and tried to perform
+//an action without having the energy for it.
++!doAction:
+	lastActionResult(failed_resources)
+	<-
+	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
+	recharge.
 
 //Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
