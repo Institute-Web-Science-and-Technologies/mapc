@@ -28,7 +28,7 @@ role(repairer).
     .findall([RepairQuequeLength, Distance, Name], repairBid(Agent, Name, Distance, RepairQuequeLength), Bids);
     .min(Bids, WinBid);
     // If won in bidding and don't have this agent in the RepairQueue yet
-    if(.nth(2, WinBid, MyName) & not .sublist([Agent], RepairQueue)){
+    if(.nth(2, WinBid, MyName) & not .member(Agent, RepairQueue)){
     	.send(Agent, tell, closestRepairer(MyName));
     	.concat(RepairQueue, [Agent], NewRepairQueue);
     	-+repairQueue(NewRepairQueue);
