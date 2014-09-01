@@ -45,7 +45,7 @@ zoneMode(false).
     <-
     !getRepaired.
 
-Test plan for buying: What happens if saboteurs extend their visiblity range?
+//Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
 	role(saboteur)
 	& money(Money)
