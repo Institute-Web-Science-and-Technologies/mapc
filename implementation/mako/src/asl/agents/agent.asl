@@ -188,16 +188,19 @@ zoneMode(false).
  	   !doParry.
 
 //If a sentinel stands on a zoneNode,
-//and see normal enemy on its position or on its neighbourhood,do parry
+//and see normal enemy saboteur on its position or on its neighbourhood,do parry
 +!doAction:
- 	position(Position)
- 	& role(sentinel)
+ 	 role(sentinel)
+ 	& zoneMode(true)
  	& zoneNode(Position)
-	& (visibleEdge(Position, Vertex) | visibleEdge(Vertex, Position))
-	& (visibleEntity(Vehicle, Position, Team, normal) | visibleEntity(Vehicle, Vertex, Team, normal))
+ 	& position(MyPosition)
+ 	& Position == MyPosition
 	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, EnemyPosition, Team, normal)
 	& MyTeam \== Team
- 	<- .print("I am standing on a zoneNode, and I see enemy nearby. so I parry ");
+	& (visibleEdge(MyPosition, EnemyPosition) | visibleEdge(EnemyPosition, MyPosition) | EnemyPosition == MyPosition)
+	& ia.isSaboteur(Vehicle)
+ 	<- .print(" I see the enemy Saboteur:", Vehicle, "at position:", EnemyPosition, "so I parry ");
  	   !doParry.
 
 // If an explorer is on an unprobed vertex, probe it.
