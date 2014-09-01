@@ -9,6 +9,8 @@ public class PathMap {
     // private AgentLogger logger;
     private Vertex position;
     private Hashtable<Vertex, Path> knownPaths = new Hashtable<Vertex, Path>();
+    // saves the edge costs to the direct neighbours
+    private Hashtable<Vertex, Integer> edgeCosts = new Hashtable<Vertex, Integer>();
     private Hashtable<Vertex, Integer> hopMapping = new Hashtable<Vertex, Integer>();
     private Hashtable<Integer, HashSet<Vertex>> hopPaths = new Hashtable<Integer, HashSet<Vertex>>();
 
@@ -126,6 +128,18 @@ public class PathMap {
 
     public ArrayList<Path> getAllPaths() {
         return new ArrayList<Path>(knownPaths.values());
+    }
+
+    public void addEdgeCost(Vertex neighbour, int edgeWeight) {
+        edgeCosts.put(neighbour, edgeWeight);
+    }
+
+    public int getEdgeCosts(Vertex nextHop) {
+        if (edgeCosts.containsKey(nextHop)) {
+            return edgeCosts.get(nextHop);
+        } else {
+            return -1;
+        }
     }
 
 }

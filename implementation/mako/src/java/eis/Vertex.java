@@ -215,6 +215,7 @@ public class Vertex {
         newPath.setPathHops(1, neighbour);
         newPath.setPathCosts(edgeWeight, neighbour);
         boolean changed = knownPaths.handlePath(newPath);
+        knownPaths.addEdgeCost(neighbour, edgeWeight);
         if (changed) {
             // logger.info("New or better path (setNeighbour): " + this +
             // newPath);
@@ -357,6 +358,10 @@ public class Vertex {
         } else if (!identifier.equals(other.identifier))
             return false;
         return true;
+    }
+
+    public int getEdgeCost(Vertex nextHop) {
+        return knownPaths.getEdgeCosts(nextHop);
     }
 
 }
