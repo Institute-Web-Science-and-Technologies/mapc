@@ -65,13 +65,17 @@ zoneMode(false).
 // We keep track of the inspected state for enemy agents in the MapAgent.
 +!doAction:
 	role(inspector)
-	& visibleEntity(Vehicle, Vertex, Team, _)
+	& visibleEntity(Vehicle, VehiclePosition, Team, _)
 	& myTeam(MyTeam)
 	& MyTeam \== Team
 	& ia.isNotInspected(Vehicle)
+	& position(MyPosition)
+	& ia.getDistance(MyPosition, VehiclePosition, Distance)
+	& visRange(MyRange)
+	& Distance <= MyRange
 	<-
-	.print("Inspecting ", Vehicle, " at ", Vertex);
-	!doInspecting(Vehicle, Vertex).
+	.print("Inspecting ", Vehicle, " at ", VehiclePosition);
+	!doInspecting(Vehicle, VehiclePosition).
 
 // Saboteur In defending zone mode 
 +!doAction:
@@ -129,7 +133,9 @@ zoneMode(false).
 	& myTeam(MyTeam)
 	& MyTeam \== VehicleTeam
 	& not ignoreEnemy(Vehicle)
-	& ia.couldBeSaboteur(Vehicle)
+	& ia.couldBeSaboteur(Vehicle, VehicleVisRange)
+	& ia.getDistance(MyPosition, VehiclePosition, Distance)
+	& Distance <= VehicleVisRange
 	<-
 	.print("Danger! Active enemy saboteur", Vehicle, "on ", VehiclePosition, " is in attacking range!");
 	!avoidEnemy.

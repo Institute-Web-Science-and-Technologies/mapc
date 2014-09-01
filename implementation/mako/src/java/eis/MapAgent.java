@@ -124,34 +124,29 @@ public class MapAgent {
     }
 
     private void handleInspectedEntity(Percept percept) {
-        // e.g. 8
-        int energy = Integer.parseInt(percept.getParameters().get(0).toString());
-        // e.g. 9
-        int health = Integer.parseInt(percept.getParameters().get(1).toString());
-        // e.g. 8
-        int maxEnergy = Integer.parseInt(percept.getParameters().get(2).toString());
-        // e.g. 9
-        int maxHealth = Integer.parseInt(percept.getParameters().get(3).toString());
-        // e.g. b5
-        String name = percept.getParameters().get(4).toString();
-        // e.g. explorer
-        String role = percept.getParameters().get(6).toString();
-        // e.g. 6
-        int strength = Integer.parseInt(percept.getParameters().get(7).toString());
-        // e.g. teamB
-        String team = percept.getParameters().get(8).toString();
-        // e.g. 2
+        // inspectedEntity(Name, Team, Role, Vertex, Energy, MaxEnergy, Health,
+        // MaxHealth, Strength, VisRange)
+        String name = percept.getParameters().get(0).toString();
+        String team = percept.getParameters().get(1).toString();
+        String role = percept.getParameters().get(2).toString();
+        Vertex position = getVertex(percept.getParameters().get(3).toString());
+        int energy = Integer.parseInt(percept.getParameters().get(4).toString());
+        int maxEnergy = Integer.parseInt(percept.getParameters().get(5).toString());
+        int health = Integer.parseInt(percept.getParameters().get(6).toString());
+        int maxHealth = Integer.parseInt(percept.getParameters().get(7).toString());
+        int strength = Integer.parseInt(percept.getParameters().get(8).toString());
         int visRange = Integer.parseInt(percept.getParameters().get(9).toString());
 
         Agent enemy = getAgent(name);
-        enemy.setEnergy(energy);
-        enemy.setHealth(health);
-        enemy.setMaxEnergy(maxEnergy);
-        enemy.setMaxHealth(maxHealth);
         enemy.setServerName(name);
-        enemy.setRole(role);
-        enemy.setStrength(strength);
         enemy.setTeam(team);
+        enemy.setRole(role);
+        enemy.setPosition(position);
+        enemy.setEnergy(energy);
+        enemy.setMaxEnergy(maxEnergy);
+        enemy.setHealth(health);
+        enemy.setMaxHealth(maxHealth);
+        enemy.setStrength(strength);
         enemy.setVisRange(visRange);
         enemy.setInspectionStep(getStep());
     }

@@ -22,6 +22,8 @@
 
 //+id(Numeral)[source(percept)] <-
   //.print("Received percept id(", Numeral, ").").
+  
+//+inspectedEntity(Name, Team, Role, Vertex, Energy, MaxEnergy, Health, MaxHealth, Strength, VisRange)
 
 +lastAction(Identifier)[source(percept)] <-
   //.print("Received percept lastAction(", Identifier, ").");

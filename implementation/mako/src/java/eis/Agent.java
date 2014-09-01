@@ -29,7 +29,7 @@ public class Agent {
     private Zone zone;
 
     // the step # this agent was last inspected on
-    private int inspectionStep = -100;
+    private int inspectionStep = 0;
     private boolean disabled = false;
 
     public String getServerName() {
@@ -128,7 +128,7 @@ public class Agent {
      */
     public boolean isInspected() {
         int currentStep = MapAgent.getInstance().getStep();
-        return ((currentStep - this.inspectionStep) > 2);
+        return ((inspectionStep != 0) && (currentStep - inspectionStep) > 2);
     }
 
     public void setInspectionStep(int inspectionStep) {
