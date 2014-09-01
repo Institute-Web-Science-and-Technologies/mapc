@@ -23,6 +23,10 @@ public class getBestHopToVertex extends DefaultInternalAction {
 
         Vertex nextHop = MapAgent.getInstance().getBestHopToVertex(position, destination);
 
-        return unifier.unifies(nextHopTerm, JasonHelper.getTerm(nextHop.getIdentifier()));
+        if (nextHop == null) {
+            return false;
+        } else {
+            return unifier.unifies(nextHopTerm, JasonHelper.getTerm(nextHop.getIdentifier()));
+        }
     }
 }

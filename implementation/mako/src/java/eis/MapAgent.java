@@ -383,11 +383,13 @@ public class MapAgent {
     }
 
     public Vertex getBestHopToVertex(Vertex position, Vertex destination) {
-        return position.getPath(destination).getNextHopVertex();
+        Path path = position.getPath(destination);
+        return (path == null) ? null : path.getNextHopVertex();
     }
 
     public Vertex getCheapestHopToVertex(Vertex position, Vertex destination) {
-        return position.getPath(destination).getNextBestCostVertex();
+        Path path = position.getPath(destination);
+        return (path == null) ? null : path.getNextBestCostVertex();
     }
 
     public Integer getHopsToVertex(Vertex position, Vertex destination) {
