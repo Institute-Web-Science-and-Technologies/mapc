@@ -37,6 +37,31 @@ zoneMode(false).
  	 & Health == 0
     <-
     !getRepaired.
+
+// Check if the visible agent is on our RepairQueue and is not disabled - remove it from the queue
++!doAction:
+	role(repairer)
+	& position(Position)
+	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, VehiclePosition, MyTeam, normal)
+    & repairQueue(RepairQueue)
+    & .member(Vehicle, RepairQueue)	
+    <-
+    .delete([Vehicle], RepairQueue, NewRepairQueue);
+    -+repairQueue(NewRepairQueue).
+
+// If the disabled agent from the RepairQueue is within the 1 hop distance from repairer - do repairing.
++!doAction:
+	role(repairer)
+	& position(Position)
+	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, VehiclePosition, MyTeam, disabled)
+	& (visibleEdge(Position, VehiclePosition) | visibleEdge(VehiclePosition, Position) | VehiclePosition == Position)
+    & repairQueue(RepairQueue)
+    & .member(Vehicle, RepairQueue)	
+	<-
+	.print("I see the disabled agent ", Vehicle, " which is on my RepairQueue - will try to repair it.");
+	!doRepair(Vehicle, Position).
     
 //Fallback action in the case where we didn't pay attention and tried to perform
 //an action without having the energy for it.
