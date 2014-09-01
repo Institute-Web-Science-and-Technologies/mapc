@@ -479,9 +479,10 @@ public class MapAgent {
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
         for (Agent enemy : getEnemyAgents()) {
-            // Check if a path to the enemy even exists.
+            // Check if a path to the enemy even exists, and if the agent is not
+            // disabled.
             Vertex enemyPosition = enemy.getPosition();
-            if (enemyPosition == null) {
+            if (enemyPosition == null || enemy.isDisabled()) {
                 continue;
             }
             Path pathToEnemy = position.getPath(enemyPosition);
