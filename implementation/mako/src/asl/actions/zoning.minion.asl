@@ -12,6 +12,7 @@
         | bestZone(_, _, _)[source(Sender)]
     )
     <- -+isMinion(false);
+       -+isLocked(false);
     
        ?defaultRangeForSingleZones(Range);
        -+currentRange(Range);

@@ -72,7 +72,8 @@
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
     <- .print("[zoning] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
-    
+
+ // I think this happens due to destroyZone failing because it only happens after it has been called once.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- .print("[zoning] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
