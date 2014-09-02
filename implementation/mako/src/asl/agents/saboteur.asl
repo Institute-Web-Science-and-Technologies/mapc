@@ -12,16 +12,18 @@ strategy(attack_chase).
 // If there is a new zone defence request - do bidding for this zone defence
 +requestZoneDefence(ZoneCentre):
     position(Position) & saboteurList(SaboteurList) & .my_name(Name)
+    & ia.getDistance(Position, ZoneCentre, Distance)
+    & Distance >= 0
     <-
-    ia.getDistance(Position, ZoneCentre, Distance);
-    if(Distance == -1){
-    	.print("The target zone with centre in ", ZoneCentre," is unreachable - ignoring zone defence request");
-    	.fail;
-    };
     +defendZoneBid(ZoneCentre, Distance, Name);
     .send(SaboteurList, tell, defendZoneBid(ZoneCentre, Distance, Name));
     .wait(400);
     !evaluateBiddingOutcome(ZoneCentre).
+
+// If Distance to ZoneCentre is equal to -1 - return zone unreachable message, stop processing.
++requestZoneDefence(ZoneCentre)
+    <-
+  	.print("The target zone with centre in ", ZoneCentre," is unreachable - ignoring zone defence request").
  
 // Check bids, assign defence strategy if won.  
 +!evaluateBiddingOutcome(ZoneCentre):
