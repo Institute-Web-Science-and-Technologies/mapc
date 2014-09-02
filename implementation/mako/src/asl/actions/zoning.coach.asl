@@ -35,7 +35,7 @@
        .send(Minions, achieve, cancelledZoneBuilding);
        
        -+isLocked(false);
-       !preparedNewZoningRound;
+       !!preparedNewZoningRound;
        .print("[zoning] Assigning agents a position failed.").
 
 // If s.o. or ourselves cancelled the zone, we have to inform all our minions
@@ -59,6 +59,10 @@
        -+currentRange(Range);
        -zoneGoalVertex(_)[source(_)]; // self should be the only source
        
+       // Cancel ordered saboteurs if any. Can't be "!!" because it needs
+       // bestZone(_,CentreNode,_):
+       !informedSaboteursAboutZoneBreakup;
+       
        !preparedNewZoningRound.
 
 // Coaches choose to ignore the periodic zone breakup calls when they haven't
@@ -68,15 +72,19 @@
     & isLocked(true)
     <- .print("[zoning] The periodic zone breakup interfered with me just having started building a zone. Ignoring it.").
 
+// TODO: This goal should be removable once the iAs work properly.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
-    <- .print("[zoning] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
+    <- !informedSaboteursAboutZoneBreakup;
+       .print("[zoning] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
 
- // I think this happens due to destroyZone failing because it only happens after it has been called once.
+// TODO: This goal should be removable once the iAs work properly.
+// I think this happens due to destroyZone failing because it only happens after it has been called once.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
-    <- .print("[zoning] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
+    <- !informedSaboteursAboutZoneBreakup;
+       .print("[zoning] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
 
 // If the enemy is inside the zone - call saboteur to help if the request was not send earlier.
 +!checkZoneUnderAttack:
@@ -106,4 +114,16 @@
 
 // Fallback plan
 +!checkZoneUnderAttack.
+
+// If the coach ordered saboteurs, he must cancel it because there isn't any
+// zone to defent anymore.
++!informedSaboteursAboutZoneBreakup:
+    zoneProtectRequestSent
+    & bestZone(_, CentreNode, _)
+    & saboteurList(SaboteurList)
+    <- .send(SaboteurList, tell, cancelZoneDefence(CentreNode));
+       .abolish(zoneProtectRequestSent).
+
+// If no saboteurs are on the way, do nothing.
++!informedSaboteursAboutZoneBreakup.
     

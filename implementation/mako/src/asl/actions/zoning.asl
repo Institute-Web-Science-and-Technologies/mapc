@@ -56,7 +56,6 @@ defaultRangeForSingleZones(3).
        -zoneNode(_)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
        -bestZoneRequest[source(_)];
-       -zoneProtectRequestSent;
        -+isLocked(false).
 
 // The agent is now looking for possible zones to build around him. It will
