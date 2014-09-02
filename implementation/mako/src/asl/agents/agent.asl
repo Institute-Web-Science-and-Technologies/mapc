@@ -197,12 +197,38 @@ zoneMode(false).
 
 // If an explorer is on an unprobed vertex, probe it.
 +!doAction:
-	zoneMode(false)
-	& position(Position)
+//	zoneMode(false)
+	position(Position)
 	& ia.isNotProbed(Position)
 	& role(explorer)
 	<- .print(Position, " is not probed. I will probe.");
 	 	!doProbing.
+
+// In zoning mode explorer should go to the unprobed node which has most links to the probed nodes.
++!doAction:
+	zoneMode(true)
+	& position(Vertex)
+	& role(explorer)
+	<- 
+	// Create list of neighbours which are not probed.
+    .findall(NeighVertex, (visibleEdge(Vertex, NeighVertex) | visibleEdge(NeighVertex, Vertex)) 
+    	& ia.isNotProbed(NeighVertex), UnProbedNeighbours);
+    // Check if list is not empty
+    if(not .empty(UnProbedNeighbours)){
+    	// Count the number of links to the probed nodes for all unprobed neighbours.
+    	.findall([Count, Neigh], .member(Neigh, UnProbedNeighbours) & 
+    		.count((visibleEdge(Neigh, X) | visibleEdge(X, Neigh)) & not ia.isNotProbed(X), Count), NeighboursLinksCounts);
+    	
+    	// Choose the node with maximal count of links to the probed nodes.
+    	.max(NeighboursLinksCounts, [C, NextVertex]);
+    	.print("Next vertex to probe: ", NextVertex, " with ", C, " links to probed nodes.");
+    } else {
+    	// If there are no unprobed neighbours then go to the closest unprobed node.
+ 	    //ia.getClosestUnprobedNode(Vertex, NextVertex)
+ 	    .print("There are no unprobed neighbours, going to the closest unprobed vertex.");
+    	.print("Moving to unprobed vertex ", NextVertex);    	
+    };
+    !goto(NextVertex).
 
 // If an agent is on an unsurveyed vertex, survey it
 +!doAction:
