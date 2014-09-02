@@ -93,8 +93,16 @@
 //     isCoach(true)
 //     & plannedZoneTimeInSteps(Steps)
 //     & Numeral mod Steps == 0
-//     <- !cancelledZoneBuilding;
-//        -+step(Numeral).
+//     <- .print("[zoning] periodic trigger for coaches to destroy their zones.");
+//        -+step(Numeral);
+//        !cancelledZoneBuilding.
+
+// Make coaches check for enemies in range at every step to be able to call
+// saboteurs for help.
+// +step(Numeral)[source(percept)]:
+//     isCoach(true)
+//     <- -+step(Numeral);
+//        !checkZoneUnderAttack.
 
 +step(Numeral)[source(percept)] <-
 //  .print("Received percept step(", Numeral, ").");

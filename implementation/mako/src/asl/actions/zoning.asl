@@ -5,7 +5,7 @@ isLocked(false).
 isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
-plannedZoneTimeInSteps(3).
+plannedZoneTimeInSteps(15).
 defaultRangeForSingleZones(3).
 
 // @all: If you are looking for something to do, search this file as well as
@@ -56,6 +56,7 @@ defaultRangeForSingleZones(3).
        -zoneNode(_)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
        -bestZoneRequest[source(_)];
+       -zoneProtectRequestSent;
        -+isLocked(false).
 
 // The agent is now looking for possible zones to build around him. It will

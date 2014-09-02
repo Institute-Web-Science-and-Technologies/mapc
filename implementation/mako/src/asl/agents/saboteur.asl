@@ -15,7 +15,7 @@ strategy(attack_chase).
     <-
     ia.getDistance(Position, ZoneCentre, Distance);
     if(Distance == -1){
-    	.print("The target zone with centere in ", ZoneCentre," is unreachable - ignoring zone defence request");
+    	.print("The target zone with centre in ", ZoneCentre," is unreachable - ignoring zone defence request");
     	.fail;
     };
     +defendZoneBid(ZoneCentre, Distance, Name);

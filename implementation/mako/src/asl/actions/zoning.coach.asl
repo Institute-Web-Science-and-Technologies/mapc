@@ -79,29 +79,31 @@
     <- .print("[zoning] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
 
 // If the enemy is inside the zone - call saboteur to help if the request was not send earlier.
-+!checkZoneUnderAttack(CentreNode):
++!checkZoneUnderAttack:
     isCoach(true)
+    & bestZone(_, CentreNode, _)
     & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
     & ia.getDistance(CentreNode, EnemyPosition, Distance)
-    & (Distance <= 2) & (Distance >= 0)
-    & not zoneProtectRequestSend(CentreNode)
+    & (Distance <= 3) & (Distance >= 0)
+    & not zoneProtectRequestSent
     & saboteurList(SaboteurList)
     <-
-	.send(SaboteurList, tell, requestZoneDefence(ZoneCentre));
-    +zoneProtectRequestSend(CentreNode). 
+	.send(SaboteurList, tell, requestZoneDefence(CentreNode));
+    +zoneProtectRequestSent. 
 
 // If the enemy left the zone, but we called the saboteur to help - cancel help request.     
-+!checkZoneUnderAttack(CentreNode):
++!checkZoneUnderAttack:
     isCoach(true)
+    & bestZone(_, CentreNode, _)
     & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
     & ia.getDistance(CentreNode, EnemyPosition, Distance)
-    & (Distance > 2)
-    & zoneProtectRequestSend(CentreNode)
+    & (Distance > 3)
+    & zoneProtectRequestSent
     & saboteurList(SaboteurList)
     <-
-	.send(SaboteurList, tell, cancelZoneDefence(ZoneCentre));
-    .abolish(zoneProtectRequestSend(CentreNode)).
+	.send(SaboteurList, tell, cancelZoneDefence(CentreNode));
+    .abolish(zoneProtectRequestSent).
 
 // Fallback plan
-+!checkZoneUnderAttack(CentreNode).
++!checkZoneUnderAttack.
     
