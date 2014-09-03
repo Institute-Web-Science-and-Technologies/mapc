@@ -115,20 +115,6 @@ zoneMode(false).
 	!doRepair(Vehicle, VehiclePosition).
     
 
-//Test plan for buying: What happens if saboteurs extend their visiblity range?
-+!doAction:
-	role(saboteur)
-	& money(Money)
-	& Money > 11
-	& visRange(VisRange)
-	& VisRange < 2
-	& energy(MyEnergy)
-	& MyEnergy > 2
-	& health(MyHealth)
-	& MyHealth > 0
-	<-
-	.print("Current money is ", Money, ". Current visRange is ", VisRange, ". Will buy sensor upgrade.");
-	buy(sensor).
 	
 // If an agent sees an enemy on its position, it has to deal with the enemy.
 
@@ -168,6 +154,21 @@ zoneMode(false).
  	<- .print("Attacking ", Enemy, " on ", EnemyPosition, " from my position ", MyPosition);
  	   !doAttack(Enemy, EnemyPosition).
  	   
+//Test plan for buying: What happens if saboteurs extend their visiblity range?
++!doAction:
+	role(saboteur)
+	& money(Money)
+	& Money > 11
+	& visRange(VisRange)
+	& VisRange < 2
+	& energy(MyEnergy)
+	& MyEnergy > 2
+	& health(MyHealth)
+	& MyHealth > 0
+	<-
+	.print("Current money is ", Money, ". Current visRange is ", VisRange, ". Will buy sensor upgrade.");
+	buy(sensor).
+	
 // Saboteurs should perform aggressively, preferring to attack enemy agents over exploring.
 // In the case where they can't see an enemy agent themselves, they get help
 // from the MapAgent.
