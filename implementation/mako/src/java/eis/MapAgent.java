@@ -495,19 +495,28 @@ public class MapAgent {
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
         for (Agent enemy : getEnemyAgents()) {
-            // Check if a path to the enemy even exists, and if the agent is not
-            // disabled.
+            // If there is an enemy on our node, look no further
             Vertex enemyPosition = enemy.getPosition();
+            if (enemyPosition == position) {
+                if (enemy.getRole() == "saboteur") {
+                    return enemy;
+                } else {
+                    closestEnemy = enemy;
+                    continue;
+                }
+            }
+            // Check if we even know where the enemy is, and if the enemy is not
+            // disabled.
             if (enemyPosition == null || enemy.isDisabled()) {
                 continue;
             }
             Path pathToEnemy = position.getPath(enemyPosition);
-            // If no path exists, the enemy is either on our own node or we
-            // don't know how to reach it
-            if (pathToEnemy == null && enemyPosition != position) {
+            // If no path to the enemy location exists, we don't know how to
+            // reach the enemy
+            if (pathToEnemy == null) {
                 continue;
             }
-            // If we haven't found a suitable enemy yet...
+            // If we haven't found a suitable enemy yet, save this one
             if (closestEnemy == null) {
                 closestEnemy = enemy;
                 distanceToClosestEnemy = pathToEnemy.getPathHops();
@@ -516,12 +525,7 @@ public class MapAgent {
 
             // Compare the distances for the agent we currently think is
             // closest and this one. Prioritize saboteurs.
-            int distanceToThisEnemy;
-            if (enemyPosition == position) {
-                distanceToThisEnemy = 0;
-            } else {
-                distanceToThisEnemy = pathToEnemy.getPathHops();
-            }
+            int distanceToThisEnemy = pathToEnemy.getPathHops();
             if ((distanceToClosestEnemy > distanceToThisEnemy) || (distanceToClosestEnemy >= distanceToThisEnemy && enemy.getRole() == "saboteur")) {
                 closestEnemy = enemy;
                 distanceToClosestEnemy = distanceToThisEnemy;
