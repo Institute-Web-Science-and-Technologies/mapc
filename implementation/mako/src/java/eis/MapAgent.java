@@ -570,10 +570,10 @@ public class MapAgent {
     }
 
     public void destroyZone(Vertex center, int size) {
-        if (size == 1) {
+        Zone zone = center.getZone(size);
+        if (size == 1 || zone == null) {
             currentZoneVertices.remove(center);
         } else {
-            Zone zone = center.getZone(size);
             currentZoneVertices.removeAll(zone.getZonePointVertices());
         }
     }
