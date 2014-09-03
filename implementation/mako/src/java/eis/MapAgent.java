@@ -602,7 +602,13 @@ public class MapAgent {
     }
 
     public Vertex getNextBestValueVertex(Vertex position, int range) {
-        // TODO Auto-generated method stub
-        return null;
+        Vertex bestValueVertex = position;
+        ArrayList<Vertex> list = position.getNeighbourhood(range);
+        for (Vertex vertex : list) {
+            if (vertex.getValue() > bestValueVertex.getValue()) {
+                bestValueVertex = vertex;
+            }
+        }
+        return bestValueVertex;
     }
 }
