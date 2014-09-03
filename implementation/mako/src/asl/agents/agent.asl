@@ -73,6 +73,8 @@ zoneMode(false).
 	& VisRange < 2
 	& energy(MyEnergy)
 	& MyEnergy > 2
+	& health(MyHealth)
+	& MyHealth > 0
 	<-
 	.print("Current money is ", Money, ". Current visRange is ", VisRange, ". Will buy sensor upgrade.");
 	buy(sensor).
