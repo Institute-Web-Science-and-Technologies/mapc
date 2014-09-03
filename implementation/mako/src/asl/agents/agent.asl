@@ -224,7 +224,7 @@ zoneMode(false).
     	.print("Next vertex to probe: ", NextVertex, " with ", C, " links to probed nodes.");
     } else {
     	// If there are no unprobed neighbours then go to the closest unprobed node.
- 	    //ia.getClosestUnprobedNode(Vertex, NextVertex)
+ 	    ia.getNextUnprobedVertex(Vertex, NextVertex);
  	    .print("There are no unprobed neighbours, going to the closest unprobed vertex.");
     	.print("Moving to unprobed vertex ", NextVertex);    	
     };
