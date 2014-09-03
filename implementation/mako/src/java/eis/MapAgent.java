@@ -421,6 +421,7 @@ public class MapAgent {
             Vertex zoneCenterVertex, ArrayList<String> agents) {
         // order agent by distance to center vertex of the zone
         TreeMap<Integer, String> distances = new TreeMap<Integer, String>();
+        ArrayList<Agent> blockedAgents = new ArrayList<>();
         for (String agentName : agents) {
             Agent agent = getAgent(agentName);
             if (agent != null) {
@@ -430,6 +431,7 @@ public class MapAgent {
                     int pathHops = path.getPathHops();
                     distances.put(pathHops, agentName);
                     agent.setBuildingZone(true);
+                    blockedAgents.add(agent);
                 }
             }
         }
@@ -470,6 +472,10 @@ public class MapAgent {
         } else {
             logger.info("Some agents have no known path to zone.");
             map = new HashMap<String, Vertex>();
+            // Unset the zone building flag in all touched agents:
+            for (Agent agent : blockedAgents) {
+                agent.setBuildingZone(false);
+            }
         }
         // return the mapping of agents to positions
         return map;
