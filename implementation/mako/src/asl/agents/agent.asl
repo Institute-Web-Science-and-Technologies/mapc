@@ -45,16 +45,19 @@ zoneMode(false).
     .send(Repairer, tell, successfullyRepaired);
     !!doAction.
 
-// If the disabled agent from the RepairQueue is within the 1 hop distance from repairer - do repairing.
+// If a friendly disabled agent is within half of the visibility range of a repairer,
+// repair it.
 +!doAction:
 	role(repairer)
-	& position(Position)
+	& position(MyPosition)
 	& myTeam(MyTeam)
 	& visibleEntity(Vehicle, VehiclePosition, MyTeam, disabled)
-	& (visibleEdge(Position, VehiclePosition) | visibleEdge(VehiclePosition, Position) | VehiclePosition == Position)
+	& ia.getDistance(MyPosition, VehiclePosition, Distance)
+	& visRange(MyRange)
+	& MyRange >= (Distance / 2)
 	<-
-	.print("I see the disabled agent ", Vehicle, " - will try to repair it.");
-	!doRepair(Vehicle, Position).
+	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
+	!doRepair(Vehicle, VehiclePosition).
     
 //Fallback action in the case where we didn't pay attention and tried to perform
 //an action without having the energy for it.
