@@ -6,9 +6,9 @@
 { include("../actions/getRepaired.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
- { include("../actions/zoning.asl") }
- { include("../actions/zoning.minion.asl") }
- { include("../actions/zoning.coach.asl") }
+{ include("../actions/zoning.asl") }
+{ include("../actions/zoning.minion.asl") }
+{ include("../actions/zoning.coach.asl") }
 { include("../misc/initialization.asl") }
 
 zoneMode(false).
@@ -274,27 +274,7 @@ zoneMode(false).
 	<-
 	.print("I'm recharging because I don't know what else to do.");
 	recharge.
-	
-// If a minion cannot reach the goal vertex, we are not going to build this zone.
-// TODO: remove this code if it never pops up in the log.
--!goto(_):
-    zoneGoalVertex(GoalVertex)
-    & isMinion(true)
-    <- .print("[zoning] This should not be triggered because only agents get selected that could reach their zone node.");
-       -zoneGoalVertex(GoalVertex)[source(_)];
-       ?bestZone(_, _, _)[source(Coach)];
-       .send(Coach, achieve, cancelledZoneBuilding);
-       !cancelledZoneBuilding.
 
-// If a coach can't the goal vertex, we are not going to build this zone.
-// TODO: remove this code if it never pops up in the log.
--!goto(_):
-    zoneGoalVertex(GoalVertex)
-    & isMinion(true)
-    <- .print("[zoning] This should not be triggered because only agents get selected that could reach their zone node.");
-       -zoneGoalVertex(GoalVertex)[source(_)];
-       !cancelledZoneBuilding.
-	
 +!doAction:
 	energy(Energy)
 	& maxEnergy(Max)
