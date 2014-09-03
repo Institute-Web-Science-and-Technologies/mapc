@@ -32,6 +32,7 @@ public class MapAgent {
     private HashSet<Vertex> currentZoneVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedUnsurveyedVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedProbedVertices = new HashSet<Vertex>();
+    private HashSet<Vertex> reservedScoreVertices = new HashSet<Vertex>();
 
     public static MapAgent getInstance() {
         if (mapAgent == null) {
@@ -178,8 +179,12 @@ public class MapAgent {
             for (Vertex vertex : reservedUnsurveyedVertices) {
                 vertex.setReservedForSurveying(false);
             }
+            for (Vertex vertex : reservedScoreVertices) {
+                vertex.setReservedForScoring(false);
+            }
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
+            reservedScoreVertices.clear();
             setStep(newStep);
             // Reset every zone periodically
             if (newStep % resetStep == 0) {
@@ -609,13 +614,17 @@ public class MapAgent {
     }
 
     public Vertex getNextBestValueVertex(Vertex position, int range) {
-        Vertex bestValueVertex = position;
+        Vertex bestScoreVertex = position;
         ArrayList<Vertex> list = position.getNeighbourhood(range);
         for (Vertex vertex : list) {
-            if (vertex.getValue() > bestValueVertex.getValue()) {
-                bestValueVertex = vertex;
+            if (vertex.getValue() > bestScoreVertex.getValue() && !vertex.isReservedForScoring()) {
+                bestScoreVertex = vertex;
             }
         }
-        return bestValueVertex;
+        if (bestScoreVertex != position) {
+            reservedScoreVertices.add(bestScoreVertex);
+            bestScoreVertex.setReservedForScoring(true);
+        }
+        return bestScoreVertex;
     }
 }

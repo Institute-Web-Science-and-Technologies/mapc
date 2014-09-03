@@ -27,6 +27,7 @@ public class Vertex {
 
     private boolean reservedForProbing = false;
     private boolean reservedForSurveying = false;
+    private boolean reservedForScoring = false;
 
     /**
      * @param identifier
@@ -313,6 +314,14 @@ public class Vertex {
 
     public void setReservedForSurveying(boolean reservedForSurveying) {
         this.reservedForSurveying = reservedForSurveying;
+    }
+
+    public boolean isReservedForScoring() {
+        return this.reservedForScoring;
+    }
+
+    public void setReservedForScoring(boolean reservedForScoring) {
+        this.reservedForScoring = reservedForScoring;
     }
 
     public Zone getZone(int size) {
