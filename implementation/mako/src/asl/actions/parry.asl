@@ -2,10 +2,12 @@
 +!dealWithEnemy(Vehicle): 
 	ia.isSaboteur(Vehicle)
 	<-
+	.print(Vehicle, " is a saboteur! I will parry.")
 	!doParry.
 
 +!dealWithEnemy(Vehicle)
 	<-
+	.print(Vehicle, " isn't a saboteur! I will ignore him.")
 	+ignoreEnemy(Vehicle);
 	!doAction.
 

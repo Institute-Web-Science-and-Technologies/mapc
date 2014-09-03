@@ -69,6 +69,20 @@ zoneMode(false).
 	.print("Inspecting ", Vehicle, " at ", VehiclePosition);
 	!doInspecting(Vehicle, VehiclePosition).
 	
+// If you can parry, and you're sharing a node with an enemy saboteur, you won't
+// be able to move away fast enough to escape being attacked. So parry instead.
+// TODO: Call for help from a friendly saboteur.
++!doAction:
+	(role(sentinel) | role(repairer))
+	& position(MyPosition)
+	& visibleEntity(Vehicle, MyPosition, VehicleTeam, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== VehicleTeam
+	& ia.isSaboteur(Vehicle, _)
+	<-
+	.print("Danger! Active enemy saboteur", Vehicle, "on my postion ", MyPosition, "! Parrying!");
+	!doParry.
+	
 // If you're in range of what could be an active enemy saboteur, get out of there.
 // But only if you're not in zone mode.
 +!doAction:
