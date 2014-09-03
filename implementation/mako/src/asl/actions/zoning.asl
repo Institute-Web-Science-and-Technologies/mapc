@@ -242,9 +242,8 @@ defaultRangeForSingleZones(3).
     not bestZone(_, _, _)
     & currentRange(Range)
     & position(Position)
-    <- // TODO: remove comments once getNextBestValueVertex is implemented
-       //ia.getNextBestValueVertex(Position, Range, GoalVertex);
-       //+zoneGoalVertex(GoalVertex);
+    <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
+       +zoneGoalVertex(GoalVertex);
        IncreasedRange = Range + 1;
        -+currentRange(IncreasedRange);
        
