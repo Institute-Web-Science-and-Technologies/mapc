@@ -502,6 +502,7 @@ public class MapAgent {
                     return enemy;
                 } else {
                     closestEnemy = enemy;
+                    distanceToClosestEnemy = 0;
                     continue;
                 }
             }
