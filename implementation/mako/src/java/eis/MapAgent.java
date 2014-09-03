@@ -516,7 +516,12 @@ public class MapAgent {
 
             // Compare the distances for the agent we currently think is
             // closest and this one. Prioritize saboteurs.
-            int distanceToThisEnemy = pathToEnemy.getPathHops();
+            int distanceToThisEnemy;
+            if (enemyPosition == position) {
+                distanceToThisEnemy = 0;
+            } else {
+                distanceToThisEnemy = pathToEnemy.getPathHops();
+            }
             if ((distanceToClosestEnemy > distanceToThisEnemy) || (distanceToClosestEnemy >= distanceToThisEnemy && enemy.getRole() == "saboteur")) {
                 closestEnemy = enemy;
                 distanceToClosestEnemy = distanceToThisEnemy;

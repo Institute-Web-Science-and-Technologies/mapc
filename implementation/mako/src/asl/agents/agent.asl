@@ -171,7 +171,7 @@ zoneMode(false).
 	& MyTeam \== Team
 	& not ignoreEnemy(Vehicle)
  	<-
-	.print("Non-disabled non-sabteur enemy ", Vehicle, " at my position!");
+	.print("Non-disabled, non-saboteur enemy ", Vehicle, " at my position!");
  	!dealWithEnemy(Vehicle).
  	
  // When saboteur, sentinel,and repairer are attacked,

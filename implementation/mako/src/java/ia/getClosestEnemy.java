@@ -17,6 +17,7 @@ import eis.Vertex;
 public class getClosestEnemy extends DefaultInternalAction {
 
     /**
+     * Call from Jason:ia.getClosestEnemy(MyPosition, EnemyPosition, Enemy)
      * 
      */
     private static final long serialVersionUID = -3662866054390804856L;
