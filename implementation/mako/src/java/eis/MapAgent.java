@@ -128,7 +128,7 @@ public class MapAgent {
         // MaxHealth, Strength, VisRange)
         String name = percept.getParameters().get(0).toString();
         String team = percept.getParameters().get(1).toString();
-        String role = percept.getParameters().get(2).toString();
+        String role = percept.getParameters().get(2).toString().toLowerCase();
         Vertex position = getVertex(percept.getParameters().get(3).toString());
         int energy = Integer.parseInt(percept.getParameters().get(4).toString());
         int maxEnergy = Integer.parseInt(percept.getParameters().get(5).toString());

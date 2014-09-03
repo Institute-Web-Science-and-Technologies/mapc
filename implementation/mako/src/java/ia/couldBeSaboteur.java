@@ -28,9 +28,6 @@ public class couldBeSaboteur extends DefaultInternalAction {
         Agent agent = MapAgent.getInstance().getAgent(args[0].toString());
         String agentRole = agent.getRole();
         Integer visRange = agent.getVisRange();
-        if (visRange == null) {
-            visRange = 1;
-        }
         Term visRangeTerm = args[1];
         un.unifies(visRangeTerm, JasonHelper.getTerm(visRange));
         return ((agentRole == "saboteur") || agentRole == null);
