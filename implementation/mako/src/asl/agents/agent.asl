@@ -44,6 +44,47 @@ zoneMode(false).
     .abolish(closestRepairer(_));
     .send(Repairer, tell, successfullyRepaired);
     !!doAction.
+    
+//Fallback action in the case where we didn't pay attention and tried to perform
+//an action without having the energy for it.
++!doAction:
+	lastActionResult(failed_resources)
+	<-
+	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
+	recharge.
+	
+// If an inspector sees an enemy that currently doesn't count as inspected, inspect it.
+// We keep track of the inspected state for enemy agents in the MapAgent.
++!doAction:
+	role(inspector)
+	& visibleEntity(Vehicle, VehiclePosition, Team, _)
+	& myTeam(MyTeam)
+	& MyTeam \== Team
+	& ia.isNotInspected(Vehicle)
+	& position(MyPosition)
+	& ia.getDistance(MyPosition, VehiclePosition, Distance)
+	& visRange(MyRange)
+	& Distance <= (MyRange / 2)
+	<-
+	.print("Inspecting ", Vehicle, " at ", VehiclePosition);
+	!doInspecting(Vehicle, VehiclePosition).
+	
+// If you're in range of what could be an active enemy saboteur, get out of there.
+// But only if you're not in zone mode.
++!doAction:
+	position(MyPosition)
+	& visibleEntity(Vehicle, VehiclePosition, VehicleTeam, normal)
+	& myTeam(MyTeam)
+	& MyTeam \== VehicleTeam
+	& not ignoreEnemy(Vehicle)
+	& ia.couldBeSaboteur(Vehicle, VehicleVisRange)
+	& ia.getDistance(MyPosition, VehiclePosition, Distance)
+	& Distance <= VehicleVisRange
+	& zoneMode(false)
+	<-
+	.print("Danger! Active enemy could-be saboteur", Vehicle, "on ", VehiclePosition, " is in attacking range!");
+	!avoidEnemy.
+	
 
 // If a friendly disabled agent is within half of the visibility range of a repairer,
 // repair it.
@@ -59,13 +100,6 @@ zoneMode(false).
 	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
 	!doRepair(Vehicle, VehiclePosition).
     
-//Fallback action in the case where we didn't pay attention and tried to perform
-//an action without having the energy for it.
-+!doAction:
-	lastActionResult(failed_resources)
-	<-
-	.print("Warning! I tried to perform an action without having enough energy to do so. Will recharge.");
-	recharge.
 
 //Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
@@ -83,22 +117,6 @@ zoneMode(false).
 	buy(sensor).
 	
 // If an agent sees an enemy on its position, it has to deal with the enemy.
-
-// If an inspector sees an enemy that currently doesn't count as inspected, inspect it.
-// We keep track of the inspected state for enemy agents in the MapAgent.
-+!doAction:
-	role(inspector)
-	& visibleEntity(Vehicle, VehiclePosition, Team, _)
-	& myTeam(MyTeam)
-	& MyTeam \== Team
-	& ia.isNotInspected(Vehicle)
-	& position(MyPosition)
-	& ia.getDistance(MyPosition, VehiclePosition, Distance)
-	& visRange(MyRange)
-	& Distance <= (MyRange / 2)
-	<-
-	.print("Inspecting ", Vehicle, " at ", VehiclePosition);
-	!doInspecting(Vehicle, VehiclePosition).
 
 // Saboteur In defending zone mode 
 +!doAction:
@@ -148,19 +166,6 @@ zoneMode(false).
 	.print("Moving to attack ", Enemy, " on ", EnemyPosition, " from my position ", MyPosition);
 	!doAttack(Enemy, EnemyPosition).
 
-// If you're in range of what could be an active enemy saboteur, get out of there.
-+!doAction:
-	position(MyPosition)
-	& visibleEntity(Vehicle, VehiclePosition, VehicleTeam, normal)
-	& myTeam(MyTeam)
-	& MyTeam \== VehicleTeam
-	& not ignoreEnemy(Vehicle)
-	& ia.couldBeSaboteur(Vehicle, VehicleVisRange)
-	& ia.getDistance(MyPosition, VehiclePosition, Distance)
-	& Distance <= VehicleVisRange
-	<-
-	.print("Danger! Active enemy saboteur", Vehicle, "on ", VehiclePosition, " is in attacking range!");
-	!avoidEnemy.
 	
 // Print a warning if an active enemy is on our position.
 // TODO: Call a saboteur to deal with the enemy.
