@@ -5,6 +5,7 @@
 	position(Position)
 	& Destination == Position
 	& achievement(surveyed640)
+	& zoneMode(false)
 <-	.print("I was told to move to my own node. 640 edges are already surveyed. So I switch to zoneMode.");
 	-+zoneMode(true);
 	!doAction.
