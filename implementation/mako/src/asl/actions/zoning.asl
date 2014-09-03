@@ -54,6 +54,7 @@ defaultRangeForSingleZones(3).
        -bestZone(_, _, _)[source(_)];
        -negativeZoneReply[source(_)];
        -zoneNode(_)[source(_)];
+       -asyncForeignBestZone(_, _, _)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
        -bestZoneRequest[source(_)];
        -+isLocked(false).
@@ -122,8 +123,7 @@ defaultRangeForSingleZones(3).
 //
 // It could even be that we aren't available for zoning. But we will then still
 // have to reply (which is done on foreignBestZone percept addition).
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
-    isAvailableForZoning
++asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]
     <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
 
 // If we didn't find a bestZone in our 1HNH ourselves, we will thankfully take
