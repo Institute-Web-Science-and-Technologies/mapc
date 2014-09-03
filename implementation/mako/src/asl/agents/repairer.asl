@@ -24,9 +24,8 @@ repairQueue([]).
     & .my_name(Name)
     <-
     .abolish(requestRepair(_)[source(Agent)]);
-    //.print("Got repair request for agent ", Agent, " on position ", Position);
-    +repairBid(Agent, Name, Distance, RepairQuequeLength);
-    .send(RepairerList, tell, repairBid(Agent, Name, Distance, RepairQuequeLength));
+    +repairBid(Agent, Name, Distance + 2 * RepairQuequeLength);
+    .send(RepairerList, tell, repairBid(Agent, Name, Distance + 2 * RepairQuequeLength));
     .wait(400);
     !decideWhoWillRepair(Agent).
 
@@ -39,10 +38,10 @@ repairQueue([]).
     .my_name(MyName)
     & repairQueue(RepairQueue)
     <-
-    .findall([RepairQuequeLength, Distance, Name], repairBid(Agent, Name, Distance, RepairQuequeLength), Bids);
+    .findall([RepairStepsCount, Name], repairBid(Agent, Name, RepairStepsCount), Bids);
     .min(Bids, WinBid);
     // If won in bidding and don't have this agent in the RepairQueue yet
-    if(.nth(2, WinBid, MyName) & not .member(Agent, RepairQueue)){
+    if(.nth(1, WinBid, MyName) & not .member(Agent, RepairQueue)){
     	.send(Agent, tell, closestRepairer(MyName));
     	.concat(RepairQueue, [Agent], NewRepairQueue);
     	-+repairQueue(NewRepairQueue);
