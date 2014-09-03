@@ -1,10 +1,19 @@
 // In the case where we for some reason get told to move to the node we're already on,
 // we perform a recharge action instead.
+
++!goto(Destination):
+	position(Position)
+	& Destination == Position
+	& achievement(surveyed640)
+<-	.print("I was told to move to my own node. 640 edges are already surveyed. So I switch to zoneMode.");
+	-+zoneMode(true);
+	!doAction.
+
 +!goto(Destination):
     position(Position)
     & Destination == Position
     <-
-    .print("Warning! I was told to move to the node I am already on (", Position, "). Will recharge instead.");
+    .print("Warning! I was told to move to the node I am already on (", Position, "). ");
     recharge.
     
 // Want to goto, but don't have enough energy? Recharge.

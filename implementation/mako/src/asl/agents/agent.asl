@@ -6,9 +6,9 @@
 { include("../actions/getRepaired.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
-// { include("../actions/zoning.asl") }
-// { include("../actions/zoning.minion.asl") }
-// { include("../actions/zoning.coach.asl") }
+ { include("../actions/zoning.asl") }
+ { include("../actions/zoning.minion.asl") }
+ { include("../actions/zoning.coach.asl") }
 { include("../misc/initialization.asl") }
 
 zoneMode(false).
@@ -268,7 +268,7 @@ zoneMode(false).
 	& Energy == Max
 	& zoneMode(false)
 	<- 
-	-+zoneMode(true).
+	.print("Error: Energy is max, and zoneMode is false.").
 
 +!doAction
     <- .print("I have nothing to do. I'll skip."); 
