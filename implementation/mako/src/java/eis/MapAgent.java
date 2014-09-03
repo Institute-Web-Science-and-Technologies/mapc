@@ -483,6 +483,14 @@ public class MapAgent {
         this.step = step;
     }
 
+    /**
+     * Returns the closest enemy agent from the given position. Prioritizes
+     * saboteurs.
+     * 
+     * @param position
+     *            the vertex to check for closest enemies from
+     * @return the closest enemy agent
+     */
     public Agent getClosestEnemy(Vertex position) {
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
@@ -494,7 +502,9 @@ public class MapAgent {
                 continue;
             }
             Path pathToEnemy = position.getPath(enemyPosition);
-            if (pathToEnemy == null) {
+            // If no path exists, the enemy is either on our own node or we
+            // don't know how to reach it
+            if (pathToEnemy == null && enemyPosition != position) {
                 continue;
             }
             // If we haven't found a suitable enemy yet...
@@ -505,9 +515,9 @@ public class MapAgent {
             }
 
             // Compare the distances for the agent we currently think is
-            // closest and this one.
+            // closest and this one. Prioritize saboteurs.
             int distanceToThisEnemy = pathToEnemy.getPathHops();
-            if (distanceToClosestEnemy > distanceToThisEnemy) {
+            if ((distanceToClosestEnemy > distanceToThisEnemy) || (distanceToClosestEnemy >= distanceToThisEnemy && enemy.getRole() == "saboteur")) {
                 closestEnemy = enemy;
                 distanceToClosestEnemy = distanceToThisEnemy;
             }
