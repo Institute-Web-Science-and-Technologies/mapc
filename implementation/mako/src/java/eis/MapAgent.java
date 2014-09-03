@@ -86,8 +86,10 @@ public class MapAgent {
         ArrayList<Vertex> neighbours = vertex.getNeighbours();
         for (Agent enemy : getEnemyAgents()) {
             Vertex enemyPosition = enemy.getPosition();
-            neighbours.remove(enemyPosition);
-            neighbours.removeAll(enemyPosition.getNeighbours());
+            if (enemyPosition != null) {
+                neighbours.remove(enemyPosition);
+                neighbours.removeAll(enemyPosition.getNeighbours());
+            }
         }
         return neighbours;
     }
