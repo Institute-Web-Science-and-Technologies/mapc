@@ -193,15 +193,8 @@ public class MapAgent {
             }
 
             logger.info("[Step " + getStep() + "] Total Vertices: " + vertices + ". Seen: " + numSeenVertices + "(" + numSeenVertices * 100.0 / vertices + "%) Probed: " + probedVertices + "(" + probedVertices * 100.0 / vertices + "%)");
-            // logger.info("[Step " + getStep() + "] TotalEdges: " + edges +
-            // ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() *
-            // 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" +
-            // surveyedEdges.size() * 100.0 / edges + "%)");
-            // HashSet<String> unsurveyedEdges = (HashSet<String>)
-            // visibleEdges.clone();
-            // unsurveyedEdges.removeAll(surveyedEdges);
-            // logger.info("[Step" + getStep() +
-            // "] Remaining unsurveyed edges: " + unsurveyedEdges);
+            logger.info("[Step " + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
+
             HashSet<Vertex> unsurveyedVertices = new HashSet<Vertex>();
             for (Vertex vertex : vertexMap.values()) {
                 if (!vertex.isSurveyed()) {
