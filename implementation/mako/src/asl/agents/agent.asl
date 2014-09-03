@@ -197,7 +197,7 @@ zoneMode(false).
 
 // If an explorer is on an unprobed vertex, probe it.
 +!doAction:
-	zoneMode(false) | (zoneMode(true) & role(explorer))
+	zoneMode(false)
 	& position(Position)
 	& ia.isNotProbed(Position)
 	& role(explorer)
