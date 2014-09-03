@@ -19,7 +19,7 @@ public class Agent {
     private Vertex position;
     private String role;
     private int strength;
-    private int visRange;
+    private int visRange = 1; // assume the minimal visRange by default
 
     // if the agent is available for zoning tasks
     private boolean availableForZoning = false;
@@ -151,11 +151,6 @@ public class Agent {
         this.disabled = disabled;
     }
 
-    public String toString() {
-        return jasonName;
-
-    }
-
     public Zone getZone() {
         return zone;
     }
@@ -191,6 +186,16 @@ public class Agent {
 
     public boolean isInOurTeam() {
         return team.equalsIgnoreCase(AgentHandler.selectedTeam);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Agent [serverName=" + serverName + ", jasonName=" + jasonName + "]";
     }
 
 }
