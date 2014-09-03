@@ -54,7 +54,7 @@ zoneMode(false).
 	& visibleEntity(Vehicle, VehiclePosition, MyTeam, disabled)
 	& ia.getDistance(MyPosition, VehiclePosition, Distance)
 	& visRange(MyRange)
-	& MyRange >= (Distance / 2)
+	& Distance <= (MyRange / 2)
 	<-
 	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
 	!doRepair(Vehicle, VehiclePosition).
