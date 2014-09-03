@@ -488,8 +488,13 @@ public class MapAgent {
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
         for (Agent enemy : getEnemyAgents()) {
-            // If there is an enemy on our node, look no further
+            // Check if we even know where the enemy is, and if the enemy is not
+            // disabled.
             Vertex enemyPosition = enemy.getPosition();
+            if (enemyPosition == null || enemy.isDisabled()) {
+                continue;
+            }
+            // If there is an enemy on our node, look no further
             if (enemyPosition == position) {
                 if (enemy.getRole() == "saboteur") {
                     return enemy;
@@ -498,11 +503,6 @@ public class MapAgent {
                     distanceToClosestEnemy = 0;
                     continue;
                 }
-            }
-            // Check if we even know where the enemy is, and if the enemy is not
-            // disabled.
-            if (enemyPosition == null || enemy.isDisabled()) {
-                continue;
             }
             Path pathToEnemy = position.getPath(enemyPosition);
             // If no path to the enemy location exists, we don't know how to
