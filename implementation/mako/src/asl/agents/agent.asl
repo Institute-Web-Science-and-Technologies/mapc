@@ -107,7 +107,6 @@ zoneMode(false).
  	<- .print("I'm in zone defending mode.");
  	   !defendZone.
 
-
 // In the case where we have sent a saboteur (or any other agent) to an enemy 'ghost' location (a location
 // where an enemy agent used to be, but no longer occupies), we need to tell the
 // MapAgent to update its list of enemy positions.
@@ -202,13 +201,23 @@ zoneMode(false).
 
 // If an explorer is on an unprobed vertex, probe it.
 +!doAction:
-	zoneMode(false)
-	& position(Position)
+//	zoneMode(false)
+	position(Position)
 	& ia.isNotProbed(Position)
 	& role(explorer)
 	<- .print(Position, " is not probed. I will probe.");
 	 	!doProbing.
 
+// In zoning mode explorer should go to the unprobed node which has most links to the probed nodes.
++!doAction:
+	zoneMode(true)
+	& position(Vertex)
+	& role(explorer)
+	<- 
+    ia.getNextUnprobedVertex(Vertex, NextVertex);
+    .print("Going to the unprobed vertex ", NextVertex);
+    !goto(NextVertex).
+    
 // If an agent is on an unsurveyed vertex, survey it
 +!doAction:
 	zoneMode(false)
