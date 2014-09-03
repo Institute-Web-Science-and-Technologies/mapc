@@ -1,3 +1,4 @@
+{ include("../actions/zoning.coach.defence.asl") }
 /* Initial beliefs and rules */
 
 /* Plans */
@@ -9,14 +10,14 @@
 +!assignededAgentsTheirPosition:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
+    & .print("[zoning][coach] Trying to find out how to place ", ClosestAgents)
     & broadcastAgentList(BroadcastList)
-    <- ia.placeAgentsOnZone(CentreNode, ClosestAgents, AgentPositionMapping);
-    
-       .difference(BroadcastList, ClosestAgents, NonZoners);
+    & ia.placeAgentsOnZone(CentreNode, ClosestAgents, AgentPositionMapping)
+    <- .difference(BroadcastList, ClosestAgents, NonZoners);
        .send(NonZoners, achieve, preparedNewZoningRound);
        
        .length(AgentPositionMapping, MappingLength);
-       .print("[zoning] I'm going to place the agents as follows: ", AgentPositionMapping, " with the CentreNode being ", CentreNode);
+       .print("[zoning][coach] I'm going to place the agents as follows: ", AgentPositionMapping, " with the CentreNode being ", CentreNode);
        for (.range(ControlVariable, 0, MappingLength - 1)) {
            .nth(ControlVariable, AgentPositionMapping, [Agent, PositionVertex]);
            .send(Agent, tell, zoneGoalVertex(PositionVertex));
@@ -25,18 +26,24 @@
 
 // The achievement goal failed for some reason. Tell all agents to restart
 // zoning.
+// Simply calling !cancelledZoneBuilding isn't possible because the zone was
+// never registered as a zone in JavaMap.
+// TODO: minions and coach alike should move to a best one man zone nearby
+// TODO: this is called every time. Is placeAgentsOnZone not working properly?
 +!assignededAgentsTheirPosition:
-    .my_name(Coach)
-    <- ?broadcastAgentList(BroadcastList);
-       .send(BroadcastList, achieve, preparedNewZoningRound);
+    isCoach(true)
+    & .my_name(Coach)
+    & bestZone(_, CentreNode, ClosestAgents)
+    & broadcastAgentList(BroadcastList)
+    <- .print("[zoning][coach] Assigning agents a position failed.");
+       .difference(BroadcastList, ClosestAgents, NonZoners);
+       .send(NonZoners, achieve, preparedNewZoningRound);
        
-       ?bestZone(_, _, ClosestAgents);
        .difference(ClosestAgents, [Coach], Minions);
        .send(Minions, achieve, cancelledZoneBuilding);
        
-       -+isLocked(false);
-       !!preparedNewZoningRound;
-       .print("[zoning] Assigning agents a position failed.").
+       !resetZoningBeliefs;
+       !preparedNewZoningRound;.
 
 // If s.o. or ourselves cancelled the zone, we have to inform all our minions
 // about it and go back to start zoning from scratch.
@@ -52,17 +59,13 @@
     <- ia.destroyZone(CentreNode, ZoneSize);
        .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
-       .print("[zoning] I am destroying this zone and informing ", UnawareMinions);
-       -+isCoach(false);
-       
-       ?defaultRangeForSingleZones(Range);
-       -+currentRange(Range);
-       -zoneGoalVertex(_)[source(_)]; // self should be the only source
+       .print("[zoning][coach] I am destroying this zone and informing ", UnawareMinions);
        
        // Cancel ordered saboteurs if any. Can't be "!!" because it needs
        // bestZone(_,CentreNode,_):
        !informedSaboteursAboutZoneBreakup;
        
+       !resetZoningBeliefs;
        !preparedNewZoningRound.
 
 // Coaches choose to ignore the periodic zone breakup calls when they haven't
@@ -70,60 +73,18 @@
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & isLocked(true)
-    <- .print("[zoning] The periodic zone breakup interfered with me just having started building a zone. Ignoring it.").
+    <- .print("[zoning][coach] The periodic zone breakup interfered with me just having started building a zone. Ignoring it.").
 
 // TODO: This goal should be removable once the iAs work properly.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
     <- !informedSaboteursAboutZoneBreakup;
-       .print("[zoning] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
+       .print("[zoning][coach] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
 
 // TODO: This goal should be removable once the iAs work properly.
 // I think this happens due to destroyZone failing because it only happens after it has been called once.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;
-       .print("[zoning] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
-
-// If the enemy is inside the zone - call saboteur to help if the request was not send earlier.
-+!checkZoneUnderAttack:
-    isCoach(true)
-    & bestZone(_, CentreNode, _)
-    & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
-    & ia.getDistance(CentreNode, EnemyPosition, Distance)
-    & (Distance <= 3) & (Distance >= 0)
-    & not zoneProtectRequestSent
-    & saboteurList(SaboteurList)
-    <-
-	.send(SaboteurList, tell, requestZoneDefence(CentreNode));
-    +zoneProtectRequestSent. 
-
-// If the enemy left the zone, but we called the saboteur to help - cancel help request.     
-+!checkZoneUnderAttack:
-    isCoach(true)
-    & bestZone(_, CentreNode, _)
-    & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
-    & ia.getDistance(CentreNode, EnemyPosition, Distance)
-    & (Distance > 3)
-    & zoneProtectRequestSent
-    & saboteurList(SaboteurList)
-    <-
-	.send(SaboteurList, tell, cancelZoneDefence(CentreNode));
-    .abolish(zoneProtectRequestSent).
-
-// Fallback plan
-+!checkZoneUnderAttack.
-
-// If the coach ordered saboteurs, he must cancel it because there isn't any
-// zone to defent anymore.
-+!informedSaboteursAboutZoneBreakup:
-    zoneProtectRequestSent
-    & bestZone(_, CentreNode, _)
-    & saboteurList(SaboteurList)
-    <- .send(SaboteurList, tell, cancelZoneDefence(CentreNode));
-       .abolish(zoneProtectRequestSent).
-
-// If no saboteurs are on the way, do nothing.
-+!informedSaboteursAboutZoneBreakup.
-    
+       .print("[zoning][coach] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").

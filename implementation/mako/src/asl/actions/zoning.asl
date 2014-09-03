@@ -1,21 +1,17 @@
+{ include("../actions/zoning.replies.asl")}
+{ include("../actions/zoning.minion.asl") }
+{ include("../actions/zoning.coach.asl") }
+
 /* Initial beliefs and rules */
 isCoach(false).
 isMinion(false).
 isLocked(false).
-isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false).
+isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zoneMode(true).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
 plannedZoneTimeInSteps(15).
-defaultRangeForSingleZones(3).
+defaultRangeForSingleZones(1).
 
-// @all: If you are looking for something to do, search this file as well as
-//       zoning.* for the keyword "TODO".
-// TODO [prio:low]: test that the internal actions work properly when JavaMap is merged onto master.
-// TODO [prio:high, #26]: we must incorporate plannedZoneTimeInSteps to split up zones after some time.
-// TODO [prio:medium, #27]: when we have reached the plannedZoneTimeInSteps, we should start zoning again (needs to increment a counter in each step) – also see the zone movement idea which is located lower in this TODO list.
-// TODO [prio:none, #27]: @wontfix search our 1HNH only for zones which need at max .count(idleZoner(_),X)+1 many agents. This could be problematic as idleZoner is extremely dynamic.
-// TODO [prio:none, #28]: @wontfix in zoning.coach.asl we could have free agents extend our zone (if possible). — instead, harass enemies and go to wells.
-// TODO [prio:low, #27]: when a zone has been established, each zoner should look at zones with maximum .count(zoner,X) many nodes. If there is a better option, the whole zone or parts of it may be moved onto the better nearby zone.
 /* Plans */
 
 // Zoning mode has begun and it will trigger the achievement goal
@@ -39,6 +35,7 @@ defaultRangeForSingleZones(3).
 +!preparedNewZoningRound:
     isCoach(false)
     & isMinion(false)
+    & zoneMode(true)
     & .my_name(MyName)
 	<- ia.registerForZoning(MyName);
 	   !clearedZoningPercepts;
@@ -85,130 +82,9 @@ defaultRangeForSingleZones(3).
     & isAvailableForZoning
     <- .send(BroadcastList, tell, bestZoneRequest).
     
-//if we receive a builtZone achievement goal, but were are not available for zoning, do nothing
+// if we receive a builtZone achievement goal, but were are not available for
+// zoning, do nothing
 +!builtZone.
-
-// Inform the sender about our zone – if we still know our zone.
-+bestZoneRequest[source(Sender)]:
-    isAvailableForZoning
-    & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
-    <- +zoneReply[source(Sender)];
-       .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
-       !receivedAllReplies.
-
-// Reply "no", clear possible duplicate beliefs and check if we are done
-// waiting.
-+bestZoneRequest[source(Sender)]:
-    isAvailableForZoning
-    <- +zoneReply[source(Sender)];
-       .send(Sender, tell, negativeZoneReply);
-       !receivedAllReplies.
-
-// Reply "no" in any other case as a non-zoner.
-+bestZoneRequest[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply).
-
-// We received an asynchronous foreignBestZone percept. Chances are, the
-// Broadcaster doesn't know about our zone so we tell him as we haven't started
-// building one yet. We also deal with his zone information.
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
-    isAvailableForZoning
-    & bestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents)[source(self)]
-    <- .send(Broadcaster, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents));
-       +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
-
-// We received an asynchronous foreignBestZone percept but don't know about our
-// own zone anymore as it was worse. Hence, we cannot tell him our zone but we
-// still take his zone into consideration when choosing the best one for us.
-//
-// It could even be that we aren't available for zoning. But we will then still
-// have to reply (which is done on foreignBestZone percept addition).
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]
-    <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
-
-// If we didn't find a bestZone in our 1HNH ourselves, we will thankfully take
-// the first foreignBestZone that is offered to us.
-@onlyAddOneFirstBestZone[atomic]
-+foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
-    isAvailableForZoning
-    & not bestZone(_, _, _)
-    <- +zoneReply[source(Coach)];
-       +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
-       !receivedAllReplies.
-
-// We have received a zone better than the one we know (or
-// didn't know any), so we throw our zone away
-// We also calculate the distance to it and cache that value
-// as a belief. We discard better zones that are too far away.
-//
-// We also tell our former coach that we are no longer interested in his zone!
-@onlyAddOneBetterZoneAtATime[atomic]
-+foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
-    isAvailableForZoning
-    & position(PositionVertex)
-    & bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]
-    // my zone is worse:
-    & FormerValue < Value
-    // or the zones are identical but my name is alphabetically bigger:
-    | (FormerValue == Value
-        & .my_name(MyName)
-        & .sort([Coach, MyName], [Coach, MyName])
-    )
-    <- +zoneReply[source(Coach)];
-       .send(FormerCoach, tell, negativeZoneReply);
-       -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
-       +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
-       !receivedAllReplies.
-
-// We were informed about a worse zone.
-+foreignBestZone(_, _, _)[source(Sender)]:
-    isAvailableForZoning
-    <- +zoneReply[source(Sender)];
-       .send(Sender, tell, negativeZoneReply);
-       !receivedAllReplies.
-
-// It doesn't matter if we aren't interested in zoning. We have to reply no in
-// any case.
-+foreignBestZone(_, _, _)[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply).
-
-//  We will test if we now got replies from every agent.
-+negativeZoneReply[source(Sender)]:
-    isAvailableForZoning
-    <- +zoneReply[source(Sender)];
-       !receivedAllReplies.
-
-// We aren't zoning so we ignore this message.
-+negativeZoneReply[source(_)].
-
-// If all agents have replied with either a broadcast or a refusal, we're done
-// waiting.
-//
-// We also set a lock to make sure that this does not get interrupted by
-// further messages and for coaches so that assignededAgentsTheirPosition can be
-// called without the periodic zone breakup interfering with it.
-@testForAllReplies[priority(1), atomic]
-+!receivedAllReplies:
-    isAvailableForZoning
-    & .count(zoneReply[source(_)], RepliesAmount)
-    & broadcastAgentList(BroadcastList)
-    & .length(BroadcastList, AgentsAmount)
-    & AgentsAmount ==  RepliesAmount
-    <- -+isLocked(true);
-       !choseZoningRole.
-
-// TODO: remove this goal if we are sure it never gets called.
-@miscountedReplies
-+!receivedAllReplies:
-    isAvailableForZoning
-    & .count(zoneReply[source(_)], RepliesAmount)
-    & broadcastAgentList(BroadcastList)
-    & .length(BroadcastList, AgentsAmount)
-    & AgentsAmount <  RepliesAmount
-    <- .print("[zoning] If you can read this, then the code does not work properly. We counted more replies than agents.").
-       
-// We still have to wait and fail this achievement goal silently as true.
-+!receivedAllReplies.
 
 // This agent becomes a coach because the bestZone is his. He will inform his
 // minions about it and move to the CentreNode.
@@ -243,7 +119,7 @@ defaultRangeForSingleZones(3).
     & currentRange(Range)
     & position(Position)
     <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
-       +zoneGoalVertex(GoalVertex);
+       -+zoneGoalVertex(GoalVertex);
        IncreasedRange = Range + 1;
        -+currentRange(IncreasedRange);
        
@@ -260,3 +136,13 @@ defaultRangeForSingleZones(3).
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:
     isAvailableForZoning.
+
+// Reset the current range, remove role percepts, unlock and remove goal vertex
+// if any. Called when zones break up.
++!resetZoningBeliefs:
+    defaultRangeForSingleZones(Range)
+    <- -+isMinion(false);
+       -+isCoach(false);
+       -+isLocked(false);
+       -zoneGoalVertex(_)[source(_)]; 
+       -+currentRange(Range).

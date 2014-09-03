@@ -20,6 +20,10 @@ public class placeAgentsOnZone extends DefaultInternalAction {
 
     private static final long serialVersionUID = -2434013129946995372L;
 
+    /**
+     * @return {@code false} if not all nodes could be filled with agents as
+     *         some could not reach the nodes.
+     */
     @Override
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
