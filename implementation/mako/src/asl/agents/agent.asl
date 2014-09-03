@@ -261,14 +261,6 @@ zoneMode(false).
     <- .print("[zoning] This should not be triggered because only agents get selected that could reach their zone node.");
        -zoneGoalVertex(GoalVertex)[source(_)];
        !cancelledZoneBuilding.
-
-// Condition to start zoning phase
-// TODO: Make entering zone mode more dynamic
-+achievement(surveyed640)[source(self)]:
- zoneMode(false)
- <-
- .print("Done with surveying. Entering zone mode.");
- -+zoneMode(true).
 	
 +!doAction:
 	energy(Energy)
