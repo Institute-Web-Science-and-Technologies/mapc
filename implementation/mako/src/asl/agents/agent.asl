@@ -7,8 +7,6 @@
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
 { include("../actions/zoning.asl") }
-{ include("../actions/zoning.minion.asl") }
-{ include("../actions/zoning.coach.asl") }
 { include("../misc/initialization.asl") }
 
 zoneMode(false).
@@ -250,7 +248,7 @@ zoneMode(false).
 // to 0-1 steps to reach their goal though.
 +!doAction:
     zoneGoalVertex(GoalVertex)
-    <- .print("[zoning] I'm going to build a zone at ", GoalVertex);
+    <- .print("[zoning] I'm going to a zone node at ", GoalVertex);
        !goto(GoalVertex).
 
 // If the agent has nothing to do, it should recharge instead of doing nothing.

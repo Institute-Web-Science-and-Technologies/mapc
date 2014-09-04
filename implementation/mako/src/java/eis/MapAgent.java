@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import eis.iilang.Numeral;
 import eis.iilang.Percept;
@@ -425,7 +426,7 @@ public class MapAgent {
     public HashMap<String, Vertex> getAgentZonePositions(
             Vertex zoneCenterVertex, ArrayList<String> agents) {
         // order agent by distance to center vertex of the zone
-        TreeMap<Integer, String> distances = new TreeMap<Integer, String>();
+        TreeSet<SortablePair<Agent>> distanceAgentPairs = new TreeSet<>();
         ArrayList<Agent> blockedAgents = new ArrayList<>();
         for (String agentName : agents) {
             Agent agent = getAgent(agentName);
@@ -434,39 +435,56 @@ public class MapAgent {
                 Path path = vertex.getPath(zoneCenterVertex);
                 if (path != null) {
                     int pathHops = path.getPathHops();
-                    distances.put(pathHops, agentName);
+                    distanceAgentPairs.add(new SortablePair<Agent>(pathHops, agent));
                     agent.setBuildingZone(true);
                     blockedAgents.add(agent);
+                } else {
+                    logger.info("[bug] If you can read this then getBestZone does not work. No path to CentreNode.");
                 }
+            } else {
+                logger.info("[bug] If you can read this then getBestZone does not work. No agent with given name.");
             }
         }
 
         // map agents to zone positions
         HashMap<String, Vertex> map = new HashMap<String, Vertex>();
         Zone zone = zoneCenterVertex.getBestMinimalZone();
-        if (zone != null || distances.isEmpty()) {
-            ArrayList<Vertex> positions = zone.getPositions();
-            Integer key = distances.lastKey();
-            while (positions.size() > 0 && key != null) {
-                String agentName = distances.get(key);
-                Agent agent = getAgent(agentName);
-                key = distances.lowerKey(key);
-                Vertex position = agent.getPosition();
+        if (zone != null || distanceAgentPairs.isEmpty()) {
+            ArrayList<Vertex> zoneNodes = zone.getPositions();
+            assert (distanceAgentPairs.size() == zoneNodes.size());
+            SortablePair<Agent> pair = distanceAgentPairs.first();
+
+            while (zoneNodes.size() > 0 && pair != null) {
+                Agent agent = pair.getO();
+                Vertex agentPosition = agent.getPosition();
+
                 Vertex closest = null;
                 Path closestPath = null;
-                for (Vertex destination : positions) {
-                    Path destinationPath = position.getPath(destination);
+                for (Vertex zoneNode : zoneNodes) {
+                    Path destinationPath = agentPosition.getPath(zoneNode);
                     // there is a closestPath
                     if (destinationPath != null) {
                         if (closest == null || closestPath.getPathHops() > destinationPath.getPathHops()) {
-                            closest = destination;
+                            closest = zoneNode;
                             closestPath = destinationPath;
                         }
                     }
                 }
-                if (closest != null) {
-                    map.put(agentName, closest);
-                    positions.remove(closest);
+                if (closest != null) { // not unreachable for current agent
+                    map.put(agent.getJasonName(), closest);
+                    zoneNodes.remove(closest);
+                    // remove positioned agent:
+                    distanceAgentPairs.remove(pair);
+                    // reset looking for an agent to start from the closest
+                    // again:
+                    if (!distanceAgentPairs.isEmpty()) {
+                        // throws NoSuchElementException instead of returning
+                        // null:
+                        pair = distanceAgentPairs.first();
+                    }
+                } else {
+                    // choose the next more distant agent for the next round:
+                    pair = distanceAgentPairs.higher(pair);
                 }
             }
         }
@@ -553,7 +571,7 @@ public class MapAgent {
     public List<String> getClosestAgentsToZone(Vertex center, int count) {
         ArrayList<String> closestAgents = new ArrayList<String>();
 
-        // sort agents in regard of their distance to the center of the zone
+        // key agents in regard of their distance to the center of the zone
         TreeMap<Integer, ArrayList<String>> distanceFromZone = new TreeMap<Integer, ArrayList<String>>();
         HashSet<Agent> availableZoners = new HashSet<Agent>();
         for (Agent agent : getFriendlyAgents()) {

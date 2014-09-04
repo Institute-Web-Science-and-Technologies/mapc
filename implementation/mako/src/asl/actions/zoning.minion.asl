@@ -31,8 +31,8 @@
        -zoneGoalVertex(GoalVertex)[source(WannabeCoach)].
 
 // Debug message to be sure that there never exists more than one zoneGoalVertex
-// TODO: remove if this never pops up.
+// TODO: This gets triggered but I would think, it shouldn't.
 +zoneGoalVertex(_)[source(_)]:
     .count(zoneGoalVertex(_)[source(_)], Amount)
     & Amount > 1
-    <- .print("[zoning] THIS SHOULD NEVER HAPPEN. If you see this, tell @0nse and @manuelmittler.").
+    <- .print("[zoning][bug] THIS SHOULD NEVER HAPPEN – but it does...").

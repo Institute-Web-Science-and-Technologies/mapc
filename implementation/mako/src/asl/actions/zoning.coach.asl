@@ -50,6 +50,7 @@
 // The lock should make sure that this goal is not processed before
 // !assignededAgentsTheirPosition was processed.
 // Also resets the currentRange.
+// TODO: I've seen this being triggered twice in a row. This should not happen. Investigate it further!
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & isLocked(false)
@@ -75,16 +76,17 @@
     & isLocked(true)
     <- .print("[zoning][coach] The periodic zone breakup interfered with me just having started building a zone. Ignoring it.").
 
-// TODO: This goal should be removable once the iAs work properly.
+// TODO: This goal should be removable.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
     <- !informedSaboteursAboutZoneBreakup;
-       .print("[zoning][coach] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
+       !resetZoningBeliefs;
+       .print("[zoning][coach][bug] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
 
-// TODO: This goal should be removable once the iAs work properly.
-// I think this happens due to destroyZone failing because it only happens after it has been called once.
+// TODO: This goal should hopefully be removable. Keeping it here for a little more debugging though.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;
-       .print("[zoning][coach] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
+       !resetZoningBeliefs;
+       .print("[zoning][coach][bug] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
