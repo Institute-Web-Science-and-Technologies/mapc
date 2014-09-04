@@ -571,7 +571,7 @@ public class MapAgent {
     public List<String> getClosestAgentsToZone(Vertex center, int count) {
         ArrayList<String> closestAgents = new ArrayList<String>();
 
-        // key agents in regard of their distance to the center of the zone
+        // sort agents in regard of their distance to the center of the zone
         TreeMap<Integer, ArrayList<String>> distanceFromZone = new TreeMap<Integer, ArrayList<String>>();
         HashSet<Agent> availableZoners = new HashSet<Agent>();
         for (Agent agent : getFriendlyAgents()) {
