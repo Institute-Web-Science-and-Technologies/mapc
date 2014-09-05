@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<interfaceConfig scenario="mars2013" host="localhost" port="12300" 
+<interfaceConfig scenario="mars2014" host="localhost" port="12300" 
         scheduling="yes" times="no" notifications="yes" queued="no" iilang="yes"
         statisticsFile="no" statisticsShell="no" submitStatistic="no">
   <entities>
