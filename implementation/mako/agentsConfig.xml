@@ -30,34 +30,5 @@
     <agent serverName="a26" entity="connectionA26" jasonName="inspector4" team="teamA"/>
     <agent serverName="a27" entity="connectionA27" jasonName="inspector5" team="teamA"/>
     <agent serverName="a28" entity="connectionA28" jasonName="inspector6" team="teamA"/>
-    
-    <agent serverName="b1" entity="connectionB1" jasonName="explorer1" team="teamB"/>
-    <agent serverName="b2" entity="connectionB2" jasonName="explorer2" team="teamB"/>
-    <agent serverName="b3" entity="connectionB3" jasonName="explorer3" team="teamB"/>
-    <agent serverName="b4" entity="connectionB4" jasonName="explorer4" team="teamB"/>
-    <agent serverName="b5" entity="connectionB5" jasonName="explorer5" team="teamB"/>
-    <agent serverName="b6" entity="connectionB6" jasonName="explorer6" team="teamB"/>
-    <agent serverName="b7" entity="connectionB7" jasonName="repairer1" team="teamB"/>
-    <agent serverName="b8" entity="connectionB8" jasonName="repairer2" team="teamB"/>
-    <agent serverName="b9" entity="connectionB9" jasonName="repairer3" team="teamB"/>
-    <agent serverName="b10" entity="connectionB10" jasonName="repairer4" team="teamB"/>
-    <agent serverName="b11" entity="connectionB11" jasonName="repairer5" team="teamB"/>
-    <agent serverName="b12" entity="connectionB12" jasonName="repairer6" team="teamB"/>
-    <agent serverName="b13" entity="connectionB13" jasonName="saboteur1" team="teamB"/>
-    <agent serverName="b14" entity="connectionB14" jasonName="saboteur2" team="teamB"/>
-    <agent serverName="b15" entity="connectionB15" jasonName="saboteur3" team="teamB"/>
-    <agent serverName="b16" entity="connectionB16" jasonName="saboteur4" team="teamB"/>
-    <agent serverName="b17" entity="connectionB17" jasonName="sentinel1" team="teamB"/>
-    <agent serverName="b18" entity="connectionB18" jasonName="sentinel2" team="teamB"/>
-    <agent serverName="b19" entity="connectionB19" jasonName="sentinel3" team="teamB"/>
-    <agent serverName="b20" entity="connectionB20" jasonName="sentinel4" team="teamB"/>
-    <agent serverName="b21" entity="connectionB21" jasonName="sentinel5" team="teamB"/>
-    <agent serverName="b22" entity="connectionB22" jasonName="sentinel6" team="teamB"/>
-    <agent serverName="b23" entity="connectionB23" jasonName="inspector1" team="teamB"/>
-    <agent serverName="b24" entity="connectionB24" jasonName="inspector2" team="teamB"/>
-    <agent serverName="b25" entity="connectionB25" jasonName="inspector3" team="teamB"/>
-    <agent serverName="b26" entity="connectionB26" jasonName="inspector4" team="teamB"/>
-    <agent serverName="b27" entity="connectionB27" jasonName="inspector5" team="teamB"/>
-    <agent serverName="b28" entity="connectionB28" jasonName="inspector6" team="teamB"/>
   </agents>
 </agentsConfig>
