@@ -637,6 +637,7 @@ public class MapAgent {
         logger.info("Could not find agent with name: " + name);
         Agent newAgent = new Agent();
         newAgent.setServerName(name);
+        newAgent.setJasonName("unknown");
         agents.put(name, newAgent);
         return newAgent;
     }
