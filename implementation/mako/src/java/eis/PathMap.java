@@ -130,7 +130,26 @@ public class PathMap {
         return new ArrayList<Path>(knownPaths.values());
     }
 
+    /**
+     * Adds an edge to a direct neighbour of this node with its associated
+     * weight.
+     * 
+     * @param neighbour
+     *            the neighbour node
+     * @param edgeWeight
+     *            the weight of the edge to the neighbour node
+     */
     public void addEdgeCost(Vertex neighbour, int edgeWeight) {
+        // If we already know the edge weight, don't overwrite it. We need this
+        // check because otherwise it will get overwritten with the maximum edge
+        // value by Vertex.setNeighbour() (there's probably a better way to do
+        // this).
+        if (edgeCosts.containsKey(neighbour)) {
+            Integer previousCosts = edgeCosts.get(neighbour);
+            if (previousCosts <= edgeWeight) {
+                return;
+            }
+        }
         edgeCosts.put(neighbour, edgeWeight);
     }
 
