@@ -6,11 +6,27 @@
 { include("../actions/getRepaired.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
-{ include("../actions/zoning.asl") }
+//{ include("../actions/zoning.asl") }
 { include("../misc/initialization.asl") }
 
 zoneMode(false).
 
++health(0)[source(self)]:
+	step(Step)
+	& not disabledSince(_)
+	<-
+	+disabledSince(Step);
+	.print("I have been disabled.").
+	
++health(Health)[source(self)]:
+	Health > 0
+	& step(Step)
+	& disabledSince(DisabledSinceStep)
+	& StepsDisabled = Step - DisabledSinceStep
+	<-
+	.print("I am no longer disabled. It took ", StepsDisabled, " steps to repair me.");
+	.abolish(disabledSince(_)).
+	
 // Try to do an action in every step.
 +requestAction:
     position(Position)
@@ -24,7 +40,7 @@ zoneMode(false).
     .abolish(requestAction);
 //  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
 //	enemy agents that aren't saboteurs) and must be abolished every step as well.
-    .abolish(ignoreEnemy);
+    .abolish(ignoreEnemy(_));
 //  The nothingToExplore belief is used to catch the case where we tried to
 //	explore, but there were no nodes left to explore. We have to abolish this
 //	every turn because it might be the case that a new part of the map has been
