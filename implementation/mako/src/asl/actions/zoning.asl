@@ -124,6 +124,7 @@ defaultRangeForSingleZones(1).
        -+currentRange(IncreasedRange);
        
       .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range);
+      // TODO: we should probably make sure that this happens only after a step?:
       !preparedNewZoningRound.
 
 // A zone was properly built but this agent wasn't part of it. He'll try his
