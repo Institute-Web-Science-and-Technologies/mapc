@@ -76,7 +76,8 @@ public class MapAgent {
 
     /**
      * For the given vertex, return a list of "safe" neighbour vertices. A safe
-     * vertex is one where no enemy agent is currently either on or adjacent to.
+     * vertex is one where no enemy could-be saboteur is currently either on or
+     * adjacent to.
      * 
      * @param vertex
      *            the vertex to return the list of enemy-free neighbour vertices
@@ -88,7 +89,8 @@ public class MapAgent {
         ArrayList<Vertex> neighbours = vertex.getNeighbours();
         for (Agent enemy : getEnemyAgents()) {
             Vertex enemyPosition = enemy.getPosition();
-            if (enemyPosition != null) {
+            Object enemyRole = enemy.getRole();
+            if (enemyPosition != null && (enemyRole == null || enemyRole == "saboteur")) {
                 neighbours.remove(enemyPosition);
                 neighbours.removeAll(enemyPosition.getNeighbours());
             }
