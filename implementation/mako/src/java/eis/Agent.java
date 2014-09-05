@@ -7,7 +7,7 @@ package eis;
 public class Agent {
     // private AgentLogger logger = new AgentLogger("MapAgent");
     private String serverName; // e.g. "a16"
-    private String team; // teamA or teamB
+    private String team; // e.g. MAKo or teamB
     private String enemyTeam; // TODO: remove this
     private String entity; // e.g. connectionA1
     private String jasonName; // e.g. "explorer1"
@@ -185,6 +185,9 @@ public class Agent {
     }
 
     public boolean isInOurTeam() {
+        if (team == null) {
+            return false;
+        }
         return team.equalsIgnoreCase(AgentHandler.selectedTeam);
     }
 

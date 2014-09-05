@@ -25,8 +25,10 @@ import org.w3c.dom.NodeList;
 public class AgentHandler {
 
     private static String configPath = "agentsConfig.xml";
-    public static String selectedTeam = "teamA";
-    public static String enemyTeam = "teamB";
+
+    public static String selectedTeam = "MAKo";
+
+    // public static String enemyTeam = "teamB";
 
     /**
      * Create the agents according to the specification given in the agents' XML
@@ -66,23 +68,24 @@ public class AgentHandler {
 
                         Element e = (Element) rootChildChild;
 
-                        String serverName = e.getAttribute("serverName").toLowerCase();
+                        String serverName = e.getAttribute("serverName");
                         String entity = e.getAttribute("entity");
-                        String team = e.getAttribute("team").toLowerCase();
-                        String jasonName = e.getAttribute("jasonName").toLowerCase();
+                        String team = e.getAttribute("team");
+                        String jasonName = e.getAttribute("jasonName");
 
                         // add to agents
                         Agent agent = new Agent();
                         agent.setServerName(serverName);
                         agent.setEntity(entity);
                         agent.setTeam(team);
-                        String enemy = (team.equalsIgnoreCase(selectedTeam)) ? enemyTeam : selectedTeam;
-                        agent.setEnemyTeam(enemy);
+                        // String enemy = (team.equalsIgnoreCase(selectedTeam))
+                        // ? enemyTeam : selectedTeam;
+                        // agent.setEnemyTeam(enemy);
                         agent.setJasonName(jasonName);
                         MapAgent.getInstance().addAgent(serverName, agent);
-                        if (team.equalsIgnoreCase(selectedTeam)) {
-                            agents.put(serverName, agent);
-                        }
+                        // if (team.equalsIgnoreCase(selectedTeam)) {
+                        agents.put(serverName, agent);
+                        // }
                     }
                 }
             }

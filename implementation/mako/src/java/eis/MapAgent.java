@@ -166,9 +166,12 @@ public class MapAgent {
     private void handleVisibleEntity(Percept percept) {
         String vehicle = percept.getParameters().get(0).toString();
         Vertex position = getVertex(percept.getParameters().get(1).toString());
+        String team = percept.getParameters().get(2).toString();
         boolean disabled = percept.getParameters().get(3).toString().equalsIgnoreCase("disabled");
 
         Agent agent = getAgent(vehicle);
+        agent.setServerName(vehicle);
+        agent.setTeam(team);
         agent.setPosition(position);
         agent.setDisabled(disabled);
     }
@@ -632,7 +635,10 @@ public class MapAgent {
             }
         }
         logger.info("Could not find agent with name: " + name);
-        return null;
+        Agent newAgent = new Agent();
+        newAgent.setServerName(name);
+        agents.put(name, newAgent);
+        return newAgent;
     }
 
     public Vertex getNextBestValueVertex(Vertex position, int range) {
