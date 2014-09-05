@@ -77,9 +77,10 @@ strategy(attack_chase).
     .send(SaboteurList, tell, cancelZoneDefence(ZoneCentre));
     !doAction.
     
-+!doAttack(Vehicle,Vertex):
++!doAttack(Vehicle, Vertex):
     lastActionResult(failed_in_range)
     & lastAction(attack)
+    & not position(Vertex)
     <- .print("I failed to attack ", Vehicle, ". But I will follow it.");
        !goto(Vertex).
 
