@@ -6,13 +6,6 @@ role(repairer).
 // Initialize the list of agents to repair
 repairQueue([]).
 
-// If the repairer is disabled, he cannot repair others => don't process repair request.
-+requestRepair(DisabledAgentPosition)[source(Agent)]:
- 	 health(Health)
- 	 & Health == 0
-    <-
-    .abolish(requestRepair(_)[source(Agent)]).
-
 // When a repair request is received from the agent - start negotiating about the closest less busy repairer
 +requestRepair(DisabledAgentPosition)[source(Agent)]:
     position(Position)
