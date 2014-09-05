@@ -126,8 +126,8 @@
 //+visibleEdge(Vertex1, Vertex2)[source(percept)] <-
 //  .print("Received percept visibleEdge(", Vertex1, ",", Vertex2, ").").
 
-+visibleEntity(Agent,Vertex,Team,State)[source(percept)] <-
-  .print("@@@@@@@@@@@@@@@@@@Received percept visibleEntity(", Agent, ",", Vertex, ",", Team, ",", State, ").").
+//+visibleEntity(Agent,Vertex,Team,State)[source(percept)] <-
+//  .print("Received percept visibleEntity(", Agent, ",", Vertex, ",", Team, ",", State, ").").
 
 //+visibleVertex(Vertex, Team)[source(percept)] <-
 //  .print("Received percept visibleVertex(", Vertex, ",", Team, ").").

@@ -7,7 +7,6 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
 import eis.Agent;
-import eis.AgentLogger;
 import eis.JasonHelper;
 import eis.MapAgent;
 
@@ -27,8 +26,6 @@ public class couldBeSaboteur extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
         Agent agent = MapAgent.getInstance().getAgent(args[0].toString());
-        AgentLogger logger = new AgentLogger("couldBeSaboteur");
-        logger.info("@@@@@@@@@@@@@@" + agent + "@@@@@@@@@@" + args[0].toString());
         String agentRole = agent.getRole();
         Integer visRange = agent.getVisRange();
         Term visRangeTerm = args[1];
