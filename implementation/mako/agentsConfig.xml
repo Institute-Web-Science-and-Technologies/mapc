@@ -2,34 +2,34 @@
 <!--author: Artur Daudrich-->
 <agentsConfig>
   <agents>
-    <agent serverName="a1" entity="connectionA1" jasonName="explorer1" team="MAKo"/>
-    <agent serverName="a2" entity="connectionA2" jasonName="explorer2" team="MAKo"/>
-    <agent serverName="a3" entity="connectionA3" jasonName="explorer3" team="MAKo"/>
-    <agent serverName="a4" entity="connectionA4" jasonName="explorer4" team="MAKo"/>
-    <agent serverName="a5" entity="connectionA5" jasonName="explorer5" team="MAKo"/>
-    <agent serverName="a6" entity="connectionA6" jasonName="explorer6" team="MAKo"/>
-    <agent serverName="a7" entity="connectionA7" jasonName="repairer1" team="MAKo"/>
-    <agent serverName="a8" entity="connectionA8" jasonName="repairer2" team="MAKo"/>
-    <agent serverName="a9" entity="connectionA9" jasonName="repairer3" team="MAKo"/>
-    <agent serverName="a10" entity="connectionA10" jasonName="repairer4" team="MAKo"/>
-    <agent serverName="a11" entity="connectionA11" jasonName="repairer5" team="MAKo"/>
-    <agent serverName="a12" entity="connectionA12" jasonName="repairer6" team="MAKo"/>
-    <agent serverName="a13" entity="connectionA13" jasonName="saboteur1" team="MAKo"/>
-    <agent serverName="a14" entity="connectionA14" jasonName="saboteur2" team="MAKo"/>
-    <agent serverName="a15" entity="connectionA15" jasonName="saboteur3" team="MAKo"/>
-    <agent serverName="a16" entity="connectionA16" jasonName="saboteur4" team="MAKo"/>
-    <agent serverName="a17" entity="connectionA17" jasonName="sentinel1" team="MAKo"/>
-    <agent serverName="a18" entity="connectionA18" jasonName="sentinel2" team="MAKo"/>
-    <agent serverName="a19" entity="connectionA19" jasonName="sentinel3" team="MAKo"/>
-    <agent serverName="a20" entity="connectionA20" jasonName="sentinel4" team="MAKo"/>
-    <agent serverName="a21" entity="connectionA21" jasonName="sentinel5" team="MAKo"/>
-    <agent serverName="a22" entity="connectionA22" jasonName="sentinel6" team="MAKo"/>
-    <agent serverName="a23" entity="connectionA23" jasonName="inspector1" team="MAKo"/>
-    <agent serverName="a24" entity="connectionA24" jasonName="inspector2" team="MAKo"/>
-    <agent serverName="a25" entity="connectionA25" jasonName="inspector3" team="MAKo"/>
-    <agent serverName="a26" entity="connectionA26" jasonName="inspector4" team="MAKo"/>
-    <agent serverName="a27" entity="connectionA27" jasonName="inspector5" team="MAKo"/>
-    <agent serverName="a28" entity="connectionA28" jasonName="inspector6" team="MAKo"/>
+    <agent serverName="MAKo1" entity="connectionA1" jasonName="explorer1" team="MAKo"/>
+    <agent serverName="MAKo2" entity="connectionA2" jasonName="explorer2" team="MAKo"/>
+    <agent serverName="MAKo3" entity="connectionA3" jasonName="explorer3" team="MAKo"/>
+    <agent serverName="MAKo4" entity="connectionA4" jasonName="explorer4" team="MAKo"/>
+    <agent serverName="MAKo5" entity="connectionA5" jasonName="explorer5" team="MAKo"/>
+    <agent serverName="MAKo6" entity="connectionA6" jasonName="explorer6" team="MAKo"/>
+    <agent serverName="MAKo7" entity="connectionA7" jasonName="repairer1" team="MAKo"/>
+    <agent serverName="MAKo8" entity="connectionA8" jasonName="repairer2" team="MAKo"/>
+    <agent serverName="MAKo9" entity="connectionA9" jasonName="repairer3" team="MAKo"/>
+    <agent serverName="MAKo10" entity="connectionA10" jasonName="repairer4" team="MAKo"/>
+    <agent serverName="MAKo11" entity="connectionA11" jasonName="repairer5" team="MAKo"/>
+    <agent serverName="MAKo12" entity="connectionA12" jasonName="repairer6" team="MAKo"/>
+    <agent serverName="MAKo13" entity="connectionA13" jasonName="saboteur1" team="MAKo"/>
+    <agent serverName="MAKo14" entity="connectionA14" jasonName="saboteur2" team="MAKo"/>
+    <agent serverName="MAKo15" entity="connectionA15" jasonName="saboteur3" team="MAKo"/>
+    <agent serverName="MAKo16" entity="connectionA16" jasonName="saboteur4" team="MAKo"/>
+    <agent serverName="MAKo17" entity="connectionA17" jasonName="sentinel1" team="MAKo"/>
+    <agent serverName="MAKo18" entity="connectionA18" jasonName="sentinel2" team="MAKo"/>
+    <agent serverName="MAKo19" entity="connectionA19" jasonName="sentinel3" team="MAKo"/>
+    <agent serverName="MAKo20" entity="connectionA20" jasonName="sentinel4" team="MAKo"/>
+    <agent serverName="MAKo21" entity="connectionA21" jasonName="sentinel5" team="MAKo"/>
+    <agent serverName="MAKo22" entity="connectionA22" jasonName="sentinel6" team="MAKo"/>
+    <agent serverName="MAKo23" entity="connectionA23" jasonName="inspector1" team="MAKo"/>
+    <agent serverName="MAKo24" entity="connectionA24" jasonName="inspector2" team="MAKo"/>
+    <agent serverName="MAKo25" entity="connectionA25" jasonName="inspector3" team="MAKo"/>
+    <agent serverName="MAKo26" entity="connectionA26" jasonName="inspector4" team="MAKo"/>
+    <agent serverName="MAKo27" entity="connectionA27" jasonName="inspector5" team="MAKo"/>
+    <agent serverName="MAKo28" entity="connectionA28" jasonName="inspector6" team="MAKo"/>
     
   </agents>
 </agentsConfig>

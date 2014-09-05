@@ -3,34 +3,34 @@
         scheduling="yes" times="no" notifications="yes" queued="no" iilang="yes"
         statisticsFile="no" statisticsShell="no" submitStatistic="no">
   <entities>
-    <entity name="connectionA1" username="a1" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA2" username="a2" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA3" username="a3" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA4" username="a4" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA5" username="a5" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA6" username="a6" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA7" username="a7" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA8" username="a8" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA9" username="a9" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA10" username="a10" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA11" username="a11" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA12" username="a12" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA13" username="a13" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA14" username="a14" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA15" username="a15" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA16" username="a16" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA17" username="a17" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA18" username="a18" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA19" username="a19" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA20" username="a20" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA21" username="a21" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA22" username="a22" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA23" username="a23" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA24" username="a24" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA25" username="a25" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA26" username="a26" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA27" username="a27" password="1" iilang="no" xml="no"/>
-    <entity name="connectionA28" username="a28" password="1" iilang="no" xml="no"/>
+    <entity name="connectionA1" username="MAKo1" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA2" username="MAKo2" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA3" username="MAKo3" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA4" username="MAKo4" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA5" username="MAKo5" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA6" username="MAKo6" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA7" username="MAKo7" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA8" username="MAKo8" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA9" username="MAKo9" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA10" username="MAKo10" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA11" username="MAKo11" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA12" username="MAKo12" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA13" username="MAKo13" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA14" username="MAKo14" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA15" username="MAKo15" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA16" username="MAKo16" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA17" username="MAKo17" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA18" username="MAKo18" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA19" username="MAKo19" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA20" username="MAKo20" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA21" username="MAKo21" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA22" username="MAKo22" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA23" username="MAKo23" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA24" username="MAKo24" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA25" username="MAKo25" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA26" username="MAKo26" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA27" username="MAKo27" password="AG7hcg" iilang="no" xml="no"/>
+    <entity name="connectionA28" username="MAKo28" password="AG7hcg" iilang="no" xml="no"/>
   </entities>
   
 </interfaceConfig>
