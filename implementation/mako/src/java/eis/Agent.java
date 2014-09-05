@@ -124,11 +124,11 @@ public class Agent {
      * @param currentStep
      *            the current step
      * @return true if the agent has been inspected since a specific number of
-     *         steps (currently 20)
+     *         steps (currently 50)
      */
     public boolean isInspected() {
         int currentStep = MapAgent.getInstance().getStep();
-        return ((inspectionStep != 0) && (currentStep - inspectionStep) < 20);
+        return ((inspectionStep != 0) && (currentStep - inspectionStep) < 50);
     }
 
     public void setInspectionStep(int inspectionStep) {
