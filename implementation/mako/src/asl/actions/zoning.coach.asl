@@ -60,7 +60,7 @@
     <- ia.destroyZone(CentreNode, ZoneSize);
        .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
        .send(UnawareMinions, achieve, cancelledZoneBuilding);
-       .print("[zoning][coach] I am destroying this zone and informing ", UnawareMinions);
+       .print("[zoning][coach] ", Sender, " told me to destroy my zone. I had to inform ", UnawareMinions);
        
        // Cancel ordered saboteurs if any. Can't be "!!" because it needs
        // bestZone(_,CentreNode,_):
@@ -76,7 +76,7 @@
     & isLocked(true)
     <- .print("[zoning][coach] The periodic zone breakup interfered with me just having started building a zone. Ignoring it.").
 
-// TODO: This goal should be removable.
+// TODO: This goal should be removable. I haven't seen it being called :)
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
@@ -84,9 +84,15 @@
        !resetZoningBeliefs;
        .print("[zoning][coach][bug] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
 
-// TODO: This goal should hopefully be removable. Keeping it here for a little more debugging though.
+// TODO: This goal gets triggered but it shouldn't.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;
        !resetZoningBeliefs;
-       .print("[zoning][coach][bug] I forgot about my bestZone belief. I have no idea how this can happen. Doing nothing.").
+       !preparedNewZoningRound;
+       .print("[zoning][coach][bug] I forgot about my bestZone belief. I have no idea how this can happen. Restarting zoning.").
+
+// TODO: This should not be called but I've seen it being called.
++!cancelledZoneBuilding[source(Sender)]:
+    isLocked(true) & isMinion(false)
+    <- .print("[zoning][bug] A locked agent who is neither coach nor minion should cancel his zone according to ", Sender).

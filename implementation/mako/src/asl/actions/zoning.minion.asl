@@ -12,6 +12,7 @@
         | bestZone(_, _, _)[source(Sender)]
     )
     <- !resetZoningBeliefs;       
+       .print("[zoning][minion] Breaking up my zone because ", Sender, " told me so.");
        !preparedNewZoningRound.
 
 // TODO: minions seem to have forgotten about their bestZone when this get triggered:
@@ -24,7 +25,7 @@
 // him to destroy his zone.
 // TODO: it can happen that we deny s.o. to build a zone with us and he does the same to us. Naturally, this sounds quite idiotic but otherwise we wouldn't know, who's the coach. Fix this, when you have free time.
 +zoneGoalVertex(GoalVertex)[source(WannabeCoach)]:
-    ~bestZone(_, _, _)[source(WannabeCoach)]
+    not bestZone(_, _, _)[source(WannabeCoach)]
     & bestZone(_,_,_)[source(Coach)]
     <- .print("[zoning] ", WannabeCoach, " wanted me in his zone but I'm sworn to ", Coach, ". Telling him to destroy his zone.");
        .send(WannabeCoach, achieve, cancelledZoneBuilding);
