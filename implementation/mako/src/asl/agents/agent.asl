@@ -6,7 +6,7 @@
 { include("../actions/getRepaired.asl") }
 // zoning might be split down onto concrete agents e.g. because the explorer
 // should prefer probing instead of zoning:
-//{ include("../actions/zoning.asl") }
+{ include("../actions/zoning.asl") }
 { include("../misc/initialization.asl") }
 
 zoneMode(false).
