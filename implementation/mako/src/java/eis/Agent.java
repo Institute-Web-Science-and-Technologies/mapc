@@ -5,7 +5,6 @@ package eis;
  * @author Michael Sewell
  */
 public class Agent {
-    // private AgentLogger logger = new AgentLogger("MapAgent");
     private String serverName; // e.g. "a16"
     private String team; // e.g. MAKo or teamB
     private String enemyTeam; // TODO: remove this
@@ -37,7 +36,7 @@ public class Agent {
     }
 
     public void setServerName(String name) {
-        this.serverName = name;
+        this.serverName = name.toLowerCase();
     }
 
     public String getTeam() {
@@ -45,7 +44,7 @@ public class Agent {
     }
 
     public void setTeam(String team) {
-        this.team = team;
+        this.team = team.toLowerCase();
     }
 
     public String getEntity() {

@@ -625,6 +625,7 @@ public class MapAgent {
     }
 
     public Agent getAgent(String name) {
+        name = name.toLowerCase();
         if (agents.containsKey(name)) {
             return agents.get(name);
         } else {
