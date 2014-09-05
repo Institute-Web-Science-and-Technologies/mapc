@@ -66,10 +66,10 @@ public class AgentHandler {
 
                         Element e = (Element) rootChildChild;
 
-                        String serverName = e.getAttribute("serverName");
-                        String entity = e.getAttribute("entity");
-                        String team = e.getAttribute("team");
-                        String jasonName = e.getAttribute("jasonName");
+                        String serverName = e.getAttribute("serverName").toLowerCase();
+                        String entity = e.getAttribute("entity").toLowerCase();
+                        String team = e.getAttribute("team").toLowerCase();
+                        String jasonName = e.getAttribute("jasonName").toLowerCase();
 
                         // add to agents
                         Agent agent = new Agent();
