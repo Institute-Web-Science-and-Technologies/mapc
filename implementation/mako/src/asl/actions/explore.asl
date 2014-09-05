@@ -15,7 +15,7 @@
 	.print("I am currently on ", Position, ". The nearest unsurveyed vertex is ", Destination);
 	!goto(Destination).
 	
-// If there are no unsurveyed vertices left, we're done with exploring.
+// If there are no unsurveyed vertices left, we're done with exploring (this step).
 +!doExploring <-
 	.print("Nothing to explore!");
 	+nothingToExplore;
