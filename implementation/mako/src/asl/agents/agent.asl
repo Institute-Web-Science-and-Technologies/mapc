@@ -123,7 +123,6 @@ zoneMode(false).
 	<-
 	.print("Danger! Active enemy could-be saboteur ", Vehicle, " on ", VehiclePosition, " is in attacking range!");
 	!avoidEnemy.
-	
 
 // If a friendly disabled agent is within half of the visibility range of a repairer,
 // repair it.
@@ -139,14 +138,9 @@ zoneMode(false).
 	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
 	!doRepair(Vehicle, VehiclePosition).
     
-
-	
-// If an agent sees an enemy on its position, it has to deal with the enemy.
-
- 	   
 //Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
-	role(saboteur)
+	(role(saboteur) | role(inspector))
 	& money(Money)
 	& Money > 11
 	& visRange(VisRange)
@@ -284,7 +278,8 @@ zoneMode(false).
 	& Energy == Max
 	& zoneMode(false)
 	<- 
-	.print("Error: Energy is max, and zoneMode is false.").
+	.print("Error: Energy is max, and zoneMode is false.");
+	skip.
 
 +!doAction
     <- .print("I have nothing to do. I'll skip."); 
