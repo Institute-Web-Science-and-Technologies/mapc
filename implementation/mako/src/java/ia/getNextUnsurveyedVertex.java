@@ -19,6 +19,9 @@ public class getNextUnsurveyedVertex extends DefaultInternalAction {
         Term destinationTerm = terms[1];
 
         Vertex destination = MapAgent.getInstance().getNextUnsurveyedVertex(position);
+        if (position == destination) {
+            return false;
+        }
 
         return unifier.unifies(destinationTerm, JasonHelper.getTerm(destination.getIdentifier()));
     }

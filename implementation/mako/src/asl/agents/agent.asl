@@ -25,6 +25,11 @@ zoneMode(false).
 //  The ignoreEnemy belief is used by agents to ignore "harmless" agents (all
 //	enemy agents that aren't saboteurs) and must be abolished every step as well.
     .abolish(ignoreEnemy);
+//  The nothingToExplore belief is used to catch the case where we tried to
+//	explore, but there were no nodes left to explore. We have to abolish this
+//	every turn because it might be the case that a new part of the map has been
+//	revealed and we can explore once again. 
+    .abolish(nothingToExplore);
 	.print("[Step ", Step, "] My position is ", Position, ". My last action was '", Action,"'. Result was ", Result,". My energy is ", Energy ,".");
     !doAction.
 
@@ -52,7 +57,7 @@ zoneMode(false).
 	recharge.
 	
 // If an inspector sees an enemy that currently doesn't count as inspected, inspect it.
-// We keep track of the inspected state for enemy agents in the MapAgent.
+// We keep track of the inspected state for enemy agents in the Java agent class.
 +!doAction:
 	role(inspector)
 	& visibleEntity(Vehicle, VehiclePosition, Team, _)
@@ -116,7 +121,7 @@ zoneMode(false).
 	& Distance <= VehicleVisRange
 	& zoneMode(false)
 	<-
-	.print("Danger! Active enemy could-be saboteur", Vehicle, " on ", VehiclePosition, " is in attacking range!");
+	.print("Danger! Active enemy could-be saboteur ", Vehicle, " on ", VehiclePosition, " is in attacking range!");
 	!avoidEnemy.
 	
 
@@ -214,6 +219,7 @@ zoneMode(false).
 	<- .print(Position, " is not probed. I will probe.");
 	 	!doProbing.
 
+
 // If an agent is on an unsurveyed vertex, survey it
 +!doAction:
 	zoneMode(false)
@@ -223,9 +229,21 @@ zoneMode(false).
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
 
+// Inspectors should inspect aggressively, that is, actively seek out enemy agents
+// that are not inspected yet.
++!doAction:
+	role(inspector)
+	& zoneMode(false)
+	& position(MyPosition)
+	& ia.getClosestUninspectedEnemy(MyPosition, Enemy, EnemyPosition)
+	<-
+	.print("Attempting to inspect ", Enemy, " on ", EnemyPosition, ". I'm on ", MyPosition);
+	!doInspecting(Enemy, EnemyPosition).
+	
 // If we're not in zone mode yet, explore.
 +!doAction:
 	zoneMode(false)
+	& not nothingToExplore
 	<-
 	.print("I will explore.");
 	!doExploring.
