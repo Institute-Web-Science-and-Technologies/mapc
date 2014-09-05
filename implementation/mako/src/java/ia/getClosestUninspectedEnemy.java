@@ -12,8 +12,9 @@ import eis.MapAgent;
 import eis.Vertex;
 
 /**
- * Returns the closest uninspected enemy agent. Call from AgentSpeak:
- * ia.getClosestUninspectedEnemy(MyPosition, Enemy, EnemyPosition)
+ * Returns the closest uninspected enemy agent that is not already reserved for
+ * inspection. Call from AgentSpeak: ia.getClosestUninspectedEnemy(MyPosition,
+ * Enemy, EnemyPosition)
  * 
  * @author sewell
  * 

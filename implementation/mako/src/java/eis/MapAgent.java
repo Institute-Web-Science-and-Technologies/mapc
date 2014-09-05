@@ -34,6 +34,7 @@ public class MapAgent {
     private HashSet<Vertex> reservedUnsurveyedVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedProbedVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedScoreVertices = new HashSet<Vertex>();
+    private HashSet<Agent> reservedEnemiesForInspection = new HashSet<Agent>();
 
     public static MapAgent getInstance() {
         if (mapAgent == null) {
@@ -188,6 +189,7 @@ public class MapAgent {
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
             reservedScoreVertices.clear();
+            reservedEnemiesForInspection.clear();
             setStep(newStep);
             // Reset every zone periodically
             if (newStep % resetStep == 0) {
@@ -649,7 +651,10 @@ public class MapAgent {
     }
 
     /**
-     * Returns the closest uninspected enemy. Used by Inspector agents.
+     * Returns the closest uninspected enemy. Used by Inspector agents. Since we
+     * don't want to send more than one inspector after an enemy, we also keep
+     * track of which enemies are already getting chased by one of our
+     * inspectors.
      * 
      * @param position
      *            the vertex to find the closest uninspected enemy for
@@ -659,9 +664,9 @@ public class MapAgent {
         Agent closestUninspectedEnemy = null;
         Integer distanceToClosestUninspectedEnemy = null;
         for (Agent enemy : getEnemyAgents()) {
-            // Check if the enemy is inspected before doing anything else. Skip
-            // it if it is.
-            if (enemy.isInspected()) {
+            // Check if the enemy is inspected before doing anything else, or if
+            // another inspector is already chasing it. Skip it if it is.
+            if (enemy.isInspected() || reservedEnemiesForInspection.contains(enemy)) {
                 continue;
             }
             // Check if we even know where the enemy is, and if the enemy is not
@@ -697,6 +702,7 @@ public class MapAgent {
                 distanceToClosestUninspectedEnemy = distanceToThisEnemy;
             }
         }
+        reservedEnemiesForInspection.add(closestUninspectedEnemy);
         return closestUninspectedEnemy;
     }
 }
