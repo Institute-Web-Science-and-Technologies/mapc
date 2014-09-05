@@ -10,7 +10,7 @@
 	& lastActionResult(useless)
 	<-
 	.print("I can't escape from ", Enemy, "! But the last time I parried, I didn't get attacked. So I'll ignore ", Enemy, " this step.");
-	+ignoreEnemy(Enemy)
+	+ignoreEnemy(Enemy);
 	!doAction.
 
 +!avoidEnemy(Enemy):
