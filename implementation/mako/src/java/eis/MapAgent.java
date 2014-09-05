@@ -647,4 +647,56 @@ public class MapAgent {
         }
         return bestScoreVertex;
     }
+
+    /**
+     * Returns the closest uninspected enemy. Used by Inspector agents.
+     * 
+     * @param position
+     *            the vertex to find the closest uninspected enemy for
+     * @return the closest uninspected enemy
+     */
+    public Agent getClosestUninspectedEnemy(Vertex position) {
+        Agent closestUninspectedEnemy = null;
+        Integer distanceToClosestUninspectedEnemy = null;
+        for (Agent enemy : getEnemyAgents()) {
+            // Check if the enemy is inspected before doing anything else. Skip
+            // it if it is.
+            if (enemy.isInspected()) {
+                continue;
+            }
+            // Check if we even know where the enemy is, and if the enemy is not
+            // disabled. We don't consider disabled agents to be important
+            // enough to seek them out.
+            Vertex enemyPosition = enemy.getPosition();
+            if (enemyPosition == null || enemy.isDisabled()) {
+                continue;
+            }
+            // If there is an uninspected enemy on our node, look no further
+            if (enemyPosition == position) {
+                return enemy;
+            }
+
+            // If no path to the enemy location exists, we don't know how to
+            // get there. Skip it.
+            Path pathToEnemy = position.getPath(enemyPosition);
+            if (pathToEnemy == null) {
+                continue;
+            }
+            // If we haven't found a suitable enemy yet, save this one.
+            if (closestUninspectedEnemy == null) {
+                closestUninspectedEnemy = enemy;
+                distanceToClosestUninspectedEnemy = pathToEnemy.getPathHops();
+                continue;
+            }
+
+            // Compare the distances for the agent we currently think is
+            // closest and this one.
+            int distanceToThisEnemy = pathToEnemy.getPathHops();
+            if ((distanceToClosestUninspectedEnemy > distanceToThisEnemy)) {
+                closestUninspectedEnemy = enemy;
+                distanceToClosestUninspectedEnemy = distanceToThisEnemy;
+            }
+        }
+        return closestUninspectedEnemy;
+    }
 }
