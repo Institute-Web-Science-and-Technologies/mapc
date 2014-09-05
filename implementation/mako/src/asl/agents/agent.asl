@@ -153,20 +153,6 @@ zoneMode(false).
 	<-
 	.print("Danger! Active enemy could-be saboteur ", Vehicle, " on ", VehiclePosition, " is in attacking range!");
 	!avoidEnemy(Vehicle).
-
-// If a friendly disabled agent is within half of the visibility range of a repairer,
-// repair it.
-+!doAction:
-	role(repairer)
-	& position(MyPosition)
-	& myTeam(MyTeam)
-	& visibleEntity(Vehicle, VehiclePosition, MyTeam, disabled)
-	& ia.getDistance(MyPosition, VehiclePosition, Distance)
-	& visRange(MyRange)
-	& Distance <= (MyRange / 2)
-	<-
-	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
-	!doRepair(Vehicle, VehiclePosition).
     
 //Test plan for buying: What happens if saboteurs extend their visiblity range?
 +!doAction:
