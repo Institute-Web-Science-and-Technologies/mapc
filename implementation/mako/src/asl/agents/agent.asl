@@ -122,7 +122,7 @@ zoneMode(false).
 	& zoneMode(false)
 	<-
 	.print("Danger! Active enemy could-be saboteur ", Vehicle, " on ", VehiclePosition, " is in attacking range!");
-	!avoidEnemy.
+	!avoidEnemy(Vehicle).
 
 // If a friendly disabled agent is within half of the visibility range of a repairer,
 // repair it.

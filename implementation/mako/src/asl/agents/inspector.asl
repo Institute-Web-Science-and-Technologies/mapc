@@ -32,7 +32,7 @@ role(inspector).
 +!dealWithEnemy(Vehicle):
 	ia.isSaboteur(Vehicle)
 	<-
-	!avoidEnemy.
+	!avoidEnemy(Vehicle).
 
 +!dealWithEnemy(Vehicle)
 	<-
