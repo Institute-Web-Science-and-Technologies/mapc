@@ -105,7 +105,6 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
-        logger.info("Agent " + agentJasonName + " wants to execute action " + command + ".");
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = new Action("skip");
         String functor = command.getFunctor();
@@ -115,12 +114,15 @@ public class EISEnvironment extends Environment implements AgentListener {
             String entityName = command.getTerm(0).toString();
             // convert agent names from lower to mixed case (otherwise we get
             // false_wrong_param results from our actions)
-            if (AgentHandler.agentNameConversionMap.containsKey(entityName)) {
-                entityName = AgentHandler.agentNameConversionMap.get(entityName);
+            MapAgent.getInstance();
+            if (MapAgent.agentNameConversionMap.containsKey(entityName)) {
+                MapAgent.getInstance();
+                entityName = MapAgent.agentNameConversionMap.get(entityName);
             }
             action = new Action(functor, new Identifier(entityName));
         }
         try {
+            logger.info("Agent " + agentJasonName + " wants to execute action " + action);
             environmentInterface.performAction(agentServerName, action);
             return true;
         } catch (ActException e) {
@@ -202,11 +204,11 @@ public class EISEnvironment extends Environment implements AgentListener {
         switch (percept.getName()) {
         case "role":
             return Literal.parseLiteral(percept.toProlog().toLowerCase());
-        case "visibleVertex":
         case "visibleEntity": {
             // Add the name of the agent to the name conversion map.
             String entityName = percept.getParameters().getFirst().toString();
-            AgentHandler.agentNameConversionMap.put(entityName.toLowerCase(), entityName);
+            MapAgent.getInstance();
+            MapAgent.agentNameConversionMap.put(entityName.toLowerCase(), entityName);
             String escaped = percept.toProlog().toLowerCase().replace("visibleentity", "visibleEntity");
             return Literal.parseLiteral(escaped);
         }

@@ -36,6 +36,16 @@ public class MapAgent {
     private HashSet<Vertex> reservedScoreVertices = new HashSet<Vertex>();
     private HashSet<Agent> reservedEnemiesForInspection = new HashSet<Agent>();
 
+    /**
+     * Because AgentSpeak treats any string that starts with an upper case
+     * letter as a variable, we have to make sure to convert agent and team
+     * names from mixed case to lower case before we send them to AgentSpeak,
+     * and then convert them back to mixed case in the case where we have to
+     * send an action to the server that contains an agent name. The key is the
+     * agent name in lower case, and the saved value is the "real" name.
+     */
+    public static HashMap<String, String> agentNameConversionMap = new HashMap<String, String>();
+
     public static MapAgent getInstance() {
         if (mapAgent == null) {
             mapAgent = new MapAgent();
