@@ -169,7 +169,7 @@ public class MapAgent {
         String team = percept.getParameters().get(2).toString();
         boolean disabled = percept.getParameters().get(3).toString().equalsIgnoreCase("disabled");
 
-        Agent agent = getAgent(vehicle);
+        Agent agent = getAgent(vehicle.toLowerCase());
         agent.setServerName(vehicle);
         agent.setTeam(team);
         agent.setPosition(position);
@@ -625,6 +625,9 @@ public class MapAgent {
     }
 
     public Agent getAgent(String name) {
+        if (name != name.toLowerCase()) {
+            throw new IllegalArgumentException("Agent name must be in lower case when calling getAgent method. Was: " + name);
+        }
         name = name.toLowerCase();
         if (agents.containsKey(name)) {
             return agents.get(name);

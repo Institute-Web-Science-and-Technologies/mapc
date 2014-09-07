@@ -113,6 +113,11 @@ public class EISEnvironment extends Environment implements AgentListener {
             action = new Action(functor);
         } else if (command.getArity() == 1) {
             String entityName = command.getTerm(0).toString();
+            // convert agent names from lower to mixed case (otherwise we get
+            // false_wrong_param results from our actions)
+            if (AgentHandler.agentNameConversionMap.containsKey(entityName)) {
+                entityName = AgentHandler.agentNameConversionMap.get(entityName);
+            }
             action = new Action(functor, new Identifier(entityName));
         }
         try {
@@ -140,6 +145,7 @@ public class EISEnvironment extends Environment implements AgentListener {
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
         String jasonNameOfAgent = serverAgentMap.get(agentName).getJasonName();
+        logger.info("DEBUG handlePercept: agentName: " + agentName + ", jasonNameOfAgent: " + jasonNameOfAgent);
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
         // but I can't think of any other way to fix this issue. -sewell

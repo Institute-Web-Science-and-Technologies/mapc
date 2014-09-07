@@ -28,6 +28,15 @@ public class AgentHandler {
 
     public static String selectedTeam = "MAKo";
 
+    /**
+     * Because AgentSpeak treats any string that starts with an upper case
+     * letter as a variable, we have to make sure to convert agent and team
+     * names from mixed case to lower case before we send them to AgentSpeak,
+     * and then convert them back to mixed case in the case where we have to
+     * send an action to the server that contains an agent name.
+     */
+    public static HashMap<String, String> agentNameConversionMap = new HashMap<String, String>();
+
     // public static String enemyTeam = "teamB";
 
     /**
@@ -68,19 +77,22 @@ public class AgentHandler {
 
                         Element e = (Element) rootChildChild;
 
-                        String serverName = e.getAttribute("serverName").toLowerCase();
+                        String serverNameMixedCase = e.getAttribute("serverName");
+                        String serverNameLowerCase = e.getAttribute("serverName").toLowerCase();
                         String entity = e.getAttribute("entity");
                         String team = e.getAttribute("team");
                         String jasonName = e.getAttribute("jasonName");
 
                         // add to agents
                         Agent agent = new Agent();
-                        agent.setServerName(serverName);
+                        agent.setServerName(serverNameLowerCase);
+                        agentNameConversionMap.put(serverNameLowerCase, serverNameMixedCase);
+                        agent.setServerNameMixedCase(serverNameMixedCase);
                         agent.setEntity(entity);
                         agent.setTeam(team);
                         agent.setJasonName(jasonName);
-                        MapAgent.getInstance().addAgent(serverName, agent);
-                        agents.put(serverName, agent);
+                        MapAgent.getInstance().addAgent(serverNameLowerCase, agent);
+                        agents.put(serverNameLowerCase, agent);
                     }
                 }
             }

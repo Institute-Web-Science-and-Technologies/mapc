@@ -5,7 +5,8 @@ package eis;
  * @author Michael Sewell
  */
 public class Agent {
-    private String serverName; // e.g. "a16"
+    private String serverName; // e.g. "mako16"
+    private String serverNameMixedCase; // e.g. "MAKo16"
     private String team; // e.g. MAKo or teamB
     private String enemyTeam; // TODO: remove this
     private String entity; // e.g. connectionA1
@@ -198,6 +199,14 @@ public class Agent {
     @Override
     public String toString() {
         return "Agent [serverName=" + serverName + ", jasonName=" + jasonName + "]";
+    }
+
+    public String getServerNameUpperCase() {
+        return serverNameMixedCase;
+    }
+
+    public void setServerNameMixedCase(String serverNameMixedCase) {
+        this.serverNameMixedCase = serverNameMixedCase;
     }
 
 }
