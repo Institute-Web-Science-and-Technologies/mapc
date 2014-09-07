@@ -59,6 +59,8 @@ zoneMode(false).
 	& ia.getDistance(MyPosition, VehiclePosition, Distance)
 	& visRange(MyRange)
 	& Distance <= (MyRange / 2)
+	& myName(MyName)
+	& MyName \== Vehicle
 	<-
 	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
 	!doRepair(Vehicle, VehiclePosition).
