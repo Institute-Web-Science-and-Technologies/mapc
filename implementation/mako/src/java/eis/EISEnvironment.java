@@ -145,7 +145,6 @@ public class EISEnvironment extends Environment implements AgentListener {
     public void handlePercept(String agentName, Collection<Percept> percepts) {
         // agentName: agentA1, jasonName: explorer1
         String jasonNameOfAgent = serverAgentMap.get(agentName).getJasonName();
-        logger.info("DEBUG handlePercept: agentName: " + agentName + ", jasonNameOfAgent: " + jasonNameOfAgent);
         // The following if-else block was added because agents were missing out
         // on the initial list of beliefs. This is of course a dirty workaround,
         // but I can't think of any other way to fix this issue. -sewell
