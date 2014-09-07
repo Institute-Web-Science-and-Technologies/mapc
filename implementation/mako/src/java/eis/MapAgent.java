@@ -149,7 +149,7 @@ public class MapAgent {
         int strength = Integer.parseInt(percept.getParameters().get(8).toString());
         int visRange = Integer.parseInt(percept.getParameters().get(9).toString());
 
-        Agent enemy = getAgent(name);
+        Agent enemy = getAgent(name.toLowerCase());
         enemy.setServerName(name);
         enemy.setTeam(team);
         enemy.setRole(role);

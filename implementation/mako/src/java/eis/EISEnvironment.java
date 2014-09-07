@@ -204,6 +204,9 @@ public class EISEnvironment extends Environment implements AgentListener {
             return Literal.parseLiteral(percept.toProlog().toLowerCase());
         case "visibleVertex":
         case "visibleEntity": {
+            // Add the name of the agent to the name conversion map.
+            String entityName = percept.getParameters().getFirst().toString();
+            AgentHandler.agentNameConversionMap.put(entityName.toLowerCase(), entityName);
             String escaped = percept.toProlog().toLowerCase().replace("visibleentity", "visibleEntity");
             return Literal.parseLiteral(escaped);
         }
