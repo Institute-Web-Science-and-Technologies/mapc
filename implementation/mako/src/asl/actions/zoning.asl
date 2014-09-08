@@ -12,6 +12,8 @@ isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zon
 plannedZoneTimeInSteps(15).
 defaultRangeForSingleZones(1).
 
+//TODO: maybe make a cut if Range gets too high. Higher than 5 sounds high.
+
 /* Plans */
 
 // Zoning mode has begun and it will trigger the achievement goal
@@ -38,6 +40,7 @@ defaultRangeForSingleZones(1).
     & zoneMode(true)
     & .my_name(MyName)
 	<- ia.registerForZoning(MyName);
+	// TODO unregister if you want to quit zoning but are not in a zone
 	   !clearedZoningPercepts;
 	   !builtZone.
 
@@ -69,7 +72,8 @@ defaultRangeForSingleZones(1).
     & isAvailableForZoning
     & .my_name(MyName)
     // ask for best zone in his 1HNH (if any)
-    & ia.getBestZone(PositionVertex, 1, Value, CentreNode, ClosestAgents)
+    & currentRange(Range)
+    & ia.getBestZone(PositionVertex, Range, Value, CentreNode, ClosestAgents)
     & broadcastAgentList(BroadcastList)
     <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];

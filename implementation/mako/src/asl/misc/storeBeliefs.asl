@@ -91,6 +91,7 @@
 // also informing JavaMap and their minions.
 +step(Numeral)[source(percept)]:
     isCoach(true)
+    & isLocked(false)
     & plannedZoneTimeInSteps(Steps)
     & Numeral mod Steps == 0
     <- .print("[zoning] periodic trigger for coaches to destroy their zones.");

@@ -151,7 +151,8 @@ zoneMode(false).
 	& ia.couldBeSaboteur(Vehicle, VehicleVisRange)
 	& ia.getDistance(MyPosition, VehiclePosition, Distance)
 	& Distance <= VehicleVisRange
-	& zoneMode(false)
+	& not zoneNode(_)
+	& not health(0)
 	<-
 	.print("Danger! Active enemy could-be saboteur ", Vehicle, " on ", VehiclePosition, " is in attacking range!");
 	!avoidEnemy(Vehicle).
@@ -295,9 +296,11 @@ zoneMode(false).
 	& maxEnergy(Max)
 	& Energy == Max
 	& zoneMode(false)
-	<- 
-	.print("Error: Energy is max, and zoneMode is false.");
-	skip.
+    & achievement(surveyed640)
+    & not role(saboteur)
+	<- .print("There is nothing left that I could do. 640 edges are already surveyed. So I switch to zoneMode.");
+	-+zoneMode(true);
+    !doAction.
 
 +!doAction
     <- .print("I have nothing to do. I'll skip."); 

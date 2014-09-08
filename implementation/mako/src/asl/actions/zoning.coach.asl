@@ -43,7 +43,7 @@
        .send(Minions, achieve, cancelledZoneBuilding);
        
        !resetZoningBeliefs;
-       !preparedNewZoningRound;.
+       !preparedNewZoningRound.
 
 // If s.o. or ourselves cancelled the zone, we have to inform all our minions
 // about it and go back to start zoning from scratch.
@@ -68,13 +68,6 @@
        
        !resetZoningBeliefs;
        !preparedNewZoningRound.
-
-// Coaches choose to ignore the periodic zone breakup calls when they haven't
-// even started building this zone.
-+!cancelledZoneBuilding[source(Sender)]:
-    isCoach(true)
-    & isLocked(true)
-    <- .print("[zoning][coach] The periodic zone breakup interfered with me just having started building a zone. Ignoring it.").
 
 // TODO: This goal should be removable. I haven't seen it being called :)
 +!cancelledZoneBuilding[source(_)]:
