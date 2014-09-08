@@ -8,7 +8,6 @@ public class Agent {
     private String serverName; // e.g. "mako16"
     private String serverNameMixedCase; // e.g. "MAKo16"
     private String team; // e.g. MAKo or teamB
-    private String enemyTeam; // TODO: remove this
     private String entity; // e.g. connectionA1
     private String jasonName; // e.g. "explorer1"
 
@@ -151,20 +150,16 @@ public class Agent {
         this.disabled = disabled;
     }
 
+    public boolean needsRepair() {
+        return health < maxHealth / 2;
+    }
+
     public Zone getZone() {
         return zone;
     }
 
     public void setZone(Zone zone) {
         this.zone = zone;
-    }
-
-    public String getEnemyTeam() {
-        return enemyTeam;
-    }
-
-    public void setEnemyTeam(String enemyTeam) {
-        this.enemyTeam = enemyTeam;
     }
 
     public boolean isAvailableForZoning() {

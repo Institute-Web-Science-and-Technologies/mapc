@@ -35,6 +35,7 @@ public class MapAgent {
     private HashSet<Vertex> reservedProbedVertices = new HashSet<Vertex>();
     private HashSet<Vertex> reservedScoreVertices = new HashSet<Vertex>();
     private HashSet<Agent> reservedEnemiesForInspection = new HashSet<Agent>();
+    private HashMap<Agent, Agent> repairList = new HashMap<Agent, Agent>();
 
     /**
      * Because AgentSpeak treats any string that starts with an upper case
@@ -203,6 +204,7 @@ public class MapAgent {
             reservedUnsurveyedVertices.clear();
             reservedScoreVertices.clear();
             reservedEnemiesForInspection.clear();
+            repairList.clear();
             setStep(newStep);
             // Reset every zone periodically
             if (newStep % resetStep == 0) {
@@ -725,5 +727,81 @@ public class MapAgent {
         }
         reservedEnemiesForInspection.add(closestUninspectedEnemy);
         return closestUninspectedEnemy;
+    }
+
+    public boolean disabledAgents() {
+        for (Agent agent : getFriendlyAgents()) {
+            if (agent.isDisabled()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Vertex getClosestRepairer(Agent disabledAgent) {
+        // If the disabled agent is already in our repair list just return the
+        // given repairers position
+        if (repairList.containsValue(disabledAgent)) {
+            for (Agent key : repairList.keySet()) {
+                if (repairList.get(key) == disabledAgent) {
+                    return key.getPosition();
+                }
+            }
+        }
+        // Otherwise search for the closest not already assigned repairer
+        Path pathToDestination = null;
+        Agent reservedRepairer = null;
+        Vertex position = disabledAgent.getPosition();
+        for (Agent repairer : getFriendlyAgents()) {
+            if (repairer.getRole().equalsIgnoreCase("repairer")) {
+                if (!repairList.containsKey(repairer)) {
+                    Path pathToRepairer = position.getPath(repairer.getPosition());
+                    if (pathToDestination == null || (pathToRepairer != null && pathToRepairer.getPathHops() < pathToDestination.getPathHops())) {
+                        pathToDestination = pathToRepairer;
+                        reservedRepairer = repairer;
+                    }
+                }
+            }
+        }
+
+        // if a repairer was found return its position, otherwise return the
+        // position of the disabled agent.
+        if (reservedRepairer != null && pathToDestination != null) {
+            repairList.put(reservedRepairer, disabledAgent);
+            return reservedRepairer.getPosition();
+        } else {
+            return position;
+        }
+    }
+
+    public Vertex getClosestDisabledAgent(Agent repairer) {
+        // if the repairer is already assigned to an disabled agent return this
+        // agents position
+        if (repairList.containsKey(repairer)) {
+            return repairList.get(repairer).getPosition();
+        }
+
+        // otherwise find the closest disabled agent
+        Path pathToDestination = null;
+        Agent disabledAgent = null;
+        Vertex position = repairer.getPosition();
+        for (Agent agent : getFriendlyAgents()) {
+            if (agent.isDisabled()) {
+                if (!repairList.containsValue(agent)) {
+                    Path pathToDisabledAgent = position.getPath(agent.getPosition());
+                    if (pathToDestination == null || (pathToDisabledAgent != null && pathToDisabledAgent.getPathHops() < pathToDestination.getPathHops())) {
+                        pathToDestination = pathToDisabledAgent;
+                        disabledAgent = agent;
+                    }
+                }
+            }
+        }
+
+        if (disabledAgent != null && pathToDestination != null) {
+            repairList.put(repairer, disabledAgent);
+            return disabledAgent.getPosition();
+        } else {
+            return position;
+        }
     }
 }
