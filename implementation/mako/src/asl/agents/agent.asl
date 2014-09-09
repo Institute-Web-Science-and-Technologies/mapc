@@ -250,17 +250,28 @@ zoneMode(false).
 	!doSurveying.
 
 // If there is a not reserved disabled agent to repair and not in zone mode - go to its position.
+// Prevent going if the disabled agent in the neigbourhood
 +!doAction:
 	role(repairer)
 	& zoneMode(false)
 	& .my_name(MyName)
 	& ia.getClosestDisabledAgent(MyName, DisabledAgent, DisabledAgentPosition)
 	& position(Position)
-	& Position \== DisabledAgentPosition
+	& Position \== DisabledAgentPosition 
+    & not (visibleEdge(Position, DisabledAgentPosition) | visibleEdge(DisabledAgentPosition, Position))
 	<-
 	.print("Will move towards disabled agent ", DisabledAgent, " at ", DisabledAgentPosition, " while exploring.");
 	!goto(DisabledAgentPosition).
 
+// If a disabled agent is in the neigbourhood - wait for him and recharge.
++!doAction:
+	role(repairer)
+	& zoneMode(false)
+	& .my_name(MyName)
+	& ia.getClosestDisabledAgent(MyName, DisabledAgent, DisabledAgentPosition)
+	<-
+	.print("I see the disabled agent ", DisabledAgent, " coming to me in the neighbourhood, will wait for him and recharge.");
+	recharge.
 
 // Inspectors should inspect aggressively, that is, actively seek out enemy agents
 // that are not inspected yet.
