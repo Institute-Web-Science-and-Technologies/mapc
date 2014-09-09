@@ -67,18 +67,9 @@ zoneMode(false).
 
 // If agent is disabled - get repaired.
  +!doAction:
- 	 health(Health)
- 	 & Health == 0
+ 	 health(0)
     <-
     !getRepaired.
-    
-// If I have closestRepairer belief - I've just been repaired. Need to update the repairer on that.
- +!doAction:
-    closestRepairer(Repairer)
-    <-
-    .abolish(closestRepairer(_));
-    .send(Repairer, tell, successfullyRepaired);
-    !!doAction.
     
 //Fallback action in the case where we didn't pay attention and tried to perform
 //an action without having the energy for it.
@@ -241,6 +232,16 @@ zoneMode(false).
 	<-
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
+
+// If there is a not reserved disabled agent to repair and not in zone mode - go to its position.
++!doAction:
+	role(repairer)
+	& zoneMode(false)
+	& .my_name(MyName)
+	& ia.getClosestDisabledAgent(MyName, DisabledAgent, DisabledAgentPosition)
+	<-
+	.print("Will move towards disabled agent ", DisabledAgent, " while exploring.");
+	!goto(DisabledAgentPosition).
 
 // Inspectors should inspect aggressively, that is, actively seek out enemy agents
 // that are not inspected yet.
