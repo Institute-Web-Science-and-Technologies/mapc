@@ -1,4 +1,4 @@
-// Inform the sender about our zone – if we still know our zone.
+// Inform the sender about our zone - if we still know our zone.
 +bestZoneRequest[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
