@@ -285,7 +285,7 @@ zoneMode(false).
     zoneGoalVertex(GoalVertex)
     & position(PositionVertex)
     & GoalVertex == PositionVertex
-    <- -zoneGoalVertex(GoalVertex)[source(_)];
+    <- .abolish(zoneGoalVertex(GoalVertex)[source(_)]);
        -+zoneNode(GoalVertex);
        .print("[zoning] I am now standing on my zone node.");
        !doAction.

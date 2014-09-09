@@ -89,15 +89,5 @@
     <- -+isLocked(true);
        !choseZoningRole.
 
-// TODO: remove this goal if we are sure it never gets called.
-@miscountedReplies
-+broadcastAcknowledgement[source(Sender)]:
-    isAvailableForZoning
-    & .count(broadcastAcknowledgement[source(_)], RepliesAmount)
-    & broadcastAgentList(BroadcastList)
-    & .length(BroadcastList, AgentsAmount)
-    & AgentsAmount <  RepliesAmount
-    <- .print("[zoning][bug] If you can read this, then the code does not work properly. We counted more replies than agents.").
-
 // We aren't zoning or haven't received all replies, so we ignore this.
 +broadcastAcknowledgement[source(_)].

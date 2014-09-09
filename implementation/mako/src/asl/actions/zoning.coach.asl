@@ -9,7 +9,7 @@
 //After that all remaining idle agents are told to start a new round of zoning.
 +!assignededAgentsTheirPosition:
     isCoach(true)
-    & bestZone(_, CentreNode, ClosestAgents)
+    & bestZone(ZoneValue, CentreNode, ClosestAgents)
     & .print("[zoning][coach] Trying to find out how to place ", ClosestAgents)
     & broadcastAgentList(BroadcastList)
     & ia.placeAgentsOnZone(CentreNode, ClosestAgents, AgentPositionMapping)
@@ -20,7 +20,7 @@
        .print("[zoning][coach] I'm going to place the agents as follows: ", AgentPositionMapping, " with the CentreNode being ", CentreNode);
        for (.range(ControlVariable, 0, MappingLength - 1)) {
            .nth(ControlVariable, AgentPositionMapping, [Agent, PositionVertex]);
-           .send(Agent, tell, zoneGoalVertex(PositionVertex));
+           .send(Agent, tell, zoneGoalVertexProposal(ZoneValue, CentreNode, ClosestAgents, PositionVertex));
        };
        -+isLocked(false).
 
@@ -42,7 +42,9 @@
        .send(Minions, achieve, cancelledZoneBuilding);
        
        !resetZoningBeliefs;
-       !preparedNewZoningRound.
+       !preparedNewZoningRound;
+       
+       -+isLocked(false).
 
 // If s.o. or ourselves cancelled the zone, we have to inform all our minions
 // about it and go back to start zoning from scratch.
@@ -55,6 +57,9 @@
     & isLocked(false)
     & .my_name(Coach)
     & bestZone(_, CentreNode, ClosestAgents)
+    & (Sender == self
+        | .member(Sender, ClosestAgents)
+    )
     & .length(ClosestAgents, ZoneSize)
     <- ia.destroyZone(CentreNode, ZoneSize);
        .difference(ClosestAgents, [Coach, Sender], UnawareMinions);
@@ -69,22 +74,15 @@
        !preparedNewZoningRound.
 
 // TODO: This goal should be removable. I haven't seen it being called :)
-+!cancelledZoneBuilding[source(_)]:
++!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
-    <- !informedSaboteursAboutZoneBreakup;
-       !resetZoningBeliefs;
-       .print("[zoning][coach][bug] Zone destruction failed. I have no idea how to react on that. Doing nothing.").
+    <- .print("[zoning][coach] ", SenderZone, " wanted me to destroy my zone but he is not my minion. Ignoring.").
 
-// TODO: This goal gets triggered but it shouldn't.
+// TODO: This goal should be removable. I haven't seen it being called :)
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;
        !resetZoningBeliefs;
        !preparedNewZoningRound;
        .print("[zoning][coach][bug] I forgot about my bestZone belief. I have no idea how this can happen. Restarting zoning.").
-
-// TODO: This should not be called but I've seen it being called.
-+!cancelledZoneBuilding[source(Sender)]:
-    isLocked(true) & isMinion(false)
-    <- .print("[zoning][bug] A locked agent who is neither coach nor minion should cancel his zone according to ", Sender).

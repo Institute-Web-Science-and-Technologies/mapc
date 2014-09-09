@@ -51,11 +51,12 @@ defaultRangeForSingleZones(1).
 
 // Clear all percepts which are generated during zone building and formation.
 +!clearedZoningPercepts
-    <- -bestZone(_, _, _)[source(_)];
+    <- .abolish(bestZone(_, _, _)[source(_)]);
        -broadcastAcknowledgement[source(_)];
-       -zoneNode(_)[source(_)];
-       -foreignBestZone(_, _, _)[source(_)];
-       -bestZoneRequest[source(_)].
+       .abolish(zoneNode(_)[source(_)]);
+       .abolish(foreignBestZone(_, _, _)[source(_)]);
+       -bestZoneRequest[source(_)];
+       .abolish(zoneGoalVertexProposal(_, _, _, _)[source(_)]).
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
@@ -99,6 +100,8 @@ defaultRangeForSingleZones(1).
 @becomeACoach[priority(2)]
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
+    & isLocked(true)
+    & isMinion(false)
     <- -+isCoach(true);
        -zoneGoalVertex(_)[source(self)];
        .print("[zoning][coach] I'm now a coach.");
@@ -112,6 +115,8 @@ defaultRangeForSingleZones(1).
     .my_name(MyName)
     & bestZone(_, _, ClosestAgents)
     & .member(MyName, ClosestAgents)
+    & isLocked(true)
+    & isCoach(false)
     <- -+isMinion(true);
        -zoneGoalVertex(_)[source(self)];
        .print("[zoning][minion] I'm now a minion.").
@@ -124,8 +129,9 @@ defaultRangeForSingleZones(1).
     not bestZone(_, _, _)
     & currentRange(Range)
     & position(Position)
+    & isLocked(true)
     <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
-       -+zoneGoalVertex(GoalVertex);
+       -+zoneGoalVertex(GoalVertex)[source(_)];
        IncreasedRange = Range + 1;
        -+currentRange(IncreasedRange);
        
@@ -151,5 +157,5 @@ defaultRangeForSingleZones(1).
     <- -+isMinion(false);
        -+isCoach(false);
        -+isLocked(false);
-       -zoneGoalVertex(_)[source(_)]; 
+       .abolish(zoneGoalVertex(_)[source(_)]); 
        -+currentRange(Range).

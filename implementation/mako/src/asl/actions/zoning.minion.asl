@@ -12,7 +12,7 @@
         | bestZone(_, _, _)[source(Sender)]
     )
     <- !resetZoningBeliefs;       
-       .print("[zoning][minion] Breaking up my zone because ", Sender, " told me so.");
+       .print("[zoning][minion] Breaking up my zone because my coach ", Sender, " told me to.");
        !preparedNewZoningRound.
 
 // TODO: minions seem to have forgotten about their bestZone when this get triggered:
@@ -21,21 +21,83 @@
     <- ?bestZone(_, _, _)[source(Coach)];
        .print("[zoning][minion] I was told to break up my zone but ignoring that. Sender: ", Sender, " My coach: ", Coach).
 
-// If a Coach tells us to build a zone with us but we don't know him, we tell
-// him to destroy his zone.
-// TODO: it can happen that we deny s.o. to build a zone with us and he does the same to us. Naturally, this sounds quite idiotic but otherwise we wouldn't know, who's the coach. Fix this, when you have free time.
-// TODO: be more open with this. Determine whether we aren't a coach and could drop our best zone.
-// TODO: be more open with this. Accept better zones instead of telling them to break up.
-+zoneGoalVertex(GoalVertex)[source(WannabeCoach)]:
-    not bestZone(_, _, _)[source(WannabeCoach)]
-    & bestZone(_,_,_)[source(Coach)]
-    <- .print("[zoning] ", WannabeCoach, " wanted me in his zone but I'm sworn to ", Coach, ". Telling him to destroy his zone.");
-       .send(WannabeCoach, achieve, cancelledZoneBuilding);
-       -zoneGoalVertex(GoalVertex)[source(WannabeCoach)].
+// Although this agent didn't know his role yet (or anymore?), his coach told
+// him to break up his zone. He then continues to break up his zone like a
+// minion would.
++!cancelledZoneBuilding[source(Sender)]:
+    isLocked(true)
+    & isMinion(false)
+    & isCoach(false)
+    & zoneMode(true)
+    & bestZone(_, _, _)[source(Sender)]
+    <- -+isMinion(true);
+       !cancelledZoneBuilding;
+       .print("[zoning][minion] I hadn't been a minion but was locked, when my coach ", Sender, " told me to break up my zone.").
 
-// Debug message to be sure that there never exists more than one zoneGoalVertex
-// TODO: This gets triggered but I would think, it shouldn't.
-+zoneGoalVertex(_)[source(_)]:
-    .count(zoneGoalVertex(_)[source(_)], Amount)
-    & Amount > 1
-    <- .print("[zoning][bug] THIS SHOULD NEVER HAPPEN - but it does...").
+// This probably gets called throughout the time when an agent has to decide
+// his role and gets locked for it but hasn't decided yet. It must be ignored
+// as long as the sender is not the actual (to-be-) coach.
++!cancelledZoneBuilding[source(Sender)]:
+    isLocked(true)
+    & isMinion(false)
+    & isCoach(false)
+    & zoneMode(true).
+
+// This only happens when a coach sends this to himself. It is in this file
+// nevertheless to ensure the correct execution order.
++zoneGoalVertexProposal(_, _, _, GoalVertex)[source(self)]
+    <- .abolish(zoneGoalVertex(_)[source(_)]);
+       +zoneGoalVertex(GoalVertex)[source(Coach)].
+
+// If our coach tells us to move somewhere, we do as we are told. In theory,
+// this could happen before we found out that we are going to be a minion. So
+// we set this belief manually.
++zoneGoalVertexProposal(_, _, _, GoalVertex)[source(Coach)]:
+    bestZone(_, _, _)[source(Coach)]
+    <- -+isMinion(true);
+       .abolish(zoneGoalVertex(_)[source(_)]);
+       +zoneGoalVertex(GoalVertex)[source(Coach)].
+
+// We were told to move to a node by someone who knows of a better zone. We have
+// to inform our former zone; exchange our best zone belief as well as our
+// zoneGoalVertex.
+@switchToBetterZone[atomic]
++zoneGoalVertexProposal(Value, CentreNode, ClosestAgents, GoalVertex)[source(Coach)]:
+    bestZone(FormerZoneValue, _, _)[source(FormerCoach)]
+    // my zone is worse:
+    & FormerValue < Value
+    // or the zones are identical but my name is alphabetically bigger:
+    | (FormerValue == Value
+        & .my_name(MyName)
+        & .sort([Coach, MyName], [Coach, MyName])
+    )
+    <- !acceptedZoneGoalVertexProposal;
+       +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
+       .abolish(bestZone(_, _, _)[source(FormerCoach)]);
+       
+       .abolish(zoneGoalVertex(_)[source(_)]);
+       +zoneGoalVertex(GoalVertex)[source(Coach)];
+       .print("[zoning][minion] I'm giving up my zone for ", Coach, "'s zone.").
+
+// A minion who accepts a zoneGoalVertex but was in a zone already has to
+// inform his coach.
++!acceptedZoneGoalVertexProposal:
+    isMinion(true)
+    & bestZone(_, _, _)[source(Coach)]
+    <- .send(Coach, achieve, cancelledZoneBuilding).
+
+// A coach who accepts a zoneGoalVertex but was in a zone already has to inform
+// all his minions. He also has to switch roles and cancel defence saboteurs.
++!acceptedZoneGoalVertexProposal:
+    isCoach(true)
+    & bestZone(_, _, Minions)[source(Coach)]
+    <- -+isMinion(true);
+       -+isCoach(false);
+       !informedSaboteursAboutZoneBreakup;
+       .send(Minions, achieve, cancelledZoneBuilding).
+
+// If a coach wanted to have this agent in his zone but his zone is worse, this
+// agent has to tell him that he won't be available.
++zoneGoalVertexProposal(_, _, _, _)[source(WannabeCoach)]
+    <- .print("[zoning] ", WannabeCoach, " wanted me in his zone but his zone is worse. Telling him to destroy his zone.");
+       .send(WannabeCoach, achieve, cancelledZoneBuilding).
