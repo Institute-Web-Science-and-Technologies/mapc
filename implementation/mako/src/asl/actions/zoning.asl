@@ -29,8 +29,8 @@ defaultRangeForSingleZones(1).
     
 // After some agents formed a zone a new round of zoning for all the other
 // agents will start. We allow locked agents in here as long as they are not
-// zoners. This allows us to remove the locks on agents that waited for the
-// previous zoners to finish unregistering from available zoners.
+// zoners. These locks are being reused to prevent a foreignBestzone conflicting
+// with the bestZone we are going to determine in !builtZone.
 //
 // Before starting to build any zone, register to the JavaMap to be an available
 // zoner.
@@ -39,7 +39,8 @@ defaultRangeForSingleZones(1).
     & isMinion(false)
     & zoneMode(true)
     & .my_name(MyName)
-	<- ia.registerForZoning(MyName);
+	<- -+isLocked(true);
+	   ia.registerForZoning(MyName);
 	// TODO unregister if you want to quit zoning but are not in a zone
 	   !clearedZoningPercepts;
 	   !builtZone.
@@ -50,14 +51,11 @@ defaultRangeForSingleZones(1).
 
 // Clear all percepts which are generated during zone building and formation.
 +!clearedZoningPercepts
-    <- -zoneReply[source(_)];
-       -bestZone(_, _, _)[source(_)];
-       -negativeZoneReply[source(_)];
+    <- -bestZone(_, _, _)[source(_)];
+       -broadcastAcknowledgement[source(_)];
        -zoneNode(_)[source(_)];
-       -asyncForeignBestZone(_, _, _)[source(_)];
        -foreignBestZone(_, _, _)[source(_)];
-       -bestZoneRequest[source(_)];
-       -+isLocked(false).
+       -bestZoneRequest[source(_)].
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
@@ -67,24 +65,28 @@ defaultRangeForSingleZones(1).
 // mistakenly deleted percepts from the new zoning round. Doing !builtZone
 // asynchronously then ensures that we will get any left over zone information
 // and in the end will know about the overall best zone.
+@determineMyBestZone[priority(3)]
 +!builtZone:
     position(PositionVertex)
-    & isAvailableForZoning
+    & isCoach(false)
+    & isMinion(false)
     & .my_name(MyName)
     // ask for best zone in his 1HNH (if any)
     & currentRange(Range)
     & ia.getBestZone(PositionVertex, Range, Value, CentreNode, ClosestAgents)
-    & broadcastAgentList(BroadcastList)
     <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
-       .send(BroadcastList, tell, asyncForeignBestZone(Value, CentreNode, ClosestAgents)).
+       -+isLocked(false);
+       .broadcast(tell, foreignBestZone(Value, CentreNode, ClosestAgents)).
 
 // No zone could be found in this agent's 1HNH that could have been built with
 // the currently available amount of agents. We need to ask others for zones.
+// We are able to remove the lock because no zone was found.
 +!builtZone:
-    broadcastAgentList(BroadcastList)
-    & isAvailableForZoning
-    <- .send(BroadcastList, tell, bestZoneRequest).
+    isCoach(false)
+    & isMinion(false)
+    <- -+isLocked(false);
+       .broadcast(tell, bestZoneRequest).
     
 // if we receive a builtZone achievement goal, but were are not available for
 // zoning, do nothing
@@ -99,7 +101,7 @@ defaultRangeForSingleZones(1).
     bestZone(_, _, _)[source(self)]
     <- -+isCoach(true);
        -zoneGoalVertex(_)[source(self)];
-       .print("[zoning] I'm now a coach.");
+       .print("[zoning][coach] I'm now a coach.");
        !assignededAgentsTheirPosition.
 
 // We aren't this round's coach. But we are a minion.
@@ -112,7 +114,7 @@ defaultRangeForSingleZones(1).
     & .member(MyName, ClosestAgents)
     <- -+isMinion(true);
        -zoneGoalVertex(_)[source(self)];
-       .print("[zoning] I'm now a minion.").
+       .print("[zoning][minion] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
 // their 1HNH that could be built. We try zoning again the hope it will get

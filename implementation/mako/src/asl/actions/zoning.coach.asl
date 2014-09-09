@@ -28,14 +28,13 @@
 // zoning.
 // Simply calling !cancelledZoneBuilding isn't possible because the zone was
 // never registered as a zone in JavaMap.
-// TODO: minions and coach alike should move to a best one man zone nearby
-// TODO: this is called every time. Is placeAgentsOnZone not working properly?
+// TODO: this shouldn't be called anymore. But it's always nice to have a backup plan :)
 +!assignededAgentsTheirPosition:
     isCoach(true)
     & .my_name(Coach)
     & bestZone(_, CentreNode, ClosestAgents)
     & broadcastAgentList(BroadcastList)
-    <- .print("[zoning][coach] Assigning agents a position failed.");
+    <- .print("[zoning][coach][bug] Assigning agents a position failed.");
        .difference(BroadcastList, ClosestAgents, NonZoners);
        .send(NonZoners, achieve, preparedNewZoningRound);
        
