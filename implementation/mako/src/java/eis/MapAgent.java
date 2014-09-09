@@ -820,6 +820,14 @@ public class MapAgent {
         for (Agent agent : getFriendlyAgents()) {
             if (agent.isDisabled()) {
                 if (!repairList.containsValue(agent)) {
+                    Vertex agentPosition = agent.getPosition();
+                    // If the disabled agent is on our position, we won't find a
+                    // path to him, but should of course still reserve him for
+                    // repairing
+                    if (position == agentPosition) {
+                        disabledAgent = agent;
+                        break;
+                    }
                     Path pathToDisabledAgent = position.getPath(agent.getPosition());
                     if (pathToDestination == null || (pathToDisabledAgent != null && pathToDisabledAgent.getPathHops() < pathToDestination.getPathHops())) {
                         pathToDestination = pathToDisabledAgent;
@@ -829,7 +837,7 @@ public class MapAgent {
             }
         }
 
-        if (disabledAgent != null && pathToDestination != null) {
+        if (disabledAgent != null) {
             repairList.put(repairer, disabledAgent);
             return disabledAgent;
         } else {
