@@ -150,8 +150,11 @@ public class Agent {
         this.disabled = disabled;
     }
 
+    /**
+     * @return true if the the agent has 50% or less of his total health
+     */
     public boolean needsRepair() {
-        return health < maxHealth / 2;
+        return health <= (maxHealth / 2);
     }
 
     public Zone getZone() {
