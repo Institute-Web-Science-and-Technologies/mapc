@@ -7,7 +7,7 @@
     & position(Position)
     & Position \== RepairerPosition
     <-
-    .print("Going to the closest repairer ", RepairerName, "at position ", RepairerPosition);
+    .print("Going to the closest repairer ", RepairerName, " at position ", RepairerPosition);
     !goto(RepairerPosition).
 
 // When reached the repairer - recahrge and wait to get repaired.
