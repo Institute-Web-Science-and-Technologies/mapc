@@ -11,15 +11,23 @@
     & (Sender == self
         | bestZone(_, _, _)[source(Sender)]
     )
-    <- !resetZoningBeliefs;       
+    <- !resetZoningBeliefs;
        .print("[zoning][minion] Breaking up my zone because my coach ", Sender, " told me to.");
        !preparedNewZoningRound.
 
-// TODO: minions seem to have forgotten about their bestZone when this get triggered:
+// If someone other than our coach tries to cancel the zone, we ignore it.
+// TODO: at times, minions forgot about their bestZone. I have no idea, how this could happen.
 +!cancelledZoneBuilding[source(Sender)]:
     isMinion(true)
-    <- ?bestZone(_, _, _)[source(Coach)];
-       .print("[zoning][minion] I was told to break up my zone but ignoring that. Sender: ", Sender, " My coach: ", Coach).
+    & bestZone(_, _, _)[source(Coach)]
+    <- .print("[zoning][minion] I was told to break up my zone but ignoring that. Sender: ", Sender, " My coach: ", Coach).
+
+// TODO: this should never be called but it is; see #38.
++!cancelledZoneBuilding[source(Sender)]:
+    isMinion(true)
+    <- .print("[zoning][minion][bug] I forgot about my bestZone belief. I have no idea how this can happen. Restarting zoning");
+       !resetZoningBeliefs;
+       !preparedNewZoningRound.
 
 // Although this agent didn't know his role yet (or anymore?), his coach told
 // him to break up his zone. He then continues to break up his zone like a
@@ -90,10 +98,13 @@
 // all his minions. He also has to switch roles and cancel defence saboteurs.
 +!acceptedZoneGoalVertexProposal:
     isCoach(true)
-    & bestZone(_, _, Minions)[source(Coach)]
+    & .my_name(Coach)
+    & bestZone(_, _, ClosestAgents)[source(Coach)]
     <- -+isMinion(true);
        -+isCoach(false);
+       
        !informedSaboteursAboutZoneBreakup;
+       .difference(ClosestAgents, [Coach], Minions);
        .send(Minions, achieve, cancelledZoneBuilding).
 
 // If a coach wanted to have this agent in his zone but his zone is worse, this

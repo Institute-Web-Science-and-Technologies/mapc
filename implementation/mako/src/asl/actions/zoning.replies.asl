@@ -48,7 +48,7 @@
         & .sort([Coach, MyName], [Coach, MyName])
     )
     <- .send(Coach, tell, broadcastAcknowledgement);
-       -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
+       -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)];
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        // TODO send zone reply
        +broadcastAcknowledgement[source(Coach)].

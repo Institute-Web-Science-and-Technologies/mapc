@@ -73,7 +73,6 @@
        !resetZoningBeliefs;
        !preparedNewZoningRound.
 
-// TODO: This goal should be removable. I haven't seen it being called :)
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
