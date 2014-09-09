@@ -282,9 +282,6 @@ public class Vertex {
     }
 
     public Path getPath(Vertex destination) {
-        // logger.info("getDistance debug: getPath(" + destination + ")");
-        // Path blah = knownPaths.getPath(destination);
-        // logger.info("getDistance debug: path = " + blah);
         return knownPaths.getPath(destination);
     }
 

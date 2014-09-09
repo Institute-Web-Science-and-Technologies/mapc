@@ -78,9 +78,6 @@ public class PathMap {
      * @return the path to the given vertex (null if not known)
      */
     public Path getPath(Vertex vertex) {
-        // logger.info("getDistance debug: getPath(" + vertex + ")");
-        // Path blah = knownPaths.get(vertex);
-        // logger.info("getDistance debug: path = " + blah);
         return knownPaths.get(vertex);
     }
 
