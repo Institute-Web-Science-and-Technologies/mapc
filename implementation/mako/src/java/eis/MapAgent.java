@@ -20,6 +20,7 @@ public class MapAgent {
     private int edges = 1;
     private int vertices = 1;
     private int step = 0;
+    private int money = 0;
     private AgentLogger logger = new AgentLogger("MapAgent");
 
     private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
@@ -843,5 +844,13 @@ public class MapAgent {
         } else {
             return null;
         }
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

@@ -207,6 +207,10 @@ public class EISEnvironment extends Environment implements AgentListener {
                 int visRange = Integer.parseInt(percept.getParameters().get(0).toString());
                 agent.setVisRange(visRange);
             }
+            if (perceptName.equalsIgnoreCase("money")) {
+                int money = Integer.parseInt(percept.getParameters().get(0).toString());
+                MapAgent.getInstance().setMoney(money);
+            }
         }
         if (requestAction != null) {
             addAgentPercept(jasonNameOfAgent, requestAction);
