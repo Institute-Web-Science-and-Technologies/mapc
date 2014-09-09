@@ -255,9 +255,12 @@ zoneMode(false).
 	& zoneMode(false)
 	& .my_name(MyName)
 	& ia.getClosestDisabledAgent(MyName, DisabledAgent, DisabledAgentPosition)
+	& position(Position)
+	& Position \== DisabledAgentPosition
 	<-
-	.print("Will move towards disabled agent ", DisabledAgent, " while exploring.");
+	.print("Will move towards disabled agent ", DisabledAgent, " at ", DisabledAgentPosition, " while exploring.");
 	!goto(DisabledAgentPosition).
+
 
 // Inspectors should inspect aggressively, that is, actively seek out enemy agents
 // that are not inspected yet.
