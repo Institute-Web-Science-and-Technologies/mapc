@@ -1,57 +1,40 @@
 // Inform the sender about our zone - if we still know our zone.
+// We also directly set the acknowledgement because we know the receiver won't
+// reply anymore as he can't have a better zone himeself.
 +bestZoneRequest[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
-    <- +zoneReply[source(Sender)];
-       .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
-       !receivedAllReplies.
+    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
+       +broadcastAcknowledgement[source(Sender)].
 
-// Reply "no", clear possible duplicate beliefs and check if we are done
-// waiting.
+// Acknowledge receiving of the message and check if we are done waiting.
 +bestZoneRequest[source(Sender)]:
     isAvailableForZoning
-    <- +zoneReply[source(Sender)];
-       .send(Sender, tell, negativeZoneReply);
-       !receivedAllReplies.
+    <- .send(Sender, tell, broadcastAcknowledgement);
+       +broadcastAcknowledgement[source(Sender)].
 
-// Reply "no" in any other case as a non-zoner.
+// Just acknowledge this message but don't do anything with it as a non-zoner.
 +bestZoneRequest[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply).
-
-// We received an asynchronous foreignBestZone percept. Chances are, the
-// Broadcaster doesn't know about our zone so we tell him as we haven't started
-// building one yet. We also deal with his zone information.
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]:
-    isAvailableForZoning
-    & bestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents)[source(self)]
-    <- .send(Broadcaster, tell, foreignBestZone(BestZoneValue, BestZoneCentreNode, BestZoneClosestAgents));
-       +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
-
-// We received an asynchronous foreignBestZone percept but don't know about our
-// own zone anymore as it was worse. Hence, we cannot tell him our zone but we
-// still take his zone into consideration when choosing the best one for us.
-//
-// It could even be that we aren't available for zoning. But we will then still
-// have to reply (which is done on foreignBestZone percept addition).
-+asyncForeignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)]
-    <- +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Broadcaster)].
+    <- .send(Sender, tell, broadcastAcknowledgement).
 
 // If we didn't find a bestZone in our 1HNH ourselves, we will thankfully take
 // the first foreignBestZone that is offered to us.
+//
+// Although it is highly likely that this message was a reply to a
+// bestZoneRequest, we can't be sure. It could have after this agent was ready
+// for zoning and prior to him determining his own best zone. Hence, an
+// acknowledgement is needed.
 @onlyAddOneFirstBestZone[atomic]
 +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
     isAvailableForZoning
     & not bestZone(_, _, _)
-    <- +zoneReply[source(Coach)];
+    <- .send(Coach, tell, broadcastAcknowledgement);
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
-       !receivedAllReplies.
+       +broadcastAcknowledgement[source(Coach)].
 
-// We have received a zone better than the one we know (or
-// didn't know any), so we throw our zone away
-// We also calculate the distance to it and cache that value
-// as a belief. We discard better zones that are too far away.
-//
-// We also tell our former coach that we are no longer interested in his zone!
+// We have received a zone better than the one we know, so we throw our zone
+// away. Also, we acknowledge this message and check whether we now got all
+// replies.
 @onlyAddOneBetterZoneAtATime[atomic]
 +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
     isAvailableForZoning
@@ -64,32 +47,31 @@
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- +zoneReply[source(Coach)];
-       .send(FormerCoach, tell, negativeZoneReply);
+    <- .send(Coach, tell, broadcastAcknowledgement);
        -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]; // or use .abolish(bestZone(_,_,_))
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
-       !receivedAllReplies.
+       // TODO send zone reply
+       +broadcastAcknowledgement[source(Coach)].
 
-// We were informed about a worse zone.
+// We were informed about a worse zone. We inform the sender about our better
+// zone and wait for his acknowledgement.
 +foreignBestZone(_, _, _)[source(Sender)]:
     isAvailableForZoning
-    <- +zoneReply[source(Sender)];
-       .send(Sender, tell, negativeZoneReply);
-       !receivedAllReplies.
+    & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
+    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
+
+// We were informed about a worse zone. We can check whether we have received
+// all replies. We don't have to wait for an acknowledgement as we our best
+// zone isn't from us (!= self).
++foreignBestZone(_, _, _)[source(Sender)]:
+    isAvailableForZoning
+    <- .send(Sender, tell, broadcastAcknowledgement);
+       +broadcastAcknowledgement[source(Sender)].
 
 // It doesn't matter if we aren't interested in zoning. We have to reply no in
 // any case.
 +foreignBestZone(_, _, _)[source(Sender)]
-    <- .send(Sender, tell, negativeZoneReply).
-
-//  We will test if we now got replies from every agent.
-+negativeZoneReply[source(Sender)]:
-    isAvailableForZoning
-    <- +zoneReply[source(Sender)];
-       !receivedAllReplies.
-
-// We aren't zoning so we ignore this message.
-+negativeZoneReply[source(_)].
+    <- .send(Sender, tell, broadcastAcknowledgement).
 
 // If all agents have replied with either a broadcast or a refusal, we're done
 // waiting.
@@ -98,9 +80,9 @@
 // further messages and for coaches so that assignededAgentsTheirPosition can be
 // called without the periodic zone breakup interfering with it.
 @testForAllReplies[priority(1), atomic]
-+!receivedAllReplies:
++broadcastAcknowledgement[source(Sender)]:
     isAvailableForZoning
-    & .count(zoneReply[source(_)], RepliesAmount)
+    & .count(broadcastAcknowledgement[source(_)], RepliesAmount)
     & broadcastAgentList(BroadcastList)
     & .length(BroadcastList, AgentsAmount)
     & AgentsAmount ==  RepliesAmount
@@ -109,13 +91,13 @@
 
 // TODO: remove this goal if we are sure it never gets called.
 @miscountedReplies
-+!receivedAllReplies:
++broadcastAcknowledgement[source(Sender)]:
     isAvailableForZoning
-    & .count(zoneReply[source(_)], RepliesAmount)
+    & .count(broadcastAcknowledgement[source(_)], RepliesAmount)
     & broadcastAgentList(BroadcastList)
     & .length(BroadcastList, AgentsAmount)
     & AgentsAmount <  RepliesAmount
-    <- .print("[zoning] If you can read this, then the code does not work properly. We counted more replies than agents.").
-       
-// We still have to wait and fail this achievement goal silently as true.
-+!receivedAllReplies.
+    <- .print("[zoning][bug] If you can read this, then the code does not work properly. We counted more replies than agents.").
+
+// We aren't zoning or haven't received all replies, so we ignore this.
++broadcastAcknowledgement[source(_)].

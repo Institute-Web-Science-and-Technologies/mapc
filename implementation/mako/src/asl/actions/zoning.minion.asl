@@ -24,6 +24,8 @@
 // If a Coach tells us to build a zone with us but we don't know him, we tell
 // him to destroy his zone.
 // TODO: it can happen that we deny s.o. to build a zone with us and he does the same to us. Naturally, this sounds quite idiotic but otherwise we wouldn't know, who's the coach. Fix this, when you have free time.
+// TODO: be more open with this. Determine whether we aren't a coach and could drop our best zone.
+// TODO: be more open with this. Accept better zones instead of telling them to break up.
 +zoneGoalVertex(GoalVertex)[source(WannabeCoach)]:
     not bestZone(_, _, _)[source(WannabeCoach)]
     & bestZone(_,_,_)[source(Coach)]
