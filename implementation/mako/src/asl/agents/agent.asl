@@ -70,6 +70,22 @@ zoneMode(false).
  	 health(0)
     <-
     !getRepaired.
+
+// If a friendly non-disabled agent requiring repair is within half of the visibility range of a repairer,
+// repair it.
++!doAction:
+	role(repairer)
+	& position(MyPosition)
+	& myTeam(MyTeam)
+	& visibleEntity(Vehicle, VehiclePosition, MyTeam, _)
+	& ia.needsRepair(Vehicle)
+	& visRange(MyRange)
+	& Distance <= (MyRange / 2)
+	& myName(MyName)
+	& MyName \== Vehicle
+	<-
+	.print("I see a non-disabled agent ", Vehicle, " on ", VehiclePosition, " which require repair - will try to repair it.");
+	!doRepair(Vehicle, VehiclePosition).
     
 //Fallback action in the case where we didn't pay attention and tried to perform
 //an action without having the energy for it.
