@@ -77,9 +77,9 @@
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
-    <- .print("[zoning][coach] ", SenderZone, " wanted me to destroy my zone but he is not my minion. Ignoring.").
+    <- .print("[zoning][coach] ", Sender, " wanted me to destroy my zone but he is not my minion. Ignoring.").
 
-// TODO: This goal should be removable. I haven't seen it being called :)
+// TODO: This goal gets called... seldom, but it does.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;
