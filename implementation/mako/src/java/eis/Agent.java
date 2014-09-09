@@ -1,5 +1,7 @@
 package eis;
 
+import java.util.TreeMap;
+
 /**
  * @author Artur Daudrich
  * @author Michael Sewell
@@ -10,6 +12,7 @@ public class Agent {
     private String team; // e.g. MAKo or teamB
     private String entity; // e.g. connectionA1
     private String jasonName; // e.g. "explorer1"
+    private AgentLogger logger = new AgentLogger("Agent.java");
 
     private int energy;
     private int health;
@@ -207,4 +210,22 @@ public class Agent {
         this.serverNameMixedCase = serverNameMixedCase;
     }
 
+    /**
+     * Returns the best upgrade. Note that this is an experimental function that
+     * isn't being used currently.
+     * 
+     * @return the "best" upgrade for the agent (determined by looking at the %
+     *         increase an upgrade would add to that part)
+     * 
+     */
+    public String getBestUpgrade() {
+        TreeMap<Double, String> upgrades = new TreeMap<Double, String>();
+        if (role.equalsIgnoreCase("saboteur")) {
+            upgrades.put(1 / (double) strength, "sabotageDevice");
+        }
+        upgrades.put(2 / (double) maxEnergy, "battery");
+        upgrades.put(1 / (double) visRange, "sensor");
+        upgrades.put(1 / (double) health, "shield");
+        return upgrades.lastEntry().getValue();
+    }
 }

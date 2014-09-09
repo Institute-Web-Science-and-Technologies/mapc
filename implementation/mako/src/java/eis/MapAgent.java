@@ -39,6 +39,12 @@ public class MapAgent {
     private HashMap<Agent, Agent> repairList = new HashMap<Agent, Agent>();
 
     /**
+     * Keep track of the money we have spent this step to make sure that when we
+     * perform a buying action, we have enough money left to do so.
+     */
+    private int moneySpentThisStep = 0;
+
+    /**
      * Because AgentSpeak treats any string that starts with an upper case
      * letter as a variable, we have to make sure to convert agent and team
      * names from mixed case to lower case before we send them to AgentSpeak,
@@ -206,6 +212,7 @@ public class MapAgent {
             reservedScoreVertices.clear();
             reservedEnemiesForInspection.clear();
             repairList.clear();
+            moneySpentThisStep = 0;
             setStep(newStep);
             // Reset every zone periodically
             if (newStep % resetStep == 0) {
@@ -847,10 +854,15 @@ public class MapAgent {
     }
 
     public int getMoney() {
-        return money;
+        return money - moneySpentThisStep;
     }
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    public void increaseMoneySpentThisStep() {
+        moneySpentThisStep += 1;
+
     }
 }
