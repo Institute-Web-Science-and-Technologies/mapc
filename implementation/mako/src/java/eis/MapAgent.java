@@ -738,13 +738,22 @@ public class MapAgent {
         return false;
     }
 
-    public Vertex getClosestRepairer(Agent disabledAgent) {
+    /**
+     * Retrieves the closest friendly repairer agent and links ("reserves") that
+     * repairer with this agent.
+     * 
+     * @param disabledAgent
+     *            the agent to find a nearby repairer for
+     * @return the closest, non-disabled, non-reserved repairer, or the closest
+     *         repairer if all the repairers are reserved or disabled
+     */
+    public Agent getClosestRepairer(Agent disabledAgent) {
         // If the disabled agent is already in our repair list just return the
         // given repairers position
         if (repairList.containsValue(disabledAgent)) {
             for (Agent key : repairList.keySet()) {
                 if (repairList.get(key) == disabledAgent) {
-                    return key.getPosition();
+                    return key;
                 }
             }
         }
@@ -752,33 +761,56 @@ public class MapAgent {
         Path pathToDestination = null;
         Agent reservedRepairer = null;
         Vertex position = disabledAgent.getPosition();
+        TreeMap<Integer, Agent> repairerDistances = new TreeMap<Integer, Agent>();
         for (Agent repairer : getFriendlyAgents()) {
             if (repairer.getRole().equalsIgnoreCase("repairer")) {
-                if (!repairList.containsKey(repairer)) {
-                    Path pathToRepairer = position.getPath(repairer.getPosition());
-                    if (pathToDestination == null || (pathToRepairer != null && pathToRepairer.getPathHops() < pathToDestination.getPathHops())) {
+                Vertex repairerPosition = repairer.getPosition();
+                Path pathToRepairer = position.getPath(repairerPosition);
+                int distanceToRepairer = pathToRepairer.getPathHops();
+                if (position == repairerPosition) {
+                    distanceToRepairer = 0;
+                }
+                repairerDistances.put(distanceToRepairer, repairer);
+                if (!repairList.containsKey(repairer) && !repairer.isDisabled()) {
+                    // In the case where the repairer is already on our node, we
+                    // won't find a path to him, but we should obviously choose
+                    // him as our repairer
+                    if (distanceToRepairer == 0) {
+                        reservedRepairer = repairer;
+                        break;
+                    }
+                    if (pathToDestination == null || (pathToRepairer != null && distanceToRepairer < pathToDestination.getPathHops())) {
                         pathToDestination = pathToRepairer;
                         reservedRepairer = repairer;
                     }
                 }
             }
         }
-
-        // if a repairer was found return its position, otherwise return the
-        // position of the disabled agent.
-        if (reservedRepairer != null && pathToDestination != null) {
+        if (reservedRepairer != null) {
             repairList.put(reservedRepairer, disabledAgent);
-            return reservedRepairer.getPosition();
+            return reservedRepairer;
         } else {
-            return position;
+            // If there are no unreserved (or non-disabled) repairers, the
+            // disabled agent should simply move to the closest repairer
+            // instead.
+            return repairerDistances.firstEntry().getValue();
         }
     }
 
-    public Vertex getClosestDisabledAgent(Agent repairer) {
+    /**
+     * Retrieves the closest friendly disabled agent and links ("reserves") that
+     * agent with this repairer.
+     * 
+     * @param repairer
+     *            the repairer agent we want to find an agent to repair for
+     * @return the closest disabled, non-reserved disabled friendly agent, or
+     *         null if none is found
+     */
+    public Agent getClosestDisabledAgent(Agent repairer) {
         // if the repairer is already assigned to an disabled agent return this
         // agents position
         if (repairList.containsKey(repairer)) {
-            return repairList.get(repairer).getPosition();
+            return repairList.get(repairer);
         }
 
         // otherwise find the closest disabled agent
@@ -799,9 +831,9 @@ public class MapAgent {
 
         if (disabledAgent != null && pathToDestination != null) {
             repairList.put(repairer, disabledAgent);
-            return disabledAgent.getPosition();
+            return disabledAgent;
         } else {
-            return position;
+            return null;
         }
     }
 }
