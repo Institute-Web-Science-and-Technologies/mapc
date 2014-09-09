@@ -166,30 +166,46 @@ public class EISEnvironment extends Environment implements AgentListener {
         // logger.info("Received percepts for " + jasonName + ": " +
         // percepts.toString());
         for (Percept percept : percepts) {
+            String perceptName = percept.getName();
+            Agent agent = MapAgent.getInstance().getAgent(agentName);
             // Make sure that the requestAction percept is handled last by the
             // agents because when the agent receives the requestAction
             // percept, it determines
             // which action to perform in the current step. By this point, all
             // other percepts need to have been handled properly already.
-            if (percept.getName().equalsIgnoreCase("requestAction")) {
+            if (perceptName.equalsIgnoreCase("requestAction")) {
                 requestAction = percept;
                 continue;
             }
-            if (!percept.getName().equalsIgnoreCase("lastActionParam")) {
+            if (!perceptName.equalsIgnoreCase("lastActionParam")) {
                 // logger.info("Sending percept " + perceptToLiteral(percept) +
                 // " to agent MapAgent.");
                 MapAgent.getInstance().addPercept(percept);
                 addAgentPercept(jasonNameOfAgent, percept);
             }
-            if (percept.getName().equalsIgnoreCase("position")) {
-                Agent agent = MapAgent.getInstance().getAgent(agentName);
+            if (perceptName.equalsIgnoreCase("position")) {
                 Vertex position = MapAgent.getInstance().getVertex(percept.getParameters().get(0).toString());
                 agent.setPosition(position);
             }
-            if (percept.getName().equalsIgnoreCase("health")) {
-                Agent agent = MapAgent.getInstance().getAgent(agentName);
+            if (perceptName.equalsIgnoreCase("health")) {
                 int health = Integer.parseInt(percept.getParameters().get(0).toString());
                 agent.setHealth(health);
+            }
+            if (perceptName.equalsIgnoreCase("maxEnergy")) {
+                int maxEnergy = Integer.parseInt(percept.getParameters().get(0).toString());
+                agent.setMaxEnergy(maxEnergy);
+            }
+            if (perceptName.equalsIgnoreCase("maxHealth")) {
+                int maxHealth = Integer.parseInt(percept.getParameters().get(0).toString());
+                agent.setMaxHealth(maxHealth);
+            }
+            if (perceptName.equalsIgnoreCase("strength")) {
+                int strength = Integer.parseInt(percept.getParameters().get(0).toString());
+                agent.setStrength(strength);
+            }
+            if (perceptName.equalsIgnoreCase("visRange")) {
+                int visRange = Integer.parseInt(percept.getParameters().get(0).toString());
+                agent.setVisRange(visRange);
             }
         }
         if (requestAction != null) {
