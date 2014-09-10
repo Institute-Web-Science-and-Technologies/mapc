@@ -72,10 +72,7 @@
 +maxHealth(Numeral)[source(percept)]: debug <-
   .print("Received percept maxHealth(", Numeral, ").").
   
-+maxHealth(Numeral)[source(percept)] <-
-  .print("Received percept maxHealth(", Numeral, ").").
-
-+money(Numeral)[source(percept)] <-
++money(Numeral)[source(percept)]: debug <-
   .print("Received percept money(", Numeral, ").");
   -+money(Numeral)[source(self)].
   
@@ -128,13 +125,13 @@
 +simStart[source(percept)]: debug <-
   .print("Received percept simStart.").
 
-+step(Numeral)[source(percept)] <-
-  .print("Received percept step(", Numeral, ").");
-  -+step(Numeral)[source(self)].
-  
 +step(Numeral)[source(percept)]: debug <-
   .print("Received percept step(", Numeral, ").");
   -+step(Numeral)[source(self)].
+
++step(Numeral)[source(percept)] <-
+  -+step(Numeral)[source(self)].
+  
 
 +steps(Numeral)[source(percept)]: debug <-
   .print("Received percept steps(", Numeral, ").").
