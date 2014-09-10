@@ -104,6 +104,30 @@
     isCoach(true)
     <- -+step(Numeral);
        !checkZoneUnderAttack.
+       
++step(Numeral)[source(percept)]:
+    bestZone(_, _, ClosestAgents)[source(self)]
+    & isCoach(ShouldBeRole)
+    & isMinion(X)
+    & isLocked(Y)
+    & .count(broadcastAcknowledgement[source(_)], RepliesAmount)
+     <- 
+        .print("[zoning][coach=",ShouldBeRole,"][>>>>] Currently in my zone together with ", ClosestAgents, ". [locked=", Y,"][minion=",X,"][replies=",RepliesAmount,"]");
+        -+step(Numeral).
+  
++step(Numeral)[source(percept)]:
+    bestZone(_, _, ClosestAgents)[source(Coach)]
+    & isMinion(ShouldBeRole)
+    & isCoach(X)
+    & isLocked(Y)
+    & .count(broadcastAcknowledgement[source(_)], RepliesAmount)
+ <- .print("[zoning][minion=",ShouldBeRole,"][>>>>] Currently in ", Coach, "'s zone together with ", ClosestAgents, ". [locked=", Y,"][coach=",X,"][replies=",RepliesAmount,"]");
+  -+step(Numeral).
+  
++step(Numeral)[source(percept)]:
+    zoneNode(Node)
+ <- .print("[zoning][singleZoner][>>>>] Standing on ", Node);
+  -+step(Numeral).
 
 +step(Numeral)[source(percept)] <-
 //  .print("Received percept step(", Numeral, ").");

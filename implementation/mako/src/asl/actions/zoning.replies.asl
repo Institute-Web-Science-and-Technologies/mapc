@@ -61,15 +61,15 @@
     <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
 
 // We were informed about a worse zone. We can check whether we have received
-// all replies. We don't have to wait for an acknowledgement as we our best
-// zone isn't from us (!= self).
+// all replies. We don't have to wait for an acknowledgement as our bestZone
+// isn't from us (!= self).
 +foreignBestZone(_, _, _)[source(Sender)]:
     isAvailableForZoning
     <- .send(Sender, tell, broadcastAcknowledgement);
        +broadcastAcknowledgement[source(Sender)].
 
-// It doesn't matter if we aren't interested in zoning. We have to reply no in
-// any case.
+// It doesn't matter if we aren't interested in zoning. We have to reply in any
+// case.
 +foreignBestZone(_, _, _)[source(Sender)]
     <- .send(Sender, tell, broadcastAcknowledgement).
 
