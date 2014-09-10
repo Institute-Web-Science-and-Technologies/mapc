@@ -89,7 +89,7 @@
     -+myName(Name)[source(self)].
 
 +position(Identifier)[source(percept)]: debug <-
-	.print("Received percept position(", Identifer, ").");
+	.print("Received percept position(", Identifier, ").");
 	-+position(Identifier).
        
 +position(Identifier)[source(percept)] <-
