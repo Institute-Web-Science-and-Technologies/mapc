@@ -1,9 +1,10 @@
 // Inform the sender about our zone - if we still know our zone.
 // We also directly set the acknowledgement because we know the receiver won't
-// reply anymore as he can't have a better zone himeself.
+// reply anymore as he can't have a better zone himself.
 +bestZoneRequest[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
+    & ia.generateId(Id)
     <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
        +broadcastAcknowledgement[source(Sender)].
 
@@ -50,7 +51,6 @@
     <- .send(Coach, tell, broadcastAcknowledgement);
        -bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)];
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
-       // TODO send zone reply
        +broadcastAcknowledgement[source(Coach)].
 
 // We were informed about a worse zone. We inform the sender about our better
@@ -58,7 +58,8 @@
 +foreignBestZone(_, _, _)[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
-    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
+    & ia.generateId(Id)
+    <- .send(Sender, tell, foreignBestZone(Id, ZoneValue, CentreNode, ClosestAgents)).
 
 // We were informed about a worse zone. We can check whether we have received
 // all replies. We don't have to wait for an acknowledgement as our bestZone
@@ -75,10 +76,6 @@
 
 // If all agents have replied with either a broadcast or a refusal, we're done
 // waiting.
-//
-// We also set a lock to make sure that this does not get interrupted by
-// further messages and for coaches so that assignededAgentsTheirPosition can be
-// called without the periodic zone breakup interfering with it.
 @testForAllReplies[priority(1), atomic]
 +broadcastAcknowledgement[source(Sender)]:
     isAvailableForZoning
@@ -86,8 +83,7 @@
     & broadcastAgentList(BroadcastList)
     & .length(BroadcastList, AgentsAmount)
     & AgentsAmount ==  RepliesAmount
-    <- -+isLocked(true);
-       !choseZoningRole.
+    <- !choseZoningRole.
 
 // We aren't zoning or haven't received all replies, so we ignore this.
 +broadcastAcknowledgement[source(_)].

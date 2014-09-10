@@ -1,7 +1,7 @@
 { include("../actions/zoning.replies.asl")}
 { include("../actions/zoning.minion.asl") }
 { include("../actions/zoning.coach.asl") }
-// { include("../actions/zoning.periodicTriggers.asl") }
+{ include("../actions/zoning.periodicTriggers.asl") }
 
 /* Initial beliefs and rules */
 isCoach(false).
@@ -11,7 +11,7 @@ isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zon
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
 plannedZoneTimeInSteps(15).
-defaultRangeForSingleZones(1).
+defaultRange(1).
 
 //TODO: maybe make a cut if Range gets too high. Higher than 5 sounds high.
 
@@ -23,8 +23,7 @@ defaultRangeForSingleZones(1).
 // Initialise the range we use to look for single zones.
 +zoneMode(true):
     isAvailableForZoning
-    & .my_name(MyName)
-    & defaultRangeForSingleZones(Range)
+    & defaultRange(Range)
     <- -+currentRange(Range);
        !preparedNewZoningRound.
 
@@ -49,8 +48,7 @@ defaultRangeForSingleZones(1).
 // Before starting to build any zone, register to the JavaMap to be an available
 // zoner.
 +!preparedNewZoningRound:
-    isCoach(false)
-    & zoneMode(true)
+    isAvailableForZoning
     & .my_name(MyName)
 	<- -+isLocked(true);
 	   ia.registerForZoning(MyName);
@@ -84,7 +82,6 @@ defaultRangeForSingleZones(1).
     position(PositionVertex)
     & isCoach(false)
     & isMinion(false)
-    & .my_name(MyName)
     // ask for best zone in his 1HNH (if any)
     & currentRange(Range)
     & ia.getBestZone(PositionVertex, Range, Value, CentreNode, ClosestAgents)
@@ -110,12 +107,14 @@ defaultRangeForSingleZones(1).
 // minions about it and move to the CentreNode.
 // Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
 // zone.
-@becomeACoach[priority(2)]
+// We also set a lock so that assignededAgentsTheirPosition can be called
+// without the periodic zone breakup interfering with it.
+@becomeACoach[priority(2), atomic]
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
-    & isLocked(true)
-    & isMinion(false)
-    <- -+isCoach(true);
+    & isAvailableForZoning
+    <- -+isLocked(true);
+       -+isCoach(true);
        -zoneGoalVertex(_)[source(self)];
        .print("[zoning][coach] I'm now a coach.");
        !assignededAgentsTheirPosition.
@@ -123,14 +122,14 @@ defaultRangeForSingleZones(1).
 // We aren't this round's coach. But we are a minion.
 // Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
 // zone.
-@becomeAMinion[priority(2)]
+@becomeAMinion[priority(2), atomic]
 +!choseZoningRole:
     .my_name(MyName)
     & bestZone(_, _, ClosestAgents)
     & .member(MyName, ClosestAgents)
-    & isLocked(true)
-    & isCoach(false)
-    <- -+isMinion(true);
+    & isAvailableForZoning
+    <- -+isLocked(true);
+       -+isMinion(true);
        -zoneGoalVertex(_)[source(self)];
        .print("[zoning][minion] I'm now a minion.").
 
@@ -142,7 +141,7 @@ defaultRangeForSingleZones(1).
     not bestZone(_, _, _)
     & currentRange(Range)
     & position(Position)
-    & isLocked(true)
+    & isAvailableForZoning
     <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
        -+zoneGoalVertex(GoalVertex)[source(_)];
        IncreasedRange = Range + 1;
@@ -167,7 +166,7 @@ defaultRangeForSingleZones(1).
 // Reset the current range, remove role percepts, unlock and remove goal vertex
 // if any. Called when zones break up.
 +!resetZoningBeliefs:
-    defaultRangeForSingleZones(Range)
+    defaultRange(Range)
     <- -+isMinion(false);
        -+isCoach(false);
        -+isLocked(false);
