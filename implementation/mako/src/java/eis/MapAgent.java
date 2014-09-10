@@ -290,7 +290,7 @@ public class MapAgent {
     public List<Agent> getRepairers() {
         ArrayList<Agent> repairers = new ArrayList<Agent>();
         for (Agent agent : getFriendlyAgents()) {
-            if (agent.getRole() != null && agent.getRole().equalsIgnoreCase("repairer")) {
+            if (agent.getRole().equalsIgnoreCase("repairer")) {
                 repairers.add(agent);
             }
         }

@@ -19,7 +19,7 @@ public class Agent {
     private int maxEnergy;
     private int maxHealth;
     private Vertex position;
-    private String role;
+    private String role = "";
     private int strength;
     private int visRange = 1; // assume the minimal visRange by default
 
