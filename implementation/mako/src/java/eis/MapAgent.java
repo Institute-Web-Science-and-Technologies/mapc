@@ -271,12 +271,15 @@ public class MapAgent {
             }
         }
 
+        List<Agent> disabledAgentsList = new ArrayList<Agent>();
         // assign repairers to disabled agents by path distance
         for (Integer distance : closestPaths.keySet()) {
             HashMap<Agent, Agent> paths = closestPaths.get(distance);
             for (Agent repairer : paths.keySet()) {
-                if (!repairList.containsKey(repairer)) {
-                    repairList.put(repairer, paths.get(repairer));
+                Agent agent = paths.get(repairer);
+                if (!repairList.containsKey(repairer) && !disabledAgentsList.contains(agent)) {
+                    repairList.put(repairer, agent);
+                    disabledAgents.add(agent);
                     // if all repairers are already assigned return
                     if (repairList.size() == 6) {
                         return;
