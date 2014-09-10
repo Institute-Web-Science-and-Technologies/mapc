@@ -168,6 +168,8 @@ zoneMode(false).
 +!doAction:
 	.my_name(saboteur1)
 	& myName(MyName)
+	& energy(MyEnergy)
+	& MyEnergy >= 2
 	& ia.buyUpgrade(MyName, Upgrade)
 	<-
 	.print("Buying upgrade: ", Upgrade);

@@ -26,7 +26,7 @@ public class buyUpgrade extends DefaultInternalAction {
             throws Exception {
         ts.getAg().getLogger().info("executing internal action 'ia.buyUpgrade'");
         int currentMoney = MapAgent.getInstance().getMoney();
-        if (currentMoney == 0) {
+        if (currentMoney < 2) {
             return false;
         }
         MapAgent.getInstance().increaseMoneySpentThisStep();
