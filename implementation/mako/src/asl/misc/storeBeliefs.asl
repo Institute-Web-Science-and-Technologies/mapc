@@ -130,11 +130,11 @@
 
 +step(Numeral)[source(percept)] <-
   .print("Received percept step(", Numeral, ").");
-  -+step(Numeral).
+  -+step(Numeral)[source(self)].
   
 +step(Numeral)[source(percept)]: debug <-
   .print("Received percept step(", Numeral, ").");
-  -+step(Numeral).
+  -+step(Numeral)[source(self)].
 
 +steps(Numeral)[source(percept)]: debug <-
   .print("Received percept steps(", Numeral, ").").
