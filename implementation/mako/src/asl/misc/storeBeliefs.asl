@@ -1,5 +1,5 @@
 // Uncomment this line to receive debug output from storeBeliefs.asl
-debug.
+//debug.
 
 +achievement(Identifier)[source(percept)]: debug <-
   .print("Received percept achievement(", Identifier, ").");
