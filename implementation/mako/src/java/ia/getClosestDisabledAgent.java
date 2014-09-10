@@ -35,7 +35,7 @@ public class getClosestDisabledAgent extends DefaultInternalAction {
             return false;
         }
         Vertex disabledAgentPosition = disabledAgent.getPosition();
-        unifier.unifies(disabledAgentTerm, JasonHelper.getTerm(disabledAgent.getServerName()));
+        unifier.unifies(disabledAgentTerm, JasonHelper.getTerm(disabledAgent.getJasonName()));
         unifier.unifies(disabledAgentPositionTerm, JasonHelper.getTerm(disabledAgentPosition));
         return true;
     }

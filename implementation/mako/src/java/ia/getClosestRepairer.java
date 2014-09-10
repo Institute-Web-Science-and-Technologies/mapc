@@ -35,7 +35,7 @@ public class getClosestRepairer extends DefaultInternalAction {
             return false;
         }
         Vertex repairerPosition = repairer.getPosition();
-        unifier.unifies(repairerTerm, JasonHelper.getTerm(repairer.getServerName()));
+        unifier.unifies(repairerTerm, JasonHelper.getTerm(repairer.getJasonName()));
         unifier.unifies(repairerPositionTerm, JasonHelper.getTerm(repairerPosition));
         return true;
     }
