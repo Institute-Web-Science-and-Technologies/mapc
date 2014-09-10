@@ -110,7 +110,7 @@
 
 +requestAction[source(percept)]: debug <-
   .print("Received percept requestAction.");
-  +requestAction[source(self)].
+  -+requestAction[source(self)].
 
 +role(Identifier)[source(percept)]: debug <-
   .print("Received percept role(", Identifier, ").");
