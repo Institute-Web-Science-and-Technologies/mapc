@@ -1,6 +1,7 @@
 { include("../actions/zoning.replies.asl")}
 { include("../actions/zoning.minion.asl") }
 { include("../actions/zoning.coach.asl") }
+//{ include("../actions/zoning.periodicBreakup.asl") }
 
 /* Initial beliefs and rules */
 isCoach(false).
@@ -26,7 +27,20 @@ defaultRangeForSingleZones(1).
     & defaultRangeForSingleZones(Range)
     <- -+currentRange(Range);
        !preparedNewZoningRound.
-    
+
+// Minions can enter this method because the round's winning coach will only
+// tell all losing agents to build a new zone. If this agent thought he was
+// destined to be a minion, he might wait forever for a coach to tell him what
+// to do. So as he gets told by a coach, it must mean that he was not a minion
+// of this round. Checking for zoneNodes or zoneGoalVertices ensures that he
+// wasn't a minion of an earlier, successful zone formation either.
++!preparedNewZoningRound[source(Coach)]:
+    isMinion(true)
+    & not zoneNode(_)
+    & not zoneGoalVertex(_)
+    <- !resetZoningBeliefs;
+       !preparedNewZoningRound.
+
 // After some agents formed a zone a new round of zoning for all the other
 // agents will start. We allow locked agents in here as long as they are not
 // zoners. These locks are being reused to prevent a foreignBestzone conflicting
@@ -36,7 +50,6 @@ defaultRangeForSingleZones(1).
 // zoner.
 +!preparedNewZoningRound:
     isCoach(false)
-    & isMinion(false)
     & zoneMode(true)
     & .my_name(MyName)
 	<- -+isLocked(true);
@@ -144,7 +157,8 @@ defaultRangeForSingleZones(1).
 // ensure that the agents needed for zoning are successfully unregistered from
 // the available zoners.
 @waitingForNextZoneRound[priority(2)]
-+!choseZoningRole.
++!choseZoningRole
+    <- .print("[zoning] I'm waiting for any zone to be build and me being woken up.").
 
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:
