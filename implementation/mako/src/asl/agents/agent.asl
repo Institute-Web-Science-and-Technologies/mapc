@@ -118,7 +118,6 @@ zoneMode(false).
  	<- .print("I'm in zone defending mode.");
  	   !defendZone.
 
-
 // In the case where we have sent a saboteur (or any other agent) to an enemy 'ghost' location (a location
 // where an enemy agent used to be, but no longer occupies), we need to tell the
 // MapAgent to update its list of enemy positions.
