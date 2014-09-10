@@ -241,6 +241,13 @@ public class EISEnvironment extends Environment implements AgentListener {
             String escaped = percept.toProlog().toLowerCase().replace("visibleentity", "visibleEntity");
             return Literal.parseLiteral(escaped);
         }
+        case "visibleVertex": {
+            // Team names can start with a capital letter, which AgentSpeak
+            // interprets as a variable name, so we have to convert them to
+            // lowerCase.
+            String lowerCasePercept = percept.toProlog().toLowerCase().replace("visiblevertex", "visibleVertex");
+            return Literal.parseLiteral(lowerCasePercept);
+        }
         case "inspectedEntity": {
             String escaped = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
             return Literal.parseLiteral(escaped);
