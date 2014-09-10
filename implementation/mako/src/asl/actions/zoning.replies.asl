@@ -57,7 +57,7 @@
 +foreignBestZone(_, _, _)[source(Sender)]:
     isAvailableForZoning
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
-    <- .send(Sender, tell, foreignBestZone(Id, ZoneValue, CentreNode, ClosestAgents)).
+    <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
 
 // We were informed about a worse zone. We can check whether we have received
 // all replies. We don't have to wait for an acknowledgement as our bestZone
