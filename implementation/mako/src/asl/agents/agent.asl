@@ -163,20 +163,15 @@ zoneMode(false).
 	.print("Danger! Active enemy could-be saboteur ", Vehicle, " on ", VehiclePosition, " is in attacking range!");
 	!avoidEnemy(Vehicle).
     
-//Test plan for buying: What happens if saboteurs extend their visiblity range?
+
+//Test plan for buying: What happens if we have an uber-saboteur?
 +!doAction:
-	(role(saboteur) | role(inspector))
-	& money(Money)
-	& Money > 11
-	& visRange(VisRange)
-	& VisRange < 2
-	& energy(MyEnergy)
-	& MyEnergy > 2
-	& health(MyHealth)
-	& MyHealth > 0
+	.my_name(saboteur1)
+	& myName(MyName)
+	& ia.buyUpgrade(MyName, Upgrade)
 	<-
-	.print("Current money is ", Money, ". Current visRange is ", VisRange, ". Will buy sensor upgrade.");
-	buy(sensor).
+	.print("Buying upgrade: ", Upgrade);
+	buy(Upgrade).
 	
 // Saboteurs should perform aggressively, preferring to attack enemy agents over exploring.
 // In the case where they can't see an enemy agent themselves, they get help
