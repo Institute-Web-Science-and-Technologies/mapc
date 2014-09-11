@@ -134,8 +134,8 @@ defaultRange(1).
        .print("[zoning][minion] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
-// their 1HNH that could be built. We try zoning again the hope it will get
-// better but TODO: we should be smarter and start going to wells or so because trying zoning again will most likely not help!?
+// their 1HNH that could be built. We go to a well and wait either until s/o
+// else triggers us for a new round or the next step begins.
 @noBestZoneExisting[priority(2)]
 +!choseZoningRole:
     not bestZone(_, _, _)
@@ -147,9 +147,7 @@ defaultRange(1).
        IncreasedRange = Range + 1;
        -+currentRange(IncreasedRange);
        
-      .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range);
-      // TODO: we should probably make sure that this happens only after a step?:
-      !preparedNewZoningRound.
+      .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range).
 
 // A zone was properly built but this agent wasn't part of it. He'll try his
 // luck with a new round of zoning when the coach allows him to. This is to

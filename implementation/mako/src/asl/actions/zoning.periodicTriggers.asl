@@ -1,5 +1,5 @@
 /* Plans */
-//debugZoning.
+// debugZoning.
 
 // Wake up all coaches and tell them to destroy their current zone properly by
 // also informing JavaMap and their minions.
@@ -15,9 +15,16 @@
 // saboteurs for help.
 +step(Numeral)[source(self)]:
     isCoach(true)
-    <- -+step(Numeral);
-       !checkZoneUnderAttack.
+    <- !checkZoneUnderAttack.
        
+// If there was no zone and an agent simply looked for a high valued zone around
+// him, he should not directly do this again. Instead he either waits until
+// others trigger him or a next step begins.
++step(Numeral)[source(self)]:
+    isAvailableForZoning
+    & zoneGoalVertex(_)
+    <- !preparedNewZoningRound.
+
 +step(Numeral)[source(self)]:
     debugZoning
     & bestZone(_, _, ClosestAgents)[source(self)]
