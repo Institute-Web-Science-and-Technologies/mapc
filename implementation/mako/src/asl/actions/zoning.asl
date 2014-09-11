@@ -1,13 +1,14 @@
 { include("../actions/zoning.replies.asl")}
 { include("../actions/zoning.minion.asl") }
 { include("../actions/zoning.coach.asl") }
-{ include("../actions/zoning.periodicTriggers.asl") }
+// { include("../actions/zoning.periodicTriggers.asl") }
 
 /* Initial beliefs and rules */
 isCoach(false).
 isMinion(false).
 isLocked(false).
 isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zoneMode(true).
+isInZoningRound :- isCoach(false) & isMinion(false) & isLocked(true) & zoneMode(true).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
 plannedZoneTimeInSteps(15).
@@ -71,33 +72,23 @@ defaultRange(1).
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
-// broadcasting it. It will also register as an idleZoner.
-//
-// When zoning, do it asynchronously because we might be too late and have
-// mistakenly deleted percepts from the new zoning round. Doing !builtZone
-// asynchronously then ensures that we will get any left over zone information
-// and in the end will know about the overall best zone.
+// broadcasting it.
 @determineMyBestZone[priority(3)]
 +!builtZone:
     position(PositionVertex)
-    & isCoach(false)
-    & isMinion(false)
+    & isInZoningRound
     // ask for best zone in his 1HNH (if any)
     & currentRange(Range)
     & ia.getBestZone(PositionVertex, Range, Value, CentreNode, ClosestAgents)
     <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
-       -+isLocked(false);
        .broadcast(tell, foreignBestZone(Value, CentreNode, ClosestAgents)).
 
 // No zone could be found in this agent's 1HNH that could have been built with
 // the currently available amount of agents. We need to ask others for zones.
-// We are able to remove the lock because no zone was found.
 +!builtZone:
-    isCoach(false)
-    & isMinion(false)
-    <- -+isLocked(false);
-       .broadcast(tell, bestZoneRequest).
+    isInZoningRound
+    <- .broadcast(tell, bestZoneRequest).
     
 // if we receive a builtZone achievement goal, but were are not available for
 // zoning, do nothing
@@ -107,14 +98,11 @@ defaultRange(1).
 // minions about it and move to the CentreNode.
 // Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
 // zone.
-// We also set a lock so that assignededAgentsTheirPosition can be called
-// without the periodic zone breakup interfering with it.
 @becomeACoach[priority(2), atomic]
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
-    & isAvailableForZoning
-    <- -+isLocked(true);
-       -+isCoach(true);
+    & isInZoningRound
+    <- -+isCoach(true);
        -zoneGoalVertex(_)[source(self)];
        .print("[zoning][coach] I'm now a coach.");
        !assignededAgentsTheirPosition.
@@ -127,9 +115,8 @@ defaultRange(1).
     .my_name(MyName)
     & bestZone(_, _, ClosestAgents)
     & .member(MyName, ClosestAgents)
-    & isAvailableForZoning
-    <- -+isLocked(true);
-       -+isMinion(true);
+    & isInZoningRound
+    <- -+isMinion(true);
        -zoneGoalVertex(_)[source(self)];
        .print("[zoning][minion] I'm now a minion.").
 
@@ -141,21 +128,24 @@ defaultRange(1).
     not bestZone(_, _, _)
     & currentRange(Range)
     & position(Position)
-    & isAvailableForZoning
+    & isInZoningRound
     <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
        -+zoneGoalVertex(GoalVertex)[source(_)];
        IncreasedRange = Range + 1;
        -+currentRange(IncreasedRange);
        
-      .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range).
+       -+isLocked(false);
+       .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range).
 
 // A zone was properly built but this agent wasn't part of it. He'll try his
 // luck with a new round of zoning when the coach allows him to. This is to
 // ensure that the agents needed for zoning are successfully unregistered from
 // the available zoners.
 @waitingForNextZoneRound[priority(2)]
-+!choseZoningRole
-    <- .print("[zoning] I'm waiting for any zone to be build and me being woken up.").
++!choseZoningRole:
+    isInZoningRound
+    <- -+isLocked(false);
+       .print("[zoning] I'm waiting for any zone to be build and me being woken up.").
 
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:

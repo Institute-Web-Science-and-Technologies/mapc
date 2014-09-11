@@ -9,27 +9,27 @@
     isCoach(true)
     & isLocked(false) // locking for cancelling saboteurs is not needed
     & bestZone(_, CentreNode, _)
+    & not zoneProtectRequestSent
     & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
     & ia.getDistance(CentreNode, EnemyPosition, Distance)
     & (Distance <= 3) & (Distance >= 0)
-    & not zoneProtectRequestSent
     & saboteurList(SaboteurList)
-    <-
-    .send(SaboteurList, tell, requestZoneDefence(CentreNode));
-    +zoneProtectRequestSent. 
+    <- .print("[zoning][coach] Calling for saboetur help");
+       .send(SaboteurList, tell, requestZoneDefence(CentreNode));
+       +zoneProtectRequestSent. 
 
 // If the enemy left the zone, but we called the saboteur to help - cancel help request.     
 +!checkZoneUnderAttack:
     isCoach(true)
     & bestZone(_, CentreNode, _)
+    & zoneProtectRequestSent
     & ia.getClosestEnemy(CentreNode, EnemyPosition, _)
     & ia.getDistance(CentreNode, EnemyPosition, Distance)
     & (Distance > 3)
-    & zoneProtectRequestSent
     & saboteurList(SaboteurList)
-    <-
-    .send(SaboteurList, tell, cancelZoneDefence(CentreNode));
-    .abolish(zoneProtectRequestSent).
+    <- .print("[zoning][coach] Cancelling saboetur help");
+       .send(SaboteurList, tell, cancelZoneDefence(CentreNode));
+       .abolish(zoneProtectRequestSent).
 
 // Fallback plan
 +!checkZoneUnderAttack.

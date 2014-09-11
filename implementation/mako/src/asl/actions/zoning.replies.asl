@@ -2,14 +2,14 @@
 // We also directly set the acknowledgement because we know the receiver won't
 // reply anymore as he can't have a better zone himself.
 +bestZoneRequest[source(Sender)]:
-    isAvailableForZoning
+    isInZoningRound
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
     <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents));
        +broadcastAcknowledgement[source(Sender)].
 
 // Acknowledge receiving of the message and check if we are done waiting.
 +bestZoneRequest[source(Sender)]:
-    isAvailableForZoning
+    isInZoningRound
     <- .send(Sender, tell, broadcastAcknowledgement);
        +broadcastAcknowledgement[source(Sender)].
 
@@ -26,7 +26,7 @@
 // acknowledgement is needed.
 @onlyAddOneFirstBestZone[atomic]
 +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
-    isAvailableForZoning
+    isInZoningRound
     & not bestZone(_, _, _)
     <- .send(Coach, tell, broadcastAcknowledgement);
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
@@ -37,7 +37,7 @@
 // replies.
 @onlyAddOneBetterZoneAtATime[atomic]
 +foreignBestZone(Value, CentreNode, ClosestAgents)[source(Coach)]:
-    isAvailableForZoning
+    isInZoningRound
     & position(PositionVertex)
     & bestZone(FormerZoneValue, FormerZoneCentreNode, BestZoneClosestAgents)[source(FormerCoach)]
     // my zone is worse:
@@ -55,7 +55,7 @@
 // We were informed about a worse zone. We inform the sender about our better
 // zone and wait for his acknowledgement.
 +foreignBestZone(_, _, _)[source(Sender)]:
-    isAvailableForZoning
+    isInZoningRound
     & bestZone(ZoneValue, CentreNode, ClosestAgents)[source(self)]
     <- .send(Sender, tell, foreignBestZone(ZoneValue, CentreNode, ClosestAgents)).
 
@@ -63,7 +63,7 @@
 // all replies. We don't have to wait for an acknowledgement as our bestZone
 // isn't from us (!= self).
 +foreignBestZone(_, _, _)[source(Sender)]:
-    isAvailableForZoning
+    isInZoningRound
     <- .send(Sender, tell, broadcastAcknowledgement);
        +broadcastAcknowledgement[source(Sender)].
 
@@ -76,7 +76,7 @@
 // waiting.
 @testForAllReplies[priority(1), atomic]
 +broadcastAcknowledgement[source(Sender)]:
-    isAvailableForZoning
+    isInZoningRound
     & .count(broadcastAcknowledgement[source(_)], RepliesAmount)
     & broadcastAgentList(BroadcastList)
     & .length(BroadcastList, AgentsAmount)

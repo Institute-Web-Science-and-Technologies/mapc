@@ -325,7 +325,7 @@ zoneMode(false).
 	& zoneMode(false)
     & achievement(surveyed640)
     & not role(saboteur)
-	<- .print("There is nothing left that I could do. 640 edges are already surveyed. So I switch to zoneMode.");
+	<- .print("[zoning] There is nothing left that I could do. 640 edges are already surveyed. So I switch to zoneMode.");
 	-+zoneMode(true);
     !doAction.
 

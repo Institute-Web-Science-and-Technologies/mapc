@@ -36,7 +36,7 @@
   
 +step(Numeral)[source(self)]:
     debugZoning
-    &  bestZone(_, _, ClosestAgents)[source(Coach)]
+    & bestZone(_, _, ClosestAgents)[source(Coach)]
     & isMinion(ShouldBeRole)
     & isCoach(X)
     & isLocked(Y)
