@@ -199,7 +199,7 @@ public class Agent {
      */
     @Override
     public String toString() {
-        return "Agent [" + (serverNameMixedCase != null ? "serverNameMixedCase=" + serverNameMixedCase + ", " : "") + (jasonName != null ? "jasonName=" + jasonName + ", " : "") + (position != null ? "position=" + position : "") + "]";
+        return serverNameMixedCase + (jasonName != null ? " (aka " + jasonName + ")" : "") + (position != null ? " on node " + position : "");
     }
 
     public String getServerNameUpperCase() {
