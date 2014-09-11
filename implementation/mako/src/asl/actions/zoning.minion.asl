@@ -71,7 +71,7 @@
 // zoneGoalVertex.
 @switchToBetterZone[atomic]
 +zoneGoalVertexProposal(Value, CentreNode, ClosestAgents, GoalVertex)[source(Coach)]:
-    bestZone(FormerZoneValue, _, _)[source(FormerCoach)]
+    bestZone(FormerValue, _, _)[source(FormerCoach)]
     // my zone is worse:
     & FormerValue < Value
     // or the zones are identical but my name is alphabetically bigger:

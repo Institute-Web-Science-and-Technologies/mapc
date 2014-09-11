@@ -64,16 +64,16 @@ defaultRange(1).
 // Clear all percepts which are generated during zone building and formation.
 +!clearedZoningPercepts
     <- .abolish(bestZone(_, _, _)[source(_)]);
-       -broadcastAcknowledgement[source(_)];
+       .abolish(broadcastAcknowledgement[source(_)]);
        .abolish(zoneNode(_)[source(_)]);
-       .abolish(foreignBestZone(_, _, _)[source(_)]);
-       -bestZoneRequest[source(_)];
+       .abolish(foreignBestZone(_, _, _, _)[source(_)]);
+       .abolish(bestZoneRequest(_)[source(_)]);
        .abolish(zoneGoalVertexProposal(_, _, _, _)[source(_)]).
 
 // The agent is now looking for possible zones to build around him. It will
 // retrieve the best in his 1HNH (short for: one-hop-neighbourhood) and start
 // broadcasting it.
-@determineMyBestZone[priority(3)]
+@determineMyBestZone
 +!builtZone:
     position(PositionVertex)
     & isInZoningRound
@@ -82,13 +82,15 @@ defaultRange(1).
     & ia.getBestZone(PositionVertex, Range, Value, CentreNode, ClosestAgents)
     <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
-       .broadcast(tell, foreignBestZone(Value, CentreNode, ClosestAgents)).
+       ia.generateId(Id);
+       .broadcast(tell, foreignBestZone(Id, Value, CentreNode, ClosestAgents)).
 
 // No zone could be found in this agent's 1HNH that could have been built with
 // the currently available amount of agents. We need to ask others for zones.
 +!builtZone:
     isInZoningRound
-    <- .broadcast(tell, bestZoneRequest).
+    <- ia.generateId(Id);
+       .broadcast(tell, bestZoneRequest(Id)).
     
 // if we receive a builtZone achievement goal, but were are not available for
 // zoning, do nothing
@@ -98,7 +100,7 @@ defaultRange(1).
 // minions about it and move to the CentreNode.
 // Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
 // zone.
-@becomeACoach[priority(2), atomic]
+@becomeACoach[atomic]
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
     & isInZoningRound
@@ -110,7 +112,7 @@ defaultRange(1).
 // We aren't this round's coach. But we are a minion.
 // Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
 // zone.
-@becomeAMinion[priority(2), atomic]
+@becomeAMinion[atomic]
 +!choseZoningRole:
     .my_name(MyName)
     & bestZone(_, _, ClosestAgents)
@@ -123,7 +125,7 @@ defaultRange(1).
 // If there actually was no best zone, then all agents couldn't find a zone in
 // their 1HNH that could be built. We go to a well and wait either until s/o
 // else triggers us for a new round or the next step begins.
-@noBestZoneExisting[priority(2)]
+@noBestZoneExisting
 +!choseZoningRole:
     not bestZone(_, _, _)
     & currentRange(Range)
@@ -141,7 +143,7 @@ defaultRange(1).
 // luck with a new round of zoning when the coach allows him to. This is to
 // ensure that the agents needed for zoning are successfully unregistered from
 // the available zoners.
-@waitingForNextZoneRound[priority(2)]
+@waitingForNextZoneRound
 +!choseZoningRole:
     isInZoningRound
     <- -+isLocked(false);
