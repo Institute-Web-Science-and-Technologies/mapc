@@ -16,7 +16,7 @@ import eis.JasonHelper;
  */
 public class generateId extends DefaultInternalAction {
 
-    private static final long serialVersionUID = -2180832453021570338L;
+    private static final long serialVersionUID = 1768097879789275154L;
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)

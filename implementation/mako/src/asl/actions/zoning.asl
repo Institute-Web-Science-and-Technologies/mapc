@@ -13,6 +13,7 @@ isInZoningRound :- isCoach(false) & isMinion(false) & isLocked(true) & zoneMode(
 // staying in a zone.
 plannedZoneTimeInSteps(15).
 defaultRange(1).
+maxRange(15).
 
 //TODO: maybe make a cut if Range gets too high. Higher than 5 sounds high.
 
@@ -38,7 +39,8 @@ defaultRange(1).
     isMinion(true)
     & not zoneNode(_)
     & not zoneGoalVertex(_)
-    <- !resetZoningBeliefs;
+    <- .print("[zoning][minion] Disoriented minion was told to start zoning again.");
+       !resetZoningBeliefs;
        !preparedNewZoningRound.
 
 // After some agents formed a zone a new round of zoning for all the other
@@ -53,7 +55,6 @@ defaultRange(1).
     & .my_name(MyName)
 	<- -+isLocked(true);
 	   ia.registerForZoning(MyName);
-	// TODO unregister if you want to quit zoning but are not in a zone
 	   !clearedZoningPercepts;
 	   !builtZone.
 
@@ -104,8 +105,8 @@ defaultRange(1).
 +!choseZoningRole:
     bestZone(_, _, _)[source(self)]
     & isInZoningRound
-    <- -+isCoach(true);
-       -zoneGoalVertex(_)[source(self)];
+    <- -zoneGoalVertex(_)[source(self)];
+       -+isCoach(true);
        .print("[zoning][coach] I'm now a coach.");
        !assignededAgentsTheirPosition.
 
@@ -118,8 +119,8 @@ defaultRange(1).
     & bestZone(_, _, ClosestAgents)
     & .member(MyName, ClosestAgents)
     & isInZoningRound
-    <- -+isMinion(true);
-       -zoneGoalVertex(_)[source(self)];
+    <- -zoneGoalVertex(_)[source(self)];
+       -+isMinion(true);
        .print("[zoning][minion] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
@@ -132,9 +133,13 @@ defaultRange(1).
     & position(Position)
     & isInZoningRound
     <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
-       -+zoneGoalVertex(GoalVertex)[source(_)];
-       IncreasedRange = Range + 1;
-       -+currentRange(IncreasedRange);
+       -+zoneGoalVertex(GoalVertex)[source(self)];
+       
+       ?maxRange(MaxRange);
+       if (Range < MaxRange) {
+         IncreasedRange = Range + 1;
+         -+currentRange(IncreasedRange);
+       };
        
        -+isLocked(false);
        .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range).
@@ -149,6 +154,14 @@ defaultRange(1).
     <- -+isLocked(false);
        .print("[zoning] I'm waiting for any zone to be build and me being woken up.").
 
+// Break up single zoner zones when removing this goal vertex while not being
+// a minion or coach.
+-zoneGoalVertex(Vertex):
+    isMinion(false)
+    & isCoach(false)
+    <- .print("[zoning] Destroyed 1-agent-zone at ", Vertex);
+       ia.destroyZone(Vertex, 1).
+
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:
     isAvailableForZoning.
@@ -157,8 +170,8 @@ defaultRange(1).
 // if any. Called when zones break up.
 +!resetZoningBeliefs:
     defaultRange(Range)
-    <- -+isMinion(false);
-       -+isCoach(false);
-       -+isLocked(false);
+    <- -+isLocked(false);
        .abolish(zoneGoalVertex(_)[source(_)]); 
-       -+currentRange(Range).
+       -+currentRange(Range);
+       -+isMinion(false);
+       -+isCoach(false);.
