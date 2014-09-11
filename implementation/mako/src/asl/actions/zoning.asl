@@ -1,7 +1,7 @@
 { include("../actions/zoning.replies.asl")}
 { include("../actions/zoning.minion.asl") }
 { include("../actions/zoning.coach.asl") }
-// { include("../actions/zoning.periodicTriggers.asl") }
+{ include("../actions/zoning.periodicTriggers.asl") }
 
 /* Initial beliefs and rules */
 isCoach(false).
