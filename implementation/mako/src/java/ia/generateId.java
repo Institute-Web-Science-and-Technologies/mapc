@@ -11,7 +11,7 @@ import eis.JasonHelper;
 /**
  * Call from Jason: generateId(Id)
  * <p>
- * Generates an id from a current timestamp in ms and the agent name.
+ * Generates an id from a current timestamp in ms.
  * 
  */
 public class generateId extends DefaultInternalAction {
@@ -22,7 +22,6 @@ public class generateId extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
         ts.getAg().getLogger().info("executing internal action 'ia.buyUpgrade'");
-        String agentName = ts.getUserAgArch().getAgName();
 
         long time = System.currentTimeMillis();
 
