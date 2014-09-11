@@ -125,7 +125,7 @@ public class EISEnvironment extends Environment implements AgentListener {
         try {
             Agent agent = MapAgent.getInstance().getAgent(agentServerName);
             int step = MapAgent.getInstance().getStep();
-            logger.info("Agent " + agent + " wants to " + action + "in step " + step);
+            logger.info("Agent " + agent + " wants to " + action + " in step " + step);
             environmentInterface.performAction(agentServerName, action);
             return true;
         } catch (ActException e) {
