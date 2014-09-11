@@ -65,11 +65,12 @@ zoneMode(false).
 	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
 	!doRepair(Vehicle, VehiclePosition).
 
-// If agent is disabled - get repaired.
+// If agent is disabled - get repaired. If he was in zoneMode, it is properly
+// terminated.
  +!doAction:
- 	 health(0)
-    <-
-    !getRepaired.
+ 	health(0)
+    <- !quitZoneMode;
+       !preparedGettingRepaired.
 
 // If a friendly non-disabled agent requiring repair is within half of the visibility range of a repairer,
 // repair it.

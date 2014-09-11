@@ -10,7 +10,7 @@
     .print("Going to the closest repairer ", RepairerName, " at position ", RepairerPosition);
     !goto(RepairerPosition).
 
-// When reached the repairer - recahrge and wait to get repaired.
+// When reached the repairer - recharge and wait to get repaired.
 +!getRepaired:
     .my_name(Name)
     & ia.getClosestRepairer(Name, RepairerName, RepairerPosition)

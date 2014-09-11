@@ -2,6 +2,7 @@
 { include("../actions/zoning.minion.asl") }
 { include("../actions/zoning.coach.asl") }
 { include("../actions/zoning.periodicTriggers.asl") }
+{ include("../actions/zoning.quitting.asl") }
 
 /* Initial beliefs and rules */
 isCoach(false).
@@ -52,9 +53,8 @@ maxRange(15).
 // zoner.
 +!preparedNewZoningRound:
     isAvailableForZoning
-    & .my_name(MyName)
 	<- -+isLocked(true);
-	   ia.registerForZoning(MyName);
+	   ia.registerForZoning;
 	   !clearedZoningPercepts;
 	   !builtZone.
 
