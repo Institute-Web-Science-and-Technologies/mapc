@@ -12,7 +12,7 @@ public class Agent {
     private String team; // e.g. MAKo or teamB
     private String entity; // e.g. connectionA1
     private String jasonName; // e.g. "explorer1"
-    private AgentLogger logger = new AgentLogger("Agent.java");
+    // private AgentLogger logger = new AgentLogger("Agent.java");
 
     private int energy;
     private int health;
@@ -199,7 +199,7 @@ public class Agent {
      */
     @Override
     public String toString() {
-        return "Agent [serverName=" + serverName + ", jasonName=" + jasonName + "]";
+        return "Agent [" + (serverNameMixedCase != null ? "serverNameMixedCase=" + serverNameMixedCase + ", " : "") + (jasonName != null ? "jasonName=" + jasonName + ", " : "") + (position != null ? "position=" + position : "") + "]";
     }
 
     public String getServerNameUpperCase() {
