@@ -724,7 +724,7 @@ public class MapAgent {
                 }
             }
         }
-        logger.info("I'm seeing " + name + "for the first time. Creating Agent object.");
+        logger.info("I'm seeing " + name + " for the first time. Creating Agent object.");
         Agent newAgent = new Agent();
         newAgent.setServerName(name);
         newAgent.setJasonName("unknown");
