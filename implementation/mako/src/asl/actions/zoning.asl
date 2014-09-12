@@ -12,9 +12,10 @@ isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zon
 isInZoningRound :- isCoach(false) & isMinion(false) & isLocked(true) & zoneMode(true).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
-plannedZoneTimeInSteps(15).
+maxZoneTimeInSteps(15).
 defaultRange(1).
 maxRange(15).
+maxZoningRoundTimeInSteps(5).
 
 //TODO: maybe make a cut if Range gets too high. Higher than 5 sounds high.
 
@@ -54,6 +55,7 @@ maxRange(15).
 +!preparedNewZoningRound:
     isAvailableForZoning
 	<- -+isLocked(true);
+       -+currentTimeInZoningRound(1);
 	   ia.registerForZoning;
 	   !clearedZoningPercepts;
 	   !builtZone.
