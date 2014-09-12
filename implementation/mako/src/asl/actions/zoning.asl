@@ -167,7 +167,8 @@ maxZoningRoundTimeInSteps(5).
 
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:
-    isAvailableForZoning.
+    isCoach(false)
+    & isMinion(false).
 
 // Reset the current range, remove role percepts, unlock and remove goal vertex
 // if any. Called when zones break up.

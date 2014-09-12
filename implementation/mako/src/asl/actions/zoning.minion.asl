@@ -79,8 +79,9 @@
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- -+isMinion(true);
-       !acceptedZoneGoalVertexProposal;
+    <- !acceptedZoneGoalVertexProposal;
+       -+isMinion(true);
+       -+isCoach(false);
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        .abolish(bestZone(_, _, _)[source(FormerCoach)]);
        
@@ -101,10 +102,7 @@
     isCoach(true)
     & .my_name(Coach)
     & bestZone(_, _, ClosestAgents)[source(Coach)]
-    <- -+isMinion(true);
-       -+isCoach(false);
-       
-       !informedSaboteursAboutZoneBreakup;
+    <- !informedSaboteursAboutZoneBreakup;
        .difference(ClosestAgents, [Coach], Minions);
        .send(Minions, achieve, cancelledZoneBuilding).
 

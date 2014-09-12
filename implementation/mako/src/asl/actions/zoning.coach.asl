@@ -55,7 +55,6 @@
 @cancelZoneAndInformMinions[atomic]
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
-    & isLocked(false)
     & .my_name(Coach)
     & bestZone(_, CentreNode, ClosestAgents)
     & (Sender == self
