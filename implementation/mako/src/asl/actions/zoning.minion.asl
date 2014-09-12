@@ -106,6 +106,11 @@
        .difference(ClosestAgents, [Coach], Minions);
        .send(Minions, achieve, cancelledZoneBuilding).
 
+// If an agent isAvailableForZoning or isInZoningMode, he may be recruited as
+// well. 
++!acceptedZoneGoalVertexProposal:
+    zoneMode(true).
+
 // If a coach wanted to have this agent in his zone but his zone is worse, this
 // agent has to tell him that he won't be available.
 +zoneGoalVertexProposal(_, _, _, _)[source(WannabeCoach)]
