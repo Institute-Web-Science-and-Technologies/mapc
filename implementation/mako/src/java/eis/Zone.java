@@ -50,4 +50,14 @@ public class Zone {
     public void setZonePointVertices(ArrayList<Vertex> zonePointVertices) {
         this.zonePointVertices = zonePointVertices;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Zone [" + (getCenter() != null ? "center=" + getCenter() + ", " : "") + (getPositions() != null ? "positions=" + getPositions() + ", " : "") + "zone value=" + getZoneValue() + ", zone value per agent=" + getZoneValuePerAgent() + "]";
+    }
 }
