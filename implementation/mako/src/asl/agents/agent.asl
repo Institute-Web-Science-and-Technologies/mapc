@@ -11,6 +11,16 @@
 
 zoneMode(false).
 
+//We only receive the failed_status result if we tried to perform an action that
+//we can't perform while disabled - from this we can infer that our health is
+//0. Ideally, we wouldn't need this plan because we should always receive the
+//health(Health) percepts properly - but from what I've seen, this isn't the
+//case, so this plan serves as an alternative to finding out whether or not
+//we're disabled.
++lastActionResult(failed_status) <-
+	.print("Received lastActionResult(failed_status) - which means I didn't know that I'm disabled!")
+	-+health(0).
+
 +health(0)[source(self)]:
 	step(Step)
 	& not disabledSince(_)
@@ -65,12 +75,12 @@ zoneMode(false).
 	.print("I see the disabled agent ", Vehicle, " on ", VehiclePosition, " - will try to repair it.");
 	!doRepair(Vehicle, VehiclePosition).
 
-// If agent is disabled - get repaired. If he was in zoneMode, it is properly
-// terminated.
- +!doAction:
- 	health(0)
-    <- !quitZoneMode;
-       !preparedGettingRepaired.
+//// If agent is disabled - get repaired. If he was in zoneMode, it is properly
+//// terminated.
+// +!doAction:
+// 	health(0)
+//    <- !quitZoneMode;
+//       !preparedGettingRepaired.
 
 // If a friendly non-disabled agent requiring repair is within half of the visibility range of a repairer,
 // repair it.
