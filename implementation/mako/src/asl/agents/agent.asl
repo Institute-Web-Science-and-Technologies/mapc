@@ -252,6 +252,7 @@ zoneMode(false).
 	zoneMode(false)
 	& position(Position)
 	& ia.isNotSurveyed(Position)
+	& not health(0)
 	<-
 	.print(Position, " is not surveyed. I will survey.");
 	!doSurveying.
