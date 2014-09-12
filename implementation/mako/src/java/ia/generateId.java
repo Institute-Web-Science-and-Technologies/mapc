@@ -21,8 +21,6 @@ public class generateId extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        ts.getAg().getLogger().info("executing internal action 'ia.buyUpgrade'");
-
         long time = System.currentTimeMillis();
 
         Term idTerm = args[0];
