@@ -12,10 +12,11 @@ isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zon
 isInZoningRound :- isCoach(false) & isMinion(false) & isLocked(true) & zoneMode(true).
 // This belief expresses the number of steps we plan to invest for getting and
 // staying in a zone.
-maxZoneTimeInSteps(15).
+maxZoneTime(15).
 defaultRange(1).
 maxRange(15).
-maxZoningRoundTimeInSteps(5).
+maxZoningRoundTime(5).
+maxMinionWaitingTime(3).
 
 //TODO: maybe make a cut if Range gets too high. Higher than 5 sounds high.
 
@@ -124,6 +125,7 @@ maxZoningRoundTimeInSteps(5).
     & isInZoningRound
     <- -zoneGoalVertex(_)[source(self)];
        -+isMinion(true);
+       -+currentMinionWaitingTime(1);
        .print("[zoning][minion] I'm now a minion.").
 
 // If there actually was no best zone, then all agents couldn't find a zone in
@@ -155,7 +157,8 @@ maxZoningRoundTimeInSteps(5).
 +!choseZoningRole:
     isInZoningRound
     <- -+isLocked(false);
-       .print("[zoning] I'm waiting for any zone to be build and me being woken up.").
+        ?bestZone(_,_,X)[source(C)];
+       .print("[zoning] I'm waiting for any zone to be build and me being woken up. Zone being built without me: ", X, " by ", C).
 
 // Break up single zoner zones when removing this goal vertex while not being
 // a minion or coach.
@@ -164,6 +167,11 @@ maxZoningRoundTimeInSteps(5).
     & isCoach(false)
     <- .print("[zoning] Destroyed 1-agent-zone at ", Vertex);
        ia.destroyZone(Vertex, 1).
+
+// Minions will no longer have to count the steps spent waiting for a coach to
+// tell them what to do.
++zoneGoalVertex(_)
+    <- -currentMinionWaitingTime(_).
 
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:
@@ -178,4 +186,5 @@ maxZoningRoundTimeInSteps(5).
        .abolish(zoneGoalVertex(_)[source(_)]); 
        -+currentRange(Range);
        -+isMinion(false);
-       -+isCoach(false);.
+       -+isCoach(false);
+       -currentMinionWaitingTime(_).
