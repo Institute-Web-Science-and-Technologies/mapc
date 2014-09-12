@@ -107,9 +107,12 @@
        .send(Minions, achieve, cancelledZoneBuilding).
 
 // If an agent isAvailableForZoning or isInZoningMode, he may be recruited as
-// well. 
+// well.
+// If he was on a well, it must be reported that he now left it to JavaMap (done
+// through removing any matching beliefs).
 +!acceptedZoneGoalVertexProposal:
-    zoneMode(true).
+    zoneMode(true)
+    <- -zoneGoalVertex(_).
 
 // If a coach wanted to have this agent in his zone but his zone is worse, this
 // agent has to tell him that he won't be available.
