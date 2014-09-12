@@ -402,7 +402,6 @@ public class MapAgent {
             reservedProbedVertices.add(vertex);
             vertex.setReservedForProbing(true);
         }
-        logger.info("returning vertex" + vertex);
         return vertex;
     }
 
@@ -449,6 +448,7 @@ public class MapAgent {
                 }
             }
         }
+        logger.info("DEBUG: getBestZone(" + zones + "): return " + bestZone);
         return bestZone;
     }
 
@@ -472,6 +472,7 @@ public class MapAgent {
                 zones.remove(i);
             }
         }
+        logger.info("DEBUG: getBestZoneWithMaxAgents(" + zones + ", " + maxAgents + "): zones = " + zones);
         return getBestZone(zones);
     }
 
