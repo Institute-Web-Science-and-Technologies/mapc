@@ -79,7 +79,8 @@
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- !acceptedZoneGoalVertexProposal;
+    <- -+isMinion(true);
+       !acceptedZoneGoalVertexProposal;
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        .abolish(bestZone(_, _, _)[source(FormerCoach)]);
        
