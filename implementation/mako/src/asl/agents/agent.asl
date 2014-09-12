@@ -19,7 +19,7 @@ zoneMode(false).
 //we're disabled.
 +lastActionResult(failed_status) <-
 	.print("Received lastActionResult(failed_status) - which means I didn't know that I'm disabled!")
-	-+health(0).
+	-+health(0)[source(self)].
 
 +health(0)[source(self)]:
 	step(Step)
