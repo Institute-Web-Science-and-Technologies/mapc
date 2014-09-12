@@ -8,6 +8,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import eis.JasonHelper;
 import eis.MapAgent;
@@ -23,7 +24,7 @@ public class getBestZone extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        // logger = new AgentLogger("getBestZone");
+        Logger logger = ts.getAg().getLogger();
         Term zoneValuePerAgent = args[2];
         Term centerVertex = args[3];
         Term listOfAgents = args[4];
@@ -43,6 +44,7 @@ public class getBestZone extends DefaultInternalAction {
                 un.unifies(zoneValuePerAgent, JasonHelper.getTerm(zoneValue));
                 un.unifies(centerVertex, JasonHelper.getTerm(zone.getCenter().getIdentifier()));
                 un.unifies(listOfAgents, JasonHelper.getStringList(closestAgents));
+                logger.info("DEBUG: ia\\getBestZone(Position=" + vertex + ", Range=" + range + ", ZoneValuePerAgent=" + zoneValue + ", CenterVertex=" + zone.getCenter().getIdentifier() + ", ListOfAgents=" + closestAgents + ")");
             }
             // logger.info("getBestZone closest Agents: " + closestAgents);
             return closestAgents.size() == zone.getPositions().size();
@@ -51,5 +53,4 @@ public class getBestZone extends DefaultInternalAction {
         // "Range: " + range);
         return false;
     }
-
 }
