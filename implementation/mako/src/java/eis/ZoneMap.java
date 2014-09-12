@@ -239,16 +239,18 @@ public class ZoneMap {
      * 
      * @param howMany
      *            up to how many zones to return
-     * @return
+     * @return the list of zones, or an empty list if there are no zones
      */
     public TreeMap<Integer, Zone> getZones(int howMany) {
-        int count = 0;
         TreeMap<Integer, Zone> zoneList = new TreeMap<Integer, Zone>();
-        int currentKey = zones.firstKey();
-        while (count < howMany && count < zoneList.size() - 1) {
-            zoneList.put(currentKey, zones.get(currentKey));
-            currentKey = zones.higherKey(currentKey);
-            count++;
+        if (!zones.isEmpty()) {
+            int count = 0;
+            int currentKey = zones.firstKey();
+            while (count < howMany && count < zoneList.size() - 1) {
+                zoneList.put(currentKey, zones.get(currentKey));
+                currentKey = zones.higherKey(currentKey);
+                count++;
+            }
         }
         return zoneList;
     }
