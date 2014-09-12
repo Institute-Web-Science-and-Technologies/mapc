@@ -54,11 +54,11 @@ maxZoningRoundTimeInSteps(5).
 // zoner.
 +!preparedNewZoningRound:
     isAvailableForZoning
-	<- -+isLocked(true);
+    <- -+isLocked(true);
        -+currentTimeInZoningRound(1);
-	   ia.registerForZoning;
-	   !clearedZoningPercepts;
-	   !builtZone.
+       ia.registerForZoning;
+       !clearedZoningPercepts;
+       !builtZone.
 
 // Agents that are still happily zoning or doing something else, don't have to
 // do anything.
@@ -113,26 +113,12 @@ maxZoningRoundTimeInSteps(5).
        .print("[zoning][coach] I'm now a coach.");
        !assignededAgentsTheirPosition.
 
-// We aren't this round's coach. But we are a minion.
-// Removing zoneGoalVertex from self makes sure we stop going to the one-agent-
-// zone.
-@becomeAMinion[atomic]
+// If this agent was not a coach this round, he will go to a well and wait
+// either until a successful coach triggers us for a new round, the next step
+// begins or we are called by a coach to join his zone.
+@notACoach
 +!choseZoningRole:
-    .my_name(MyName)
-    & bestZone(_, _, ClosestAgents)
-    & .member(MyName, ClosestAgents)
-    & isInZoningRound
-    <- -zoneGoalVertex(_)[source(self)];
-       -+isMinion(true);
-       .print("[zoning][minion] I'm now a minion.").
-
-// If there actually was no best zone, then all agents couldn't find a zone in
-// their 1HNH that could be built. We go to a well and wait either until s/o
-// else triggers us for a new round or the next step begins.
-@noBestZoneExisting
-+!choseZoningRole:
-    not bestZone(_, _, _)
-    & currentRange(Range)
+    currentRange(Range)
     & position(Position)
     & isInZoningRound
     <- ia.getNextBestValueVertex(Position, Range, GoalVertex);
@@ -145,17 +131,7 @@ maxZoningRoundTimeInSteps(5).
        };
        
        -+isLocked(false);
-       .print("[zoning] No zone was found this round. Going to ", GoalVertex, " in range of ", Range).
-
-// A zone was properly built but this agent wasn't part of it. He'll try his
-// luck with a new round of zoning when the coach allows him to. This is to
-// ensure that the agents needed for zoning are successfully unregistered from
-// the available zoners.
-@waitingForNextZoneRound
-+!choseZoningRole:
-    isInZoningRound
-    <- -+isLocked(false);
-       .print("[zoning] I'm waiting for any zone to be build and me being woken up.").
+       .print("[zoning] I am not this round's coach. Going to ", GoalVertex, " in range of ", Range).
 
 // Break up single zoner zones when removing this goal vertex while not being
 // a minion or coach.
@@ -167,7 +143,8 @@ maxZoningRoundTimeInSteps(5).
 
 // This means nothing to a non zoner.
 +!cancelledZoneBuilding:
-    isAvailableForZoning.
+    isCoach(false)
+    & isMinion(false).
 
 // Reset the current range, remove role percepts, unlock and remove goal vertex
 // if any. Called when zones break up.

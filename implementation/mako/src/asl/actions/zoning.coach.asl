@@ -51,11 +51,9 @@
 // The lock should make sure that this goal is not processed before
 // !assignededAgentsTheirPosition was processed.
 // Also resets the currentRange.
-// TODO: I've seen this being triggered twice in a row. This should not happen. Investigate it further!
 @cancelZoneAndInformMinions[atomic]
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
-    & isLocked(false)
     & .my_name(Coach)
     & bestZone(_, CentreNode, ClosestAgents)
     & (Sender == self

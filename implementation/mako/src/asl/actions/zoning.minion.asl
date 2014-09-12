@@ -55,6 +55,7 @@
 // nevertheless to ensure the correct execution order.
 +zoneGoalVertexProposal(_, _, _, GoalVertex)[source(self)]
     <- .abolish(zoneGoalVertex(_)[source(_)]);
+       .print("[zoning][coach] Talked to myself; ignoring.");
        +zoneGoalVertex(GoalVertex)[source(Coach)].
 
 // If our coach tells us to move somewhere, we do as we are told. In theory,
@@ -63,6 +64,14 @@
 +zoneGoalVertexProposal(_, _, _, GoalVertex)[source(Coach)]:
     bestZone(_, _, _)[source(Coach)]
     <- -+isMinion(true);
+       .print("[zoning][minion] Going to join ", Coach, "'s zone.");
+       .abolish(zoneGoalVertex(_)[source(_)]);
+       +zoneGoalVertex(GoalVertex)[source(Coach)].
+
++zoneGoalVertexProposal(_, _, _, GoalVertex)[source(Coach)]:
+    not bestZone(_, _, _)
+    <- -+isMinion(true);
+       .print("[zoning][minion] Had no zone; going to join ", Coach, "'s zone.");
        .abolish(zoneGoalVertex(_)[source(_)]);
        +zoneGoalVertex(GoalVertex)[source(Coach)].
 
@@ -79,14 +88,18 @@
         & .my_name(MyName)
         & .sort([Coach, MyName], [Coach, MyName])
     )
-    <- -+isMinion(true);
-       !acceptedZoneGoalVertexProposal;
+    <- !acceptedZoneGoalVertexProposal;
+       -+isMinion(true);
+       -+isCoach(false);
        +bestZone(Value, CentreNode, ClosestAgents)[source(Coach)];
        .abolish(bestZone(_, _, _)[source(FormerCoach)]);
        
        .abolish(zoneGoalVertex(_)[source(_)]);
        +zoneGoalVertex(GoalVertex)[source(Coach)];
        .print("[zoning][minion] I'm giving up my zone for ", Coach, "'s zone.").
+
++zoneGoalVertexProposal(_, _, _, _)[source(Coach)]
+    <- .print("[zoning] ", Coach, " wanted me but his zone was worse. This is a bug if it happens too often.").
 
 // A minion who accepts a zoneGoalVertex but was in a zone already has to
 // inform his coach.
@@ -96,15 +109,12 @@
     <- .send(Coach, achieve, cancelledZoneBuilding).
 
 // A coach who accepts a zoneGoalVertex but was in a zone already has to inform
-// all his minions. He also has to switch roles and cancel defence saboteurs.
+// all his minions. He also has to cancel defence saboteurs.
 +!acceptedZoneGoalVertexProposal:
     isCoach(true)
     & .my_name(Coach)
     & bestZone(_, _, ClosestAgents)[source(Coach)]
-    <- -+isMinion(true);
-       -+isCoach(false);
-       
-       !informedSaboteursAboutZoneBreakup;
+    <- !informedSaboteursAboutZoneBreakup;
        .difference(ClosestAgents, [Coach], Minions);
        .send(Minions, achieve, cancelledZoneBuilding).
 
