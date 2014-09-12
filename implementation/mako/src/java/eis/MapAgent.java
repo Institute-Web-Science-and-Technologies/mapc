@@ -724,7 +724,7 @@ public class MapAgent {
                 }
             }
         }
-        logger.info("Could not find agent with name: " + name);
+        logger.info("I'm seeing " + name + "for the first time. Creating Agent object.");
         Agent newAgent = new Agent();
         newAgent.setServerName(name);
         newAgent.setJasonName("unknown");
