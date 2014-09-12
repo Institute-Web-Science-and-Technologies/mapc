@@ -80,9 +80,11 @@
   -+money(Numeral)[source(self)].
 
 //myName is a custom percept
++myName(Name)[source(percept)]: debug <-
+    .print("My Server Name is ", Name);
+    -+myName(Name)[source(self)].
+    
 +myName(Name)[source(percept)] <-
-    .my_name(JName);
-    .print("My Server Name is ", Name, ". My Jason name is ", JName);
     -+myName(Name)[source(self)].
 
 +position(Identifier)[source(percept)]: debug <-
