@@ -845,6 +845,9 @@ public class MapAgent {
                 }
             }
         }
+        if (repairerDistances.isEmpty()) {
+            return null;
+        }
         return repairerDistances.firstEntry().getValue();
     }
 
