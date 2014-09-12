@@ -101,7 +101,7 @@
 +!acceptedZoneGoalVertexProposal:
     isCoach(true)
     & .my_name(Coach)
-    & bestZone(_, _, ClosestAgents)[source(Coach)]
+    & bestZone(_, _, ClosestAgents)
     <- !informedSaboteursAboutZoneBreakup;
        .difference(ClosestAgents, [Coach], Minions);
        .send(Minions, achieve, cancelledZoneBuilding).
