@@ -18,7 +18,7 @@ zoneMode(false).
 //case, so this plan serves as an alternative to finding out whether or not
 //we're disabled.
 +lastActionResult(failed_status) <-
-	.print("Received lastActionResult(failed_status) - which means I didn't know that I'm disabled!")
+	.print("Received lastActionResult(failed_status) - which means I didn't know that I'm disabled!");
 	-+health(0)[source(self)].
 
 +health(0)[source(self)]:
