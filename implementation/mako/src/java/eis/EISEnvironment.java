@@ -105,7 +105,6 @@ public class EISEnvironment extends Environment implements AgentListener {
 
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
-        logger.info("DEBUG: executeAction(" + agentJasonName + ", " + command + ")");
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
         Action action = new Action("skip");
         String functor = command.getFunctor();
