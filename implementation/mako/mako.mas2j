@@ -5,6 +5,8 @@ MAS mako {
 
 	environment: eis.EISEnvironment
 	
+	executionControl: jason.control.ExecutionControl
+	
 	agents:
 	    explorer #6;
         repairer #6;
