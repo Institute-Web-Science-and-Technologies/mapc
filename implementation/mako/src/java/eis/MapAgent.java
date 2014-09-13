@@ -279,7 +279,7 @@ public class MapAgent {
                 Agent agent = paths.get(repairer);
                 if (!repairList.containsKey(repairer) && !disabledAgentsList.contains(agent)) {
                     repairList.put(repairer, agent);
-                    disabledAgents.add(agent);
+                    disabledAgentsList.add(agent);
                     // if all repairers are already assigned return
                     if (repairList.size() == 6) {
                         return;
