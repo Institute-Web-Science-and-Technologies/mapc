@@ -75,7 +75,12 @@ strategy(attack_chase).
     <- .print("I can't see the enemy near the protected zone, cancelling zone defence.");
     +cancelZoneDefence(ZoneCentre);
     .send(SaboteurList, tell, cancelZoneDefence(ZoneCentre));
-    !doAction.
+    !!doAction.
+    
+// Fallback plan - if for some reason saboteur does not know which zone he should defend - return to standard strategy.   
++!defendZone 
+    <- -+strategy(attack_chase);
+    !!doAction.  
     
 +!doAttack(Vehicle, Vertex):
     lastActionResult(failed_in_range)
