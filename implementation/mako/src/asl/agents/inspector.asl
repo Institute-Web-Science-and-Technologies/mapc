@@ -17,7 +17,7 @@ role(inspector).
 	energy(Energy)
 	& position(MyPosition)
 	& ia.getDistance(MyPosition, VehiclePosition, Distance)
-	& Energy < (2 + Distance)
+	& Energy < (3 + Distance)
 	<-
     .print("I have ", Energy, " energy, but I need ", 2 + Distance, " to inspect ", Vehicle, ". Will recharge.");
     recharge.
