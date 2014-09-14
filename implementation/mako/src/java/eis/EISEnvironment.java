@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import eis.exceptions.ActException;
@@ -16,6 +17,7 @@ import eis.exceptions.ManagementException;
 import eis.exceptions.RelationException;
 import eis.iilang.Action;
 import eis.iilang.Identifier;
+import eis.iilang.Parameter;
 import eis.iilang.Percept;
 
 /**
@@ -187,12 +189,16 @@ public class EISEnvironment extends Environment implements AgentListener {
 
         Percept requestAction = null;
         clearPercepts(jasonNameOfAgent);
-        // clearPercepts("cartographer");
-        // logger.info("Received percepts for " + jasonName + ": " +
-        // percepts.toString());
+
+        // We use the next three variables to see if our agents actually
+        // performed the actions we expected them to.
+        LinkedList<Parameter> lastActionParam = null;
+        Parameter lastAction = null;
+        Parameter step = null;
+
+        Agent agent = MapAgent.getInstance().getAgent(agentName);
         for (Percept percept : percepts) {
             String perceptName = percept.getName();
-            Agent agent = MapAgent.getInstance().getAgent(agentName);
             // Make sure that the requestAction percept is handled last by the
             // agents because when the agent receives the requestAction
             // percept, it determines
@@ -201,6 +207,15 @@ public class EISEnvironment extends Environment implements AgentListener {
             if (perceptName.equalsIgnoreCase("requestAction")) {
                 requestAction = percept;
                 continue;
+            }
+            if (perceptName.equalsIgnoreCase("lastActionParam")) {
+                lastActionParam = percept.getParameters();
+            }
+            if (perceptName.equalsIgnoreCase("lastAction")) {
+                lastAction = percept.getParameters().getFirst();
+            }
+            if (perceptName.equalsIgnoreCase("step")) {
+                step = percept.getParameters().getFirst();
             }
             if (!perceptName.equalsIgnoreCase("lastActionParam")) {
                 // logger.info("Sending percept " + perceptToLiteral(percept) +
@@ -241,6 +256,21 @@ public class EISEnvironment extends Environment implements AgentListener {
                 agent.setRole(role);
             }
         }
+        // assemble the last action for this agent and compare it to the one we
+        // think we sent
+        Action lastActionReconstructed = new Action(lastAction.toString(), lastActionParam);
+        Integer stepAsInt = Integer.parseInt(step.toString()) - 1;
+        Hashtable<Agent, Action> lastSavedActionsForAllAgents = actionHistory.get(stepAsInt);
+        Action lastActionStored;
+        if (!(lastSavedActionsForAllAgents == null)) {
+            lastActionStored = lastSavedActionsForAllAgents.get(agent);
+            if (lastActionStored != null) {
+                if (!(lastActionStored.getName().equals(lastActionReconstructed.getName())) && lastActionStored.getParameters().equals(lastActionReconstructed.getParameters())) {
+                    logger.info("Action mismatch! Agent " + agent + "was supposed to " + lastActionStored + ", but instead did " + lastActionReconstructed);
+                }
+            }
+        }
+
         if (requestAction != null) {
             addAgentPercept(jasonNameOfAgent, requestAction);
         }
