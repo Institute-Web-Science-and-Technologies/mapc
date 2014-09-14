@@ -29,6 +29,7 @@ strategy(attack_chase).
 @evaluateBidding[atomic] 
 +!evaluateBiddingOutcome(ZoneCentre):
     .my_name(MyName)
+    & not defendZoneBid(ZoneCentre, _, _)
     <-
     .findall([Distance, Name], defendZoneBid(ZoneCentre, Distance, Name), Bids);
     .min(Bids, WinBid);
