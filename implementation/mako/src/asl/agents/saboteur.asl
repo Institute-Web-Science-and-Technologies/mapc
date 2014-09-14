@@ -25,7 +25,8 @@ strategy(attack_chase).
     <-
   	.print("The target zone with centre in ", ZoneCentre," is unreachable - ignoring zone defence request").
  
-// Check bids, assign defence strategy if won.  
+// Check bids, assign defence strategy if won. 
+@evaluateBidding[atomic] 
 +!evaluateBiddingOutcome(ZoneCentre):
     .my_name(MyName)
     <-
@@ -38,6 +39,10 @@ strategy(attack_chase).
     }
     // Clear the bids
     .abolish(defendZoneBid(ZoneCentre, _, _)).
+
+// If there were no bids as they were abolished earlier and this method called
+// twice, do nothing because it was already reasoned on the bids.
++!evaluateBiddingOutcome(ZoneCentre).
 
 // If the zone is no longer require defence - return to regular strategy.
 +cancelZoneDefence(ZoneCentre)   
