@@ -7,6 +7,8 @@ import jason.environment.Environment;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.TreeMap;
 
 import eis.exceptions.ActException;
 import eis.exceptions.AgentException;
@@ -28,6 +30,13 @@ public class EISEnvironment extends Environment implements AgentListener {
     private HashMap<String, Agent> serverAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Agent> jasonAgentMap = new HashMap<String, Agent>();
     private HashMap<String, Collection<Percept>> delayedPerceptsMap = new HashMap<String, Collection<Percept>>();
+
+    /**
+     * actionHistory keeps track of what actions our agents performed on each
+     * step. This can be used for debugging, but also to make sure that we don't
+     * send more than one action per step to the server.
+     */
+    private TreeMap<Integer, Hashtable<Agent, Action>> actionHistory = new TreeMap<Integer, Hashtable<Agent, Action>>();
 
     // private HashSet<Percept> cartographerPerceptSet = new HashSet<Percept>();
 
@@ -124,8 +133,22 @@ public class EISEnvironment extends Environment implements AgentListener {
         try {
             Agent agent = MapAgent.getInstance().getAgent(agentServerName);
             int step = MapAgent.getInstance().getStep();
-            logger.info("Agent " + agent + " wants to " + action + " in step " + step);
-            environmentInterface.performAction(agentServerName, action);
+            // Refer to action history before sending action to server - this
+            // prevents sending more than one action per step, which would cause
+            // the agent and the server to be off-sync
+            Hashtable<Agent, Action> stepAgentActionMap = actionHistory.get(step);
+            if (stepAgentActionMap == null) {
+                stepAgentActionMap = new Hashtable<Agent, Action>();
+            }
+            if (stepAgentActionMap.containsKey(agent)) {
+                Action previousAction = stepAgentActionMap.get(agent);
+                logger.info("Agent " + agent + " already wants to " + previousAction + " in step + " + step + "! Ignoring new action " + action);
+            } else {
+                logger.info("Agent " + agent + " wants to " + action + " in step " + step);
+                stepAgentActionMap.put(agent, action);
+                actionHistory.put(step, stepAgentActionMap);
+                environmentInterface.performAction(agentServerName, action);
+            }
             return true;
         } catch (ActException e) {
             return false;
