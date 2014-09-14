@@ -30,6 +30,6 @@ public class couldBeSaboteur extends DefaultInternalAction {
         Integer visRange = agent.getVisRange();
         Term visRangeTerm = args[1];
         un.unifies(visRangeTerm, JasonHelper.getTerm(visRange));
-        return ((agentRole == "saboteur") || agentRole == null);
+        return ((agentRole == "saboteur") || agentRole == null || agentRole == "");
     }
 }
