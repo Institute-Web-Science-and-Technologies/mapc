@@ -42,7 +42,7 @@ strategy(attack_chase).
 
 // If there were no bids as they were abolished earlier and this method called
 // twice, do nothing because it was already reasoned on the bids.
-+!evaluateBiddingOutcome(ZoneCentre).
++!evaluateBiddingOutcome(_).
 
 // If the zone is no longer require defence - return to regular strategy.
 +cancelZoneDefence(ZoneCentre)   
