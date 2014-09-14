@@ -732,7 +732,18 @@ public class MapAgent {
         return newAgent;
     }
 
-    public Vertex getNextBestValueVertex(Vertex position, int range) {
+    /**
+     * @param position
+     *            the position with a probably better vertex in its
+     *            neighbourhood.
+     * @param range
+     *            the range to look for vertices in the neighbourhood of
+     *            {@code position}.
+     * @return the best value vertex in the {@code range} around
+     *         {@code position}. Returns {@code position} if no better was
+     *         found.
+     */
+    public synchronized Vertex getNextBestValueVertex(Vertex position, int range) {
         Vertex bestScoreVertex = position;
         ArrayList<Vertex> list = position.getNeighbourhood(range);
         for (Vertex vertex : list) {
@@ -740,10 +751,8 @@ public class MapAgent {
                 bestScoreVertex = vertex;
             }
         }
-        if (bestScoreVertex != position) {
-            reservedScoreVertices.add(bestScoreVertex);
-            bestScoreVertex.setReservedForScoring(true);
-        }
+        reservedScoreVertices.add(bestScoreVertex);
+        bestScoreVertex.setReservedForScoring(true);
         return bestScoreVertex;
     }
 
