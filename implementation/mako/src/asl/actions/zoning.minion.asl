@@ -53,7 +53,8 @@
 
 // This only happens when a coach sends this to himself. It is in this file
 // nevertheless to ensure the correct execution order.
-+zoneGoalVertexProposal(_, _, _, GoalVertex)[source(self)]
++zoneGoalVertexProposal(_, _, _, GoalVertex)[source(self)]:
+    zoneMode(true)
     <- .abolish(zoneGoalVertex(_)[source(_)]);
        +zoneGoalVertex(GoalVertex)[source(Coach)].
 
@@ -61,7 +62,8 @@
 // this could happen before we found out that we are going to be a minion. So
 // we set this belief manually.
 +zoneGoalVertexProposal(_, _, _, GoalVertex)[source(Coach)]:
-    bestZone(_, _, _)[source(Coach)]
+    zoneMode(true)
+    & bestZone(_, _, _)[source(Coach)]
     <- -+isMinion(true);
        .abolish(zoneGoalVertex(_)[source(_)]);
        +zoneGoalVertex(GoalVertex)[source(Coach)].
@@ -71,7 +73,8 @@
 // zoneGoalVertex.
 @switchToBetterZone[atomic]
 +zoneGoalVertexProposal(Value, CentreNode, ClosestAgents, GoalVertex)[source(Coach)]:
-    bestZone(FormerValue, _, _)[source(FormerCoach)]
+    zoneMode(true)
+    & bestZone(FormerValue, _, _)[source(FormerCoach)]
     // my zone is worse:
     & FormerValue < Value
     // or the zones are identical but my name is alphabetically bigger:
@@ -88,6 +91,11 @@
        .abolish(zoneGoalVertex(_)[source(_)]);
        +zoneGoalVertex(GoalVertex)[source(Coach)];
        .print("[zoning][minion] I'm giving up my zone for ", Coach, "'s zone.").
+
+// Tell off coaches if we aren't zoning anymore.
++zoneGoalVertexProposal(_, _, _, _)[source(Coach)]:
+    zoneMode(false)
+    <- .send(Coach, achieve, cancelledZoneBuilding).
 
 // A minion who accepts a zoneGoalVertex but was in a zone already has to
 // inform his coach.
