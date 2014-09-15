@@ -19,7 +19,15 @@
     .print("I have reached ", RepairerName," position, will recharge.");
     recharge.
 
-// It there is no path known to any repairer - move to random node trying to reach explored zones.
+// If there is no known path to a repairer, expand the subgraph that the agent is in
++!getRepaired:
+	position(MyPosition)
+	& ia.getClosestSubgraphEdge(MyPosition, EdgeNode)
+	<-
+	.print("Couldn't find a path to a repairer - will expand my subgraph by moving towards ", EdgeNode);
+	!goto(EdgeNode).
+	
+// If there is known path to a repairer, and you can't expand the subgraph, move about randomly
 +!getRepaired:
     position(Position)
     & (visibleEdge(Position, NextVertex) | visibleEdge(NextVertex, Position))

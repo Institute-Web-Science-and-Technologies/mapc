@@ -893,4 +893,42 @@ public class MapAgent {
         moneySpentThisStep += 1;
 
     }
+
+    /**
+     * Get the the closest node on the edge of the subgraph that agentPosition
+     * is in. Used to connect disconnected subgraphs.
+     * 
+     * @param agentPosition
+     * @return the closest Vertex that the agent can reach and that hasn't been
+     *         visited by any of our agents before, or null if no such Vertex
+     *         exists
+     */
+    public Vertex getClosestSubgraphEdge(Vertex agentPosition) {
+        Vertex edgeNode = null;
+        int hopsToEdgeNode = 0;
+        for (Vertex node : vertexMap.values()) {
+            // Ignore visited nodes
+            if (node.isVisited()) {
+                continue;
+            }
+            Path pathToNode = agentPosition.getPath(node);
+            // Ignore nodes we can't reach
+            if (pathToNode == null) {
+                continue;
+            }
+            int hopsToThisNode = pathToNode.getPathHops();
+            // If we haven't stored a node yet
+            if (edgeNode == null) {
+                edgeNode = node;
+                hopsToEdgeNode = hopsToThisNode;
+                continue;
+            }
+            // If the distance to this node is shorter
+            if (hopsToEdgeNode > hopsToThisNode) {
+                edgeNode = node;
+                hopsToEdgeNode = hopsToThisNode;
+            }
+        }
+        return edgeNode;
+    }
 }

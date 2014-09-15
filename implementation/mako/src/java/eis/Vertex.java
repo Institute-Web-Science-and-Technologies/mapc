@@ -30,6 +30,11 @@ public class Vertex {
     private boolean reservedForScoring = false;
 
     /**
+     * visited is true if one of our agents has been on this node before
+     */
+    private boolean visited = false;
+
+    /**
      * @param identifier
      *            The name of the vertex, e.g. 'v31'.
      */
@@ -83,7 +88,8 @@ public class Vertex {
 
     private void informZoneAboutNodeValue() {
         ArrayList<Vertex> zoneVertices = zoneMap.getZoneVertices();
-        logger.info("Informing the nodes in my zone (" + zoneVertices + ") about my node value (" + this.value + ")");
+        // logger.info("Informing the nodes in my zone (" + zoneVertices +
+        // ") about my node value (" + this.value + ")");
         for (Vertex vertex : zoneVertices) {
             vertex.calculateZone();
         }
@@ -368,6 +374,14 @@ public class Vertex {
 
     public int getEdgeCost(Vertex nextHop) {
         return knownPaths.getEdgeCosts(nextHop);
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 
 }

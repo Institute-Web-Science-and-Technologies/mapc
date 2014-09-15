@@ -226,6 +226,7 @@ public class EISEnvironment extends Environment implements AgentListener {
             }
             if (perceptName.equalsIgnoreCase("position")) {
                 Vertex position = MapAgent.getInstance().getVertex(percept.getParameters().get(0).toString());
+                position.setVisited(true);
                 agent.setPosition(position);
             }
             if (perceptName.equalsIgnoreCase("health")) {
