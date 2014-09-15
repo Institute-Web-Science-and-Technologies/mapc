@@ -89,8 +89,9 @@ public class EISEnvironment extends Environment implements AgentListener {
 
                 // tell server which agent is connected to which entity
                 environmentInterface.associateEntity(agent.getServerName(), agent.getEntity());
-                addPercept(agent.getJasonName(), Literal.parseLiteral("myName(" + agent.getServerName().toLowerCase() + ")"));
-                addPercept(agent.getJasonName(), Literal.parseLiteral("myTeam(" + agent.getTeam() + ")"));
+                logger.info("myName(" + agent.getServerName().toLowerCase().replace("-", "_") + ")");
+                addPercept(agent.getJasonName(), Literal.parseLiteral("myName(" + agent.getServerName().toLowerCase().replace("-", "_") + ")"));
+                addPercept(agent.getJasonName(), Literal.parseLiteral("myTeam(" + agent.getTeam().replace("-", "_") + ")"));
 
                 // listener for global percepts from the server
                 environmentInterface.attachAgentListener(agent.getServerName(), this);
@@ -292,8 +293,10 @@ public class EISEnvironment extends Environment implements AgentListener {
             // Add the name of the agent to the name conversion map.
             String entityName = percept.getParameters().getFirst().toString();
             MapAgent.getInstance();
-            MapAgent.agentNameConversionMap.put(entityName.toLowerCase(), entityName);
+            String escapedEntityName = entityName.toLowerCase().replace("-", "_");
+            MapAgent.agentNameConversionMap.put(escapedEntityName, entityName);
             String escaped = percept.toProlog().toLowerCase().replace("visibleentity", "visibleEntity");
+            escaped = escaped.replace("-", "_");
             return Literal.parseLiteral(escaped);
         }
         case "visibleVertex": {
@@ -301,13 +304,16 @@ public class EISEnvironment extends Environment implements AgentListener {
             // interprets as a variable name, so we have to convert them to
             // lowerCase.
             String lowerCasePercept = percept.toProlog().toLowerCase().replace("visiblevertex", "visibleVertex");
+            lowerCasePercept = lowerCasePercept.replace("-", "_");
             return Literal.parseLiteral(lowerCasePercept);
         }
         case "inspectedEntity": {
             String escaped = percept.toProlog().toLowerCase().replace("inspectedentity", "inspectedEntity");
+            escaped = escaped.replace("-", "_");
             return Literal.parseLiteral(escaped);
         }
         default:
+            String escaped = percept.toProlog().replace("-", "_");
             return Literal.parseLiteral(percept.toProlog());
         }
     }

@@ -39,7 +39,7 @@ public class Agent {
     }
 
     public void setServerName(String name) {
-        this.serverName = name.toLowerCase();
+        this.serverName = name.toLowerCase().replace("-", "_");
     }
 
     public String getTeam() {

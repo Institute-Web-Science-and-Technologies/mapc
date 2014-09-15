@@ -237,13 +237,14 @@ public class MapAgent {
             logger.info("[Step " + getStep() + "] Total Vertices: " + vertices + ". Seen: " + numSeenVertices + "(" + numSeenVertices * 100.0 / vertices + "%) Probed: " + probedVertices + "(" + probedVertices * 100.0 / vertices + "%)");
             logger.info("[Step " + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
 
-            HashSet<Vertex> unsurveyedVertices = new HashSet<Vertex>();
-            for (Vertex vertex : vertexMap.values()) {
-                if (!vertex.isSurveyed()) {
-                    unsurveyedVertices.add(vertex);
-                }
-            }
-            logger.info("[Step " + getStep() + "] Remaining unsurveyed vertices: " + unsurveyedVertices);
+            // HashSet<Vertex> unsurveyedVertices = new HashSet<Vertex>();
+            // for (Vertex vertex : vertexMap.values()) {
+            // if (!vertex.isSurveyed()) {
+            // unsurveyedVertices.add(vertex);
+            // }
+            // }
+            // logger.info("[Step " + getStep() +
+            // "] Remaining unsurveyed vertices: " + unsurveyedVertices);
         }
     }
 
@@ -343,7 +344,7 @@ public class MapAgent {
 
     private void handleVisibleVertex(Percept percept) {
         String vertexName = percept.getParameters().get(0).toString();
-        String team = percept.getParameters().get(1).toString();
+        String team = percept.getParameters().get(1).toString().replace("-", "_");
 
         Vertex vertex = getVertex(vertexName);
         vertex.setTeam(team);
@@ -448,7 +449,7 @@ public class MapAgent {
                 }
             }
         }
-        logger.info("DEBUG: getBestZone(" + zones + "): return " + bestZone);
+        // logger.info("DEBUG: getBestZone(" + zones + "): return " + bestZone);
         return bestZone;
     }
 
@@ -472,7 +473,8 @@ public class MapAgent {
                 zones.remove(i);
             }
         }
-        logger.info("DEBUG: getBestZoneWithMaxAgents(" + zones + ", " + maxAgents + "): zones = " + zones);
+        // logger.info("DEBUG: getBestZoneWithMaxAgents(" + zones + ", " +
+        // maxAgents + "): zones = " + zones);
         return getBestZone(zones);
     }
 
@@ -617,6 +619,7 @@ public class MapAgent {
         Agent closestEnemy = null;
         Integer distanceToClosestEnemy = null;
         for (Agent enemy : getEnemyAgents()) {
+            // logger.info("DEBUG: enemy agent: " + enemy);
             // Check if we even know where the enemy is, and if the enemy is not
             // disabled.
             Vertex enemyPosition = enemy.getPosition();
@@ -711,6 +714,7 @@ public class MapAgent {
     }
 
     public Agent getAgent(String name) {
+        name = name.replace("-", "_");
         if (name != name.toLowerCase()) {
             throw new IllegalArgumentException("Agent name must be in lower case when calling getAgent method. Was: " + name);
         }
