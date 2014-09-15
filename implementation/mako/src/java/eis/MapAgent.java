@@ -15,7 +15,6 @@ public class MapAgent {
     private static MapAgent mapAgent;
 
     private final int maxEdgeWeight = 11;
-    private final int resetStep = 10;
 
     private int edges = 1;
     private int vertices = 1;
@@ -216,14 +215,6 @@ public class MapAgent {
 
             moneySpentThisStep = 0;
             setStep(newStep);
-            // Reset every zone periodically
-            if (newStep % resetStep == 0) {
-                currentZoneVertices.clear();
-                for (Agent agent : getFriendlyAgents()) {
-                    agent.setBuildingZone(false);
-                }
-
-            }
 
             // Debug output.
             int numSeenVertices = vertexMap.size();
