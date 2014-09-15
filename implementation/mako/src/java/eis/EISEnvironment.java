@@ -313,9 +313,10 @@ public class EISEnvironment extends Environment implements AgentListener {
             escaped = escaped.replace("-", "_");
             return Literal.parseLiteral(escaped);
         }
-        default:
+        default: {
             String escaped = percept.toProlog().replace("-", "_");
-            return Literal.parseLiteral(percept.toProlog());
+            return Literal.parseLiteral(escaped);
+        }
         }
     }
 }
