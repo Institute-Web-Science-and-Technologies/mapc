@@ -3,7 +3,9 @@ package eis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -203,12 +205,8 @@ public class MapAgent {
             for (Vertex vertex : reservedUnsurveyedVertices) {
                 vertex.setReservedForSurveying(false);
             }
-            for (Vertex vertex : reservedScoreVertices) {
-                vertex.setReservedForScoring(false);
-            }
             reservedProbedVertices.clear();
             reservedUnsurveyedVertices.clear();
-            reservedScoreVertices.clear();
             reservedEnemiesForInspection.clear();
 
             calculateRepairList();
@@ -702,6 +700,8 @@ public class MapAgent {
         Zone zone = center.getZone(size);
         if (size == 1 || zone == null) {
             currentZoneVertices.remove(center);
+            reservedScoreVertices.remove(center);
+            center.setReservedForScoring(false);
         } else {
             currentZoneVertices.removeAll(zone.getZonePointVertices());
         }
@@ -738,13 +738,40 @@ public class MapAgent {
      *            the range to look for vertices in the neighbourhood of
      *            {@code position}.
      * @return the best value vertex in the {@code range} around
-     *         {@code position}. Returns {@code position} if no better was
-     *         found.
+     *         {@code position}. Returns {@code position} if no better was found
+     *         and {@code position} was still free. Else, a free vertex from
+     *         {@code position}'s neighbourhood is returned or a random one.
      */
     public synchronized Vertex getNextBestValueVertex(Vertex position, int range) {
         Vertex bestScoreVertex = position;
-        ArrayList<Vertex> list = position.getNeighbourhood(range);
-        for (Vertex vertex : list) {
+        ArrayList<Vertex> neighbours = position.getNeighbourhood(range);
+        Iterator<Vertex> it = neighbours.iterator();
+
+        if (position.isReservedForScoring()) {
+            if (!neighbours.isEmpty()) {
+                // If the list isn't empty, take the first unreserved entry to
+                // later find the highest valued neighbour available.
+                while (it.hasNext()) {
+                    Vertex vertex = it.next();
+                    if (!vertex.isReservedForScoring()) {
+                        bestScoreVertex = vertex;
+                        break;
+                    }
+                }
+                if (bestScoreVertex == position) {
+                    // No free neighbouring node in range. Pick one anyways to
+                    // get this agent moving away from his already occupied
+                    // position.
+                    int neighbourIndex = new Random().nextInt(neighbours.size());
+                    bestScoreVertex = neighbours.get(neighbourIndex);
+                }
+            } else {
+                logger.info("[bug] The node " + position + " is not connected to any other node.");
+            }
+        }
+
+        while (it.hasNext()) {
+            Vertex vertex = it.next();
             if (vertex.getValue() > bestScoreVertex.getValue() && !vertex.isReservedForScoring()) {
                 bestScoreVertex = vertex;
             }
