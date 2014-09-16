@@ -8,7 +8,7 @@ import java.util.TreeMap;
  */
 public class Agent {
     private String serverName; // e.g. "mako16"
-    private String serverNameMixedCase; // e.g. "MAKo16"
+    private String serverNameNonEscaped; // e.g. "MAKo16"
     private String team; // e.g. MAKo or teamB
     private String entity; // e.g. connectionA1
     private String jasonName; // e.g. "explorer1"
@@ -199,15 +199,15 @@ public class Agent {
      */
     @Override
     public String toString() {
-        return serverNameMixedCase + (jasonName != null ? " (aka " + jasonName + ")" : "") + (position != null ? " on node " + position : "");
+        return serverNameNonEscaped + (jasonName != null ? " (aka " + jasonName + ")" : "") + (position != null ? " on node " + position : "");
     }
 
     public String getServerNameUpperCase() {
-        return serverNameMixedCase;
+        return serverNameNonEscaped;
     }
 
-    public void setServerNameMixedCase(String serverNameMixedCase) {
-        this.serverNameMixedCase = serverNameMixedCase;
+    public void setServerNameNonEscaped(String serverNameNonEscaped) {
+        this.serverNameNonEscaped = serverNameNonEscaped;
     }
 
     /**

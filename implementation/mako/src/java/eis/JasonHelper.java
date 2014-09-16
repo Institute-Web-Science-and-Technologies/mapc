@@ -16,7 +16,6 @@ public class JasonHelper {
         try {
             return ASSyntax.parseTerm(string);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -26,7 +25,6 @@ public class JasonHelper {
         try {
             return ASSyntax.parseTerm(String.valueOf(bool));
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -36,7 +34,6 @@ public class JasonHelper {
         try {
             return ASSyntax.parseTerm(String.valueOf(value));
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

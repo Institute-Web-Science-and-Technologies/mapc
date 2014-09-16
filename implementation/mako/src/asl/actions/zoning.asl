@@ -86,7 +86,7 @@ maxMinionWaitingTime(3).
     & ia.getBestZone(PositionVertex, Range, Value, CentreNode, ClosestAgents)
     <- // trigger broadcasting:
        +bestZone(Value, CentreNode, ClosestAgents)[source(self)];
-       .print("DEBUG: bestZone(Value=", Value, ",CentreNode=", CentreNode, ",ClosestAgents=", ClosestAgents, ")");
+//       .print("DEBUG: bestZone(Value=", Value, ",CentreNode=", CentreNode, ",ClosestAgents=", ClosestAgents, ")");
        ia.generateId(Id);
        .broadcast(tell, foreignBestZone(Id, Value, CentreNode, ClosestAgents)).
 

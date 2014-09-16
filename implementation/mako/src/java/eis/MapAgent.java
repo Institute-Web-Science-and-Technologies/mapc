@@ -248,6 +248,9 @@ public class MapAgent {
         TreeMap<Integer, HashMap<Agent, Agent>> closestPaths = new TreeMap<Integer, HashMap<Agent, Agent>>();
         for (Agent repairer : repairers) {
             Vertex repairerPos = repairer.getPosition();
+            if (repairerPos == null) {
+                continue;
+            }
             for (Agent agent : disabledAgents) {
                 if (agent != repairer) {
                     Vertex agentPos = agent.getPosition();
@@ -838,10 +841,16 @@ public class MapAgent {
         // Otherwise search for the closest not already assigned repairer. If
         // two repairers have the same distance the last one will be returned.
         Vertex position = disabledAgent.getPosition();
+        if (position == null) {
+            return null;
+        }
         TreeMap<Integer, Agent> repairerDistances = new TreeMap<Integer, Agent>();
         for (Agent repairer : getRepairers()) {
             if (!repairer.isDisabled()) {
                 Vertex repairerPos = repairer.getPosition();
+                if (repairerPos == null) {
+                    continue;
+                }
                 Path path = position.getPath(repairerPos);
                 if (path != null || position == repairerPos) {
                     int distance = (path != null) ? path.getPathHops() : 0;

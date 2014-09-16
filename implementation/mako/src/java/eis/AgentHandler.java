@@ -68,23 +68,25 @@ public class AgentHandler {
 
                         Element e = (Element) rootChildChild;
 
-                        String serverNameMixedCase = e.getAttribute("serverName");
-                        String serverNameLowerCase = e.getAttribute("serverName").toLowerCase();
+                        String serverNameNonEscaped = e.getAttribute("serverName");
+                        String serverNameEscaped = e.getAttribute("serverName").toLowerCase().replace("-", "_");
                         String entity = e.getAttribute("entity");
                         String team = e.getAttribute("team");
                         String jasonName = e.getAttribute("jasonName");
+                        String role = jasonName.split("\\d")[0];
 
                         // add to agents
                         Agent agent = new Agent();
-                        agent.setServerName(serverNameLowerCase);
+                        agent.setServerName(serverNameEscaped);
                         MapAgent.getInstance();
-                        MapAgent.agentNameConversionMap.put(serverNameLowerCase, serverNameMixedCase);
-                        agent.setServerNameMixedCase(serverNameMixedCase);
+                        MapAgent.agentNameConversionMap.put(serverNameEscaped, serverNameNonEscaped);
+                        agent.setServerNameNonEscaped(serverNameNonEscaped);
                         agent.setEntity(entity);
                         agent.setTeam(team);
                         agent.setJasonName(jasonName);
-                        MapAgent.getInstance().addAgent(serverNameLowerCase, agent);
-                        agents.put(serverNameLowerCase, agent);
+                        agent.setRole(role);
+                        MapAgent.getInstance().addAgent(serverNameEscaped, agent);
+                        agents.put(serverNameEscaped, agent);
                     }
                 }
             }
