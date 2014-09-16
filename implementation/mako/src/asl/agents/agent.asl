@@ -343,6 +343,13 @@ zoneMode(false).
 	-+zoneMode(true);
     !doAction.
 
++!doAction:
+	position(MyPosition)
+	& ia.getClosestSubgraphEdge(MyPosition, EdgeNode)
+    <-
+	.print("I will expand my subgraph by moving to ", EdgeNode); 
+    !goto(EdgeNode).
+
 +!doAction
     <- .print("I have nothing to do. I'll skip."); 
     skip.
