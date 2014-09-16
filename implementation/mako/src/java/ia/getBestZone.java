@@ -44,7 +44,10 @@ public class getBestZone extends DefaultInternalAction {
                 un.unifies(zoneValuePerAgent, JasonHelper.getTerm(zoneValue));
                 un.unifies(centerVertex, JasonHelper.getTerm(zone.getCenter().getIdentifier()));
                 un.unifies(listOfAgents, JasonHelper.getStringList(closestAgents));
-                logger.info("DEBUG: ia\\getBestZone(Position=" + vertex + ", Range=" + range + ", ZoneValuePerAgent=" + zoneValue + ", CenterVertex=" + zone.getCenter().getIdentifier() + ", ListOfAgents=" + closestAgents + ")");
+                // logger.info("DEBUG: ia\\getBestZone(Position=" + vertex +
+                // ", Range=" + range + ", ZoneValuePerAgent=" + zoneValue +
+                // ", CenterVertex=" + zone.getCenter().getIdentifier() +
+                // ", ListOfAgents=" + closestAgents + ")");
             }
             // logger.info("getBestZone closest Agents: " + closestAgents);
             return closestAgents.size() == zone.getPositions().size();

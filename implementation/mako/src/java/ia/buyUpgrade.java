@@ -24,7 +24,6 @@ public class buyUpgrade extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
-        // ts.getAg().getLogger().info("executing internal action 'ia.buyUpgrade'");
         int currentMoney = MapAgent.getInstance().getMoney();
         if (currentMoney < 2) {
             return false;

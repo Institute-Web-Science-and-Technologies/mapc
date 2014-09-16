@@ -25,7 +25,6 @@ public class getClosestUninspectedEnemy extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier unifier, Term[] terms)
             throws Exception {
-        // ts.getAg().getLogger().info("executing internal action 'ia.getNextUninspectedEnemy'");
         Vertex position = MapAgent.getInstance().getVertex(terms[0].toString());
         Term enemyTerm = terms[1];
         Term enemyPositionTerm = terms[2];
