@@ -11,7 +11,7 @@ role(repairer).
 	& ia.getDistance(MyPosition, VehiclePosition, Distance)
 	& Energy < (4 + Distance)
 	<-
-    .print("I have ", Energy, " energy, but I need ", 3 + Distance, " to repair ", Vehicle, ". Will recharge.");
+    .print("I have ", Energy, " energy, but I need ", 4 + Distance, " to repair ", Vehicle, ". Will recharge.");
     recharge.
       
 // If energy is enough - repair    
