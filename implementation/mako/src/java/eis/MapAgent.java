@@ -749,8 +749,8 @@ public class MapAgent {
 
         if (position.isReservedForScoring()) {
             if (!neighbours.isEmpty()) {
-                // If the list isn't empty, take the first entry to later find
-                // the highest valued member available.
+                // If the list isn't empty, take the first unreserved entry to
+                // later find the highest valued neighbour available.
                 while (it.hasNext()) {
                     Vertex vertex = it.next();
                     if (!vertex.isReservedForScoring()) {

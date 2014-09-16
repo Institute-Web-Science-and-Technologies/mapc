@@ -257,9 +257,15 @@ public class EISEnvironment extends Environment implements AgentListener {
                 agent.setRole(role);
             }
             if (perceptName.equalsIgnoreCase("simend")) {
-                this.stop();
-                logger.info("Received simulation end percept. Shutting down.");
-                System.exit(0);
+                if (actionHistory.size() > 250) {
+                    // Don't kill the simulation due to a late TCP packet when
+                    // running in endless mode.
+                    this.stop();
+                    logger.info("Received simulation end percept. Shutting down.");
+                    System.exit(0);
+                } else {
+                    logger.info("Received simEnd-percept although actionHistory size was just " + actionHistory.size());
+                }
             }
         }
         // assemble the last action for this agent and compare it to the one we
