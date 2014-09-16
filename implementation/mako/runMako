@@ -2,5 +2,5 @@
 while true
 do
   /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java -classpath .:bin/classes:/opt/jason/lib/jason.jar:lib/c4jason.jar:lib/eis.jar:lib/eismassim.jar:lib/jason.jar: jason.infra.centralised.RunCentralisedMAS mako.mas2j
-  sleep 0.3
+  sleep 0.2
 done
