@@ -25,6 +25,6 @@ public class isSaboteur extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
             throws Exception {
         Agent agent = MapAgent.getInstance().getAgent(args[0].toString());
-        return (agent.getRole() == "saboteur");
+        return agent.getRole().equalsIgnoreCase("saboteur");
     }
 }

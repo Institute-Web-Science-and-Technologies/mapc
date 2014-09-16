@@ -107,8 +107,8 @@ public class MapAgent {
         ArrayList<Vertex> neighbours = vertex.getNeighbours();
         for (Agent enemy : getEnemyAgents()) {
             Vertex enemyPosition = enemy.getPosition();
-            Object enemyRole = enemy.getRole();
-            if (enemyPosition != null && (enemyRole == null || enemyRole == "saboteur") && !enemy.isDisabled()) {
+            String enemyRole = enemy.getRole();
+            if (enemyPosition != null && (enemyRole == null || enemyRole.equalsIgnoreCase("saboteur") || enemyRole == "") && !enemy.isDisabled()) {
                 neighbours.remove(enemyPosition);
                 neighbours.removeAll(enemyPosition.getNeighbours());
             }
@@ -622,7 +622,7 @@ public class MapAgent {
             }
             // If there is an enemy on our node, look no further
             if (enemyPosition == position) {
-                if (enemy.getRole() == "saboteur") {
+                if (enemy.getRole().equalsIgnoreCase("saboteur")) {
                     return enemy;
                 } else {
                     closestEnemy = enemy;
