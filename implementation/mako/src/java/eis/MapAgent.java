@@ -747,7 +747,7 @@ public class MapAgent {
         ArrayList<Vertex> neighbours = position.getNeighbourhood(range);
         Iterator<Vertex> it = neighbours.iterator();
 
-        if (position.isReservedForProbing()) {
+        if (position.isReservedForScoring()) {
             if (!neighbours.isEmpty()) {
                 // If the list isn't empty, take the first entry to later find
                 // the highest valued member available.
