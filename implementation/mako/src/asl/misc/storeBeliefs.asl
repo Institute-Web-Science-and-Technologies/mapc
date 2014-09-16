@@ -121,7 +121,7 @@
 +score(Numeral)[source(percept)]: debug <-
   .print("Received percept score(", Numeral, ").").
 
-+simEnd(Numeral)[source(percept)]: debug <-
++simEnd[source(percept)]: debug <-
   .print("Received percept simEnd(", Numeral, ").").
 
 +simStart[source(percept)]: debug <-
@@ -134,7 +134,6 @@
 +step(Numeral)[source(percept)] <-
   -+step(Numeral)[source(self)].
   
-
 +steps(Numeral)[source(percept)]: debug <-
   .print("Received percept steps(", Numeral, ").").
 
@@ -164,4 +163,3 @@
 
 +zonesScore(Numeral)[source(percept)]: debug <-
   .print("Received percept zonesScore(", Numeral, ").").
-

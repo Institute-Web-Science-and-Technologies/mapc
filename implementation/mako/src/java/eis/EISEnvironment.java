@@ -211,18 +211,17 @@ public class EISEnvironment extends Environment implements AgentListener {
             }
             if (perceptName.equalsIgnoreCase("lastActionParam")) {
                 lastActionParam = percept.getParameters();
+            } else {
+                // logger.info("Sending percept " + perceptToLiteral(percept) +
+                // " to agent MapAgent.");
+                MapAgent.getInstance().addPercept(percept);
+                addAgentPercept(jasonNameOfAgent, percept);
             }
             if (perceptName.equalsIgnoreCase("lastAction")) {
                 lastAction = percept.getParameters().getFirst();
             }
             if (perceptName.equalsIgnoreCase("step")) {
                 step = percept.getParameters().getFirst();
-            }
-            if (!perceptName.equalsIgnoreCase("lastActionParam")) {
-                // logger.info("Sending percept " + perceptToLiteral(percept) +
-                // " to agent MapAgent.");
-                MapAgent.getInstance().addPercept(percept);
-                addAgentPercept(jasonNameOfAgent, percept);
             }
             if (perceptName.equalsIgnoreCase("position")) {
                 Vertex position = MapAgent.getInstance().getVertex(percept.getParameters().get(0).toString());
@@ -256,6 +255,11 @@ public class EISEnvironment extends Environment implements AgentListener {
             if (perceptName.equalsIgnoreCase("role")) {
                 String role = percept.getParameters().get(0).toString();
                 agent.setRole(role);
+            }
+            if (perceptName.equalsIgnoreCase("simend")) {
+                this.stop();
+                logger.info("Received simulation end percept. Shutting down.");
+                System.exit(0);
             }
         }
         // assemble the last action for this agent and compare it to the one we
@@ -313,9 +317,10 @@ public class EISEnvironment extends Environment implements AgentListener {
             escaped = escaped.replace("-", "_");
             return Literal.parseLiteral(escaped);
         }
-        default:
+        default: {
             String escaped = percept.toProlog().replace("-", "_");
-            return Literal.parseLiteral(percept.toProlog());
+            return Literal.parseLiteral(escaped);
+        }
         }
     }
 }

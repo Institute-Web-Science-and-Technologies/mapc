@@ -7,4 +7,12 @@ How do agents move around during the exploration phase?
 \subsection{Zone Calculation}
 This can also be dealt with in DSDV already but then with subsections.
 \subsection{Zone Forming}
+Zoning happens asynchronously.
+\subsubsection{Zoning roles}
+There are coaches and minions. Coaches command minions. There are also agents who don't get assigned a specific role and try to find and go to a well. There is a strict hierarchy between the roles.
+\subsection{Colouring algorithm for zone finding}
+In some way, we try to find local maxima to build small zones with as few agents as possible. How do we find zones? How do we find out how many agents we need? Present our colouring algorithm.
 \subsection{Zone Extensions and Breakups}
+Extensions aren't implemented but breakups are. Maybe merge this with our first zoning section.
+\subsection{Agent specific strategies}
+How are the agents specialised? Explorers keep probing for long. Inspectors probe enemies so that we can avoid saboteurs. Saboteurs are attacking and can be called for zone defence. Disabled agents communicate with repairers and approach them.
