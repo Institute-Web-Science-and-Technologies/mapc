@@ -1,16 +1,36 @@
 \subsection{General Strategy Overview}
 This could also be an introductionary text which motivates the following subsections.
+
+%%%%%%%%%%%%%%%%%%
 \subsection{DSDV}
 What is it? How is it used in our context? What are advantages we gain from it? What is problematic (speed loss)?
+
+%%%%%%%%%%%%%%%%%%
 \subsection{Exploration}
 How do agents move around during the exploration phase?
+
+%%%%%%%%%%%%%%%%%%
 \subsection{Zone Forming}
-Zoning happens asynchronously. Introduce the general concept and motivate our ideas here.
-\subsubsection{Zoning roles}
+Zoning is the most important part in the MAPC Mars scenario\cite{ahlbrecht_mapc_2014}.% p.3
+It describes the process of agents occupying nodes in a way that they enclose a subgraph. In subsection~\ref{alg:zon_roles} we introduce two additional agent roles which are assigned during zoning. Said roles define the tasks and duties of an agent in this phase.
+
+For our approach, zoning should take place after the map exploration phase. This should ensure that enough information about the map has been gathered to calculate high valuable zones close to the agents' current positions. The algorithm for finding these zones and determining which agents have to occupy which nodes is presented in subsection~\ref{alg:zon_colouring}.
+
+The process of forming a zone and the associated agent communication is presented in the last subsection~\ref{alg:zon_formation}. It features the assignment of zone roles to agents. Furthermore, it is illustrated what zone is to be built and what the agents have to do to achieve this.
+
+\subsubsection{Zoning Roles}\label{alg:zon_roles}
 There are coaches and minions. Coaches command minions. There are also agents who don't get assigned a specific role and try to find and go to a well. There is a strict hierarchy between the roles.
-\subsubsection{Colouring algorithm for zone finding}
-In some way, we try to find local maxima to build small zones with as few agents as possible. How do we find zones? How do we find out how many agents we need? Present our colouring algorithm.
-\subsubsection{Zone Extensions and Breakups}
-Extensions aren't implemented but breakups are. Maybe merge this with our first zoning section.
-\subsection{Agent specific strategies}
+
+Furthermore, zone breakups are a process that is different depending on the role of the executing agent. Hence breakups can be introduced and explained here.
+
+\subsubsection{Colouring Algorithm for Zone Finding}\label{alg:zon_colouring}
+In some way, we try to find local maxima to build small zones with as few agents as possible. How do we find zones? How do we find out how many agents we need? Explain that extending zones describes how the score resulting from an active zone can be increased by using idle agents. How do we determine what additional spots for zone extensions exist?
+Present our colouring algorithm.
+
+\subsubsection{Zone Formation and Communication}\label{alg:zon_formation}
+Zoning happens asynchronously.
+How do agents decide what zone to form? Which agents become coaches and which become minions? How do agents know which node they have to occupy?
+
+%%%%%%%%%%%%%%%%%%
+\subsection{Agent Specific Strategies}
 How are the agents specialised? Explorers keep probing for long. Inspectors probe enemies so that we can avoid saboteurs. Saboteurs are attacking and can be called for zone defence. Disabled agents communicate with repairers and approach them.
