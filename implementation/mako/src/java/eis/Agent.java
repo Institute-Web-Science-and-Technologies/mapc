@@ -103,7 +103,7 @@ public class Agent {
     }
 
     public void setRole(String role) {
-        this.role = role;
+        this.role = role.toLowerCase();
     }
 
     public int getStrength() {
