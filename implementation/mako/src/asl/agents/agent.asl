@@ -202,7 +202,6 @@ zoneMode(false).
 
 	
 // Print a warning if an active enemy is on our position.
-// TODO: Call a saboteur to deal with the enemy.
 +!doAction:
  	position(Position)
 	& visibleEntity(Vehicle, Position, Team, normal)

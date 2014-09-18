@@ -18,8 +18,6 @@ maxRange(15).
 maxZoningRoundTime(5).
 maxMinionWaitingTime(3).
 
-//TODO: maybe make a cut if Range gets too high. Higher than 5 sounds high.
-
 /* Plans */
 
 // Zoning mode has begun and it will trigger the achievement goal

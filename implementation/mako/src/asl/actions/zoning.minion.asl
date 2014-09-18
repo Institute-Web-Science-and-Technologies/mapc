@@ -1,5 +1,3 @@
-/* Initial beliefs and rules */
-
 /* Plans */
 
 // If our coach cancelled the zone, we go back to start zoning from scratch.
@@ -16,13 +14,12 @@
        !preparedNewZoningRound.
 
 // If someone other than our coach tries to cancel the zone, we ignore it.
-// TODO: at times, minions forgot about their bestZone. I have no idea, how this could happen.
 +!cancelledZoneBuilding[source(Sender)]:
     isMinion(true)
     & bestZone(_, _, _)[source(Coach)]
     <- .print("[zoning][minion] I was told to break up my zone but ignoring that. Sender: ", Sender, " My coach: ", Coach).
 
-// TODO: this should never be called but it is; see #38.
+// TODO: see #38.
 +!cancelledZoneBuilding[source(Sender)]:
     isMinion(true)
     <- .print("[zoning][minion][bug] I forgot about my bestZone belief. I have no idea how this can happen. Restarting zoning");

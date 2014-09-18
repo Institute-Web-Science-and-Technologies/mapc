@@ -3,10 +3,11 @@
 
 role(saboteur).
 
-// Saboteur current strategy: attack_chase or zoneDefence
+// The saboteur's current strategy: attack_chase or zoneDefence.
 strategy(attack_chase).
 
-// If there is a new zone defence request, but we already defending a zone - skip processing, busy
+// If there is a new zone defence request, but we already defending a zone: skip
+// processing due to being busy.
 +requestZoneDefence(ZoneCentre): strategy(zoneDefence).
 
 // If there is a new zone defence request - do bidding for this zone defence
@@ -20,7 +21,8 @@ strategy(attack_chase).
     .wait(400);
     !evaluateBiddingOutcome(ZoneCentre).
 
-// If Distance to ZoneCentre is equal to -1 - return zone unreachable message, stop processing.
+// If Distance to ZoneCentre is equal to -1 - return zone unreachable message
+// and stop processing.
 +requestZoneDefence(ZoneCentre)
     <-
   	.print("The target zone with centre in ", ZoneCentre," is unreachable - ignoring zone defence request").
@@ -45,7 +47,7 @@ strategy(attack_chase).
 // twice, do nothing because it was already reasoned on the bids.
 +!evaluateBiddingOutcome(_).
 
-// If the zone is no longer require defence - return to regular strategy.
+// If the zone no longer requires defence - return to regular strategy.
 +cancelZoneDefence(ZoneCentre)   
     <-
     .abolish(requestZoneDefence(ZoneCentre));
@@ -55,7 +57,8 @@ strategy(attack_chase).
     };
     .abolish(cancelZoneDefence(ZoneCentre)). 
 
-// In defending zone mode saboteur should attack the disturbing enemy once he sees it    
+// In defending zone mode saboteur should attack the disturbing enemy once he
+// sees it.    
 +!defendZone:
 	defendingZone(ZoneCentre)  
 	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, _)
@@ -67,7 +70,7 @@ strategy(attack_chase).
  	<- .print("Attacking ", Vehicle, " disturbing zone on ", EnemyPosition);
  	   !doAttack(Vehicle, EnemyPosition).
 
-// Saboteurs in defending zone mode should go directly to the disturbing enemy
+// Saboteurs in defending zone mode should go directly to the disturbing enemy.
 +!defendZone:
 	defendingZone(ZoneCentre)  
 	& ia.getClosestEnemy(ZoneCentre, EnemyPosition, _)
@@ -83,7 +86,8 @@ strategy(attack_chase).
     .send(SaboteurList, tell, cancelZoneDefence(ZoneCentre));
     !!doAction.
     
-// Fallback plan - if for some reason saboteur does not know which zone he should defend - return to standard strategy.   
+// Fallback plan - if for some reason saboteur does not know which zone he
+// should defend - return to standard strategy.   
 +!defendZone 
     <- -+strategy(attack_chase);
     !!doAction.  
@@ -96,8 +100,8 @@ strategy(attack_chase).
        !goto(Vertex).
 
 // Recharge if we want to attack but don't have the required energy.
-// Energy costs increase with distance for ranged actions, so we have to take that
-// into account.
+// Energy costs increase with distance for ranged actions, so we have to take
+// that into account.
 +!doAttack(Enemy, EnemyPosition):
     energy(MyEnergy)
     & position(MyPosition)
@@ -117,8 +121,8 @@ strategy(attack_chase).
 	.print("I want to attack ", Enemy, ", but it is ", Distance, " steps away, and my visibility range is only ", MyRange);
 	!goto(EnemyPosition).
 	
-// It is possible that we don't know a path from our position to the
-// enemy agent. In this case, ia.getdistance returns the distance 0.
+// It is possible that we don't know a path from our position to the enemy
+// agent. In this case, ia.getdistance returns the distance 0.
 +!doAttack(Vehicle, Vertex):
 	position(Position)
 	& Position \== Vertex
@@ -128,8 +132,7 @@ strategy(attack_chase).
 	.print("I wanted to attack ", Vehicle, ", but there is no known path to ", Vertex, " from ", Position, ".");
 	+ignoreEnemy(Vehicle);
 	!doAction.
-	
-	
+
 // If energy is enough - attack
 +!doAttack(Vehicle, Vertex)
     <- .print("Attacking ", Vehicle);

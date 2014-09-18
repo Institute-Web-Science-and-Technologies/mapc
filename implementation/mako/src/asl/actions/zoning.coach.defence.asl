@@ -1,7 +1,3 @@
-/* Initial beliefs and rules */
-
-/* Initial goals */
-
 /* Plans */
 
 // If the enemy is inside the zone - call saboteur to help if the request was not send earlier.

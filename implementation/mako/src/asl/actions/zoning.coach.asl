@@ -25,10 +25,9 @@
        -+isLocked(false).
 
 // The achievement goal failed for some reason. Tell all agents to restart
-// zoning.
-// Simply calling !cancelledZoneBuilding isn't possible because the zone was
-// never registered as a zone in JavaMap.
-// TODO: this shouldn't be called anymore. But it's always nice to have a backup plan :)
+// zoning. Simply calling !cancelledZoneBuilding isn't possible because the zone
+// was never registered as a zone in JavaMap. In general, this goal shouldn't be
+// called anymore. But it's always nice to have a backup plan :)
 +!assignededAgentsTheirPosition:
     isCoach(true)
     & .my_name(Coach)
@@ -51,7 +50,6 @@
 // The lock should make sure that this goal is not processed before
 // !assignededAgentsTheirPosition was processed.
 // Also resets the currentRange.
-// TODO: I've seen this being triggered twice in a row. This should not happen. Investigate it further!
 @cancelZoneAndInformMinions[atomic]
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
@@ -78,7 +76,6 @@
     & bestZone(_, CentreNode, ClosestAgents)
     <- .print("[zoning][coach] ", Sender, " wanted me to destroy my zone but he is not my minion. Ignoring.").
 
-// TODO: This goal gets called... seldom, but it does.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;
