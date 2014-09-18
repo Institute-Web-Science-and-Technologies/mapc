@@ -3,6 +3,10 @@
 *.bbl
 *.blg
 *.toc
+*.out
+
+# Vim swap files
+*.swp
 
 # Log files (also generated with LaTeX)
 *.log
