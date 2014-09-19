@@ -19,10 +19,7 @@ For our approach, zoning should take place after the map exploration phase. This
 
 The process of forming a zone and the associated agent communication is presented in the last subsection~\ref{alg:zon_formation}. It features the assignment of zone roles to agents. Furthermore, it is illustrated what zone is to be built and what the agents have to do to achieve this.
 
-\subsubsection{Colouring Algorithm for Zone Finding}\label{alg:zon_colouring}
-In some way, we try to find local maxima to build small zones with as few agents as possible. How do we find zones? How do we find out how many agents we need? Explain that extending zones describes how the score resulting from an active zone can be increased by using idle agents. How do we determine what additional spots for zone extensions exist?
-Present our colouring algorithm and the concept of a centre node.
-
+\input{content/algorithms_zon_construction.tex}
 
 \subsubsection{Zone Negotiation}\label{alg:zon_formation}
 Zoning happens asynchronously. Who registers when for zoning? How do they unregister?
