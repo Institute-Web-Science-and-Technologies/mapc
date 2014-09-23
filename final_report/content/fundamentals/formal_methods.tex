@@ -27,10 +27,10 @@ the given path and $p$ holds on all moments between $t$ and the selected occurre
 \caption{An example branching structure of time. (source: \cite{Singh_99})}
 \centering
 \includegraphics[width=0.6\textwidth]{images/branching_logic.png}
-\label{fig:branching_time}
+\label{sci:for_branching_figure}
 \end{figure}
 
-Branching temporal and action logic is built on top of both dynamic and linear temporal logics and captures the essential properties of actions and time that are of value in specifying agents. It also adds several specific branching-time operators. $A$ denotes "in all paths at the present moment". The present moment here is the moment at which a given formula is evaluated. $E$ denotes "in some path at the present moment". The reality operator $R$ denotes "in the real path at the present moment". Figure \ref{fig:branching_time} illustrates the example of branching time for two interacting agents.
+Branching temporal and action logic is built on top of both dynamic and linear temporal logics and captures the essential properties of actions and time that are of value in specifying agents. It also adds several specific branching-time operators. $A$ denotes "in all paths at the present moment". The present moment here is the moment at which a given formula is evaluated. $E$ denotes "in some path at the present moment". The reality operator $R$ denotes "in the real path at the present moment". Figure \ref{sci:for_branching_figure} illustrates the example of branching time for two interacting agents.
 
 For modeling intelligent agents quite often used BDI concept, which was described earlier in this report. BDI stands for three cognitive specifications of agents: beliefs, desires, intensions. To model logic of these specifications we will need to introduce several modal operators: $Bel$ for beliefs, $Des$ for desires, $Int$ for intensions and $K_h$ for know how. Considering these operators, for example, the mental state of an agent who desires to win the lottery and intends to buy a lottery ticket sometime, but does not believe that he will ever win can be represented by the following formula: $DesAFwin \land IntEFbuy \land \neg BelAFwin$. For simplification in future we will consider only those desires which are mutually consistent. Such desires are usually called goals.
 
