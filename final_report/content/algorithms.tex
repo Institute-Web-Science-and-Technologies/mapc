@@ -10,13 +10,15 @@ How are the agents specialised? Explorers keep probing for long. Inspectors prob
 What is it? How is it used in our context? What are advantages we gain from it? What is problematic (speed loss)?
 
 %%%%%%%%%%%%%%%%%%
-\subsection{Exploration}
+\subsection{Exploration}\label{alg:exploration}
 How do agents move around during the exploration phase?
 
 %%%%%%%%%%%%%%%%%%
 \subsection{Zone Forming}
 % TODO: update this according to how the subsection will be in the end
 % TODO: probably move it into a dedicated file
+% TODO: make agents gender neutral
+% TODO: explain what a ``zoning process'' is
 Zoning is the most important part in the MAPC Mars scenario~\cite{ahlbrecht_mapc_2014}.% p.3
 It describes the process of agents occupying nodes in a way that they enclose a subgraph. In subsection~\ref{alg:zon_roles} we introduce two additional agent roles which are assigned during zoning. Said roles define the tasks and duties of an agent in this phase.
 
@@ -27,7 +29,15 @@ The process of forming a zone and the associated agent communication is presente
 \input{content/algorithms/zon_calculation.tex}
 
 \subsubsection{Zone Negotiation}\label{alg:zon_formation}
-Zoning happens asynchronously. Who registers when for zoning? How do they unregister?
-How do agents decide what zone to form? Which agents become coaches and which become minions? How do agents know which node they have to occupy?
+% TODO: probably move it into a dedicated file
+This section explains how agents decide on what zones should be built. It focusses on the communication between the agents. Agents start looking for zones when they have finished the exploration phase. As explained in section~\ref{alg:exploration}, explorer agents do not only survey but probe as well. Hence, other agents may finish the exploration phase earlier. Furthermore, zones can be broken up at any time allowing the agents to start looking for a new zone again. As a result, the zone finding process is in fact asynchronous. Problems arising from this are mainly dealt with throughout the actual building of zones which is illustrated in section~\ref{alg:zon_roles}.
+
+In the beginning, all agents have to centrally register themselves when they are ready for zone building to indicate this availability. Next, each agent uses the algorithm presented in section~\ref{alg:zon_construction} to determine the best zone in his neighbourhood. The algorithm uses a range parameter $k$ which indicates the $k$-hop-neighbourhood up to which the algorithm will look for the best buildable zone. This range starts at $1$ and is incremented every time the agent finishes a zoning process without being part of a zone afterwards. As a result, it is likelier for an agent to find a buildable zone with a high per agent score. Thus, it is likelier for the agent to be part of a zone, because throughout every zoning process only the most valuable zone is going to be built. The range has a maximum to ensure that an agent will not look for zones too far away from it. When a zone is broken up, the range will be reset, which is covered by section~\ref{alg:zon_roles}.
+
+
+start looking for the best zone in their neighbourhood. The agents
+% TODO: stuff below
+%Zoning happens asynchronously. Who registers when for zoning? How do they unregister?
+%How do agents decide what zone to form?
 
 \input{content/algorithms/zon_roles.tex}
