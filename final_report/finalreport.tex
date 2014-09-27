@@ -13,6 +13,9 @@
 \usepackage{subcaption}
 \usepackage[pdfdisplaydoctitle,linkcolor=theblue,citecolor=theblue,urlcolor=thered]{hyperref} % Extensive support for hypertext in LaTeX (load last)
 \usepackage{cleveref} % Intelligent cross-referencing, load after hyperref
+% Don't make autoref write about subsubsections and subsections, but use section instead:
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
 % Define a listing style for FLUX code
 \lstdefinestyle{flux} {
   frame=L,
