@@ -604,7 +604,7 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
  \textit{#1}\par
  \penalty\@highpenalty \endgroup}
 
-\setcounter{tocdepth}{0}
+\setcounter{tocdepth}{3}
 \newdimen\tocchpnum
 \newdimen\tocsecnum
 \newdimen\tocsectotal
@@ -927,8 +927,6 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
     \def\thanks##1{\unskip{}}\def\fnmsep{\unskip}%
     \instindent=\hsize
     \advance\instindent by-\headlineindent
-    \if!\the\toctitle!\addcontentsline{toc}{title}{\@title}\else
-       \addcontentsline{toc}{title}{\the\toctitle}\fi
     \if@runhead
        \if!\the\titlerunning!\else
          \edef\@title{\the\titlerunning}%
@@ -944,16 +942,7 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
        \xdef\@title{\copy\titrun}%
     \fi
 %
-    \if!\the\tocauthor!\relax
-      {\def\and{\noexpand\protect\noexpand\and}%
-      \protected@xdef\toc@uthor{\@author}}%
-    \else
-      \def\\{\noexpand\protect\noexpand\newline}%
-      \protected@xdef\scratch{\the\tocauthor}%
-      \protected@xdef\toc@uthor{\scratch}%
-    \fi
     \addtocontents{toc}{\noexpand\protect\noexpand\authcount{\the\c@auco}}%
-    \addcontentsline{toc}{author}{\toc@uthor}%
     \if@runhead
        \if!\the\authorrunning!
          \value{@inst}=\value{@auth}%
