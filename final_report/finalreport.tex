@@ -10,7 +10,8 @@
 \usepackage[detect-all,round-mode=places]{siunitx} % A comprehensive (SI) units package
 \usepackage{latexsym} % allows special symbols
 \usepackage{graphicx} % enables figures
-\usepackage{subcaption}
+\usepackage{subcaption} % Support for sub-captions
+\usepackage{csquotes} % Context sensitive quotation facilities
 \usepackage[pdfdisplaydoctitle,linkcolor=theblue,citecolor=theblue,urlcolor=thered]{hyperref} % Extensive support for hypertext in LaTeX (load last)
 \usepackage{cleveref} % Intelligent cross-referencing, load after hyperref
 % Don't make autoref write about subsubsections and subsections, but use section instead:
@@ -19,7 +20,7 @@
 % Make autoref talk about lines in lstlistings:
 \def\lstnumberautorefname{Line}
 %
-\title{Research Lab ``Multi-Agent Programming Contest 2014''}
+\title{Research Lab \enquote{Multi-Agent Programming Contest 2014}}
 \subtitle{Final Report}
 %\titlerunning{logprog}
 \author{Artur Daudrich \and Sergey Dedukh \and Maunuel Mittler \and Michael Ruster \and Michael Sewell \and Yuan Sun}
