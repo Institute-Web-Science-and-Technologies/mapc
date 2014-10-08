@@ -6,7 +6,10 @@
 \usepackage{graphicx} % allow PNGs as graphics
 \RequirePackage[utf8]{inputenc} % support Umlauts and special characters
 \usepackage{microtype} % use space more efficiently and hyphenate smarter: all in all looks a lot sexier
-\usepackage{listings} % allow source code environments
+\usepackage{listings} % allow source code environment
+\lstset{ % make tildes readable in lstlistings
+      literate={~} {$\sim$}{1}
+}
 \usepackage[detect-all,round-mode=places]{siunitx} % A comprehensive (SI) units package
 \usepackage{latexsym} % allows special symbols
 \usepackage{graphicx} % enables figures
