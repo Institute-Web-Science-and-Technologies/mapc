@@ -4,6 +4,9 @@
 *.blg
 *.toc
 *.out
+*.bcf
+/final_report/finalreport.run.xml
+
 
 # Vim swap files
 *.swp

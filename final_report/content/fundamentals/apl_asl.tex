@@ -1,0 +1,55 @@
+\subsection{AgentSpeak(L).}
+This section gives an overview of the general concepts of the logic programming language AgentSpeak(L). The language was developed by Rao~\cite{rao_agentspeak_1996}. Except for the examples, this section takes its information from the given paper. The idea behind AgentSpeak(L) was to make the theoretic concept of BDI-agents usable in practical scenarios. % 44
+Therefore, it is applicable to environments where agents affect the world by executing actions, perceive changes in the world and react upon these changes. % TODO: is inter-agent communication a Jason-exclusive feature?
+
+The main language constructs are \emph{beliefs}, \emph{goals} and \emph{plans}. Beliefs represent information that an agent has about its environment. A belief \texttt{hasCoffee(P)} for example denotes that an agent knows that the person \texttt{p} has coffee. In AgentSpeak(L), variables are indicated by using a capital first letter whereas terms with a small first letter are instances. % TODO: can we call these instances? Maybe bound variables? I dunnooo.
+\begin{lstlisting}[caption={Initial beliefs.}, label=lst:asl_initBeliefs]
+  ~hasCoffee(jane).
+  ~hasCoffee(john).
+\end{lstlisting}
+\autoref{lst:asl_initBeliefs} shows the initial beliefs an agent has for our earlier introduced example. The tilde expresses that the agent knows that neither \texttt{john} nor \texttt{jane} has coffee.
+
+Goals can be dividied into \emph{achievement goals} and \emph{test goals}. The first expresses the wish of an agent to reach a state where a belief holds where the second tests whether a belief holds in the current state. Beliefs hold when the agent knows they are true or when the variables can be bound to at least one known configuration. For example, given an achievement goal !\texttt{hasCoffee}(p)} means that an agent wants to achieve that person \texttt{p} has coffee. Similarly, ?\texttt{hasCoffee}(p)} expresses that an agent tests whether \texttt{p} has a coffee. Hence, this expression will evaluate to true or false depending on the current agent's knowledge.
+Achievement goals are comparable to desires. % 45
+\autoref{lst:asl_initGoal} shows the initial achievement goal which express that the agent wants to have served everyone coffee.
+\begin{lstlisting}[firstnumber=3, caption={Initial goal.}, label=lst:asl_initGoal]
+  !servedCoffee.
+\end{lstlisting}
+
+\emph{Events} are introduced to allow agents to react on changes in their own knowledge or the world. They can be distinguished into the addition and removal of beliefs or goals. Additions are denoted by a plus- and removals by using a minus-sign in front of the goal or belief: % as shown in \autoref{it:fun:apl_asl}.
+\begin{itemize} % \label{it:fun:apl_asl}
+  \item $+\textit{hasCoffee}(p)$ an agent is informed that \texttt{p} now has coffee.
+  \item $-\textit{hasCoffee}(p)$ an agent is informed that \texttt{p} no longer has coffee.
+  \item $+!\textit{hasCoffee}(p)$ an agent is informed that it wants \texttt{p} to have coffee.
+  \item $-!\textit{hasCoffee}(p)$ an agent is informed that it no longer wants \texttt{p} to have coffee.
+  \item $+?\textit{hasCoffee}(p)$ an agent is informed that it should test for the belief.
+  \item $-?\textit{hasCoffee}(p)$ an agent is informed that it no longer needs to test for the belief.
+\end{itemize}
+In order to handle new events, an agent will look for a matching plan.
+
+Plans can be seen as programmer-defined agent instructions. They lead to the execution of actions or the splitting of goals into additional goals. Plans, which an agent wants to execute, are similar to what are called intentions for BDI-agents. A plan is triggered by events and is context-sensitive. This means that the execution of a plan can be restricted to states in where certain beliefs exist. \autoref{lst:asl_sing} illustrates this by showing when the \texttt{sing}-action is being executed. \autoref{l:asl_trigger} is the triggering event of the plan. In this case, an agent will consider executing this plan, when it notices that someone is poured coffee. Hence, this plan is called a \emph{relevant plan}. The underscore denotes an anonymous variable similar to its use in Prolog. Its meaning is that it will match any term. \autoref{l:asl_context} is the plan's context. The plan is called an \emph{applicable plan} if the context's beliefs are all known to the agent. In this particular case, the agent must know that there is no person without coffee indicated by the use of the tilde. At last, \autoref{l:asl_body} contains the body of the plan. Here, the agent should achieve the goal \texttt{sing}. This will trigger a new event which calls the plan in \autoref{l:asl_sing}. As its context is empty, the plan can be executed immediately and evaluates to true as there is no body. \autoref{l:asl_loop} expresses how the event of someone being poured coffee should be alternatively handled. As AgentSpeak(L) is interpreted from top to bottom, it will only be seen as an applicable plan, if the former relevant plan did not trigger. Therefore, if the agent knew that there was still someone left without coffee, it will want to achieve the \texttt{servedCoffee} goal again.
+% TODO: explain that this is a better example and hence we first deal with it instead of servedCoffee
+\begin{lstlisting}[firstnumber=4, caption={Events for handling someone being poured a coffee as well as the \texttt{sing} plan.}, label=lst:asl_sing]
+  +hasCoffee(_):%\label{l:asl_trigger}%
+      ~hasCoffee(_)%\label{l:asl_context}%
+      <- !sing.%\label{l:asl_body}%
+  +hasCoffee(_)%\label{l:asl_loop}%
+      <- !servedCoffee.
+  +!sing.%\label{l:asl_sing}%
+\end{lstlisting}
+% We assume that the implementation of AgentSpeak(L) does not do anything if there is no applicable plan for an event. In \autoref{lst:asl_sing} this would be equal to adding a plan for \texttt{hasCoffee(\_)} without context or body. Given this assumption, the \texttt{pourCoffee}-action is then defined as shown in \autoref{lst:asl_pourCoffee}. \autoref{l:asl_pourCoffee} uses a shortcut operator which extends to \texttt{-hasCoffee(\_); +hasCoffee(X)} \cite{bordini_programming_2007}. % 53
+\autoref{lst:asl_serve} contains the plan for serving coffee. It uses an achievement goal to pick someone without a coffee as shown in \autoref{l:asl_thirsty}. The person will be bound to the variable \texttt{X}. After that, an achievement goal is added to the agent's set of intentions to pour \texttt{X} coffee. % TODO introduce set of intentions.
+\begin{lstlisting}[firstnumber=10, caption={Definition of the \texttt{servedCoffee} plan.}, label=lst:asl_serve]
+  +!servedCoffee:
+      <- ?~hasCoffee(X);%\label{l:asl_thirsty}%
+         !pourCoffee(X).%\label{l:asl_pour}%
+\end{lstlisting}
+The plan in \autoref{lst:asl_pour} states that if an agent receives an event to achieve the goal \texttt{!pourCoffee} for some person \texttt{X}, it will pour coffee to \texttt{X}. Additionally, the knowledge about \texttt{X} not having any coffee is removed in \autoref{l:asl_coffeeless}.
+\begin{lstlisting}[firstnumber=14, caption={Definition of the \texttt{pourCoffee} plan.}, label=lst:asl_pour]
+  +!pourCoffee(X)
+      <- +hasCoffee(X);
+         -~hasCoffee(X).%\label{l:asl_coffeeless}%
+\end{lstlisting}
+
+
+% NOTE: compared to FLUX, we don't have to manually manipulate the state, which is nice.
