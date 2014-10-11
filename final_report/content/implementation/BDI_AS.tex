@@ -1,38 +1,3 @@
-\documentclass{llncs}
-%
-\usepackage{url}
-\RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
-\usepackage{amsmath} % use equations
-\usepackage{graphicx} % allow PNGs as graphics
-\usepackage{subfigure}
-\usepackage{float}
-\RequirePackage[utf8]{inputenc} % support Umlauts and special characters
-\usepackage{microtype} % use space more efficiently and hyphenate smarter: all in all looks a lot sexier
-\usepackage{listings} % allow source code environments
-% Define a listing style for FLUX code
-\lstdefinestyle{flux} {
-  frame=L,
-  xleftmargin=\parindent,
-  basicstyle=\footnotesize\ttfamily,
-  breakatwhitespace=true,
-  numbers=left,
-  escapechar=\%,
-  numberstyle=\tiny,
-  numberblanklines=false,
-  captionpos=b,
-  emph={perform, poss, state\_update, main\_loop, init},
-  emphstyle=\textbf,
-}
-%
-\title{Research Lab "Multi-Agent Programming Contest 2014"}
-\subtitle{Final Report}
-%\titlerunning{logprog}
-\author{Artur Daudrich \and Sergey Dedukh \and Maunuel Mittler \and Michael Ruster \and Michael Sewell \and Yuan Sun}
-\institute{University of Koblenz-Landau, Koblenz Campus}
-%\tocauthor{ }
-%
-\begin{document}
-\maketitle
 
 \section{Implementation Details}
 \subsection{BDI in AS(L) and Jason}
@@ -107,11 +72,3 @@ Beliefs, desires and intentions are introduced above, but many agentspeak langua
 desires/intentions\cite{rafael_overviewjason_2006}. Besides the original internal actions like ".print" or ".send", 32 internal actions defined by our own are programmed in Java. Most of these internal actions are devoted to control the map, such as calculating the distance between two agents or searching the nearest position to the current Vertex and so on. These internal actions run internally by the agent resulting in saving the commuting time.
 
 Although Jason is a kind of new language for our team members, it is considered as the best agent speak language chosen for this multi-agent system after we trying to learning it. In our program, BDI model is clearly described, meanwhile beliefs, desires and intentions are arranged reasonably. In addition, the features of jason such as user-defined internal actions are great used to improve communication process in our program. All our effort contributes in acquiring the second place in this contest. However, not familiar with Jason also makes some problems, some functions are not implemented completely, or some strategy is not the most reasonable. There is still room for improvement and many things need to be perfect.
-
- 
-
-
-\bibliographystyle{plain}
-\clearpage
-\bibliography{tech.bib}
-\end{document}
