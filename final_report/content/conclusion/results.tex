@@ -13,13 +13,21 @@ It looks like that this is a huge drawback because achievement points earned at 
 	\caption{MAPC 2014 result}
 	\label{dis:ZonesScoresAndAchievementPoints}
 \end{figure}
-At the end of the tournament team "MaKo" scored second with a total of 18 points. The winner 2014 was, for three times in a row now, the team from the USFC. The overall result looks like the following:
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=300px]{images/con_result.png}
-	\caption{MAPC 2014 result}
-	\label{dis:result}
-\end{figure}
+At the end of the tournament team "MaKo" scored second with a total of 18 points. The winner 2014 was, for three times in a row now, the team from the USFC. The final results are shown in~\autoref{tab:mapc2014results}.
+\begin{table}[h]
+\centering
+\caption{The results of the 2014 MAPC. Each team fought three matches against every other team, and winning a match awarded 3 points.}
+\label{tab:mapc2014results}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Pos. & Team name      & Score            & Difference            & Points \\ \midrule
+1    & SMADAS-UFSC    & 1180662 : 654624 & \phantom{-}526038     & 33     \\
+2    & MAKo           & 617086 : 776868  & -15782                & 18     \\
+3    & TUB            & 904874 : 872399  & \phantom{-}32475      & 15     \\
+4    & TheWonderbolts & 711001 : 1014669 & -303668               & 15     \\
+5    & GOAL-DTU       & 653178 : 748241  & -95063                & 9      \\ \bottomrule
+\end{tabular}
+\end{table}
 Statistics of all the individual games can be found in the appendix.[reference here!!!!]
 
 Team "MaKo" lost every second game against each opponent due to the fact that for some reason the repairer agents weren't able to repair. The reason behind this was not obvious to the team. Summarizing the matches, team "MaKo" was capable of exploring the map, building local optima zones, dealing with disabled agents and attacking the opponent. A thing that could be improved is the zoning behaviour. Due to the fact that zones were broken up on a regular basis, zones with a high value sometimes were discarded even when there was no need to do that. Also no handling of edge cases has been implemented which could improve zoning in the sense that the actual number of agents needed to build that zone could be less than the number calculated by our algorithm. Like already mentioned a strategy that worked out well, was the approach to upgrade the visibility range and the strength of one saboteur agent significantly. In all matches the it was able to disable enemy agents many times and therefore disturb zones and keep the enemy repairers busy, which kept them away from building zones. 
