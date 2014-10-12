@@ -18,6 +18,52 @@ Intentions are desires or actions that the agent has committed to achieve\cite{A
 
 Beliefs, desires and intentions are three attributes of BDI model and constitute the foundation of BDI agents. While, some other components building connection between beliefs, desires and intentions are also indispensable to implement BDI agents and make the BDI architecture completed.
 %ToDo BDI basic architecture//pic
+Several basic components can be found in the following figure, which is a brief BDI architecture. A variety of BDI agents have been designed to fit the unstable environment and to complete all sorts of tasks. Different BDI agents have different architectures, but their core ideas are same.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=5in]{BDIAr}
+  \caption{Brief BDI architecture (resource from  Melkor.cz,2011)}
+  \label{fig:Brief BDI architecture}
+\end{figure}
+
+The sensors of the BDI agent perceive the environment and convert the perceptions to signals as the inputs to the belief revision function. It will collect the perceptions from outside as well as the beliefs which are stored in the beliefs set. After mapping the information, computing and revising using belief revision function, the new beliefs will set into the beliefs set. The belief revision function prefers minimal change rather than modifying a lot. There are not big differences between the revised beliefs set and the previous one to preserve as much information as possible by the change\cite{M_Belief}. The belief revision function is used to keep the beliefs set being updated to fit the unstable environment, on the other hand, it can avoid the inconsistent situations occurring among those beliefs like the agent believes what it doesn't believe. 
+
+The beliefs set contains information about the current environment which the agent has. The data in beliefs set may be sentences, rules or some other manifestations. In the AGM (named after the names of their proponents, Alchourrón, Gärdenfors, and Makinson) approach, an agent’s beliefs are modelled by a deductively closed set of formulas called a belief set\cite{James_revise_2011}. The current set of beliefs is represented by a deductively closed set of logical formulae K called belief base, the new piece of information is a logical formula P, and revision is performed by a binary operator * that takes as its operands the current beliefs and the new information and produces as a result a belief base representing the result of the revision\cite{M_Belief}. Many researchers are doing researches in belief revision using AGM approach.
+The option generator reads the beliefs information and returns a list of options which are current desires into the desires set. It determines the desires depending on the agent’s current beliefs and current intentions. The desires set contains many desires are possible courses of actions available to the agent, and These desires can be no matter achieved or not. The filter determines the agent’s intentions depending on current beliefs, desires, and intentions. It needs to consider about more situations than the functions in previous steps. Desires will become more rational after filtering. 
+
+The intentions set stores the agent’s current focus, which are going to be executed or committed to be executed at some time. Once an intention is adopted, it should not be immediately dropped out because of the commitment. But in some situations, the intentions should be given up depending on  three commitment strategies having been proposed in Rao and Georgeff’s work:  blind, single minded and open minded. A blindly committed agent is an agent who maintains his intentions until he believes that he has achieved them. A single minded committed agent is an agent who maintains his intentions as long as he believes that they are still options. An open minded committed agent is an agent who maintains his intentions as long as they are still goals\cite{Roberto_BDIATL_2005}. The action selection function determines the actions to perform depending on current intentions. We would achieve nothing if we just have intentions instead of knowing how to do it. Normally, there is a plan library of mapping between the intentions and actions. The intentions go through the planner and the actions which mapping the corresponding intentions are founded. At last, a plan of how to achieve the intentions come out and the agent will execute these actions. 
+
+For understanding the relationships between the seven main components of BDI agent architecture, one table is presented as followed:
+
+\begin{table}[!hbp]
+  \caption{Components of brief BDI agent architecture}
+  \label{tab:BDIC}
+  \begin{tabular}{|c|p{5cm}|p{5cm}|}
+  \hline  
+    Component & Meaning & Formalization \\
+    \hline
+    Beliefs set & Information about the current environment which the agent has & $B$ \\
+    \hline
+    belief revision function & determines a new set of beliefs depending on perceptual inputs and the agent’s current beliefs & $B \times P \to B$\\
+    \hline
+    Options & determines desires depending on the agent’s current beliefs & $B \times I \to D$ \\
+    \hline
+    Desires set & possible courses of actions available to the agent & $D$ \\
+    \hline
+    Filter & determines the agent’s intentions depending on current beliefs, desires, and intentions &  $B \times I \times D \to I$ \\
+    \hline
+    Intentions set & the agent’s current focus & $I$ \\
+    \hline
+    Action selection function & determines an action to perform depending on current intentions & $I \to A $ \\
+    \hline 
+  \end{tabular}
+\end{table}
+
+This table shows the order of using the seven components of BDI architecture as well as giving the formulas of each function. There, $Bel$ is a set of all possible beliefs, $Des$ is a set of all possible desires and $Int$ is a set of all possible intentions. Therefore, an agent state can be presented as $(B,D,I)$ with $B \subseteq Bel, D \subseteq  Des, I \subseteq  Int$. $P$ is a set of current perception which are obtained by the sensors of the agent. we can understand the the process of BDI agent working better through seeing this table. Firstly, $B$ has stored some beliefs which are read by BRF while it getting the perception from the sensors. After operating BRF, some of beliefs are removed, some are added, some are modified and so on. So the new beliefs set $B$ built on basis of $P$ and original $B$. Subsequently, Options use the new $B$ and current Intentions set $I$ to determine the desires set $D$ and store it. Moreover, the filter select intentions by referencing $B,D,I$, then the new intentions set comes out. Finally, the action selection function makes a plan to execute actions to achieve $I$.
+
+The process of $B \times P \to B$, $B \times I \to D$ and $B \times I \times D \to I$ belongs to deliberation. They are deliberated in-depth gradually and the range of intentions are narrowed, especially the filter which should consider of all there datasets. At last, the intentions are limited in particular ranges. The plans will be made more effective and more targeted.  $I \to A $ can be treated as the process of means-ends reasoning, whose output is planning. $B,D I$ are connected to function parts instead of connecting to each other directly. They are just databases and need rules or mechanism to help them execute actions.
+
 %ToDo BDI applications (short)
 
 
