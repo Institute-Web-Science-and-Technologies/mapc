@@ -1,6 +1,5 @@
-\subsection{AgentSpeak(L).}
+\subsubsection{AgentSpeak(L).}
 This section gives an overview of the general concepts of the logic programming language AgentSpeak(L). The language was developed by Rao~\cite{rao_agentspeak_1996}. Except for the examples, this section takes its information from the given paper. The idea behind AgentSpeak(L) was to make the theoretic concept of BDI-agents usable in practical scenarios. % 44
-Therefore, it is applicable to environments where agents affect the world by executing actions, perceive changes in the world and react upon these changes. % TODO: is inter-agent communication a Jason-exclusive feature?
 
 The main language constructs are \emph{beliefs}, \emph{goals} and \emph{plans}. Beliefs represent information that an agent has about its environment. A belief \texttt{hasCoffee(P)} for example denotes that an agent knows that the person \texttt{p} has coffee. In AgentSpeak(L), variables are indicated by using a capital first letter whereas terms with a small first letter are constants. % 45
 \begin{lstlisting}[caption={Initial beliefs.}, label=lst:asl_initBeliefs]
