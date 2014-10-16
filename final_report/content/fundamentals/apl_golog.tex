@@ -1,4 +1,4 @@
-\subsubsection{GOLOG.}\label{fun:apl_golog}
+\subsubsection[GOLOG.]{GOLOG.$^\circ$}\label{fun:apl_golog}
 This section gives a summary of the logic programming language GOLOG. Moreover, its problems in context of the Mars-scenario are shown. If not further specified, all information except for the examples is taken from Levesque et~al.~\cite{levesque_golog:_1997} who introduced the language. GOLOG builds on the situation calculus. To allow high-level programming, the language adds complex actions like loops, conditions, tests and non-deterministic elements. As an example, a GOLOG program should have a robot pouring other agents coffee until everybody does have coffee. After that, the robot should sing and terminate. Such a program would reuse the fluent of \autoref{f_hasCoffee}, the action precondition axioms of \autoref{a_possPourCoffee} and \ref{a_possSing}, the successor state axiom of \autoref{a_sucStateAxiom} and extend them with the two procedures given in \autoref{p_main} and \ref{p_pourSOCoffee}:
 \begin{equation}\label{p_main}
   \begin{split}
