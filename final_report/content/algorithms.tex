@@ -1,5 +1,5 @@
 \subsection{General Strategy Overview}
-This could also be an introductionary text which motivates the following subsections.
+This could also be an introductory text which motivates the following subsections.
 
 %%%%%%%%%%%%%%%%%%
 \input{content/algorithms/alg_agentstrategies} % Agent Specific Strategies
@@ -11,6 +11,18 @@ What is it? How is it used in our context? What are advantages we gain from it? 
 %%%%%%%%%%%%%%%%%%
 \subsection{Exploration}\label{alg:exploration}
 How do agents move around during the exploration phase?
+
+%%%%%%%%%%%%%%%%%%
+\subsection[Repairing]{Repairing$^\diamond$}\label{alg:repairing}
+As was already mentioned in scenario description, any agent can get disabled after being attacked by the enemy saboteur. To get disabled in the scenario means to loose all the health points. Naturally, we have implemented several supporting algorithms of avoiding enemy saboteurs when possible and parry when there is a saboteur nearby. However following these algorithms cannot guarantee that the agent will never get disabled, mostly because there not always exists an escape route and not all agents can perform parry action. When an agent gets disabled it looses most of its functionalities: only skip, recharge and goto actions remain active. Additionally repairers even being disabled can perform a repair action, but it costs more energy in this case. Disabled agents also cannot occupy a node and therefore cannot participate in zone building, which is a vital part of getting score points.
+
+In ~\autoref{alg:agentstrategies} it was said that the primary task of repairer agents is to repair others and they should perform a repair action whenever they see a disabled friendly agent. But the question is how to get the disabled agent to the repairer. In our implementation, every time an agent gets disabled, it sets a high priority goal \emph{getRepaired}. Following the plan of this goal, an agent requests the available repairer and its position from the \emph{MapAgent}. If the returned repairer position is the same the agent's position, then the agents only recharges and waits to get repaired, otherwise the agent simply moves toward the returned repairer position. If there is no repairer available in the reachability range, it means that the graph is not sufficiently explored and the agents then tries to expand the known subgraph by moving to unvisited nodes.
+
+Assignment of agents to their repairers is done inside our Java MapAgent. To be more flexible we decided to perform such assignment on every step. This allows to adapt to constantly changing situation, when agents are moving, some new agent get disabled and some agents get repaired. The assignment itself is done based on the hop distances between agents. First, all the distances between all disabled agents and all repairers is calculated. Then the closest distances are picked and the agents which have this distance between them are assigned to each other. If all repairers are assigned and there are still some unassigned disabled agents, they get assigned to the closest to them repairers. This assigning approach in most of the cases led to fast and effective repairing.
+
+In addition to disabling agents moving to their repairers, repairers can also move towards the assigned to them disabled agents. This behaviour is only possible during the exploration phase of the simulation, because in zoning mode repairers moving somewhere in most of the cases will also mean the zone breakup, which we would like to avoid. We implemented this by making repairers explore the map in the direction of the assigned to them disabled agents, i.e. if the node is not surveyed, they survey, otherwise just go to the assigned disabled agent.
+
+The seeming special case in repairing is when one of the repairers gets disabled. However since even disabled repairer can perform repair action, we decided to use the standard procedure of assignment even to the disabled agents. The only difference is that the goal to repair have higher priority then the goal to get repaired. This helps to use all the repairers more effective and prevents the situation when all the repairers are disabled and waiting to get repaired.
 
 %%%%%%%%%%%%%%%%%%
 \subsection[Zone Forming]{Zone Forming}
