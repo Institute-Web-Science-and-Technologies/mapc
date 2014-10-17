@@ -1,14 +1,14 @@
 \subsubsection[AgentSpeak(L).]{AgentSpeak(L).$^\circ$}
 This section gives an overview of the general concepts of the logic programming language AgentSpeak(L). The language was developed by Rao~\cite{rao_agentspeak_1996}. Except for the examples, this section takes its information from the given paper. The idea behind AgentSpeak(L) was to make the theoretic concept of BDI-agents usable in practical scenarios. % 44
 
-The main language constructs are \emph{beliefs}, \emph{goals} and \emph{plans}. Beliefs represent information that an agent has about its environment. A belief \texttt{hasCoffee(P)} for example denotes that an agent knows that the person \texttt{p} has coffee. In AgentSpeak(L), variables are indicated by using a capital first letter whereas terms with a small first letter are constants. % 45
+The main language constructs are \emph{beliefs}, \emph{goals} and \emph{plans}. Beliefs represent information that an agent has about its environment. A belief \texttt{hasCoffee(p)} for example denotes that an agent knows that the person \texttt{p} has coffee. In AgentSpeak(L), variables are indicated by using a capital first letter whereas terms with a small first letter are constants. % 45
 \begin{lstlisting}[caption={Initial beliefs.}, label=lst:asl_initBeliefs]
   ~hasCoffee(jane).
   ~hasCoffee(john).
 \end{lstlisting}
 \autoref{lst:asl_initBeliefs} shows the initial beliefs an agent has for our earlier introduced example. The tilde expresses that the agent knows that neither \texttt{john} nor \texttt{jane} has coffee. % At any given time, the sum of all current beliefs of one agent are called its \emph{belief base}. % removed as this isn't given by Rao and I don't use it.
 
-Goals can be dividied into \emph{achievement goals} and \emph{test goals}. The first expresses the wish of an agent to reach a state where a belief holds where the second tests whether a belief holds in the current state. Beliefs hold when the agent knows they are true or when the variables can be bound to at least one known configuration. For example, given an achievement goal !\texttt{hasCoffee(p)} means that an agent wants to achieve that person \texttt{p} has coffee. Similarly, ?\texttt{hasCoffee(p)} expresses that an agent tests whether \texttt{p} has a coffee. Hence, this expression will evaluate to true or false depending on the current agent's knowledge.
+Goals can be dividied into \emph{achievement goals} and \emph{test goals}. The first expresses the wish of an agent to reach a state where a belief holds where the second tests whether a belief holds in the current state. Beliefs hold when the agent knows they are true or when the variables can be bound to at least one known configuration. For example, given an achievement goal \texttt{!hasCoffee(p)} means that an agent wants to achieve that person \texttt{p} has coffee. Similarly, \texttt{?hasCoffee(p)} expresses that an agent tests whether \texttt{p} has a coffee. Hence, this expression will evaluate to true or false depending on the current agent's knowledge.
 Achievement goals are comparable to desires. % 45
 \autoref{lst:asl_initGoal} shows the initial achievement goal which express that the agent wants to have served everyone coffee.
 \begin{lstlisting}[firstnumber=3, caption={Initial goal.}, label=lst:asl_initGoal]
@@ -17,12 +17,12 @@ Achievement goals are comparable to desires. % 45
 
 \emph{Events} are introduced to allow agents to react on changes in their own knowledge or the world. They can be distinguished into the addition and removal of beliefs or goals. Additions are denoted by a plus- and removals by using a minus-sign in front of the goal or belief: % as shown in \autoref{it:fun:apl_asl}.
 \begin{itemize} % \label{it:fun:apl_asl}
-  \item $+\textit{hasCoffee}(p)$ an agent is informed that \texttt{p} now has coffee.
-  \item $-\textit{hasCoffee}(p)$ an agent is informed that \texttt{p} no longer has coffee.
-  \item $+!\textit{hasCoffee}(p)$ an agent is informed that it wants \texttt{p} to have coffee.
-  \item $-!\textit{hasCoffee}(p)$ an agent is informed that it no longer wants \texttt{p} to have coffee.
-  \item $+?\textit{hasCoffee}(p)$ an agent is informed that it should test for the belief.
-  \item $-?\textit{hasCoffee}(p)$ an agent is informed that it no longer needs to test for the belief.
+  \item \texttt{+hasCoffee(p)}: an agent is informed that \texttt{p} now has coffee.
+  \item \texttt{-hasCoffee(p)}: an agent is informed that \texttt{p} no longer has coffee.
+  \item \texttt{+!hasCoffee(p)}: an agent is informed that it wants \texttt{p} to have coffee.
+  \item \texttt{-!hasCoffee(p)}: an agent is informed that it no longer wants \texttt{p} to have coffee.
+  \item \texttt{+?hasCoffee(p)}: an agent is informed that it should test for the belief.
+  \item \texttt{-?hasCoffee(p)}: an agent is informed that it no longer needs to test for the belief.
 \end{itemize}
 In order to handle new events, an agent will look for a matching plan.
 
