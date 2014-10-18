@@ -14,21 +14,21 @@ Internal actions start with a dot followed by a library identifier, another dot 
 
 Arguably, the most important  internal action is \texttt{.send}. This action enables inter-agent communication as initially proposed and implemented by Vierira et al.~\cite{vieira_formal_2007}. It is similar to KQML performatives which had been introduced in SECTIONXYZ. % TODO if we have KQML from the seminar talks, refer to it.
 \begin{lstlisting}[caption={Parameters of the internal action \texttt{.send} and an example.}, label=lst:jason_send]
-  .send(Receiver, Illocutionary_force, Message_content).%\label{l:jason_send}%
+  .send(Receiver, Illocutionary\_force, Message\_content).%\label{l:jason_send}%
   .send([explorer1, saboteur2], tell, ~hasCoffee(john)).%\label{l:jason_sendInstance}%
 \end{lstlisting}
-In \autoref{l:jason_send} of \autoref{lst:jason_send} the structure of the \texttt{.send} action is shown. \autoref{l:jason_sendInstance} shows an example usage of this action. The \texttt{Receiver} is the identifying name or a list of identifying names for the agent(s) to which the message should be addressed to. The \texttt{Illocutionary_force} is a constant that specifies what all recipients should do with the message. It can be:
+In \autoref{l:jason_send} of \autoref{lst:jason_send} the structure of the \texttt{.send} action is shown. \autoref{l:jason_sendInstance} shows an example usage of this action. The \texttt{Receiver} is the identifying name or a list of identifying names for the agent(s) to which the message should be addressed to. The \texttt{Illocutionary\_force} is a constant that specifies what all recipients should do with the message. It can be:
 \begin{itemize}
-  \item \texttt{tell}: add the \texttt{Message_content} to the recipient's belief base.
-  \item \texttt{untell}: remove the \texttt{Message_content} from the recipient's belief base.
-  \item \texttt{achieve}: add the \texttt{Message_content} as an achievement goal to the recipient.
-  \item \texttt{unachieve}: make the recipient remove the achievement goal \texttt{Message_content}.
-  \item \texttt{tellHow}: \texttt{Message_content} is added to the recipient's plan library.
-  \item \texttt{untellHow}: \texttt{Message_content} is removed from the recipient's plan library.
-  \item \texttt{askIf}: asks if \texttt{Message_content} is in the recipient's belief base.
-  \item \texttt{askOne}: asks for the first belief matching \texttt{Message_content}.
-  \item \texttt{askAll}: asks for all beliefs matching \texttt{Message_content}.
-  \item \texttt{askHow}: demand all plans a recipient has that match the triggering event given in the \texttt{Message_content}.
+  \item \texttt{tell}: add the \texttt{Message\_content} to the recipient's belief base.
+  \item \texttt{untell}: remove the \texttt{Message\_content} from the recipient's belief base.
+  \item \texttt{achieve}: add the \texttt{Message\_content} as an achievement goal to the recipient.
+  \item \texttt{unachieve}: make the recipient remove the achievement goal \texttt{Message\_content}.
+  \item \texttt{tellHow}: \texttt{Message\_content} is added to the recipient's plan library.
+  \item \texttt{untellHow}: \texttt{Message\_content} is removed from the recipient's plan library.
+  \item \texttt{askIf}: asks if \texttt{Message\_content} is in the recipient's belief base.
+  \item \texttt{askOne}: asks for the first belief matching \texttt{Message\_content}.
+  \item \texttt{askAll}: asks for all beliefs matching \texttt{Message\_content}.
+  \item \texttt{askHow}: demand all plans a recipient has that match the triggering event given in the \texttt{Message\_content}.
 \end{itemize}
 Jason automatically processes the messages as needed when a message arrives at an agent. %TODO should we talk about an agent's inbox?
 A developer can override Jason's default behaviour if further or different processing is needed. Jason also automatically adds \texttt{source} annotations. This allows agents to determine the sender of any received message.
@@ -36,4 +36,6 @@ A developer can override Jason's default behaviour if further or different proce
 Jason also allows running multi-agent systems over networks in a distributed manner. Hence, the workload can be distributed over multiple machines. SACI~\cite{hubner_saci_2000} and JADE~\cite{bellifemine_jade_2005} are the two fully implemented distributed architectures usable out of the box with Jason \cite{bordini_programming_2007}. Yet, Fernández et al.~\cite{fernandez_evaluating_2010} could not prove the intended performance benefits. The authors tested both SACI and JADE with Jason where one hosts would run the environment and the other one the agents. They increased both the amount of agents as well as the size of the environment. Fernández et al.~\cite{fernandez_evaluating_2010} saw that with increasing complexity, the system became slower compared to when agents and the environment were run on a single machine. This was due to the added communication cost between the two hosts although connected by Gigabit Ethernet. As a result, a distributed infrastructure with Jason is only advisable, if the workload cannot be handled by one host alone. In our case, replying in time has such an importance that trying to keeping the workload processable by one host alone would be the preferred strategy.
 
 Given the Mars scenario, Jason can be used to implement a suitable multi-agent system. In fact, two teams successfully participated in the 2013 Multi-Agent Programming Contest by using Jason \cite{ahlbrecht_multi_2013}.% p.367
-The scenario of 2013 is comparable to the scenario of 2014 \cite{ahlbrecht_mapc_2014}. % p.1,9
+Yet, there was no competing team using Jadex or FLUX.
+This is of interest as the scenario of 2013 is comparable to the scenario of 2014 \cite{ahlbrecht_mapc_2014}. % p.1,9
+As the whole team was unexperienced with logical programming prior to this research lab, being able to develop the environment and some operations via internal actions in Java was beneficial. Furthermore, the contest organisers provided a Java library which would simplify the communication with their server. Instead of having to manually compile XML messages and parse the XML server replies, this library allowed simple method calls for server interaction. Thus, deciding against FLUX meant not having to implement the communication with the server ourselves. This allowed us to focus on agent programming where we found Jason to be more suitable. The reason for that is that FLUX is a quite generic approach to programming multi-agent systems. Jason on the other hand is due to implementing AgentSpeak(L) focussed on BDI, which we found to be a clearer structuring of agents. % TODO compare to Jadex
