@@ -27,3 +27,7 @@ bin/
 /implementation/beenutsFW/nbproject/private/
 /implementation/beenutsFW/build/
 /implementation/mako/logging.properties
+
+*.gz
+
+*.lck

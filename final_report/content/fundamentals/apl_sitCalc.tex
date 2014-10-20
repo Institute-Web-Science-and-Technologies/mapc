@@ -1,11 +1,11 @@
-\subsubsection{Situation Calculus.}\label{fun:apl_sitCalc}
+\subsubsection[Situation Calculus.]{Situation Calculus.$^\circ$}\label{fun:apl_sitCalc}
 This section gives a short summary of the situation calculus, which was first introduced by McCarthy and Hayes~\cite{mccarthy_philosophical_1969}. The situation calculus is mainly a first-order logic but also uses second order logic to encode a dynamic world \cite{levesque_golog:_1997}. %60
-It consists of the three first-order terms: \emph{fluents}, \emph{actions} and \emph{situations} \cite{mccarthy_philosophical_1969,boutilier_decision-theoretic_2000}. %18+,356
+It consists of the three first-order terms: \emph{fluents}, \emph{actions} and \emph{situations} \cite{mccarthy_philosophical_1969,boutilier_decision_2000}. %18+,356
 Fluents model properties of the world. Actions may change fluents and hence may modify the world. Every action execution creates a new situation. This is because a situation is a history of actions up to a certain point in time starting from the initial situation $s_0$~\cite{schiffel_reconciling_2006,levesque_golog:_1997}. %289, 60+
 There can only be one initial situation as it models the situation before any action has been executed~\cite{pirri_contributions_1999}. %329
 
 Fluents can be evaluated to return a result. As they are situation dependent, the evaluation result may change over time. Fluents are distinguished in \emph{relational fluents} and \emph{functional fluents}~\cite{levesque_golog:_1997}. %3
-Relational fluents can hold in situations. Their evaluation hence may return either true or false~\cite{boutilier_decision-theoretic_2000}. %356
+Relational fluents can hold in situations. Their evaluation hence may return either true or false~\cite{boutilier_decision_2000}. %356
 An example is given in \autoref{f_hasCoffee}. It expresses whether or not the agent $p$ has a coffee in situation $s$.
 \begin{equation}\label{f_hasCoffee}
   \textit{hasCoffee}(p,s)

@@ -1,16 +1,23 @@
+\subsection{MAPC: Contest and Scenario}
+What is the general scenario? Agents on mars trying to find water in a competitive manner against another team. Explain the concept of zones, gaining points, achievements and also how agents differ from each other. Introduce the notion of \emph{zoning} as the process of finding, forming, defending and destroying a zone.
+I've put this section first so the later chapters can already rely on the reader knowing what the scenario is about. Furthermore, we can then directly rule out concepts which we are presenting by applying them theoretically onto the scenario/our needs.
+
 \subsection{Agent Programming Concepts}
 % I'd actually prefer Subsubsections numbered, without the trailing dot
 % and with real section padding. But that's part of the template, so…
 \subsubsection{BDI.}
-\subsubsection{Formal Methods.}
+\subsubsection[Formal Methods.]{Formal Methods.$^\diamond$}
 \input{content/fundamentals/formal_methods.tex}
 
-\subsubsection{Negotiation and Argumentation.}
+\subsubsection[Negotiation and Argumentation.]{Negotiation and Argumentation.$^\diamond$}
 \input{content/fundamentals/negotiation_argumentation.tex}
 
 \subsubsection{Agent Societies.}
-\subsection{Agent Programming Languages}
+\subsection[Agent Programming Languages]{Agent Programming Languages$^\circ$}
 An important part of artificial intelligence research deals with autonomous agents acting in environments which are not or only partially known to the agents in the beginning. Allowing agents to reason about their knowledge and interacting with the environment is tackled by different programming methods. This technical report introduces the two logic programming languages GOLOG and FLUX. The basic structure of each language will be shown together with examples to ease understanding. In the first section the situation calculus will be presented. It is a logic formalism GOLOG builds upon. The two subsequent \autoref{fun:apl_golog} and \autoref{fun:apl_flux} cover GOLOG and FLUX respectively. This report closes with a conclusion drawn from the features of GOLOG and FLUX regarding a multi-agent scenario with incomplete knowledge.
+--
+
+Why are AS(L) and Jason so awesome that we chose them over the other options? Why didn't we invent our own language or at least our own system/architecture/infrastructure?
 % TODO: extend for whole subsection
 
 \input{content/fundamentals/apl_sitCalc}
@@ -23,7 +30,4 @@ An important part of artificial intelligence research deals with autonomous agen
 
 \input{content/fundamentals/apl_asl}
 
-\subsubsection{Jason.}
-Why are AS(L) and Jason so awesome that we chose them over the other options? Why didn't we invent our own language or at least our own system/architecture/infrastructure?
-\subsection{MAPC: Contest and Scenario}
-What is the general scenario? Agents on mars trying to find water in a competitive manner against another team. Explain the concept of zones, gaining points, achievements and also how agents differ from each other. Introduce the notion of \emph{zoning} as the process of finding, forming, defending and destroying a zone.
+\input{content/fundamentals/apl_jason}
