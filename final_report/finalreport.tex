@@ -17,13 +17,20 @@
 \usepackage{subcaption} % Support for sub-captions
 \usepackage{csquotes} % Context sensitive quotation facilities
 \usepackage{booktabs} % Publication quality tables in LaTeX
-\usepackage[backend=biber]{biblatex} % Bibliographies in LaTeX using BibTeX for sorting only
+\usepackage[backend=biber,url=false]{biblatex} % Bibliographies in LaTeX using BibTeX for sorting only
 \addbibresource{content/sources.bib}
 \usepackage[pdfdisplaydoctitle,linkcolor=theblue,citecolor=theblue,urlcolor=thered]{hyperref} % Extensive support for hypertext in LaTeX (load last)
 \usepackage{cleveref} % Intelligent cross-referencing, load after hyperref
 % Don't make autoref write about subsubsections and subsections, but use section instead:
 \let\subsectionautorefname\sectionautorefname
 \let\subsubsectionautorefname\sectionautorefname
+% Fancy headers and footers to add the page number:
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{
+  \fancyhead[L]{\rightmark}
+  \fancyhead[R]{\thepage}
+}
 % Make autoref talk about lines in lstlistings:
 \def\lstnumberautorefname{Line}
 %
