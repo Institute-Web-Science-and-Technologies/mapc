@@ -1,0 +1,10 @@
+\subsubsection[Choice of a programming language.]{Choice of a programming language.$^\circ$}\label{fun:apl_choice}
+Based on the previous sections, this section summarises why we chose Jason for developing our agents.
+Generally, we could have started from scratch without using a designated agent programming language. We decided against this idea because of our inexperience with agent programming and artificial intelligence in general. The fear was to overlook difficulties in the beginning which would later force us to spend more time on fixing mistakes we made in the beginning than on the actual agent development. To prevent this, we were interested in using an already developed and approved agent programming language.
+
+Given the Mars scenario, Jason can be used to implement a suitable multi-agent system. In fact, two teams successfully participated in the 2013 Multi-Agent Programming Contest by using Jason \cite{ahlbrecht_multi_2013}. % p.367
+Yet, there was no competing team using Jadex or FLUX.
+This is of interest because the scenario of 2013 is comparable to the scenario of 2014 \cite{ahlbrecht_mapc_2014}. % p.1,9
+As the whole team was inexperienced with logical programming prior to this research lab, being able to develop the environment and some operations via internal actions in Java was beneficial. Furthermore, the contest organisers provided a Java library which would simplify the communication with their server. Instead of having to manually compile XML messages and parse the XML server replies, this library allowed simple method calls for server interaction. Thus, deciding against FLUX meant not having to implement the communication with the server ourselves. This allowed us to focus on agent programming where we found Jason to be more suitable. The reason for that is that FLUX serves as a quite generic approach to programming multi-agent systems. Jason on the other hand is focussed on BDI due to implementing AgentSpeak(L), which we found to be a clearer structuring of agents.
+
+% TODO compare to Jadex
