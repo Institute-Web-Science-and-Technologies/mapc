@@ -1,6 +1,8 @@
 \subsubsection[Jadex.]{Jadex.$^{\odot\circ}$}\label{fun:apl_jadex}
 Nowadays a couple of agent frameworks are available for developing multi-agent applications \cite{Mangina}. % TODO maybe this fits better in the general part (parent section) – btw, this is nearly a quote to the original's papers abstract…
 This section presents Jadex, which is an agent framework focused on the development of goal-oriented agents following the belief-desire-intention model.
+% TODO @manuelmittler I haven't read all the related papers so I am not sure which information is from what source. Please add citations accordingly. You can look at my other APL sections to see how I handled it by explaining that everything following is from $SOURCE_1 except when noted differently.
+% TODO @manuelmittler you seem to like to use brackets for additional information. Please refer to the guidelines which advise against using them.
 It aims at bringing middleware and reasoning-centred agent platforms together.
 For that purpose, Jadex adds a rational reasoning engine to existing middlewares.
 The most commonly used middleware for Jadex is the \emph{Java Agent Development Framework} (short: JADE)~\cite{bellifemine_jade_2005}. %
@@ -15,23 +17,27 @@ Jadex reuses already existing technologies instead.
 	\caption{Jadex Infrastrucuture}
 	\label{fig1}
 \end{figure}
+% TODO @manuelmittler as far as I can see, you never reference or explain this figure. What is its purpose then? Either remove it or embed it into a textual description.
 
-JADE provides communication infrastructure, platform services such as agent management and a set of development and debugging tools.
-It enables the development and execution of  peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social).
-The agents are identified by a unique name and provide a set of services.
-They can register and modify their services and/or search for agents providing given services (white and yellow pages).
-Additionally they are capable of controlling their life cycle and they can dynamically discover other agents and communicate with them: exchange asynchronous messages via an \emph{agent communication language} (short: ACL).
-The architecture of Jadex looks like the following: ``Viewed from the outside, an agent is a black box, which receives and sends messages.`` \cite{pokahr_jadex_2005} (see figure 2)
+JADE provides a communication infrastructure, platform services such as agent management and a set of development and debugging tools.
+It enables the development and execution of peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social). % TODO I am not sure whether we are talking about this before. I hope so but else, we need to explain those terms. Also, build another sentence if needed but don't just add some buzzwords into brackets.
+Agents are identified by a unique name and provide a set of services.
+They can register and modify their services and/or search for agents providing given services.
+Additionally they are capable of controlling their life cycle and they can dynamically discover other agents and communicate with them
+% TODO @manuelmittler what does it mean to control its own lifecycle?
+The communication happens by exchanging asynchronous messages via an \emph{agent communication language} (short: ACL). % TODO @manuelmittler is ACL the language or is this just any communication language for agents? I guess, you mean FIPA ACL which are a special form of ACL. If so, mention and reference FIPA ACL and explain in one or two sentences what it is and why it is special. Else, there is no reason to treat it as a special term and giving it an abbreviation that isn't used later on.
+
 \begin{figure}
 	\centering
 	\includegraphics[width=300px]{images/Jadex_agent.png}
 	\caption{Jadex abstract agent \cite{pokahr_jadex_2005}}
 	\label{fig2}
 \end{figure}
-Beliefs are single facts stored as Java objects which represent the knowledge of an agent.
+\autoref{fig2} depicts an abstract view on a Jadex agent. Every agent may receive messages which trigger internal events that can change his internal knowledge, plans or goals. Interactions with the outside like the environment or other agents happens through the sending of messages. % TODO @manuelmittler I removed the quote as I did not find it to be necessary here. Am I correct that modifications in the environment are also done through messages?
+In more detail, beliefs are single facts stored as Java objects which represent the knowledge of an agent. % TODO @manuelmittler should I know, what a fact is? Because I honestly don't..
 They are stored as key-value pairs.
-The advantage of storing information as facts is that the programmer has a central place for the knowledge and can query the agent's beliefs.
-Monitoring of the beliefs is possible, too.
+The advantage of storing information as facts is that the programmer has a central place for the knowledge and can query the agent's beliefs. % TODO @manuelmittler or do you mean that there is an advantage by storing them as Java Objects?
+Monitoring of the beliefs is possible too.
 
 The goals are momentary desires of an agent for which the agent engages into suitable actions until it considers the goal as being reached, unreachable, or not wanted any more.
 Jadex distinguishes between four generic goal types.
@@ -41,11 +47,10 @@ An achieve goal is a goal in the traditional sense, which defines a desired worl
 Agents may try several different alternative plans, to achieve a goal of this type.
 A query goal is similar to an achieve goal, but the desired state is not a state of the (outside) world, but in internal state of the agent, regarding the availability of some information the agent wants to know about.
 For goals of type maintain an agents keep track of a desired state, and will continuously execute appropriate plans to re-establish this maintained state whenever needed.
- In contrast to goals, events are (per default) dispatched to all interested plans but do not support any BDI-mechanism.
-Therefore the originator of an internal event is usually not interested in the effect the internal event may produce but only wants to inform some interested parties about some occurrence.
+In contrast to goals, events are (per default) dispatched to all interested plans but do not support any BDI-mechanism.
+Therefore, the originator of an internal event is usually not interested in the effect the internal event may produce but only wants to inform some interested parties about some occurrence.
 Plans represent the behavioural elements of an agent and are composed of a head and a body part.
-The plan head specification is similar to other BDI systems and mainly specifies the circumstances under which a plan may be selected, e.g.
-by stating events or goals handled by the plan and preconditions for the execution of the plan.
+The plan head specification is similar to other BDI systems and mainly specifies the circumstances under which a plan may be selected, e.g. by stating events or goals handled by the plan and preconditions for the execution of the plan.
 Additionally, in the plan head a context condition can be stated that must be true for the plan to continue executing.
 The plan body provides a predefined course of action, given in a procedural language.
 This course of action is to be executed by the agent, when the plan is selected for execution, and may contain actions provided by the system API, such as sending messages, manipulating beliefs, or creating sub-goals (cf. \cite{braubach_jadex_2004})
@@ -59,7 +64,7 @@ An agent in Jadex consists of two components: An \emph{agent definition file} (s
   \caption{Jadex top level ADF elements \cite{ActiveComponents}}
 	\label{fig3}
 \end{figure}
-The procedural part of plans  (the plan bodies) are realized in an ordinary programming language (Java) and have access to the BDI facilities of an agent through an application interface (API).
+The procedural part of plans (the plan bodies) are realized in an ordinary programming language (Java) and have access to the BDI facilities of an agent through an application interface (API).
 The plan body is a standard Java class that extends a predefined Jadex framework class and has at least to implement the abstract body() method which is invoked after plan instantiation.
 \begin{lstlisting}
 public class ServeCoffeePlanB1 extends Plan {
@@ -114,9 +119,9 @@ This means that in the plan head several properties of the plan can be specified
 </agent>
 \end{lstlisting}
 There are two types of plans in Jadex.
-A service plan and a passive plan.
+A \emph{service plan} and a \emph{passive plan}.
 The service plan, as the name indicates, is an instance of a plan which waits for service requests.
-Therefore a service plan  can set up its private event wait queue and receive events for later processing, even when it is working at the moment.
+Therefore a service plan can set up its private event wait queue and receive events for later processing, even when it is working at the moment.
 In contrast to that, a passive plan is only running when it has a task to achieve.
 For this kind of plan the triggering event and goals must be specified must be specified in the agent definition file to let the agent know what kinds of events this plan can handle.
 When an agent receives an event, the BDI reasoning engine builds up the so called applicable plan list which contains all plans that can handle the current event or goal.
@@ -139,9 +144,7 @@ The dispatcher is responsible for selecting applicable plans for the events from
 After plans have been selected, they are placed in the ready list, waiting for execution.
 The execution of plans is performed by a scheduler, which selects plans from the ready list.
 
-All in all Jadex is a very powerful tool that supports easy agent construction with XML-based agent description and procedural plans in Java.
-Additionally it offers tool support for development debugging.
+All in all Jadex is a powerful framework that supports easy agent construction with XML-based agent description and procedural plans in Java.
+Additionally, it offers tool support for development debugging.
 It comes for example with a BDI-Viewer that allows observing and modifying the internal state of an agent and a logger agent that collects log-outputs of any agent.
-The author considers that Jadex is suitable for the purpose of competing in the multi agent programming contest.
-Extensive documentation, tutorials and user guides can be found on the website of the developers \cite{Jadex}.
-All in all Jason and Jadex are very similar. The difference lies in the storing of beliefs, goals and plans. In Jadex they are stored in the agent definition file (XML) while in Jason they are stored as facts within the Jason belief base. Another slight difference is that in Jadex plans have to be written in Java whereas in Jason the programmer can use a combination of Java and AgentSpeak with internal actions. We didn't chose Jadex for our research lab because of the overhead that comes with the XML-syntax.
+Judging from this knowledge, Jadex seems suitable for the purpose of competing in the multi-agent programming contest.
