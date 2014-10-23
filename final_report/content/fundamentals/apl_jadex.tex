@@ -1,26 +1,31 @@
-\subsubsection[Jadex.]{Jadex.$^\odot$}\label{fun:apl_jadex}
-Nowadays a couple of agent frameworks are available for developing multi-agent applications \cite{Mangina}.
-Jadex focuses on the development of goal-oriented agents following the belief-desire-intention (BDI) model.
+\subsubsection[Jadex.]{Jadex.$^{\odot\circ}$}\label{fun:apl_jadex}
+Nowadays a couple of agent frameworks are available for developing multi-agent applications \cite{Mangina}. % TODO maybe this fits better in the general part (parent section) – btw, this is nearly a quote to the original's papers abstract…
+This section presents Jadex, which is an agent framework focused on the development of goal-oriented agents following the belief-desire-intention model.
 It aims at bringing middleware and reasoning-centred agent platforms together.
-For that purpose Jadex uses the Java agent development framework (JADE) as a middleware and puts on top of that a rational reasoning engine.
-Jadex integrates agent-theories with object-orientation and XML descriptions.
-No new programming language is introduced.
+For that purpose, Jadex adds a rational reasoning engine to existing middlewares.
+The most commonly used middleware for Jadex is the \emph{Java Agent Development Framework} (short: JADE)~\cite{bellifemine_jade_2005}. %
+Jadex integrates agent-theories through object-oriented programming in Java and XML descriptions.
+% TODO: @manuelmittler what are ``agent-theories''?
+Therefore, no new language is introduced.
+Jadex reuses already existing technologies instead.
 \begin{figure}
 	\centering
 	\includegraphics{images/Jadex_infrastructure.png}
+  % TODO @manuelmittler: what is the source of this graphic?
 	\caption{Jadex Infrastrucuture}
 	\label{fig1}
 \end{figure}
+
 JADE provides communication infrastructure, platform services such as agent management and a set of development and debugging tools.
 It enables the development and execution of  peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social).
 The agents are identified by a unique name and provide a set of services.
 They can register and modify their services and/or search for agents providing given services (white and yellow pages).
-Additionally they are capable of controlling their life cycle and they can dynamically discover other agents and communicate with them: exchange asynchronous messages via an agent communication language (ACL)).
-The architecture of Jadex looks like the following: "`Viewed from the outside, an agent is a black box, which receives and sends messages."' \cite{Pokahr} (see figure 2)
+Additionally they are capable of controlling their life cycle and they can dynamically discover other agents and communicate with them: exchange asynchronous messages via an \emph{agent communication language} (short: ACL).
+The architecture of Jadex looks like the following: ``Viewed from the outside, an agent is a black box, which receives and sends messages.`` \cite{pokahr_jadex_2005} (see figure 2)
 \begin{figure}
 	\centering
 	\includegraphics[width=300px]{images/Jadex_agent.png}
-	\caption{Jadex abstract agent \cite{Pokahr}}
+	\caption{Jadex abstract agent \cite{pokahr_jadex_2005}}
 	\label{fig2}
 \end{figure}
 Beliefs are single facts stored as Java objects which represent the knowledge of an agent.
@@ -43,14 +48,14 @@ The plan head specification is similar to other BDI systems and mainly specifies
 by stating events or goals handled by the plan and preconditions for the execution of the plan.
 Additionally, in the plan head a context condition can be stated that must be true for the plan to continue executing.
 The plan body provides a predefined course of action, given in a procedural language.
-This course of action is to be executed by the agent, when the plan is selected for execution, and may contain actions provided by the system API, such as sending messages, manipulating beliefs, or creating sub-goals (cf. \cite{Pokahr2})
+This course of action is to be executed by the agent, when the plan is selected for execution, and may contain actions provided by the system API, such as sending messages, manipulating beliefs, or creating sub-goals (cf. \cite{braubach_jadex_2004})
 
 Jadex is not based on a new agent programming language.
 Instead, a hybrid approach is chosen, distinguishing explicitly between the language used for static agent type specification and the language for defining the dynamic agent behaviour.
-An agent in Jadex consists of two components: An agent definition file (ADF) for the specification of beliefs, goals, and plans as well as their initial values and on the other hand procedural plan code.
+An agent in Jadex consists of two components: An \emph{agent definition file} (short: ADF) for the specification of beliefs, goals, and plans as well as their initial values and on the other hand procedural plan code.
 \begin{figure}
 	\centering
-	\includegraphics[width=300px]{images/jadexagentadf.png}
+	\includegraphics[height=200px]{images/jadexagentadf.png}
   \caption{Jadex top level ADF elements \cite{ActiveComponents}}
 	\label{fig3}
 \end{figure}
@@ -122,7 +127,7 @@ The execution model for Jadex looks like the following:
 	\centering
 	\includegraphics[width=300px]{images/Jadex_execution_model.png}
 	\label{fig4}
-	\caption{Jadex execution model \cite{Pokahr}}
+	\caption{Jadex execution model \cite{pokahr_jadex_2005}}
 \end{figure}
 \newline
 When an agent receives a message it is placed at a message queue.
