@@ -1,31 +1,22 @@
 \subsubsection[Jadex.]{Jadex.$^{\odot\circ}$}\label{fun:apl_jadex}
-Nowadays a couple of agent frameworks are available for developing multi-agent applications \cite{Mangina}. % TODO maybe this fits better in the general part (parent section) – btw, this is nearly a quote to the original's papers abstract…
+Nowadays a couple of agent frameworks are available for developing multi-agent applications \cite{Mangina}. % TODO maybe this fits better in the general part (parent section) – btw, this is nearly a quote to the original's papers abstract… -> that's why i put a citation there
 This section presents Jadex, which is an agent framework focused on the development of goal-oriented agents following the belief-desire-intention model.
-% TODO @manuelmittler I haven't read all the related papers so I am not sure which information is from what source. Please add citations accordingly. You can look at my other APL sections to see how I handled it by explaining that everything following is from $SOURCE_1 except when noted differently.
-% TODO @manuelmittler you seem to like to use brackets for additional information. Please refer to the guidelines which advise against using them.
+% TODO @manuelmittler I haven't read all the related papers so I am not sure which information is from what source. Please add citations accordingly. You can look at my other APL sections to see how I handled it by explaining that everything following is from $SOURCE_1 except when noted differently. -> i think citation is correct
+% TODO @manuelmittler you seem to like to use brackets for additional information. Please refer to the guidelines which advise against using them. -> i don't see why that's an issue? where did you get those guidelines from or did you just set them up by your own?
 It aims at bringing middleware and reasoning-centred agent platforms together.
 For that purpose, Jadex adds a rational reasoning engine to existing middlewares.
 The most commonly used middleware for Jadex is the \emph{Java Agent Development Framework} (short: JADE)~\cite{bellifemine_jade_2005}. %
 Jadex integrates agent-theories through object-oriented programming in Java and XML descriptions.
-% TODO: @manuelmittler what are ``agent-theories''?
+% TODO: @manuelmittler what are ``agent-theories''? -> BDI model, autonomous, proactive and social....
 Therefore, no new language is introduced.
 Jadex reuses already existing technologies instead.
-\begin{figure}
-	\centering
-	\includegraphics{images/Jadex_infrastructure.png}
-  % TODO @manuelmittler: what is the source of this graphic?
-	\caption{Jadex Infrastrucuture}
-	\label{fig1}
-\end{figure}
-% TODO @manuelmittler as far as I can see, you never reference or explain this figure. What is its purpose then? Either remove it or embed it into a textual description.
-
 JADE provides a communication infrastructure, platform services such as agent management and a set of development and debugging tools.
-It enables the development and execution of peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social). % TODO I am not sure whether we are talking about this before. I hope so but else, we need to explain those terms. Also, build another sentence if needed but don't just add some buzzwords into brackets.
+It enables the development and execution of peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social). % TODO I am not sure whether we are talking about this before. I hope so but else, we need to explain those terms. Also, build another sentence if needed but don't just add some buzzwords into brackets. -> y not?
 Agents are identified by a unique name and provide a set of services.
 They can register and modify their services and/or search for agents providing given services.
 Additionally they are capable of controlling their life cycle and they can dynamically discover other agents and communicate with them
-% TODO @manuelmittler what does it mean to control its own lifecycle?
-The communication happens by exchanging asynchronous messages via an \emph{agent communication language} (short: ACL). % TODO @manuelmittler is ACL the language or is this just any communication language for agents? I guess, you mean FIPA ACL which are a special form of ACL. If so, mention and reference FIPA ACL and explain in one or two sentences what it is and why it is special. Else, there is no reason to treat it as a special term and giving it an abbreviation that isn't used later on.
+% TODO @manuelmittler what does it mean to control its own lifecycle? -> activate/kill the agent
+The communication happens by exchanging asynchronous messages via an \emph{agent communication language} (short: ACL). Jadex complies with the standard given by the Foundation for Intelligent Physical Agents (FIPA). FIPA ''is an international organization that is dedicated to promoting the industry of intelligent agents by openly developing specifications supporting interoperability among agents and agent-based applications.''\cite{FIPA} A FIPA ACL message has a certain structure and parameters. Mandatory parameters are the type of the communicative act, the participants in the communication, the content of the message, the description of the content and the control of the conversation. % TODO @manuelmittler is ACL the language or is this just any communication language for agents? I guess, you mean FIPA ACL which are a special form of ACL. If so, mention and reference FIPA ACL and explain in one or two sentences what it is and why it is special. Else, there is no reason to treat it as a special term and giving it an abbreviation that isn't used later on. -> done
 
 \begin{figure}
 	\centering
@@ -33,10 +24,10 @@ The communication happens by exchanging asynchronous messages via an \emph{agent
 	\caption{Jadex abstract agent \cite{pokahr_jadex_2005}}
 	\label{fig2}
 \end{figure}
-\autoref{fig2} depicts an abstract view on a Jadex agent. Every agent may receive messages which trigger internal events that can change his internal knowledge, plans or goals. Interactions with the outside like the environment or other agents happens through the sending of messages. % TODO @manuelmittler I removed the quote as I did not find it to be necessary here. Am I correct that modifications in the environment are also done through messages?
-In more detail, beliefs are single facts stored as Java objects which represent the knowledge of an agent. % TODO @manuelmittler should I know, what a fact is? Because I honestly don't..
+\autoref{fig2} depicts an abstract view on a Jadex agent. Every agent may receive messages which trigger internal events that can change his internal knowledge, plans or goals. Interactions with the outside like the environment or other agents happens through the sending of messages. % TODO @manuelmittler I removed the quote as I did not find it to be necessary here. Am I correct that modifications in the environment are also done through messages? -> what do you mean by "modifications in the environment"?
+In more detail, beliefs are single facts stored as Java objects which represent the knowledge of an agent. % TODO @manuelmittler should I know, what a fact is? Because I honestly don't.. -> Didn't you attend some logic lectures?
 They are stored as key-value pairs.
-The advantage of storing information as facts is that the programmer has a central place for the knowledge and can query the agent's beliefs. % TODO @manuelmittler or do you mean that there is an advantage by storing them as Java Objects?
+The advantage of storing information as facts is that the programmer has a central place for the knowledge and can query the agent's beliefs. % TODO @manuelmittler or do you mean that there is an advantage by storing them as Java Objects? -> yes
 Monitoring of the beliefs is possible too.
 
 The goals are momentary desires of an agent for which the agent engages into suitable actions until it considers the goal as being reached, unreachable, or not wanted any more.
@@ -142,7 +133,7 @@ The best matching template is then used to create an appropriate event in the sc
 After that the created event is subsequently added to the agent's global event list.
 The dispatcher is responsible for selecting applicable plans for the events from the event list.
 After plans have been selected, they are placed in the ready list, waiting for execution.
-The execution of plans is performed by a scheduler, which selects plans from the ready list.
+The execution of plans is performed by a scheduler, which selects plans from the ready list.\cite{pokahr_jadex_2005}
 
 All in all Jadex is a powerful framework that supports easy agent construction with XML-based agent description and procedural plans in Java.
 Additionally, it offers tool support for development debugging.
