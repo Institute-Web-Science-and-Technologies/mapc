@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -11,7 +9,12 @@ import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
 
-// Call from AgentSpeak: getAgentPosition(JasonName, Position)
+/**
+ * Call from AgentSpeak: getAgentPosition(JasonName, *Position)
+ * <p>
+ * Unifies the *Position of the agent with the given JasonName, or returns false
+ * if the agent's position is not known.
+ */
 public class getAgentPosition extends DefaultInternalAction {
     private static final long serialVersionUID = 3056480662675453121L;
 

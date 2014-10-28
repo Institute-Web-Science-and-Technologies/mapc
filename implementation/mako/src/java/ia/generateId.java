@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -12,7 +10,7 @@ import eis.JasonHelper;
  * Call from Jason: generateId(Id)
  * <p>
  * Generates an id from a current timestamp in ms.
- * 
+ *
  */
 public class generateId extends DefaultInternalAction {
 

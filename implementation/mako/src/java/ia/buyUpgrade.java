@@ -1,21 +1,19 @@
-// Internal action code for project mako
-
 package ia;
 
-import jason.asSemantics.DefaultInternalAction;
-import jason.asSemantics.TransitionSystem;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.Term;
-import eis.Agent;
-import eis.JasonHelper;
-import eis.MapAgent;
+import eis.Agent
+import eis.JasonHelper
+import eis.MapAgent
+import jason.asSemantics.DefaultInternalAction
+import jason.asSemantics.TransitionSystem
+import jason.asSemantics.Unifier
+import jason.asSyntax.Term
 
 /**
- * Call from Jason: buyUpgrade(Agent, *Upgrade)
+ * Call from AgentSpeak: buyUpgrade(Agent, *Upgrade)
  * <p>
  * Chooses the best upgrade to buy for the agent. Returns false if no money for
  * upgrades is available.
- * 
+ *
  */
 public class buyUpgrade extends DefaultInternalAction {
 
