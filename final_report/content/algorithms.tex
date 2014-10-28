@@ -25,8 +25,16 @@ The seeming special case in repairing is when one of the repairers gets disabled
 % TODO: introduce the notion of a ``zoner''?
 % TODO: sometimes, agents ``must'', ``will'', ``have to'' and other times they simple (actively) ``do'' things.
 Zone forming is the most important part in the MAPC Mars scenario~\cite{ahlbrecht_mapc_2014}.% p.3
-It describes the process of agents occupying nodes in a way that they enclose a subgraph. For our approach, zoning takes place after the map exploration phase. This should ensure that enough information about the map has been gathered to calculate high valuable zones close to the agents' current positions. The algorithm for calculating zones and determining which agents have to occupy which nodes is presented in \autoref{alg:zon_calculation}.
-Said algorithm is used in the process of finding a zone to build, which is described in \autoref{alg:zon_finding}. After a zone that can be build has been found, agents get assigned dedicated roles. These roles determine the agents' duties and tasks throughout the lifecycle of a zone which they are part of. The lifecycle of a zone includes its creation, defence and destruction. Both roles and the lifecycle are featured in the last \autoref{alg:zon_roles}.
+It describes the process of agents finding and occupying nodes in a way that they enclose a subgraph.
+We called this process zoning.
+For our approach, zoning takes place after the map exploration phase.
+This should ensure that enough information about the graph has been gathered to calculate high valuable zones close to the agents' current positions.
+The algorithm for calculating zones and determining which agents have to occupy which nodes is presented in \autoref{alg:zon_calculation}.
+Said algorithm is used in the process of finding and negotiating a zone to build, which is described in \autoref{alg:zon_finding}.
+After a zone that can be build has been found, agents get assigned dedicated roles.
+These roles determine the agents' duties and tasks throughout the lifecycle of a zone which they are part of.
+The lifecycle of a zone includes its creation, defence and destruction.
+Both roles and the lifecycle are featured in the last \autoref{alg:zon_roles}.
 
 \input{content/algorithms/zon_calculation.tex}
 \input{content/algorithms/zon_finding.tex}

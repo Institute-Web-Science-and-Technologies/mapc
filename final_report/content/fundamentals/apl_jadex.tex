@@ -16,7 +16,7 @@ Agents are identified by a unique name and provide a set of services.
 They can register and modify their services and/or search for agents providing given services.
 Additionally they are capable of controlling their life cycle and they can dynamically discover other agents and communicate with them
 % TODO @manuelmittler what does it mean to control its own lifecycle? -> activate/kill the agent
-The communication happens by exchanging asynchronous messages via an \emph{agent communication language} (short: ACL). Jadex complies with the standard given by the Foundation for Intelligent Physical Agents (FIPA). FIPA ''is an international organization that is dedicated to promoting the industry of intelligent agents by openly developing specifications supporting interoperability among agents and agent-based applications.''\cite{FIPA} A FIPA ACL message has a certain structure and parameters. Mandatory parameters are the type of the communicative act, the participants in the communication, the content of the message, the description of the content and the control of the conversation. % TODO @manuelmittler is ACL the language or is this just any communication language for agents? I guess, you mean FIPA ACL which are a special form of ACL. If so, mention and reference FIPA ACL and explain in one or two sentences what it is and why it is special. Else, there is no reason to treat it as a special term and giving it an abbreviation that isn't used later on. -> done
+The communication happens by exchanging asynchronous messages via an \emph{agent communication language} (short: ACL). Jadex complies with the standard given by the Foundation for Intelligent Physical Agents (FIPA). FIPA ``is an international organization that is dedicated to promoting the industry of intelligent agents by openly developing specifications supporting interoperability among agents and agent-based applications.''\cite{FIPA}. A FIPA ACL message has a certain structure and parameters. Mandatory parameters are the type of the communicative act, the participants in the communication, the content of the message, the description of the content and the control of the conversation. % TODO @manuelmittler is ACL the language or is this just any communication language for agents? I guess, you mean FIPA ACL which are a special form of ACL. If so, mention and reference FIPA ACL and explain in one or two sentences what it is and why it is special. Else, there is no reason to treat it as a special term and giving it an abbreviation that isn't used later on. -> done
 
 \begin{figure}
 	\centering
@@ -31,7 +31,7 @@ The advantage of storing information as facts is that the programmer has a centr
 Monitoring of the beliefs is possible too.
 
 The goals are momentary desires of an agent for which the agent engages into suitable actions until it considers the goal as being reached, unreachable, or not wanted any more.
-Referring to \cite{ActiveComponentsGoals}, Jadex distinguishes between four generic goal types. 
+Referring to \cite{ActiveComponentsGoals}, Jadex distinguishes between four generic goal types.
 A perform goal is directly related to the execution of actions.
 Therefore, the goal is considered to be reached, when some actions have been executed, regardless of the outcome of these actions.
 An achieve goal is a goal in the traditional sense, which defines a desired world state without specifying how to reach it.
