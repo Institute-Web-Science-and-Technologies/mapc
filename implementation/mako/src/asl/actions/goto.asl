@@ -1,7 +1,7 @@
 // In the case where we for some reason get told to move to the node we're already on,
 // we perform a recharge action instead.
     
-// Want to goto, but don't have enough energy? Recharge.
+// Plan for the case the agent want to goto, but don't have enough energy. It will recharge.
 +!goto(Destination):
     position(Position)
     & ia.getBestHopToVertex(Position, Destination, NextHop)

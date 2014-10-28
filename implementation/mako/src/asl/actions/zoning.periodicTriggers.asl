@@ -1,6 +1,6 @@
 /* Plans */
 
-// Wake up all coaches and tell them to destroy their current zone properly by
+// Periodically we wake up all coaches and tell them to destroy their current zone properly by
 // also informing JavaMap and their minions.
 +step(Numeral)[source(self)]:
     isCoach(true)

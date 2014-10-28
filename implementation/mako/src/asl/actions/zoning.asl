@@ -5,7 +5,11 @@
 { include("../actions/zoning.quitting.asl") }
 
 /* Initial beliefs and rules */
+//This belief indicates, if it evaluates to true, that the agent is the coach of the zone.
+//That means that it can instruct its minions to break up the zone for instance. The coach is also
+//responsible for allocating the minions in the zone.
 isCoach(false).
+//Minions are just agents that, together with the coach, build a zone.
 isMinion(false).
 isLocked(false).
 isAvailableForZoning :- isCoach(false) & isMinion(false) & isLocked(false) & zoneMode(true).

@@ -30,8 +30,8 @@
 // Fallback plan
 +!checkZoneUnderAttack.
 
-// If the coach ordered saboteurs, he must cancel it because there isn't any
-// zone to defent anymore.
+// If the coach ordered saboteurs and the zone is broken up, he must revoke
+// its request, because there isn't any zone to defend anymore.
 +!informedSaboteursAboutZoneBreakup:
     zoneProtectRequestSent
     & bestZone(_, CentreNode, _)

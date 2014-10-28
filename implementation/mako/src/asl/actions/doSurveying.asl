@@ -1,4 +1,4 @@
-// If the agent has enough energy, then survey. Otherwise recharge.
+// If the agent has enough energy, it will survey. Otherwise it will recharge.
 +!doSurveying:
     energy(Energy)
     & Energy < 1

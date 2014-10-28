@@ -3,10 +3,12 @@
 
 /* Plans */
 
-// Use an internal action that determines where to place the agents the best
-// and tell them. The agents include all the coach's minions as well as himself.
+// Use an internal action that determines where to place the agents the best.
+// The agents include all the coach's minions as well as himself.
+// Then tell the minions that they should try (achievement goal) to go to their
+// designated vertex. 
 //
-//After that all remaining idle agents are told to start a new round of zoning.
+//  After that all, remaining idle agents are told to start a new round of zoning.
 +!assignededAgentsTheirPosition:
     isCoach(true)
     & bestZone(ZoneValue, CentreNode, ClosestAgents)
@@ -27,7 +29,7 @@
 // The achievement goal failed for some reason. Tell all agents to restart
 // zoning. Simply calling !cancelledZoneBuilding isn't possible because the zone
 // was never registered as a zone in JavaMap. In general, this goal shouldn't be
-// called anymore. But it's always nice to have a backup plan :)
+// called anymore. But it's always good to have a backup plan.
 +!assignededAgentsTheirPosition:
     isCoach(true)
     & .my_name(Coach)
@@ -71,11 +73,15 @@
        !resetZoningBeliefs;
        !preparedNewZoningRound.
 
+// Plan for handling !cancelledZoneBuilding achivement goals which were sent
+// from an agent (minion) that is not in our zone. The coach will ignore it.
 +!cancelledZoneBuilding[source(Sender)]:
     isCoach(true)
     & bestZone(_, CentreNode, ClosestAgents)
     <- .print("[zoning][coach] ", Sender, " wanted me to destroy my zone but he is not my minion. Ignoring.").
 
+// Plan that fixes/works with the bug that sometimes agents have forgotten its bestZone belief.
+// In that case the agent restarts the zoning process.
 +!cancelledZoneBuilding[source(_)]:
     isCoach(true)
     <- !informedSaboteursAboutZoneBreakup;

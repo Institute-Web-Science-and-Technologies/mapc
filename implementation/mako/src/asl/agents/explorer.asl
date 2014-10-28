@@ -16,7 +16,7 @@ role(explorer).
     recharge.
 
 // If the vertex to probe is outside of our probing range, perform a goto instead
-// of an attack.
+// of probe.
 +!doRangedProbing(Vertex):
 	position(MyPosition)
 	& ia.getDistance(MyPosition, Vertex, Distance)
@@ -46,7 +46,7 @@ role(explorer).
 	ia.isSaboteur(Vehicle)
 	<-
 	!avoidEnemy(Vehicle).
-
+// The explorer will ignore all other enemy agent types.
 +!dealWithEnemy(Vehicle)
 	<-
 	+ignoreEnemy(Vehicle);
