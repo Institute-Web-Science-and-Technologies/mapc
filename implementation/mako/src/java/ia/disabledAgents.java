@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -13,7 +11,7 @@ import eis.MapAgent;
  * <p>
  * This internal action is used by our repairer agents to check if there are any
  * friendly agents to repair.
- * 
+ *
  * @return true if any of our agents are currently disabled
  */
 public class disabledAgents extends DefaultInternalAction {

@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;

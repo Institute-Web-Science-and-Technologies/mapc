@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -10,7 +8,13 @@ import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
 
-// Call from AgentSpeak: getCheapestHopToVertex(Position, Destination, NextHop) 
+/**
+ * Call from AgentSpeak: getCheapestHopToVertex(Position, Destination, *NextHop)
+ * <p>
+ * Given an agent's current Position, unifies NextHop with
+ * the next hop along the cheapest path to the given Destination.
+ *
+ */
 public class getCheapestHopToVertex extends DefaultInternalAction {
     private static final long serialVersionUID = 2412754008233388900L;
 

@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -19,7 +17,6 @@ import eis.Zone;
 public class getBestZone extends DefaultInternalAction {
     private static final long serialVersionUID = -6937681288781906625L;
 
-    // private AgentLogger logger;
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)
@@ -33,27 +30,16 @@ public class getBestZone extends DefaultInternalAction {
         int range = Integer.parseInt(args[1].toString());
         Vertex vertex = mapAgent.getVertex(args[0].toString());
         Zone zone = mapAgent.getBestZone(mapAgent.getZonesInRange(vertex, range));
-        // logger.info("Vertex: " + vertex + " Range: " + range);
         if (zone != null) {
-            // logger.info("getBestZone: " + zone.getPositions() +
-            // " ZoneCenter: " + zone.getCenter() + "MyPosition: " + vertex +
-            // "Range: " + range);
             List<String> closestAgents = mapAgent.getClosestAgentsToZone(zone.getCenter(), zone.getPositions().size());
             if (closestAgents.size() > 0) {
                 Double zoneValue = zone.getZoneValuePerAgent() / closestAgents.size();
                 un.unifies(zoneValuePerAgent, JasonHelper.getTerm(zoneValue));
                 un.unifies(centerVertex, JasonHelper.getTerm(zone.getCenter().getIdentifier()));
                 un.unifies(listOfAgents, JasonHelper.getStringList(closestAgents));
-                // logger.info("DEBUG: ia\\getBestZone(Position=" + vertex +
-                // ", Range=" + range + ", ZoneValuePerAgent=" + zoneValue +
-                // ", CenterVertex=" + zone.getCenter().getIdentifier() +
-                // ", ListOfAgents=" + closestAgents + ")");
             }
-            // logger.info("getBestZone closest Agents: " + closestAgents);
             return closestAgents.size() == zone.getPositions().size();
         }
-        // logger.info("getBestZone: " + zone + " MyPosition: " + vertex +
-        // "Range: " + range);
         return false;
     }
 }
