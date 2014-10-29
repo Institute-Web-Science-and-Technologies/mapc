@@ -1,7 +1,6 @@
 \documentclass{../tech_reports/template/llncs}
 %
 \usepackage{url}
-\RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
 \usepackage{amsmath} % use equations
 \usepackage{graphicx} % allow PNGs as graphics
 \usepackage{tabularx} % adds X alignment and allows \textwidth width for tables
@@ -23,6 +22,7 @@
 \usepackage[backend=biber,url=false]{biblatex} % Bibliographies in LaTeX using BibTeX for sorting only
 \addbibresource{content/sources.bib}
 \usepackage[pdfdisplaydoctitle,linkcolor=theblue,citecolor=theblue,urlcolor=thered]{hyperref} % Extensive support for hypertext in LaTeX (load last)
+\RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
 \usepackage{cleveref} % Intelligent cross-referencing, load after hyperref
 % Don't make autoref write about subsubsections and subsections, but use section instead:
 \let\subsectionautorefname\sectionautorefname
