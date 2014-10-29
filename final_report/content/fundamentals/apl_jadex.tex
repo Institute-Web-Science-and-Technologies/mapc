@@ -76,7 +76,7 @@ This means that in the plan head several properties of the plan can be specified
 <agent xmlns="http://jadex.sourceforge.net/jadex-bdi"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://jadex.sourceforge.net/jadex-bdi
-                      http://jadex.sourceforge.net/jadex-bdi-2.0.xsd"
+            http://jadex.sourceforge.net/jadex-bdi-2.0.xsd"
  name="CoffeeAgent">
 
  <plans>
@@ -89,8 +89,10 @@ This means that in the plan head several properties of the plan can be specified
  </plans>
 
  <events>
-   <messageevent name="request_serving" direction="receive" type="fipa">
-     <parameter name="performative" class="String" direction="fixed">
+   <messageevent name="request_serving"
+                 direction="receive" type="fipa">
+     <parameter name="performative" class="String"
+                direction="fixed">
        <value>jadex.bridge.fipa.SFipa.REQUEST</value>
      </parameter>
    </messageevent>
