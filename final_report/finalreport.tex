@@ -28,6 +28,9 @@
 \let\subsectionautorefname\sectionautorefname
 \let\subsubsectionautorefname\sectionautorefname
 % Fancy headers and footers to add the page number:
+\makeatletter
+\providecommand\phantomcaption{\caption@refstepcounter\@captype}
+\makeatother
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{

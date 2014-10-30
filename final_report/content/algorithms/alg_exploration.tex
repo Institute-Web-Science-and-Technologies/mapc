@@ -49,27 +49,46 @@ A query for a shortest path would look like this:
 \end{lstlisting}
 After looking up the belief in its belief base the node agent would unify the parameter \texttt{NextHop} with \texttt{v3} and CostToNextHop with \texttt{2} and response to the querying agent.
 
-For propagating data between these node agents we used a modified \emph{Distance-Vector Routing Protocol}(short: DV) \cite{wiki:dvrp}. DV is a routing protocol based on the Bellman-Ford algorithm \cite{wiki:bellman_ford} and normally has its use in packet-switched networks. DV can be executed on a network of nodes. The basic idea is that each node informs all of its neighbor nodes about its belief base. The informed nodes then update their belief base and also inform all of its neighbors and so on. Because the Bellman-Ford algorithm has no loop detection, we had to implement some kind of break condition for the algorithm. We used the value of the calculated shortest path as a termination condition. If a new calculated path to another node agent is shorter than the already known path than the node agent has to inform its neighbors. Otherwise it just does nothing. At some point all information and paths are propagated through the whole network and all nodes have a consistent belief base. \autoref{fig:dv} illustrates the algorithm for a small set of four neighbor nodes.
+For propagating data between these node agents we used a modified \emph{Distance-Vector Routing Protocol}(short: DV). DV is a routing protocol based on the Bellman-Ford algorithm and normally has its use in packet-switched networks. DV can be executed on a network of nodes. The basic idea is that each node informs all of its neighbor nodes about its belief base. The informed nodes then update their belief base and also inform all of its neighbors and so on. Because the Bellman-Ford algorithm has no loop detection, we had to implement some kind of break condition for the algorithm. We used the value of the calculated shortest path as a termination condition. If a new calculated path to another node agent is shorter than the already known path than the node agent has to inform its neighbors. Otherwise it just does nothing. At some point all information and paths are propagated through the whole network and all nodes have a consistent belief base. \autoref{fig:dv} illustrates the algorithm for a small set of four neighbor nodes.
 
 \begin{figure}
   \centering
-  \subcaptionbox{Initial set of node agents with their belief base. Each node agent knows only about itself and the shortest path to itself. The traveling costs to itself are zero. \label{fig:dv_0}} [.40\linewidth] {\includegraphics[width=.40\linewidth] {images/dv0}}
-  
-  \subcaptionbox{The node agents \texttt{v1} and \texttt{v2} are informed that they are neighbors. So they know that there must be a path to the other node agent. Because they are direct neighbors they are one hop away. \texttt{v3} and \texttt{v4} are not connected to the network right now, so they will not be informed about the path between \texttt{v1} and \texttt{v2}.  \label{fig:dv_1}} [.40\linewidth] {\includegraphics[width=.40\linewidth] {images/dv1}}
-  
-  \subcaptionbox{Now \texttt{v3} is added to the network by informing \texttt{v3} and \texttt{v1} about their neighborhood relation. At first only \texttt{v1}  and \texttt{v3} update their belief base. \label{fig:dv_2}} [.40\linewidth] {\includegraphics[width=.40\linewidth] {images/dv2}}
-  
-  \subcaptionbox{In the next step \texttt{v2} is informed about the path from \texttt{v1} to \texttt{v3}. \texttt{V2}  now knows that the shortest path to \texttt{v3} is by passing \texttt{v1} and that \texttt{v3} is 2 hops away. \label{fig:dv_3}} [.40\linewidth] {\includegraphics[width=.40\linewidth] {images/dv3}}
-  
-  \subcaptionbox{After that \texttt{v4 is added to the network and each node agent updates its belief base.} \label{fig:dv_4}} [.40\linewidth] {\includegraphics[width=.40\linewidth] {images/dv4}}
-  
-  \subcaptionbox{In the last step \texttt{v2} and \texttt{v4} are informed that they are neighbors. Because of that the shortest path between both node agents changes and is updated. The paths for the other node agents stay as is, because they can not get better. \label{fig:dv_5}} [.40\linewidth] {\includegraphics[width=.40\linewidth] {images/dv5}}
-  
-  \caption{Executing the Distance-Vector Routing Protocol algorithm as described in \autoref{alg:map_dv} on a small network of four nodes. Each node has a table attached, containing all accessible nodes. The first parameter is the destination node, the second one is the node to pass through and the third parameter shows the overall distance to the destination.}
-  \label{fig:dv}
+  \caption{Executing the Distance-Vector Routing Protocol algorithm as described in \autoref{alg:map_dv} on a small network of four nodes. Each node has a table attached, containing all accessible nodes. The first parameter is the destination node, the second one is the node to pass through and the third parameter shows the overall distance to the destination.       \label{fig:dv}}
+    \begin{subfigure}{.45\textwidth}
+        \includegraphics[width=\textwidth] {images/dv0.png}
+        \caption{Initial set of node agents with their belief base. Each node agent knows only about itself and the shortest path to itself. The traveling costs to itself are zero.}
+    \end{subfigure}\quad
+    \begin{subfigure}{.45\textwidth}
+        \includegraphics[width=\textwidth] {images/dv1.png}
+        \caption{The node agents \texttt{v1} and \texttt{v2} are informed that they are neighbors. So they know that there must be a path to the other node agent. Because they are direct neighbors they are one hop away. \texttt{v3} and \texttt{v4} are not connected to the network right now, so they will not be informed about the path between \texttt{v1} and \texttt{v2}.}
+    \end{subfigure}
+    
+    \begin{subfigure}{.45\textwidth}
+       \includegraphics[width=\textwidth] {images/dv2.png}
+       \caption{Now \texttt{v3} is added to the network by informing \texttt{v3} and \texttt{v1} about their neighborhood relation. At first only \texttt{v1}  and \texttt{v3} update their belief base.}
+    \end{subfigure}\quad
+    \begin{subfigure}{.45\textwidth}
+        \includegraphics[width=\textwidth] {images/dv3.png}
+        \caption{In the next step \texttt{v2} is informed about the path from \texttt{v1} to \texttt{v3}. \texttt{V2}  now knows that the shortest path to \texttt{v3} is by passing \texttt{v1} and that \texttt{v3} is 2 hops away.}
+    \end{subfigure}
+\end{figure}
+\clearpage
+\begin{figure}
+  \centering
+    \ContinuedFloat % continue from previous page
+    \begin{subfigure}{.45\textwidth}
+        \includegraphics[width=\textwidth] {images/dv4.png}
+       \caption{After that \texttt{v4} is added to the network and each node agent updates its belief base.}
+    \end{subfigure}\quad
+    \begin{subfigure}{.45\textwidth}
+        \includegraphics[width=\textwidth] {images/dv5.png}
+        \caption{In the last step \texttt{v2} and \texttt{v4} are informed that they are neighbors. Because of that the shortest path between both node agents changes and is updated. The paths for the other node agents stay as is, because they can not get better. }
+    \end{subfigure}
+    \phantomcaption
 \end{figure}
 
-By distributing the information from one cartographer agent to a huge network of node agents we also distributed the load from one agent, the cartographer agent, on the respective node agents. But we still had queries which were not answered immediate, because now we had a lot of communication going on between node agents. Further we now saw big cpu peeks and a huge load on our system. Rund 400 Jason Agenten berechneten gleichzeitig die Pfade innerhalb des node agent Netzwerks und bekamen gleichzeitig immer wieder Informationen von den exploring agents. Diese Informationen konnten zudem redundant sein. Da Jason Agenten parallel arbeiten, konnte man nebenläufige Effekte nur schwer unterbinden. Dies führte dazu, dass immer wieder Endlos-Schleifen entstanden.
+By distributing the information from one cartographer agent to a huge network of node agents we also distributed the load from one agent, the cartographer agent, on the respective node agents. But we still had queries which were not answered immediate, because now we had a lot of communication going on between node agents. Around 400 Jason agents were calculating shortest paths in parallel within the node agent networks and received at the same time information again and again by the exploring agents. This information however was redundant in most cases, but still had to be processed. This led to a high load on our system. As a first step, we restricted communication between node agents and real agents. The necessary map information was received directly from the Java environment module (short: JEM) of our system. The Java environment module used a filter to ensure that only map information was sent to node agents that they were not aware of. Since the message boxes now longer were flooded, communication between agents got a lot better. But two reasons made us to discard this approach also and to change to a solution based entirely on Java. First we were not able to reduce the load on our system by these changes. Further we observed that some beliefs were not received by the node agents. Even worse over the time beliefs disappeared from node agents belief bases. Due to the constant high workload on our system, we saw that agents sent actions to the server too late, which led again to a lot of idle phases of our agents.
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[JavaMap]{JavaMap$^\star$}\label{alg:map_javamap}
+We decided to implement the whole map module in Java. This solved all of the previous described problems. The JavaMap-Module (short: JMM) gets its map information directly from the JEM and is queried through internal actions by the Jason agents (see: \autoref{fun:apl_jason}). Internally the JMM manages a list of vertex-objects which are analog to the node agents from our previous approach. Every vertex has a list of all paths it knows. 
