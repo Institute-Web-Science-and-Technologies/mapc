@@ -9,7 +9,7 @@ Since the strategy of team MAKo was to extensively buy upgrades for the so-calle
 As can be seen, the achievement points of team MAKo go up and down due to the buying actions whereas the the points of the other team increase constantly.
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{images/AchievementPoints.png}
+	\includegraphics[width=0.7\textwidth]{images/AchievementPoints.png}
 	\caption{Achievement points from the second match TUB against MAKo.} % TODO I just wrote second as a filler. What match was it?
 	\label{dis:achievement_points}
 \end{figure}
@@ -20,7 +20,7 @@ It was worth spending the achievement points for the purpose of attacking and di
 This was because the amount of potential zone points they would have earned without being attacked, would probably have been much higher than the amount of achievement points team MAKo spent for upgrades.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth]{images/ZonesScoresAndAchievementPoints.png}
+	\includegraphics[width=0.7\textwidth]{images/ZonesScoresAndAchievementPoints.png}
 	\caption{Combined achievement and zone scores from the second match TUB against MAKo.} % TODO I just wrote second as a filler. What match was it?
 	\label{dis:ZonesScoresAndAchievementPoints}
 \end{figure}
@@ -68,9 +68,17 @@ Furthermore, the asynchronous communication during zone finding did not work as 
 This was partly related to our agents being attacked and disabled by enemy agents.
 Agents which ought to form a zone unpredictably had to cancel their zoning availability and get repaired.
 Also, we did not implement an algorithm to detect the ``end'' of the graph, say the edges of the map.
+% TODO: I'm not happy to talk about grpah ``ends''. Anybody has a suggestion for a better term?
 In the course of the matches, we saw that multiple maps favoured such an approach.
-Being able to detect these ``ends'' would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
-% TODO: maybe we should add a picture explaining this. I imagine a screenshot of a graph of the last match with some highlight where to place that one special agent. I'll might create this later on.
+\autoref{dis:edgeCases} shows the top left part of the graph from the third match of MAKo against GOAL-DTU.
+A single well-placed agent, here depicted as a green rectangle, could in this case create a zone over 25 vertices.
+Being able to detect these graph ``ends'' would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{images/resultsEdgeCase.eps}
+	\caption{One agent alone forming a zone over 25 vertices by exploiting the graph ``ends''.}
+	\label{dis:edgeCases}
+\end{figure}
 Nevertheless, the general idea regarding small zone forming proved to be a good choice.
 One big zone would have been easy to disturb.
 But having multiple small high value zones was quite effective in not providing the enemy with an easy target.

@@ -6,6 +6,7 @@
 *.out
 *.bcf
 /final_report/finalreport.run.xml
+*-eps-converted-to.pdf
 
 
 # Vim swap files
