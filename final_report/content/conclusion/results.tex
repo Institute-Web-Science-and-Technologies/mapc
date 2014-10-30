@@ -1,11 +1,11 @@
-\subsection{Competition results$^\odot$}
+\subsection{Competition results$^{\odot,\circ}$} % TODO for now, the comma should indicate that this text has been written by @manuelmittler and has only gotten smaller updates/corrections from @0nse.
 The competition took place on two dates (15th and 17th of September) and each team had to play three simulations against all other teams.
 Every simulation consisted of a total of 400 steps.
 The team with the higher overall score at the end received three points for their victory.
 Said overall score is the sum of all 400 step scores.
 The score per step is composed of points for zones plus achievement points.
 Since the strategy of team MAKo was to extensively buy upgrades for the so-called artillery agent, most of the earned achievement points were consumed and therefore did not count towards the step score.
-Figure \autoref{dis:achievement_points} shows the progress of achievement points over time.
+\autoref{dis:achievement_points} shows the progress of achievement points over time.
 As can be seen, the achievement points of team MAKo go up and down due to the buying actions whereas the the points of the other team increase constantly.
 \begin{figure}[ht]
 	\centering
@@ -25,34 +25,54 @@ This was because the amount of potential zone points they would have earned with
 	\label{dis:ZonesScoresAndAchievementPoints}
 \end{figure}
 At the end of the tournament team MAKo scored second with a total of 18 points.
-The winner of 2014 was, for the third time in a row now, the team from the USFC.
+The winner of 2014 was, for the third time in a row, the team from the Federal University of Santa Catarina (UFSC).
 The final results are shown in~\autoref{tab:mapc2014results}.
 \begin{table}[ht]
-\centering
-\caption{The results of the 2014 MAPC. Each team played three matches against every other team, and winning a match awarded 3 points.}
-\label{tab:mapc2014results}
-\begin{tabular}{@{}lllll@{}}
-\toprule
-Pos. & Team name      & Score            & Difference            & Points \\ \midrule
-1    & SMADAS-UFSC    & 1180662 : 654624 & \phantom{-}526038     & 33     \\
-2    & MAKo           & 617086 : 776868  & -15782                & 18     \\
-3    & TUB            & 904874 : 872399  & \phantom{-}32475      & 15     \\
-4    & TheWonderbolts & 711001 : 1014669 & -303668               & 15     \\
-5    & GOAL-DTU       & 653178 : 748241  & -95063                & 9      \\ \bottomrule
-\end{tabular}
+  \centering
+  \label{tab:mapc2014results}
+  \begin{tabularx}{\textwidth}{| l | X | p{2cm} | X | p{2cm} | l |}
+    \hline
+    \textbf{Pos.} & \textbf{Team name} & \textbf{Country} & \textbf{Score}       & \textbf{Difference} & \textbf{Points} \\ \hline
+    1             & SMADAS-UFSC        & Brazil           & 1180662 : 654624     & \ 526038            & 33              \\
+    2             & MAKo               & Germany          & \ \ 617086 : 776868  & -15782              & 18              \\
+    3             & TUB                & Germany          & \ \ 904874 : 872399  & \ 32475             & 15              \\
+    4             & TheWonderbolts     & Denmark          & \ \ 711001 : 1014669 & -303668             & 15              \\
+    5             & GOAL-DTU           & Denmark          & \ \ 653178 : 748241  & -95063              & 9               \\ \hline
+    % \phantom will generate a newline for some reason so I had to replace it with \
+  \end{tabularx}
+  \caption{The results of the 2014 MAPC. Each team played three matches against every other team, and winning a match awarded 3 points.}
 \end{table}
-Statistics of all the individual games can be found in the appendix.[reference here!!!!]
+Statistics of all the individual games can be found in the appendix.[reference here!!!!] % TODO I'm unsure what all you want to add here. But I'll just add this todo here so that we can grep for TODOs in the document itself :)
 
-Team MAKo lost every second game against each opponent due to the fact that for some reason the repairer agents weren't able to repair.
-The reason behind this was not obvious to the team.
-Summarizing the matches, team MAKo was capable of exploring the map, building local optima zones, dealing with disabled agents and attacking the opponent.
-A thing that could be improved is the zoning behaviour.
-Due to the fact that zones were broken up on a regular basis, zones with a high value sometimes were discarded even when there was no need to do that.
-Also no handling of edge cases has been implemented which could improve zoning in the sense that the actual number of agents needed to build that zone could be less than the number calculated by our algorithm.
-But the general idea regarding small zone forming was good.
-Because one big zone is easy to disturb, having some small high value zones was quite effective to not provide the enemy with an easy target.
-Like already mentioned a strategy that worked out well, was the approach to upgrade the visibility range and the strength of one saboteur agent significantly.
-In all matches the it was able to disable enemy agents many times and therefore disturb zones and keep the enemy repairers busy, which kept them away from building zones.
+Our team MAKo lost every second game against all opponents.
+This was due to the repairer agents not being able to repair.
+We were unable to figure out why this problem arose.
+But we found out that manually restarting our agents solved the problem.
+Unfortunately as a result, the knowledge about the graph acquired by the agents prior to restarting was reset.
+Consequently, the agents surveyed and probed redundantly.
+This behaviour was especially surprising as our agents fully restarted automatically after each round and there were no such problems in all third rounds.
+The restarts were all manually supervised and showed no sign of failure at any time.
 
+Disregarding this problem, our matches can be summarised as the follows.
+Our agents successfully explored the map, repaired disabled agents and attacked the opponent.
+Once our designated artillery agent had stopped upgrading, it did not have to move much anymore.
+Instead, it effectively attacked distant enemies and recharged mainly to attack afterwards again.
+This and the other saboteur agents which were always in search for enemy agents to attack helped disturb the zone building of the other teams.
+First, disabled agents were not able to build zones.
+Second, disabled agents needed to be repaired which could make the repairer agents temporarily unusable for zoning depending on the strategy the enemies implemented.
+If the enemy repairer agents moved towards disabled agents, they could break up a zone which they had been in earlier.
+
+While monitoring the competition, we saw that zoning was subpar.
+Due to the fact that zones were broken up periodically, zones with a high value were sometimes discarded even when there was no need to.
+Furthermore, the asynchronous communication during zone finding did not work as well as hoped for.
+This was partly related to our agents being attacked and disabled by enemy agents.
+Agents which ought to form a zone unpredictably had to cancel their zoning availability and get repaired.
+Also, we did not implement an algorithm to detect the ``end'' of the graph, say the edges of the map.
+In the course of the matches, we saw that multiple maps favoured such an approach.
+Being able to detect these ``ends'' would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
+% TODO: maybe we should add a picture explaining this. I imagine a screenshot of a graph of the last match with some highlight where to place that one special agent. I'll might create this later on.
+Nevertheless, the general idea regarding small zone forming proved to be a good choice.
+One big zone would have been easy to disturb.
+But having multiple small high value zones was quite effective in not providing the enemy with an easy target.
 % TODO: these are from the TOC:
 %What place did we rank? How did the others do? Analyse our matches shortly and point out problems we faced, how we tackled them and point out what had gone well.
