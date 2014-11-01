@@ -2,7 +2,7 @@ One of the challenges for multi-agent systems is how to make sure that the agent
 
 There are two roles of formal methods in distributed artificial intelligence that are often referred to. Firstly, with respect to precise specifications they help in debugging specifications and in validation of system implementations. Abstracting from specific implementation leads to better understanding of the design of the system being developed. Secondly, in the long run formal methods help in developing a clearer understanding of problems and their solutions. \cite{Singh_99}
 
-To formalize the concepts of multi-agent systems different types of logics are used, such as propositional, modal, temporal and dynamic logics. In the following several paragraphs these logics, their properties and introduced operators will be briefly discussed. Describing the details of interpretations and models of each individual logic is not the purpose of this report and is left out for further reading.
+To formalise the concepts of multi-agent systems different types of logics are used, such as propositional, modal, temporal and dynamic logics. In the following several paragraphs these logics, their properties and introduced operators will be briefly discussed. Describing the details of interpretations and models of each individual logic is not the purpose of this report and is left out for further reading.
 
 Propositional logic is the simplest one and serves as a fundament for logics discussed further in this section. It is used for representing factual information and in our case is most suitable to model the agent's environment. Formulas in this logic language consist of atomic propositions (known facts about the world) and truth-functional connectives: $\land,\lor,\neg,\rightarrow$ which denote "and" "or" "not" and "implies" respectively. \cite{Enderton_72}
 
@@ -48,7 +48,7 @@ Considering the practical implementation, the architecture of abstract BDI-inter
 %
 \begin{lstlisting}
 BDI-Interpreter
-initialize_state();
+initialise_state();
 do
     options := option-generator(event-queue, B, G, I);
     selected-options := deliberate(options, B, G, I);
@@ -100,9 +100,9 @@ transitions made by the agent that are significant for coordination. The core of
   \item immediate, which agent willing to perform immediately,
   \item triggerable, which the agent performs based on external events.
 \end{itemize}
-These events are organized into skeletons that characterize the coordination behavior of agents. The coordination service is independent of the exact skeletons or events used by agents in a multiagent system.
+These events are organised into skeletons that characterise the coordination behavior of agents. The coordination service is independent of the exact skeletons or events used by agents in a multiagent system.
 
-To specify coordinations a variant of linear-time temporal language with some restrictions is used. For that purpose two temporal operators are introduced: $\cdot$ - before operator, and $\bigodot$ - the operator of concatenation of two time traces, first of which is finite. Such special logic allows a variety of different relationships to be captured. 
+To specify coordinations a variant of linear-time temporal language with some restrictions is used. For that purpose two temporal operators are introduced: $\cdot$ - before operator, and $\bigodot$ - the operator of concatenation of two time traces, first of which is finite. Such special logic allows a variety of different relationships to be captured.
 
 Overall, formal methods provide a logic abstraction for multiagent systems. They help to find self-consistent models of agent's behavior. However relatively high complexity do not allow these methods to be implemented in real time systems. Therefore the role of formal methods nowadays is limited to debug, validate and design purposes.
 
