@@ -25,9 +25,12 @@
 \usepackage[pdfdisplaydoctitle,linkcolor=theblue,citecolor=theblue,urlcolor=thered]{hyperref} % Extensive support for hypertext in LaTeX (load last)
 \RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
 \usepackage{cleveref} % Intelligent cross-referencing, load after hyperref
-% Don't make autoref write about subsubsections and subsections, but use section instead:
-\let\subsectionautorefname\sectionautorefname
-\let\subsubsectionautorefname\sectionautorefname
+% Make autoref talk about lines in lstlistings:
+\def\lstnumberautorefname{Line}
+% Make autoref start (sub-(sub-))sections with a capital S
+\def\sectionautorefname{Section}
+\def\subsectionautorefname{Section}
+\def\subsubsectionautorefname{Section}
 % Fancy headers and footers to add the page number:
 \makeatletter
 \providecommand\phantomcaption{\caption@refstepcounter\@captype}
@@ -38,8 +41,6 @@
   \fancyhead[L]{\rightmark}
   \fancyhead[R]{\thepage}
 }
-% Make autoref talk about lines in lstlistings:
-\def\lstnumberautorefname{Line}
 %
 \title{Research Lab \enquote{Multi-Agent Programming Contest 2014}}
 \subtitle{Final Report}
