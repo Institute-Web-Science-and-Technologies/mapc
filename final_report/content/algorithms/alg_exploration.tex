@@ -18,7 +18,20 @@ Very early in our development process we decided that we do not want to store th
    surveyedEdge(<VertexA>, <VertexB>, <EdgeCosts>).
 \end{lstlisting}
 
-If an agent needed to know a shortest path, it queried the cartographer agent and got the shortest path as an answer. Also the agent could query the cartographer agent whether a vertex was already probed or surveyed. 
+If an agent needed to know a shortest path, it queried the cartographer agent and got the shortest path as an answer. Also the agent could query the cartographer agent whether a vertex was already probed or surveyed. See \autoref{fig:map:com1} for the communication process of our first approach. \autoref{fig:map:comp1} shows the distribution of the single components related to map exploration.
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/map_com_1.png}
+  \caption{Initial communication approach for map generation.}
+  \label{fig:map:com1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/map_comp_1.png}
+  \caption{Distribution of components between Jason and Java in our first approach.}
+  \label{fig:map:comp1}
+\end{figure}
 
 Shortly after implementing this approach, we encountered two major problems, which both resulted in serious performance issues. One problem came from our implementation of the pathfinding. Although we used the Dijkstra-Algorithm, which is a efficient algorithm for this task, we encountered performance issues, because the pathfinding algorithm was executed every time an agent asked for a shortest path. This led to a lot of redundant calculation and processing in the cartographer agent. 
 The second problem was related to communication between agents. To understand the latter problem, one need to know that Jason uses a message box system for communication between agents. This means that every message a sender sends to a receiver is queued in the receivers message inbox. In every Jason lifecycle only one message is processed. Although a Jason lifecycle is a lot shorter than a server lifecycle, after some execution time the inbox of the cartographer agent still was so full, that the processing of messages lagged far behind the receiving of these messages. Both issues resulted in blocked agents, which had been waiting for the response of their queries for rounds. 
@@ -27,7 +40,22 @@ To illustrate the problem assume the following example: A exploring agent comes 
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[Distance-Vector Routing Protocol]{Distance-Vector Routing-Protocol$^\star$}\label{alg:map_dv}
-To solve the problem with repeating calculations of shortest paths we decided to calculate all shortest paths from the beginning and store these paths and other information in a network of ``node agents''. A node agent represents one vertex of the scenario map and holds information about this vertex. To make it easier to address node agents, we named node agents like the vertex they represented. Node agent store all its neighbors in a neighbor-list belief (\texttt{neighbors([<ListOfNeighbors>])}) and all available paths to other vertices as path beliefs (\texttt{path(<Destination>, <NextHop>, <Hops>, <CostToNextHop>)}). With regard to exploration and zoning we decided that an node agent also has to store the probed value of the vertex, and whether it was already probed or surveyed. We changed the cartographer agents tasks, so that it only had to create the node agents at runtime. All information input and queries now were directed to the respective node agents.
+To solve the problem with repeating calculations of shortest paths we decided to calculate all shortest paths from the beginning and store these paths and other information in a network of ``node agents''. \autoref{fig:map:com2} shows the second approach we used. All percepts were passed through to the node agents. Jason agents queried the respective node agent directly instead of querying the cartographer. We extended our distribution model (see \autoref{fig:map:comp2}) to include the node agents.
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/map_com_2.png}
+  \caption{Second communication approach for map generation.}
+  \label{fig:map:com2}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/map_comp_2.png}
+  \caption{Distribution of map components in our second approach.}
+  \label{fig:map:comp2}
+\end{figure}
+
+A node agent represents one vertex of the scenario map and holds information about this vertex. To make it easier to address node agents, we named node agents like the vertex they represented. Node agent store all its neighbors in a neighbor-list belief (\texttt{neighbors([<ListOfNeighbors>])}) and all available paths to other vertices as path beliefs (\texttt{path(<Destination>, <NextHop>, <Hops>, <CostToNextHop>)}). With regard to exploration and zoning we decided that an node agent also has to store the probed value of the vertex, and whether it was already probed or surveyed. We changed the cartographer agents tasks, so that it only had to create the node agents at runtime. All information input and queries now were directed to the respective node agents.
 
 \begin{samepage}
 The following list shows an example belief base of a node agent \texttt{v1}:
@@ -87,8 +115,22 @@ For propagating data between these node agents we used a modified \emph{Distance
     \phantomcaption
 \end{figure}
 
-By distributing the information from one cartographer agent to a huge network of node agents we also distributed the load from one agent, the cartographer agent, on the respective node agents. But we still had queries which were not answered immediate, because now we had a lot of communication going on between node agents. Around 400 Jason agents were calculating shortest paths in parallel within the node agent networks and received at the same time information again and again by the exploring agents. This information however was redundant in most cases, but still had to be processed. This led to a high load on our system. As a first step, we restricted communication between node agents and real agents. The necessary map information was received directly from the Java environment module (short: JEM) of our system. The Java environment module used a filter to ensure that only map information was sent to node agents that they were not aware of. Since the message boxes now longer were flooded, communication between agents got a lot better. But two reasons made us to discard this approach also and to change to a solution based entirely on Java. First we were not able to reduce the load on our system by these changes. Further we observed that some beliefs were not received by the node agents. Even worse over the time beliefs disappeared from node agents belief bases. Due to the constant high workload on our system, we saw that agents sent actions to the server too late, which led again to a lot of idle phases of our agents.
+By distributing the information from one cartographer agent to a huge network of node agents we also distributed the load from one agent, the cartographer agent, on the respective node agents. But we still had queries which were not answered immediate, because now we had a lot of communication going on between node agents. Around 400 Jason agents were calculating shortest paths in parallel within the node agent networks and received at the same time information again and again by the exploring agents. This information however was redundant in most cases, but still had to be processed. This led to a high load on our system. As a first step, we restricted communication between node agents and real agents. The necessary map information was received directly from the Java EIS Environment module (short: JE). The JE used a filter to ensure that only map information was sent to node agents that they were not aware of. Since the message boxes now longer were flooded, communication between agents got a lot better. But two reasons made us to discard this approach also and to change to a solution based entirely on Java. First we were not able to reduce the load on our system by these changes. Further we observed that some beliefs were not received by the node agents. Even worse over the time beliefs disappeared from node agents belief bases. Due to the constant high workload on our system, we saw that agents sent actions to the server too late, which led again to a lot of idle phases of our agents.
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[JavaMap]{JavaMap$^\star$}\label{alg:map_javamap}
-We decided to implement the whole map module in Java. This solved all of the previous described problems. The JavaMap-Module (short: JMM) gets its map information directly from the JEM and is queried through internal actions by the Jason agents (see: \autoref{fun:apl_jason}). Internally the JMM manages a list of vertex-objects which are like the node agents from our previous approach. Every vertex has a list of all paths it knows. 
+We decided to implement the whole map module in Java. This solved all of the previous described problems. The JavaMap module gets its map information directly from the JE and is queried through internal actions by the Jason agents (see: \autoref{fun:apl_jason}). Internally the JavaMap creates and manages a list of vertex-objects which are like the node agents from our previous approach. Every vertex has stored a list of all paths it knows and alle vertex information. This includes the one-hop neighborhood and the probed value of the vertex. \autoref{fig:map:com3} shows how the map percepts are now passed to the JavaMap and how Jason agents query the JavaMap. 
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/map_com_3.png}
+  \caption{Final communication approach for map generation.}
+  \label{fig:map:com3}
+\end{figure}
+
+In \autoref{fig:map:comp3} it is demonstrated how we changed the distribution of our components for map generation between Java and Jason. Unlike the first and second approach we now have a separation of concerns. The whole map generation and calculation is done entirely by Java and agent related actions and communication entirely in Jason.
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/map_comp_3.png}
+  \caption{Distribution of map components in our final solution.}
+  \label{fig:map:comp3}
+\end{figure}
