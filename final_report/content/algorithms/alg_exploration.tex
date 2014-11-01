@@ -1,17 +1,17 @@
 %%%%%%%%%%%%%%%%%%
-\subsection[Exploration]{Exploration$^\star$}\label{alg:exploration}
+\subsection[Exploration]{Exploration$^{\star,\circ}$}\label{alg:exploration} % this indicates that it is written by @adaudrich and small adjustments have been done by @0nse.
 One precondition of the Agents on Mars Scenario is that all agents start with an empty belief base.
-Each agent does not know about its local and global environment.
-Of course every agent gets beliefs about its local environment very quickly by receiving percepts from the server.
-But the agent still does not know about the global environment.
-For our strategies it is crucial to have as much information about the overall environment as possible.
-Just think about finding and building the best global zones or finding shortest paths.
-So it is important to store somehow information about the map like vertices, edges between vertices, paths and agent positions.
+No agent knows about its local and global environment.
+Every agent gets beliefs about its local environment quickly by receiving percepts from the server. % TODO @adaudrich actually, this is not ``of course''. Up to here, the reader does not know how percepts are getting through to the agent or from where they are coming – as long as I am not overlooking something in an earlier section that is. This is just being illustrated in the later sections.
+But the agent stays unaware of the global environment.
+For our strategies it is crucial to have as much information of the overall environment as possible.
+This is necessary to e.g. find the shortest path from one vertex to another or to calculate a zone returning high scores.
+To achieve this, it is mandatory to somehow store information about the map like its vertices, edges between vertices, paths and agent positions.
 
-The first section, \autoref{alg:map_cartographer}, describes our initial approach with its up- and down-sides.
-After that a basic overview over our initial map building approach is given in \autoref{alg:map_dv}.
-Finally this chapter concludes with a description of the second approach we used and finally sticked to in \autoref{alg:map_javamap}
-
+The following subsections describe our different approaches on how to store and process this information.
+In more detail, the first section, \autoref{alg:map_cartographer}, presents our initial approach with its up- and down-sides.
+After that a basic overview of our initial map building approach is given in \autoref{alg:map_dv}.
+Finally, this chapter concludes with a description of the second approach we used and finally stuck to in \autoref{alg:map_javamap}. % I'm unsure whether sticking with something is colloquial or at least too informal.
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[Cartographer Agent]{Cartographer Agent$^\star$}\label{alg:map_cartographer}
@@ -64,7 +64,7 @@ Both issues resulted in blocked agents, which had been waiting for the response 
 
 To illustrate the problem assume the following example: A exploring agent comes to an unvisited vertex.
 The first thing it does, is to ask the cartographer agent, whether this vertex was surveyed in the meantime.
-After it gets the answer it surveys the vertex or asks the cartographer for the next unsurveyed vertex and travels there.
+After it gets the answer it surveys the vertex or asks the cartographer for the next unsurveyed vertex and travels there. % TODO I currently don't know where the word ``unsurveyed'' appears the first. But it is not an actual word but something we invented. Hence, we must shortly mention, what we want to express with it.
 Then the whole procedure starts again.
 As one can see, there are two possible bottlenecks.
 The first one is the query for the state of an vertex and the second is the query for the next unsurveyed vertex, which includes calculating the shortest path to this vertex.
