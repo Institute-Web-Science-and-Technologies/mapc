@@ -53,7 +53,7 @@ See \autoref{fig:map:com1} for the communication process of our first approach.
 
 Shortly after implementing this approach, we encountered two major problems, which both resulted in serious performance issues.
 One problem came from our implementation of the pathfinding.
-Although we used the Dijkstra-Algorithm, which is a efficient algorithm for this task, we encountered performance issues, because the pathfinding algorithm was executed every time an agent asked for a shortest path.
+Although we used the Dijkstra-Algorithm, which is an efficient algorithm for this task, we encountered performance issues, because the pathfinding algorithm was executed every time an agent asked for a shortest path.
 This led to a lot of redundant calculation and processing in the cartographer agent.
 The second problem was related to communication between agents.
 To understand the latter problem, one need to know that Jason uses a message box system for communication between agents.
