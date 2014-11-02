@@ -1,8 +1,45 @@
 \subsubsection[Zone Finding Process.]{Zone Finding Process.$^\circ$}\label{alg:zon_finding}
-This section explains how agents decide on what zones should be built. Each zone finding process can end successfully or fail for any individual agent. If it failed, the agent is not going to be a part of a zone and a new zone finding process is started. The first part of this section covers what changes are made so that with every failed zone finding process a successful one becomes likelier. If a zone finding process ended succesfully, the most valuable zone known to the agents will be built. This is ensured through agent communication which is presented in the last part of this section.
+This section explains how agents decide on what zones should be built.
+Each zone finding process can end successfully or fail for any individual agent.
+If it failed, the agent is not going to be a part of a zone and a new zone finding process is started.
+The first part of this section covers what changes are made so that with every failed zone finding process a successful one becomes likelier.
+If a zone finding process ended succesfully, the most valuable zone known to the agents will be built.
+This is ensured through agent communication which is presented in the last part of this section.
 % It focusses on the communication between the agents.
-Agents start looking for zones when they have finished the exploration phase. As explained in \autoref{alg:exploration}, explorer agents do not only survey but probe as well. Hence, other agents may finish the exploration phase earlier. Furthermore, zones can be broken up at any time forcing the agents to start looking for a new zone again. As a result, the zone finding process is in fact asynchronous. Problems arising from this are mainly dealt with throughout the actual building of zones which is illustrated in \autoref{alg:zon_roles}.
+Agents start looking for zones when they have finished the exploration phase.
+As explained in \autoref{alg:exploration}, explorer agents do not only survey but probe as well.
+Hence, other agents may finish the exploration phase earlier.
+Furthermore, zones can be broken up at any time forcing the agents to start looking for a new zone again.
+As a result, the zone finding process is in fact asynchronous.
+Problems arising from this are mainly dealt with throughout the actual building of zones which is illustrated in \autoref{alg:zon_roles}.
 
-In the beginning, all agents have to centrally register themselves when they are ready for zone building to indicate this availability. Next, each agent uses the algorithm presented in \autoref{alg:zon_calculation} to determine the best zone in its neighbourhood. The algorithm uses a range parameter $k$ which indicates the $k$-hop-neighbourhood up to which the algorithm will look for the best not yet built zone. This range starts at $1$ and is incremented every time the agent finishes a zone finding process without being part of a zone afterwards. As a result, it is more probable for an agent to find a zone with a high per agent score which has not been build yet. Thus, it is also likelier for the agent to be part of a zone, because throughout every zone finding process only the most valuable zone is going to be built. The range has a maximum to ensure that an agent will not look for zones too far away from it. When a zone is broken up, the range will be reset, which is covered by \autoref{alg:zon_roles}.
+In the beginning, all agents have to centrally register themselves when they are ready for zone building to indicate this availability.
+Next, each agent uses the algorithm presented in \autoref{alg:zon_calculation} to determine the best zone in its neighbourhood.
+The algorithm uses a range parameter $k$ which indicates the $k$-hop-neighbourhood up to which the algorithm will look for the best not yet built zone.
+This range starts at $1$ and is incremented every time the agent finishes a zone finding process without being part of a zone afterwards.
+As a result, it is more probable for an agent to find a zone with a high per agent score which has not been build yet.
+Thus, it is also likelier for the agent to be part of a zone, because throughout every zone finding process only the most valuable zone is going to be built.
+The range has a maximum to ensure that an agent will not look for zones too far away from it.
+When a zone is broken up, the range will be reset, which is covered by \autoref{alg:zon_roles}.
 
-After every agent interested in building a zone has determined the best zone in its neighbourhood, all such agents must send their best zone to all other agents. This is because all agents ready to build a zone should know about and hence only try to build the best globally, not yet built zone. At any time, every agent may only know about one zone. This zone will be the best zone an agent is aware of at the moment. Zones are being compared by their per agent score. A higher score indicates a better zone. Before building any zone, the agents will have to wait until the information about their best zone has reached all other agents. This is ensured by the agent having to wait for all other agents to reply to him. Therefore, when an agent receives information about a zone, it has two options. One is to reply with a simple acknowledgement message expressing that it had received the message. The other is to reply with its own zone in case that its zone is better. Agents may not reply with information about a better zone if it is not their own. This is to prevent duplicate messages. Otherwise, multiple agents could reply with the same zone of which they had been informed about by the same agent. Whenever an agent receives information about a better zone, it replaces its former knowledge about the best zone with the new one. Agents which are not interested in building a zone but receive information about a zone simply ignore the message but reply with an acknowledgement. This way, the sender will still be able to determine when every agent has processed the sent information. In case the zone calculation algorithm did not return any zone to an agent, this agent has to ask all other agents for a zone. It will accept the first reply containing zone information as its new best zone because it is better than no zone. The agent will then continue similar to the earlier presented behaviour and wait until it received replies from all other agents. After an agent has received all replies, it may start building a zone as illustrated in the next subsection. % TODO this only works if the order is not changed again.
+After every agent interested in building a zone has determined the best zone in its neighbourhood, all such agents must send their best zone to all other agents.
+This is because all agents ready to build a zone should know about and hence only try to build the best globally, not yet built zone.
+At any time, every agent may only know about one zone.
+This zone will be the best zone an agent is aware of at the moment.
+Zones are being compared by their per agent score.
+A higher score indicates a better zone.
+Before building any zone, the agents will have to wait until the information about their best zone has reached all other agents.
+This is ensured by the agent having to wait for all other agents to reply to him.
+Therefore, when an agent receives information about a zone, it has two options.
+One is to reply with a simple acknowledgement message expressing that it had received the message.
+The other is to reply with its own zone in case that its zone is better.
+Agents may not reply with information about a better zone if it is not their own.
+This is to prevent duplicate messages.
+Otherwise, multiple agents could reply with the same zone of which they had been informed about by the same agent.
+Whenever an agent receives information about a better zone, it replaces its former knowledge about the best zone with the new one.
+Agents which are not interested in building a zone but receive information about a zone simply ignore the message but reply with an acknowledgement.
+This way, the sender will still be able to determine when every agent has processed the sent information.
+In case the zone calculation algorithm did not return any zone to an agent, this agent has to ask all other agents for a zone.
+It will accept the first reply containing zone information as its new best zone because it is better than no zone.
+The agent will then continue similar to the earlier presented behaviour and wait until it received replies from all other agents.
+After an agent has received all replies, it may start building a zone as illustrated in the next subsection. % TODO this only works if the order is not changed again.

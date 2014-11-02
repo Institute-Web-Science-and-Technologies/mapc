@@ -1,14 +1,36 @@
-In multi-agent environment, where each agent has its own beliefs, desires and goals, achieving a common goal usually require some sort of cooperation. It most of the cases it can be achieved through communication and negotiation among groups of agents. Often negotiation is supported by some arguments which help to identify which agent is more suitable for completing certain task. Among them could be better position, better resources for completing the task, importance of current goal and so on. Some arguments can be also used to change the intentions of other agents. This could be the arguments like reserving the node to explore or the enemy to attack and many others. Argumentation is essential when agents don't have the full knowledge about other agents or environment. In such cases exchanging information helps to develop the consensus and make cooperative decisions.
+In multi-agent environment, where each agent has its own beliefs, desires and goals, achieving a common goal usually require some sort of cooperation.
+It most of the cases it can be achieved through communication and negotiation among groups of agents.
+Often negotiation is supported by some arguments which help to identify which agent is more suitable for completing certain task.
+Among them could be better position, better resources for completing the task, importance of current goal and so on.
+Some arguments can be also used to change the intentions of other agents.
+This could be the arguments like reserving the vertex to explore or the enemy to attack and many others.
+Argumentation is essential when agents don't have the full knowledge about other agents or environment.
+In such cases exchanging information helps to develop the consensus and make cooperative decisions.
 
-To negotiate effectively a BDI agent requires the ability to represent and maintain the model of its own properties, such as beliefs, desires, intentions and goals, reason with other agents' properties and be able to influence other agent's properties \cite{Kraus_98}. These requirements should be supported by the agent programming language we choose for our project. 
+To negotiate effectively a BDI agent requires the ability to represent and maintain the model of its own properties, such as beliefs, desires, intentions and goals, reason with other agents' properties and be able to influence other agent's properties \cite{Kraus_98}.
+These requirements should be supported by the agent programming language we choose for our project.
 
-As was mentioned above, negotiation is performed through communication. Negotiation messages can be of the following three types: a request, response, or a declaration. A response can take the form of an acceptance or a rejection. Messages can also have several parameters for justification or transmitting negotiation arguments. The arguments are produced independently by each agent using the predefined rules, which will be discussed later in this subchapter. Every agent can send and receive messages. Evaluating a received message is the vital part of negotiation procedure. Only the evaluation process following an argument may change the core agents' beliefs, desires, intentions or goals. 
+As was mentioned above, negotiation is performed through communication.
+Negotiation messages can be of the following three types: a request, response, or a declaration.
+A response can take the form of an acceptance or a rejection.
+Messages can also have several parameters for justification or transmitting negotiation arguments.
+The arguments are produced independently by each agent using the predefined rules, which will be discussed later in this subchapter.
+Every agent can send and receive messages.
+Evaluating a received message is the vital part of negotiation procedure.
+Only the evaluation process following an argument may change the core agents' beliefs, desires, intentions or goals.
 
-There are always several ways of modelling agents for negotiation. Agents can be \emph{bounded} if they do not believe in ``false''; \emph{omniscient} if their beliefs are closed under inferences; \emph{knowledgable} if  their beliefs are correct; \emph{unforgetful} if they never forget anything; \emph{memoryless} if they do not have memory and they cannot reason about past events; \emph{non-observer} if their beliefs may change only as a result of message evaluation; \emph{cooperative} if they share the common goal \cite{Kraus_98}. For our project in most of the cases we assumed an agent as knowledgable and memoryless - agents remember only about the current round of negotiation and abolish previous round results when the new round starts. During the zone building process the agents also act as cooperative, since they share the common goal of building a zone.
+There are always several ways of modelling agents for negotiation.
+Agents can be \emph{bounded} if they do not believe in ``false''; \emph{omniscient} if their beliefs are closed under inferences; \emph{knowledgable} if  their beliefs are correct; \emph{unforgetful} if they never forget anything; \emph{memoryless} if they do not have memory and they cannot reason about past events; \emph{non-observer} if their beliefs may change only as a result of message evaluation; \emph{cooperative} if they share the common goal \cite{Kraus_98}.
+For our project in most of the cases we assumed an agent as knowledgable and memoryless - agents remember only about the current round of negotiation and abolish previous round results when the new round starts.
+During the zone building process the agents also act as cooperative, since they share the common goal of building a zone.
 
-For every negotiation round an agent needs three types of rules: \emph{argument generation}, \emph{argument selection} and \emph{request evaluation}. We discuss them below.
+For every negotiation round an agent needs three types of rules: \emph{argument generation}, \emph{argument selection} and \emph{request evaluation}.
+We discuss them below.
 
-Argument generation is a process of calculating the arguments for negotiation. An argument may have preconditions for its usage. Only if all preconditions are met, an agent is allowed to use the argument. To check the precondition an agent verifies if it is hold in the agent's current mental state.
+Argument generation is a process of calculating the arguments for negotiation.
+An argument may have preconditions for its usage.
+Only if all preconditions are met, an agent is allowed to use the argument.
+To check the precondition an agent verifies if it is hold in the agent's current mental state.
 
 In their work Kraus et al. \cite{Kraus_98} point out six types of arguments, which can be used during negotiation:
 \begin{enumerate}
@@ -20,20 +42,47 @@ In their work Kraus et al. \cite{Kraus_98} point out six types of arguments, whi
   \item A threat.
 \end{enumerate}
 
-An appeal to prevailing practice refers to the situation when an agent refuses to perform the requested action, because it contradicts with one of its own goals. In this case the agent, who issued the request may refer to one of the third agent's actions in the similar situation. The algorithm of calculation of the argument here will be: find a third agent who performed the same action in the past and make sure that this agent had the same goals as the persuadee agent.
+An appeal to prevailing practice refers to the situation when an agent refuses to perform the requested action, because it contradicts with one of its own goals.
+In this case the agent, who issued the request may refer to one of the third agent's actions in the similar situation.
+The algorithm of calculation of the argument here will be: find a third agent who performed the same action in the past and make sure that this agent had the same goals as the persuadee agent.
 
-A counterexample is similar to appealing to prevailing practice, however in this case the counterexample is taken from the opponent's own history of activities. Here it is assumed that the agent somehow has the access to the persuadee's past history.
+A counterexample is similar to appealing to prevailing practice, however in this case the counterexample is taken from the opponent's own history of activities.
+Here it is assumed that the agent somehow has the access to the persuadee's past history.
 
-An appeal to past promise can be applied only when the a gent is not a memoryless agent. This type of argument is a sort or a reminder to the previously given promise to execute an action is some particular situation. The algorithm of checking if this argument apply is: verify that the persuadee agent is not a memoryless agent, then check if the agent received a request from the opponent in the past with promise of future reward and that reward was the intended action right now.
+An appeal to past promise can be applied only when the a gent is not a memoryless agent.
+This type of argument is a sort or a reminder to the previously given promise to execute an action is some particular situation.
+The algorithm of checking if this argument apply is: verify that the persuadee agent is not a memoryless agent, then check if the agent received a request from the opponent in the past with promise of future reward and that reward was the intended action right now.
 
-An appeal to self-interest is a type of argument that convinces the opponent that the performed action will serve towards one of its desires. This argument cannot be applied to knowledgable or reasonable agent, since it can compute the implications by itself. To calculate this argument an agent needs to: verify that the opponent is not a knowledgable or reasonable agent; select one desire the opponent has; generate the list of actions that will lead from the current world state to the opponent's desire fulfillment; check whether the performed action appear in the list. If such opponent's desire is found then the argument is applicable.
+An appeal to self-interest is a type of argument that convinces the opponent that the performed action will serve towards one of its desires.
+This argument cannot be applied to knowledgable or reasonable agent, since it can compute the implications by itself.
+To calculate this argument an agent needs to: verify that the opponent is not a knowledgable or reasonable agent; select one desire the opponent has; generate the list of actions that will lead from the current world state to the opponent's desire fulfillment; check whether the performed action appear in the list.
+If such opponent's desire is found then the argument is applicable.
 
-A promise of a future reward is a promise given by the agent to the opponent as a condition for the opponent agent to help with executing an action. On order to remember the promise, the opponent naturally should not be a memoryless agent. The calculation algorithm here is: find one opponent's desire, first consider joint desires, trying to find one that can be satisfied with help of the agent; like in self-interest argument generate a list of actions, that lead to the desire fulfillment; out of the resulting list of action select one, which the agent can perform, but the opponent cannot, and which has minimal cost. This action will be offered as a future reward in return to executing requested action right now.
+A promise of a future reward is a promise given by the agent to the opponent as a condition for the opponent agent to help with executing an action.
+On order to remember the promise, the opponent naturally should not be a memoryless agent.
+The calculation algorithm here is: find one opponent's desire, first consider joint desires, trying to find one that can be satisfied with help of the agent; like in self-interest argument generate a list of actions, that lead to the desire fulfillment; out of the resulting list of action select one, which the agent can perform, but the opponent cannot, and which has minimal cost.
+This action will be offered as a future reward in return to executing requested action right now.
 
-A threat to perform an action that contradicts with opponent's plans in case if the requested action will not be executed can also be a good argument. An algorithm for calculating it includes: find one opponent's desire that is not in agent's desire set, first consider desires with higher preference; find a contradicting action to the desire or like in ``appeal to self-interest'' find a list of actions needed to satisfy the desire and find an action that undoes effects of one of those actions. This action will then be selected as a threat argument in case if a requested action will not be executed.
+A threat to perform an action that contradicts with opponent's plans in case if the requested action will not be executed can also be a good argument.
+An algorithm for calculating it includes: find one opponent's desire that is not in agent's desire set, first consider desires with higher preference; find a contradicting action to the desire or like in ``appeal to self-interest'' find a list of actions needed to satisfy the desire and find an action that undoes effects of one of those actions.
+This action will then be selected as a threat argument in case if a requested action will not be executed.
 
-An agent can generate several arguments at the same time, but only one of them can be used for every negotiation round. To be able to identify which argument should be used an argument selection rule is required. Kraus et al. \cite{Kraus_98} proposed to use the argument types in the same order as they were introduced earlier in this subchapter. In this case the weakest argument is selected first and if it will not succeed, then the stronger argument is taken.
+An agent can generate several arguments at the same time, but only one of them can be used for every negotiation round.
+To be able to identify which argument should be used an argument selection rule is required.
+Kraus et al. \cite{Kraus_98} proposed to use the argument types in the same order as they were introduced earlier in this subchapter.
+In this case the weakest argument is selected first and if it will not succeed, then the stronger argument is taken.
 
-Request evaluation rules define how the request is being processed by the agent when it receives one. Request evaluation should end with a response message back to the sender stating either that the argument is accepted and the agent will perform the prescribed action, or that the argument did not persuade the agent to fulfill the request. Also as it was mentioned above during the request evaluation agent's beliefs, desires, intensions or goals can be changed. As an example of such changes in our project can be saboteur switching to zone defending after negotiation with other saboteurs: the beliefs about the zone he has to defend are added and the primary goal is changed to zone defending. Another example is an agent adopting a role of zone coach after negotiation about the best zone: the goal to invite other agents to the newly created zone, regularly check for enemy agents near the zone and so on. Request evaluation always depends on the arguments that are used, the agents participating in the negotiation and the request itself.
+Request evaluation rules define how the request is being processed by the agent when it receives one.
+Request evaluation should end with a response message back to the sender stating either that the argument is accepted and the agent will perform the prescribed action, or that the argument did not persuade the agent to fulfill the request.
+Also as it was mentioned above during the request evaluation agent's beliefs, desires, intensions or goals can be changed.
+As an example of such changes in our project can be saboteur switching to zone defending after negotiation with other saboteurs: the beliefs about the zone he has to defend are added and the primary goal is changed to zone defending.
+Another example is an agent adopting a role of zone coach after negotiation about the best zone: the goal to invite other agents to the newly created zone, regularly check for enemy agents near the zone and so on.
+Request evaluation always depends on the arguments that are used, the agents participating in the negotiation and the request itself.
 
-For the implementation of negotiation procedures and making collective decisions in our project we mostly used the \emph{bidding} method described in  \cite{bordini_programming_2007}. In this method all the participating in negotiation agents are sending their ``bids'' to the other agents. These bids contain the appropriate arguments for the current negotiation target. Every agent waits for bids from all other agents and after that performs a comparison of bids: every bid is compared with all other bids. The comparison of two bids includes argument selection and request evaluation at the same time: the arguments are selected one by one in each of two bids and compared until one of the arguments prevail. For the conflict situations when all arguments appear to be the same we assumed that the bid that came from the greatest agent in terms of agent name comparison wins. The agent with the winning bid then fulfills the request: adopts a certain role or performs a prescribed action. 
+For the implementation of negotiation procedures and making collective decisions in our project we mostly used the \emph{bidding} method described in  \cite{bordini_programming_2007}.
+In this method all the participating in negotiation agents are sending their ``bids'' to the other agents.
+These bids contain the appropriate arguments for the current negotiation target.
+Every agent waits for bids from all other agents and after that performs a comparison of bids: every bid is compared with all other bids.
+The comparison of two bids includes argument selection and request evaluation at the same time: the arguments are selected one by one in each of two bids and compared until one of the arguments prevail.
+For the conflict situations when all arguments appear to be the same we assumed that the bid that came from the greatest agent in terms of agent name comparison wins.
+The agent with the winning bid then fulfills the request: adopts a certain role or performs a prescribed action.

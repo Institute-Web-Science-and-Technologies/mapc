@@ -15,24 +15,56 @@
 %
 \lstset{style=flux} % activate flux syntax highlighting in listings
 \subsubsection[FLUX.]{FLUX.$^\circ$}\label{fun:apl_flux}
-This section gives a summary of the logic programming language FLUX which offers solutions to the earlier shown problems of GOLOG. Except for the examples and if not specified otherwise, the information of this section is taken from Thielscher~\cite{thielscher_flux:_2005} who first introduced FLUX. This is done by using the \emph{fluent calculus} instead of the situation calculus. Both are similar but the fluent calculus adds \emph{states}. A state $z$ is a set of fluents $f_1,\dotsc,f_n$. In FLUX, it is denoted as $z = f_1 \circ\dotsc\circ f_n$. In every situation there exists exactly one state with which the current properties of the world are being described. Yet, the world can be in the same state in multiple situations. FLUX uses \emph{knowledge states} for representing agent knowledge. These are denoted through $\textit{KState}(s,z)$ meaning that an agent knows that $z$ holds in $s$. Knowledge states can be incomplete as opposed to knowledge in GOLOG.
+This section gives a summary of the logic programming language FLUX which offers solutions to the earlier shown problems of GOLOG.
+Except for the examples and if not specified otherwise, the information of this section is taken from Thielscher~\cite{thielscher_flux:_2005} who first introduced FLUX.
+This is done by using the \emph{fluent calculus} instead of the situation calculus.
+Both are similar but the fluent calculus adds \emph{states}.
+A state $z$ is a set of fluents $f_1,\dotsc,f_n$.
+In FLUX, it is denoted as $z = f_1 \circ\dotsc\circ f_n$.
+In every situation there exists exactly one state with which the current properties of the world are being described.
+Yet, the world can be in the same state in multiple situations.
+FLUX uses \emph{knowledge states} for representing agent knowledge.
+These are denoted through $\textit{KState}(s,z)$ meaning that an agent knows that $z$ holds in $s$.
+Knowledge states can be incomplete as opposed to knowledge in GOLOG.
 
-The frame problem in the fluent calculus is solved through \emph{state update axioms} as described by Thielscher~\cite{thielscher_situation_1999}. The axioms define the effects of an action as the difference between the state before and after the action. This is modelled with $\vartheta^-$ for negative and $\vartheta^+$ for positive effects. Both are simply macros for finite states. Due to using states, reasoning is linear in the size of the state representation. That is, after every action execution, the world represented by its fluent is processed. This is called being \emph{progression-based}. Therefore, FLUX can outperform GOLOG as determining whether a property currently holds is only a matter of looking it up in the state. With GOLOG however, the property must be traced back to the initial situation by looking at all action executions and their effects.
-%\cite{thielscher_flux:_2005}
+The frame problem in the fluent calculus is solved through \emph{state update axioms} as described by Thielscher~\cite{thielscher_situation_1999}.
+The axioms define the effects of an action as the difference between the state before and after the action.
+This is modelled with $\vartheta^-$ for negative and $\vartheta^+$ for positive effects.
+Both are simply macros for finite states.
+Due to using states, reasoning is linear in the size of the state representation.
+That is, after every action execution, the world represented by its fluent is processed.
+This is called being \emph{progression-based}.
+Therefore, FLUX can outperform GOLOG as determining whether a property currently holds is only a matter of looking it up in the state.
+With GOLOG however, the property must be traced back to the initial situation by looking at all action executions and their effects. %\cite{thielscher_flux:_2005}
 
-Disjunctive and negative state knowledge is modelled through constraints. FLUX uses a constraint solver to simplify these constraints until they are solvable. This is done by using \emph{constraint handling rules} introduced by Frühwirth~\cite{fruhwirth_theory_1998}. Their general form is shown in \autoref{chr}. It consists of one or multiple heads $H_m$, zero or more guards $G_k$ and one or multiple bodies $B_n$. The general mechanism is that if the guard can be derived, parts of the constraint matching the head will be replaced by the body and hence get simplified.
+Disjunctive and negative state knowledge is modelled through constraints.
+FLUX uses a constraint solver to simplify these constraints until they are solvable.
+This is done by using \emph{constraint handling rules} introduced by Frühwirth~\cite{fruhwirth_theory_1998}.
+Their general form is shown in \autoref{chr}.
+It consists of one or multiple heads $H_m$, zero or more guards $G_k$ and one or multiple bodies $B_n$.
+The general mechanism is that if the guard can be derived, parts of the constraint matching the head will be replaced by the body and hence get simplified.
 \begin{equation}\label{chr}
   H_1,\ldots,H_m\Leftrightarrow G_1,\ldots,G_k \mid B_1,\ldots,B_n
 \end{equation}
 
-A FLUX program can be separated into three main parts with the constraint solver building the kernel which is the foundation of a FLUX program. The domain encodings are built on top of this. Included are the initial knowledge state(s), domain constraints, as well as the action precondition and state update axioms. The final part of a FLUX program is the programmer defined intended agent behaviour called strategy. As a trivial example program, the previous example implemented in GOLOG will be transferred into FLUX. This is done by using the logic programming language Prolog in which FLUX is typically implemented~(cf. \cite{thielscher_reasoning_2006,martin_addressing_2001}). % xi, 1085+, 297
+A FLUX program can be separated into three main parts with the constraint solver building the kernel which is the foundation of a FLUX program.
+The domain encodings are built on top of this.
+Included are the initial knowledge state(s), domain constraints, as well as the action precondition and state update axioms.
+The final part of a FLUX program is the programmer defined intended agent behaviour called strategy.
+As a trivial example program, the previous example implemented in GOLOG will be transferred into FLUX.
+This is done by using the logic programming language Prolog in which FLUX is typically implemented~(cf. \cite{thielscher_reasoning_2006,martin_addressing_2001}). % xi, 1085+, 297
 The example features the domain encodings as well as the strategy.
 \begin{lstlisting}[caption={Defintion of the \texttt{sing}-action.}, label=lst_sing]
   perform(sing, []).
   poss(sing, Z) :- all_holds(hasCoffee(_), Z).%\label{l_possSing}%
   state_update(Z, sing, Z, []).%\label{l_supSing}%
 \end{lstlisting}
-\autoref{lst_sing} shows the definition of the \texttt{sing}-action. Empty arrays denoted by \texttt{[]} could be replaced by sensed information. They would then effect the outcome of the methods. As this is a trivial example, no sensed information is assumed. \autoref{l_possSing} is the precondition that singing is only possible in a state where every agent has coffee. As singing should not alter any fluents, the state \texttt{Z} in \autoref{l_supSing} is not modified and returned again as \texttt{Z}.
+\autoref{lst_sing} shows the definition of the \texttt{sing}-action.
+Empty arrays denoted by \texttt{[]} could be replaced by sensed information.
+They would then effect the outcome of the methods.
+As this is a trivial example, no sensed information is assumed.
+\autoref{l_possSing} is the precondition that singing is only possible in a state where every agent has coffee.
+As singing should not alter any fluents, the state \texttt{Z} in \autoref{l_supSing} is not modified and returned again as \texttt{Z}.
 \begin{lstlisting}[firstnumber=4, caption={Definition of the \texttt{pourCoffee}-action}, label=lst_pourCoffee]
   perform(pourCoffee(P), []).
   poss(pourCoffee(P), Z) :-
@@ -41,7 +73,11 @@ The example features the domain encodings as well as the strategy.
   state_update(Z1, pourCoffee(P), Z2, []) :-
        update(Z1, [hasCoffee(P)], [], Z2).%\label{l_updateZ}%
 \end{lstlisting}
-The \texttt{pourCoffee}-action is defined similarly in \autoref{lst_pourCoffee}. \autoref{l_memberP} ensures that Prolog will only look for agents that actually exist instead of iterating over memory addresses. The action must modify the state by adding \texttt{hasCoffee(P)} to the state as it is done in \autoref{l_updateZ}. The array after it corresponds to $\vartheta^-$. It is empty in this case as no fluents are removed.
+The \texttt{pourCoffee}-action is defined similarly in \autoref{lst_pourCoffee}.
+\autoref{l_memberP} ensures that Prolog will only look for agents that actually exist instead of iterating over memory addresses.
+The action must modify the state by adding \texttt{hasCoffee(P)} to the state as it is done in \autoref{l_updateZ}.
+The array after it corresponds to $\vartheta^-$.
+It is empty in this case as no fluents are removed.
 \begin{lstlisting}[firstnumber=10, caption={Main method which either tells the robot to sing or to pour coffee.}, label=lst_main]
   main_loop(Z) :-
     poss(sing, Z)
@@ -51,7 +87,10 @@ The \texttt{pourCoffee}-action is defined similarly in \autoref{lst_pourCoffee}.
          main_loop(Z1);
     false.%\label{l_false}%
 \end{lstlisting}
-\autoref{lst_main} models the main method and thus is similar to \autoref{p_main}. When singing is possible, the robot will do so and terminate. Else, it will pour someone a coffee and call the main loop again. \autoref{l_false} ensures that Prolog will return the false-value \texttt{No} if neither of the both actions get triggered at some point.
+\autoref{lst_main} models the main method and thus is similar to \autoref{p_main}.
+When singing is possible, the robot will do so and terminate.
+Else, it will pour someone a coffee and call the main loop again.
+\autoref{l_false} ensures that Prolog will return the false-value \texttt{No} if neither of the both actions get triggered at some point.
 \begin{lstlisting}[firstnumber=17, caption={Initial configuration.}, label=lst_init]
   init(Z0) :-
          not_holds(hasCoffee(jane), Z0),
@@ -59,4 +98,7 @@ The \texttt{pourCoffee}-action is defined similarly in \autoref{lst_pourCoffee}.
 \end{lstlisting}
 The initial configuration in \autoref{lst_init} is comparable to \autoref{ex_gologConfiguration} but due to Prolog interpreting from top to bottom, the result will be \texttt{Z = [hasCoffee(john), hasCoffee(jane)]}.
 
-Schiffel and Thielscher~\cite{schiffel_multi-agent_2007} successfully applied FLUX to the gold mining domain. It is a scenario where multiple agents with different roles work together on mining gold in an unknown terrain~\cite{schiffel_multi-agent_2007}. The requirements for solving the problems arising from this scenario are comparable to those appearing in the Mars-scenario. Given the former short presentation and this knowledge, it can be said that FLUX could be applied to the Mars-scenario.
+Schiffel and Thielscher~\cite{schiffel_multi-agent_2007} successfully applied FLUX to the gold mining domain.
+It is a scenario where multiple agents with different roles work together on mining gold in an unknown terrain~\cite{schiffel_multi-agent_2007}.
+The requirements for solving the problems arising from this scenario are comparable to those appearing in the Mars-scenario.
+Given the former short presentation and this knowledge, it can be said that FLUX could be applied to the Mars-scenario.
