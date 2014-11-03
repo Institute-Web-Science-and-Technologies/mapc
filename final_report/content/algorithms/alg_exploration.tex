@@ -118,7 +118,7 @@ A query for a shortest path would look like this:
 \begin{lstlisting}[caption={Query for shortest path from \texttt{v1} to \texttt{v8}}, label={lst:dv_shortestPath_query}]
   .send(v1, askOne, path(v8, NextHop, _, CostToNextHop)).
 \end{lstlisting}
-After looking up the belief in its belief base the node agent would unify the parameter \texttt{NextHop} with \texttt{v3} and CostToNextHop with \texttt{2} and response to the querying agent.
+After looking up the belief in its belief base the node agent would unify the parameter \texttt{NextHop} with \texttt{v3} and \texttt{CostToNextHop} with \texttt{2} and response to the querying agent.
 
 For propagating data between these node agents we used a modified \emph{Distance-Vector Routing Protocol} (short: DV).
 DV is a routing protocol based on the Bellman-Ford algorithm and normally has its use in packet-switched networks.
