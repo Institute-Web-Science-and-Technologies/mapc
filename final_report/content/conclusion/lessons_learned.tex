@@ -11,12 +11,10 @@ Therefore, communication was a great bottleneck especially when exchanging infor
 On account of this, letting agents communicate everything that they perceive while exploring the graph, to every other agent, was not an option.
 Consequently, we decided not to make agents share all their knowledge with each other.
 Instead, the most complete information about the graph should be available in one place.
-Our first approach here was the cartographer agent we illustrated in \autoref{alg:map_cartographer}.
-It was an additional agent in the background that was sent all the information about the map which all 28 agents perceived.
-With that cartographer agent the amount of communication was reduced and agents could act like intended, because
-Agents would then just sent their percepts to the cartographer agent and did not have to deal with incoming messages of the other 27 agents.
+Our first approach here was to introduce a cartographer agent as illustrated in \autoref{alg:map_cartographer}.
+It was an additional agent in the background which was sent all the information about the map which all 28 agents perceived.
 The drawback of this approach revealed when it came to querying the cartographer agent for information.
-Agents needed to do this frequently for instance when an they wanted to know if a vertex was already surveyed or how a given vertex could be reached.
+Agents needed to do this frequently for instance when they wanted to know if a vertex was already surveyed or how a given vertex could be reached.
 As mentioned before, processing the received messages is quite slow.
 Together with calculating paths multiple times, the cartographer agent was not able to process messages in time and agents were idle waiting for replies.
 As described in \autoref{alg:map_dv}, dividing the cartographer's work load onto our so-called node agents did not solve our performance issues.
