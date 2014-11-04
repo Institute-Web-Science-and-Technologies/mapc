@@ -91,10 +91,11 @@ Based on its current state and input events, the system selects and executes opt
 The interpreter continually performs the following: determine available options, deliberate to commit to some options, update the state and execute chosen atomic actions.
 After that, it updates the event queue and eliminates the options which have already achieved or are no longer possible.
 
+\todo{Add or leave out a caption for all listings. Currently we are not consistent with that.}
 \begin{lstlisting}
-BDI-Interpreter
-initialise_state();
-do
+  BDI-Interpreter
+  initialise_state();
+  do
     options := option-generator(event-queue, B, G, I);
     selected-options := deliberate(options, B, G, I);
     update-intentions(selected-options, I);
@@ -102,7 +103,7 @@ do
     get-new-external-events();
     drop-successful-attitudes(B, G, I);
     drop-impossible-attitudes(B, G, I);
-until quit.
+  until quit.
 \end{lstlisting}
 
 As was mentioned above, options are usually represented by plans.
@@ -113,23 +114,23 @@ Getting back to the algorithm and assuming plans as options, the option generato
 Given a set of trigger events from the event queue, the option generator iterates through the plan library and returns those plans whose invocation condition matches the trigger event and whose preconditions are believed by the agent.
 
 \begin{lstlisting}[mathescape]
-option-generator(trigger-events, B, G ,I)
-options := {};
-for trigger-event $\in$ trigger-events do
+  option-generator(trigger-events, B, G ,I)
+  options := {};
+  for trigger-event $\in$ trigger-events do
     for plan $\in$ plan-library do
-        if matches(invocation(plan, trigger-event) then
-            if provable(precondition(plan), B) then
-                options := options $\cup$ plan;
-return options.
+      if matches(invocation(plan, trigger-event) then
+        if provable(precondition(plan), B) then
+          options := options $\cup$ plan;
+  return options.
 \end{lstlisting}
 
 Deliberation of options should conform with the execution time constraints, therefore under certain circumstances random choice might be appropriate.
 Sometimes lengthy deliberation becomes possible by introducing meta-level plans into the plan library, which form intentions towards some particular plans.
 
 \begin{lstlisting}[mathescape]
-deliberate(options)
-if length(options) $\leq$ 1 then return options;
-else metalevel-options :=
+  deliberate(options)
+  if length(options) $\leq$ 1 then return options;
+  else metalevel-options :=
             option-generator(b-add(option-set(options)));
     selected-options := deliberate(metalevel-options);
     if null(selected-options) then

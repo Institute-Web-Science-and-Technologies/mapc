@@ -40,7 +40,7 @@ Developers can write additional internal actions in Java or any other programmin
 
 Arguably, the most important  internal action is \texttt{.send}.
 This action enables inter-agent communication as initially proposed and implemented by Vierira et al.~\cite{vieira_formal_2007}.
-It is similar to KQML performatives which had been introduced in SECTIONXYZ. % TODO if we have KQML from the seminar talks, refer to it.
+It is similar to KQML performatives which had been introduced in SECTIONXYZ\todo{if we talked about KQML earlier, reference it}.
 \begin{lstlisting}[caption={Parameters of the internal action \texttt{.send} and an example.}, label=lst:jason_send]
   .send(Receiver, Illocutionary_force, Message_content).%\label{l:jason_send}%
   .send([agent1, agent2], tell, ~hasCoffee(john)).%\label{l:jason_sendInstance}%
@@ -62,7 +62,7 @@ It can be:
   \item \texttt{askAll}: asks for all beliefs matching \texttt{Message\_content}.
   \item \texttt{askHow}: demand all plans a recipient has that match the triggering event given in the \texttt{Message\_content}.
 \end{itemize}
-Jason automatically processes the messages as needed when a message arrives at an agent. %TODO should we talk about an agent's inbox?
+Jason automatically processes the messages as needed when a message arrives at an agent\todo{should we explicitly talk about an agent's inbox? Compare with @adaudrich's mentioning of the inbox!}.
 A developer can override Jason's default behaviour if further or different processing is desired.
 Jason also automatically adds \texttt{source} annotations.
 This allows agents to determine the sender of any received message.

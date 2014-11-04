@@ -58,7 +58,7 @@ Therefore, if the agent knew that there was still someone left without coffee, i
 % We assume that the implementation of AgentSpeak(L) does not do anything if there is no applicable plan for an event. In \autoref{lst:asl_sing} this would be equal to adding a plan for \texttt{hasCoffee(\_)} without context or body. Given this assumption, the \texttt{pourCoffee}-action is then defined as shown in \autoref{lst:asl_pourCoffee}. \autoref{l:asl_pourCoffee} uses a shortcut operator which extends to \texttt{-hasCoffee(\_); +hasCoffee(X)} \cite{bordini_programming_2007}. % 53
 \autoref{lst:asl_serve} contains the plan for serving coffee. It uses a test goal to pick someone without a coffee as shown in \autoref{l:asl_thirsty}.
 The person will be bound to the variable \texttt{X}.
-After that, an achievement goal is added to the agent's set of intentions to pour \texttt{X} coffee. % TODO introduce set of intentions.
+After that, an achievement goal is added to the agent's set of intentions\todo{introduce the set of intentions earlier} to pour \texttt{X} coffee.
 The plan does not feature any context as this minimal example ensures that the goal \texttt{!servedCoffee} will only exist when there actually is a person without coffee.
 \begin{lstlisting}[firstnumber=10, caption={Definition of the \texttt{servedCoffee} plan.}, label=lst:asl_serve]
   +!servedCoffee:

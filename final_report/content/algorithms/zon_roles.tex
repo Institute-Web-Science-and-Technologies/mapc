@@ -48,7 +48,6 @@ Additionally, the agent will likelier move farther away from its position in cas
 This should further ensure that zones are only proposed multiple times as best zones if they have a very high per agent score.
 
 We assume due to our zone calculation algorithm that a vertex within a zone will be occupied by at most one agent.
-%TODO it won't be called a colouring algorithm later on.
 Then, any enemy agent close to a zone endangers it.
 This is because a zone may not spread across an enemy inside of it~\cite{ahlbrecht_mapc_2014}.  % p.12
 Moreover, enemy saboteur agents can disable agents inside a zone, which similarly destroys the zone in its original form~\cite{ahlbrecht_mapc_2014}.  % p.11
@@ -66,4 +65,4 @@ To prevent that agents build a zone once and stay there for ever if no agents at
 The periodic trigger is linked to the overall steps of the simulation and not the lifetime of each zone respectively.
 Consequently, agents from different zones will have to restart looking for a zone at the same time.
 In addition to allowing new zones to be build which take the information of the newly probed vertices into account, this also allows for agents to start the zone finding process in a less asynchronous fashion.
-% TODO: proper ending of this section
+\todo{This section is missing a proper ending}

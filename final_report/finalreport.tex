@@ -14,6 +14,20 @@
 \lstset{ % make tildes readable in lstlistings
       literate={~} {$\sim$}{1}
 }
+\lstdefinestyle{flux} { % custom syntax highlighting for FLUX
+  frame=L,
+  xleftmargin=\parindent,
+  basicstyle=\footnotesize\ttfamily,
+  breakatwhitespace=true,
+  numbers=left,
+  escapechar=\%,
+  numberstyle=\tiny,
+  numberblanklines=false,
+  captionpos=b,
+  emph={perform, poss, state\_update, main\_loop, init},
+  emphstyle=\textbf,
+}
+\lstset{style=flux} % activate flux syntax highlighting in listings
 \usepackage[detect-all,round-mode=places]{siunitx} % A comprehensive (SI) units package
 \usepackage{latexsym} % allows special symbols
 \usepackage{graphicx} % enables figures
@@ -58,7 +72,8 @@
 \clearpage
 \pagenumbering{arabic}
 
-\section{Motivation}
+\section{Motivation and Background$^\dagger$}
+\todo{The subsections are quite short. We probably should merge them later on. Also, we'll have to take a look of just about how much we want to talk about the MAPC Mars scenario at this point already. If we keep it as general as we currently are, this will probably be fine. Within the fundamentals part, we can then talk about agents, actions, roles, attributes, what is a zone and so forth.}
 \input{content/motivation.tex}
 
 \section{Scientific Background and Fundamentals}

@@ -1,4 +1,4 @@
-\subsection{Competition results$^{\odot,\circ}$} % TODO for now, the comma should indicate that this text has been written by @manuelmittler and has only gotten smaller updates/corrections from @0nse.
+\subsection{Competition results$^{\odot,\circ}$} % for now, the comma should indicate that this text has been written by @manuelmittler and has only gotten smaller updates/corrections from @0nse.
 The competition took place on two dates (15th and 17th of September) and each team had to play three simulations against all other teams.
 Every simulation consisted of a total of 400 steps.
 The team with the higher overall score at the end received three points for their victory.
@@ -10,7 +10,7 @@ As can be seen, the achievement points of team MAKo go up and down due to the bu
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/AchievementPoints.png}
-	\caption{Achievement points from the second match TUB against MAKo.} % TODO I just wrote second as a filler. What match was it?
+  \caption{Achievement points from the second match TUB against MAKo.}
 	\label{dis:achievement_points}
 \end{figure}
 On first sight, one could assume that this strategy was a drawback because achievement points earned at some point count into every future step score.
@@ -21,9 +21,10 @@ This was because the amount of potential zone points they would have earned with
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/ZonesScoresAndAchievementPoints.png}
-	\caption{Combined achievement and zone scores from the second match TUB against MAKo.} % TODO I just wrote second as a filler. What match was it?
+  \caption{Combined achievement and zone scores from the second match TUB against MAKo.}
 	\label{dis:ZonesScoresAndAchievementPoints}
 \end{figure}
+\todo{@manuelmittler: I just wrote ``second match'' as filler in \autoref{dis:achievement_points} and \autoref{dis:ZonesScoresAndAchievementPoints}. Which match was this actually from?}
 At the end of the tournament team MAKo scored second with a total of 18 points.
 The winner of 2014 was, for the third time in a row, the team from the Federal University of Santa Catarina (UFSC).
 The final results are shown in~\autoref{tab:mapc2014results}.
@@ -42,7 +43,7 @@ The final results are shown in~\autoref{tab:mapc2014results}.
   \caption{The results of the 2014 MAPC. Each team played three matches against every other team, and winning a match awarded 3 points.}
   \label{tab:mapc2014results}
 \end{table}
-Statistics of all the individual games can be found in the appendix.[reference here!!!!] % TODO I'm unsure what all you want to add here. But I'll just add this todo here so that we can grep for TODOs in the document itself :)
+Statistics of all the individual games can be found in the appendix.\todo{add the references and link to the appendix}
 
 Our team MAKo lost every second game against all opponents.
 This was due to the repairer agents not being able to repair.
@@ -67,8 +68,7 @@ Due to the fact that zones were broken up periodically, zones with a high value 
 Furthermore, the asynchronous communication during zone finding did not work as well as hoped for.
 This was partly related to our agents being attacked and disabled by enemy agents.
 Agents which ought to form a zone unpredictably had to cancel their zoning availability and get repaired.
-Also, we did not implement an algorithm to detect the ``end'' of the graph, say the edges of the map.
-% TODO: I'm not happy to talk about grpah ``ends''. Anybody has a suggestion for a better term?
+Also, we did not implement an algorithm to detect the ``end''\todo{I'm not happy to talk about grpah ``ends''. Anybody has a suggestion for a better term? Maybe some explicit definition of leaves?} of the graph, say the edges of the map.
 In the course of the matches, we saw that multiple maps favoured such an approach.
 \autoref{dis:edgeCases} shows the top left part of the graph from the third match of MAKo against GOAL-DTU.
 A single well-placed agent, here depicted as a green rectangle, could in this case create a zone over 25 vertices.
