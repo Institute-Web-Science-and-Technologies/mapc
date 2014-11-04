@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -9,11 +7,13 @@ import jason.asSyntax.Term;
 import eis.Agent;
 import eis.MapAgent;
 
-//Call from Jason: removeEnemyGhost(Enemy)
 /**
+ * Call from AgentSpeak: removeEnemyGhost(Enemy)
+ * <p>
  * Used to tell the MapAgent that it is wrong about the location of an enemy
- * agent.
- * 
+ * agent. This happens when enemy agents move outside of the visibility range of
+ * our own agents.
+ *
  * @author sewell
  */
 public class removeEnemyGhost extends DefaultInternalAction {

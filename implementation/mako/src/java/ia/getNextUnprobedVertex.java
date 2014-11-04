@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -10,12 +8,14 @@ import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
 
-// Call from AgentSpeak: getNextUnprobedVertex(Position, Destination)
+/**
+ * Call from AgentSpeak: getNextUnprobedVertex(Position, Destination)
+ * <p>
+ * Given the agent's position, unifies Destination with the closest unprobed
+ * vertex, or returns false if no such vertex is found.
+ */
 public class getNextUnprobedVertex extends DefaultInternalAction {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 2591263020881686750L;
 
     @Override

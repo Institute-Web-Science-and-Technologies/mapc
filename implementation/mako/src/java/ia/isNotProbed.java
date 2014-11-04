@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -9,7 +7,11 @@ import jason.asSyntax.Term;
 import eis.MapAgent;
 import eis.Vertex;
 
-//Call from AgentSpeak: isNotProbed(Vertex)
+/**
+ * Call from AgentSpeak: isNotProbed(Vertex)
+ * <p>
+ * Given a Vertex, returns true if that vertex has not been probed before.
+ */
 public class isNotProbed extends DefaultInternalAction {
     private static final long serialVersionUID = 2385104427608117167L;
 

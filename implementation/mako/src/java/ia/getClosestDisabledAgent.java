@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -12,10 +10,10 @@ import eis.MapAgent;
 import eis.Vertex;
 
 /**
- * Call from AgentSpeak: getClosestDisabledAgent(Repairer, DisabledAgent,
- * DisabledAgentPosition)
+ * Call from AgentSpeak: getClosestDisabledAgent(Repairer, *DisabledAgent,
+ * *DisabledAgentPosition)
  * <p>
- * Given the RepairerName, unifies the DisabledAgent variable with the closest
+ * Given the Repairer, unifies the DisabledAgent variable with the closest
  * friendly, disabled, non-reserved agent, and DisabledAgentPosition with his
  * position. Returns false if no such agent could be found.
  */

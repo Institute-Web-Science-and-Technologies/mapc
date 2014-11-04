@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -8,7 +6,12 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
 import eis.MapAgent;
 
-// Call from AgentSpeak: isNotInspected(Vehicle)
+/**
+ * Call from AgentSpeak: isNotInspected(Vehicle)
+ * <p>
+ * Given the name of a Vehicle (an enemy vehicle, preferrably), returns true if
+ * that  vehicle/agent counts as inspected.
+ */
 public class isNotInspected extends DefaultInternalAction {
     private static final long serialVersionUID = 9032663067998146025L;
 

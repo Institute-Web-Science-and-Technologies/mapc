@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -12,10 +10,10 @@ import eis.Vertex;
 
 /**
  * Call from AS: ia.getClosestSubgraphEdge(AgentPosition, *EdgeNode)
- * 
+ * <p>
  * Unifies EdgeNode with the closest node that the agent can reach and that
  * hasn't been visited before. Returns false if no such node exists.
- * 
+ *
  * @author sewell
  */
 public class getClosestSubgraphEdge extends DefaultInternalAction {

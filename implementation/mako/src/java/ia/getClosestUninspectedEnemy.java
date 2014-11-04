@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -12,12 +10,14 @@ import eis.MapAgent;
 import eis.Vertex;
 
 /**
- * Returns the closest uninspected enemy agent that is not already reserved for
- * inspection. Call from AgentSpeak: ia.getClosestUninspectedEnemy(MyPosition,
- * Enemy, EnemyPosition)
- * 
+ * Call from AgentSpeak: ia.getClosestUninspectedEnemy(MyPosition,
+ * *Enemy, *EnemyPosition)
+ * <p>
+ * Given MyPosition, finds the closest uninspected enemy and unifies Enemy
+ * and EnemyPosition with that enemy's name and position, respectively. Returns
+ * false if no such enemy is found.
+ *
  * @author sewell
- * 
  */
 public class getClosestUninspectedEnemy extends DefaultInternalAction {
     private static final long serialVersionUID = -5353191587385187928L;

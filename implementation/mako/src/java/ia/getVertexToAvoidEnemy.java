@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -13,7 +11,13 @@ import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
 
-// Call from AgentSpeak: getVertexToAvoidEnemy(Position, Destination)
+/**
+ * Call from AgentSpeak: getVertexToAvoidEnemy(Position, Destination)
+ * <p>
+ * Given the agent's position, unifies Destination with a nearby "safe" vertex
+ * for the agent to move to, or the agen'ts current position if no such vertex
+ * exists. This is used to avoid enemy agents.
+ */
 public class getVertexToAvoidEnemy extends DefaultInternalAction {
 
     private static final long serialVersionUID = -4778054080904036925L;

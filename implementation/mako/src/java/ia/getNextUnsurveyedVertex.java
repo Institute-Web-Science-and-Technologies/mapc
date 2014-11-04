@@ -8,7 +8,12 @@ import eis.JasonHelper;
 import eis.MapAgent;
 import eis.Vertex;
 
-//Call from AgentSpeak: getNextUnsurveyedVertex(Position, Destination)
+/**
+ * Call from AgentSpeak: getNextUnsurveyedVertex(Position, Destination)
+ * <p>
+ * Given the agent's position, unifies Destination with the closest unsurveyed
+ * vertex, or returns false if no such vertex is found.
+ */
 public class getNextUnsurveyedVertex extends DefaultInternalAction {
     private static final long serialVersionUID = 4113666835276193698L;
 

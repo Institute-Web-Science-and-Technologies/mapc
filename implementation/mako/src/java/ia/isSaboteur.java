@@ -1,5 +1,3 @@
-// Internal action code for project mako
-
 package ia;
 
 import jason.asSemantics.DefaultInternalAction;
@@ -9,12 +7,12 @@ import jason.asSyntax.Term;
 import eis.Agent;
 import eis.MapAgent;
 
-// Call from AgentSpeak: isSaboteur(Vehicle)
 /**
- * 
+ * Call from AgentSpeak: isSaboteur(Vehicle)
+ * <p>
  * Returns true if the given vehicle is known to be a saboteur, and false
  * otherwise.
- * 
+ *
  * @author sewell
  */
 public class isSaboteur extends DefaultInternalAction {
