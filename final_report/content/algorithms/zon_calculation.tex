@@ -1,5 +1,5 @@
 %\newtheorem{definition}{Definition}
-\subsubsection{Zone Calculation$^\dagger$}
+\subsubsection[Zone Calculation]{Zone Calculation$^\dagger$}
 \label{alg:zon_calculation}
 The graph colouring algorithm used by the MAPC server to determine occupied zones is described in detail in the MAPC 2014 scenario description~\cite{ahlbrecht_mapc_2014} and will not be explained again here.
 
@@ -69,7 +69,7 @@ The zone centered around vertex $v$ is is calculated through several steps:
         \forall w \in V_v^2: \left\{\left(w, u_1 \right ), \left(w, u_2 \right )\right\} \subseteq E, u_1 \neq u_2, \left\{u_1, u_2\right\} \subseteq V_v^1 \\
         \rightarrow A_v := A_v \cup \left\{w\right\}, V_v^2 := V_v^2 \setminus \left\{w \right \}
         \end{multline}
-  \item For every $w \in V_v^2$, if $w$ is connected either directly or through a single one-hop neighbour of $v$ to any $u \in A_v$, remove it from $V_v^2$: 
+  \item For every $w \in V_v^2$, if $w$ is connected either directly or through a single one-hop neighbour of $v$ to any $u \in A_v$, remove it from $V_v^2$:
   \begin{multline}
   \forall w \in V_v^2: \exists u \in A_v: \rightarrow V_v^2 := V_v^2 \setminus \{w\}
 \\ \forall w \in V_v^2: \exists u \in A_v: \exists x \in V_v^1: \left\{\left(w, x \right ), \left(x, u \right )\right\} \subseteq E\rightarrow V_v^2 := V_v^2 \setminus \{w\}
