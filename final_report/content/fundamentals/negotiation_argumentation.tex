@@ -1,20 +1,20 @@
-In multi-agent environment, where each agent has its own beliefs, desires and goals, achieving a common goal usually require some sort of cooperation.
-It most of the cases it can be achieved through communication and negotiation among groups of agents.
-Often negotiation is supported by some arguments which help to identify which agent is more suitable for completing certain task.
-Among them could be better position, better resources for completing the task, importance of current goal and so on.
+In a multi-agent environment, where each agent has its own beliefs, desires and goals, achieving a common goal usually requires some sort of cooperation.
+In most cases, it can be achieved through communication and negotiation among groups of agents.
+Often, negotiation is supported by some arguments which help to identify which agent is most suitable for completing a certain task.
+Among the reasons why one agent could be more suited than another could be the agent's better position, better resources for completing the task, importance of the current goal and so on.
 Some arguments can be also used to change the intentions of other agents.
 This could be the arguments like reserving the vertex to explore or the enemy to attack and many others.
 Argumentation is essential when agents don't have the full knowledge about other agents or environment.
-In such cases exchanging information helps to develop the consensus and make cooperative decisions.
+In such cases, exchanging information helps to develop the consensus and make cooperative decisions.
 
-To negotiate effectively a BDI agent requires the ability to represent and maintain the model of its own properties, such as beliefs, desires, intentions and goals, reason with other agents' properties and be able to influence other agent's properties \cite{Kraus_98}.
+To negotiate effectively, a BDI agent requires the ability to represent and maintain a model of its own properties, such as beliefs, desires, intentions and goals, reason with other agents' properties and be able to influence other agents' properties~\cite{Kraus_98}.
 These requirements should be supported by the agent programming language we choose for our project.
 
 As was mentioned above, negotiation is performed through communication.
-Negotiation messages can be of the following three types: a request, response, or a declaration.
+Negotiation messages can be of the following three types: a \emph{request}, \emph{response} or a \emph{declaration}.
 A response can take the form of an acceptance or a rejection.
 Messages can also have several parameters for justification or transmitting negotiation arguments.
-The arguments are produced independently by each agent using the predefined rules, which will be discussed later in this subchapter.
+The arguments are produced independently by each agent using the predefined rules, which will be discussed later in this sub-chapter.
 Every agent can send and receive messages.
 Evaluating a received message is the vital part of negotiation procedure.
 Only the evaluation process following an argument may change the core agents' beliefs, desires, intentions or goals.

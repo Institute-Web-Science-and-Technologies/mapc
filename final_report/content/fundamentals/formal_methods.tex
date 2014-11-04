@@ -147,13 +147,19 @@ There are four main types of events:
 \begin{itemize}
   \item flexible, which can be delayed or omitted,
   \item inevitable, which can only be delayed,
-  \item immediate, which agent willing to perform immediately,
+  \item immediate, which the agent is willing to perform immediately,
   \item triggerable, which the agent performs based on external events.
 \end{itemize}
-These events are organised into skeletons that characterise the coordination behavior of agents. The coordination service is independent of the exact skeletons or events used by agents in a multiagent system.
+These events are organised into skeletons that characterise the coordination behavior of agents.
+The coordination service is independent of the exact skeletons or events used by agents in a multi-agent system.
 
-To specify coordinations a variant of linear-time temporal language with some restrictions is used. For that purpose two temporal operators are introduced: $\cdot$ - before operator, and $\bigodot$ - the operator of concatenation of two time traces, first of which is finite. Such special logic allows a variety of different relationships to be captured.
+To specify coordinations, a variant of the linear-time temporal language with some restrictions is used.
+Two temporal operators are introduced for this purpose: $\cdot$, which is the before operator, and $\bigodot$, which is the operator of concatenation of two time traces, the first of which is finite.
+Such special logic allows a variety of different relationships to be captured.
 
-Overall, formal methods provide a logic abstraction for multiagent systems. They help to find self-consistent models of agent's behavior. However relatively high complexity do not allow these methods to be implemented in real time systems. Therefore the role of formal methods nowadays is limited to debug, validate and design purposes.
+Overall, formal methods provide a logic abstraction for multi-agent systems.
+They help to find self-consistent models of an agent's behavior.
+However, relatively high complexity does not allow these methods to be implemented in real-time systems.
+Therefore, the role of formal methods nowadays is limited to debugging, validation and design purposes.
 
 In our project we unfortunately did not apply any formal methods for debugging or validating, mostly because of the limited time for development.
