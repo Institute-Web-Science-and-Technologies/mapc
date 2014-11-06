@@ -68,15 +68,15 @@ Due to the fact that zones were broken up periodically, zones with a high value 
 Furthermore, the asynchronous communication during zone finding did not work as well as hoped for.
 This was partly related to our agents being attacked and disabled by enemy agents.
 Agents which ought to form a zone unpredictably had to cancel their zoning availability and get repaired.
-Also, we did not implement an algorithm to detect the ``end''\todo{I'm not happy to talk about grpah ``ends''. Anybody has a suggestion for a better term? Maybe some explicit definition of leaves?} of the graph, say the edges of the map.
+Also, we did not implement an algorithm to detect articulation points.
 In the course of the matches, we saw that multiple maps favoured such an approach.
 \autoref{dis:edgeCases} shows the top left part of the graph from the third match of MAKo against GOAL-DTU.
 A single well-placed agent, here depicted as a green rectangle, could in this case create a zone over 25 vertices.
-Being able to detect these graph ``ends'' would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
+Being able to detect articulation points would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{images/resultsEdgeCase.eps}
-	\caption{One agent alone forming a zone over 25 vertices by exploiting the graph ``ends''.}
+	\caption{One agent alone forming a zone over 25 vertices by occupying an articulation point.}
 	\label{dis:edgeCases}
 \end{figure}
 Nevertheless, the general idea regarding small zone forming proved to be a good choice.
