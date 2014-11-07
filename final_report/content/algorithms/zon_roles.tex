@@ -65,4 +65,19 @@ To prevent that agents build a zone once and stay there for ever if no agents at
 The periodic trigger is linked to the overall steps of the simulation and not the lifetime of each zone respectively.
 Consequently, agents from different zones will have to restart looking for a zone at the same time.
 In addition to allowing new zones to be build which take the information of the newly probed vertices into account, this also allows for agents to start the zone finding process in a less asynchronous fashion.
-\todo{This section is missing a proper ending}
+
+Although the zone calculation algorithm was able to calculate additional zone spots to place agents, we did not make use of it.
+The main reason was because we changed the strategy of zoning agents.
+Earlier approaches allowed for agents forming a zone to leave their vertex.
+They would be able to do so when an enemy agent was nearby or when a repair agent forming a zone would have to move towards a disabled agent.
+In these cases, being able to extend zones by more agents would have been beneficial to keeping up the zone.
+If an agent on an optional zone vertex would have to leave, the zone would still be kept up.
+But if an agent on a mandatory zone vertex would have to leave, an agent on an optional zone vertex could quickly take its place as it is already nearby.
+Changing the strategies so that no agent forming a zone would ever leave its vertex unless it got disabled, made these additional zone spots less relevant.
+Lastly, we decided to abandoned the concept of extending zones by placing agents on optional zone spots.
+This was because it seemed more promising to make idle agents which were not able to build a zone just now move onto a highly valuable vertex in their neighbourhood.
+It was also simpler to realise than dealing with all edge cases extending a zone and holding it would bring.
+For example, we otherwise would have had to account for coaches leaving a zone and an agent on an optional zone spot filling in for it.
+Said agent would then have to inform all minions about the change.
+If this information did not get through to all minions fast enough, there would be the chance of them trying to interact with the former coach.
+As there was a shortage of leftover development time until the competition, we stayed with this decision.
