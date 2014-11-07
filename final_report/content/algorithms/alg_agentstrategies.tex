@@ -4,36 +4,36 @@ This section will give a short overview of how different agent types behave diff
 \begin{description}
     \item[Explorer] agents are the only ones who can perform the \texttt{probe} action.
         Vertices must be probed in order to learn their value, which is critical for zoning.
-        Accordingly, an Explorer will spend most of his time seeking out, moving towards and finally probing vertices whose value is not yet known.
-        Since there are 6 Explorers in a team, care must be taken to make sure that multiple Explorers do not move towards the same unprobed vertex, as this is generally a suboptimal usage of their time.
+        Accordingly, an Explorer agent will spend most of his time seeking out, moving towards and finally probing vertices whose value is not yet known.
+        Since there are 6 Explorer agents in a team, care must be taken to make sure that multiple Explorer agents do not move towards the same unprobed vertex, as this is generally a suboptimal usage of their time.
 
         In our implementation, we consider all vertices in the map to be \enquote{worthy} of being probed and thus to know their value.
         However, due to the way our team performs zoning (see~\autoref{alg:zon_finding}), we prioritise vertices in a specific way which we call \enquote{cluster probing}.
-        Because our zone calculation algorithm (see~\autoref{alg:zon_calculation}) puts agents around a centre vertex in a circular manner and with a maximum distance of two edges away, and because we want the Explorers' probing to help us with quickly finding and establishing high-value zones, Explorers should avoid probing vertices in e.g.\ a straight line.
-        Rather, an Explorer's probing pattern should mimic the circular shape of the zone calculation algorithm.
+        Because our zone calculation algorithm (see~\autoref{alg:zon_calculation}) puts agents around a centre vertex in a circular manner and with a maximum distance of two edges away, and because we want the Explorer agents' probing to help us with quickly finding and establishing high-value zones, Explorer agents should avoid probing vertices in e.g.\ a straight line.
+        Rather, an Explorer agent's probing pattern should mimic the circular shape of the zone calculation algorithm.
         Because of this, for probing we prioritise unprobed vertices first by distance, then by the number of edges they share with already probed vertices.
-        The result is that Explorer movement is similar to a spiral pattern (provided the Explorer is not disturbed by e.g.\ nearby enemy agents).
+        The result is that the Explorer agents' movement is similar to a spiral pattern, provided the Explorer agents are not disturbed by e.g.\ nearby enemy agents.
         Explorer agents do not stop this probing pattern until they can no longer find any unprobed vertices.
     \item[Repairer] agents are the only agents who can perform the \texttt{repair} action for restoring health to disabled agents.
         Because the team loses out on possible points for every disabled agent in the team, to achieve a high score it is essential to quickly repair damaged agents.
-        In our implementation, Repairers' actions are prioritised so that they will attempt to repair any disabled friendly agent in their visibility range, and it is the \enquote{job} of the disabled agents to find and move towards the closest friendly repairer.
-        If a Repairer agent is aware of a friendly disabled agent outside of his visibility range, and the Repairer is currently not used for zoning, however, then the Repairer will also move towards the disabled agent.
+        In our implementation, Repairer agents' actions are prioritised so that they will attempt to repair any disabled friendly agent in their visibility range, and it is the \enquote{job} of the disabled agents to find and move towards the closest friendly repairer.
+        If a Repairer agent is aware of a friendly disabled agent outside of his visibility range, and the Repairer agent is currently not used for zoning, however, then the Repairer agent will also move towards the disabled agent.
     \item[Saboteur] agents are the only agents that can disable enemy agents using the \texttt{attack} action.
         In our implementation, a saboteur's role is very aggressively defined, and is prioritised thusly: if you see a non-disabled enemy, attack it; otherwise find and move towards an enemy you can attack.
 
-        Throughout most of our development phase, Saboteur agents were the only agent type we would use the \texttt{buy} action for to extend their visibility range once for every Saboteur because we believed that this would give us an offensive edge against other teams.
+        Throughout most of our development phase, Saboteur agents were the only agent type we would use the \texttt{buy} action for to extend their visibility range once for every Saboteur agent because we believed that this would give us an offensive edge against other teams.
         We decided to try out other buying strategies as well, however, by having our agents play matches against copies of themselves, except that the copies used different strategies for buying upgrades.
-        Through this brief, empirical and rather informal testing period, we discovered that a surprisingly simple and novel strategy to buying upgrades actually led to persistently higher scores than our initial approach of buying one visibility range upgrade per Saboteur: by choosing a single Saboteur agent, which we call the \emph{uber-Saboteur}, and allowing him to buy an unlimited (well, limited only by the amount of money available) number of upgrades as needed, we were able to outperform teams using our more conventional approach of upgrade buying.
-        To be more specific, our uber-Saboteur would buy an upgrade whenever no active enemy was within his visibility range and he had the money for it.
+        Through this brief, empirical and rather informal testing period, we discovered that a surprisingly simple and novel strategy to buying upgrades actually led to persistently higher scores than our initial approach of buying one visibility range upgrade per Saboteur agent: by choosing a single Saboteur agent, which we call the \emph{artillery agent and allowing him to buy an unlimited (well, limited only by the amount of money available) number of upgrades as needed, we were able to outperform teams using our more conventional approach of upgrade buying.
+        To be more specific, our artillery agent would buy an upgrade whenever no active enemy was within his visibility range and he had the money for it.
         The kind of upgrade (maximum energy, visibility range, maximum health or strength) depends on the relative improvement that buying that upgrade will bring to the upgrade-specific \enquote{module}.
-        For example, if the uber-Saboteur has a maximum health of 3 and a visbility range of 1, then increasing the maximum health to 4 would be an improvement of \SI{33}{\percent}, while increasing the visibility range from 1 to 2 would be an improvement of \SI{100}{\percent} --- so the uber-Saboteur will choose to buy an upgrade to the latter.
+        For example, if the artillery agent has a maximum health of 3 and a visbility range of 1, then increasing the maximum health to 4 would be an improvement of \SI{33}{\percent}, while increasing the visibility range from 1 to 2 would be an improvement of \SI{100}{\percent} --- so the artillery agent will choose to buy an upgrade to the latter.
 
-        We also call in Saboteurs to defend a zone if it gets attacked by an enemy agent.
+        We also call in Saboteur agents to defend a zone if it gets attacked by an enemy agent.
     \item[Sentinel] agents do not have a unique action that they can perform.
         Their strength is that they start with a visibility range of 3 by default, which is the highest of all the agent types.
         This is useful during exploration and to be warned of incoming enemy agents, but we do not use any Sentinel-specific logic in our implementation worth mentioning.
     \item[Inspector] agents are uniquely able to perform the \texttt{inspect} action.
-        We consider it important to inspect every enemy agent once during each match to learn and store that agent's role (it is very important to know which enemy agents are Saboteurs, so that we can avoid them), but once that goal has been achieved, Inspector agents lose most of their importance.
+        We consider it important to inspect every enemy agent once during each match to learn and store that agent's role (it is very important to know which enemy agents are Saboteur agents, so that we can avoid them), but once that goal has been achieved, Inspector agents lose most of their importance.
         Achievement points for performing \texttt{inspect} actions are not awarded for inspecting an enemy agent more than once, and \texttt{inspect} is not needed to be able to tell if an agent is disabled (the \texttt{visibleEntity} percept includes the agent's current state).
         The only use case for inspecting an enemy agent more than once during a single match is to learn if they have bought any upgrades since the first time they were inspected.
         But because buying an upgrade for an agent is such a rare occurrence during the actual contest (cf.\ this year's and the last years' matches), we do not have to re-inspect very often --- we could probably just inspect each enemy agent once to learn their role and then leave it at that.
