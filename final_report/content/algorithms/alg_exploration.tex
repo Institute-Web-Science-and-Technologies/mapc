@@ -64,7 +64,7 @@ Both issues resulted in blocked agents, which had been waiting for the response 
 
 To illustrate the problem assume the following example: An exploring agent comes to an unvisited vertex.
 The first thing it does, is to ask the cartographer agent, whether this vertex was surveyed in the meantime.
-After it gets the answer it surveys the vertex or asks the cartographer for the next unsurveyed vertex and travels there\todo{I currently don't know where the word ``unsurveyed'' appears the first. But it is not an actual word but something we invented. Hence, we must shortly mention, what we want to express with it.}.
+After it gets the answer it surveys the vertex or asks the cartographer for the next not surveyed vertex and travels there.
 Then the whole procedure starts again.
 As one can see, there are two possible bottlenecks.
 The first one is the query for the state of an vertex and the second is the query for the next unsurveyed vertex, which includes calculating the shortest path to this vertex.
@@ -199,11 +199,12 @@ This includes the one-hop neighbourhood and the probed value of the vertex.
   \label{fig:map:com3}
 \end{figure}
 
-In \autoref{fig:map:comp3} it is demonstrated how we changed the distribution of our components for map generation between Java and Jason. Unlike the first and second approach we now have a separation of concerns. The whole map generation and calculation is done entirely by Java and agent related actions and communication entirely in Jason.
+In \autoref{fig:map:comp3} it is demonstrated how we changed the distribution of our components for map generation between Java and Jason. Unlike the first and second approach we now have a separation of concerns. The whole map generation and calculation is done entirely by Java and agent related actions, planning and communication entirely in Jason.
 \begin{figure}
   \centering
   \includegraphics[width=0.6\linewidth]{images/map_comp_3.png}
   \caption{Distribution of map components in our final solution.}
   \label{fig:map:comp3}
 \end{figure}
-\todo{This section is a bit short and does not have a real ending.}
+
+With JavaMap we found an exploration approach which is fast, stable and has a high coverage of the actual map. Furthermore we could be sure that all information is accessible by every Jason agent in reasonable time. We also could reduce the time to get answers to rather complex queries like paths between distant vertices.
