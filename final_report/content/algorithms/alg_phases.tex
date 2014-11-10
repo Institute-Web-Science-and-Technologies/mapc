@@ -1,0 +1,46 @@
+\subsection[Simulation Phases]{Simulation Phases$^{\star,\circ}$}\label{arc:simulation}
+This section illustrates our match strategy roughly from a high-level point of view.
+Our general approach for the simulation was to split it up into two phases, namely an exploration phase and a zoning phase.
+In the exploration phase, we tried to explore the map as quickly and complete as possible.
+Throughout the zoning phase, agents would look for zones, form and defend them.
+The exploration phase is explained in this section in more detail, while the zoning phase is covered in separate section due to its complexity.
+
+Basically all agents were used for exploration, but we used for each role other priorities.
+The highest priority was always to use the role defining ability if applicable.
+For example if the Saboteur agent could attack any enemy agent, it attacked.
+If a repairer agent could repair some damaged agent from our team, it repaired.
+If the highest priority action was not applicable and the agents tried to explore the map (see \autoref{alg:exploration}).
+Each agent decided which action to do autonomously based on the information it got from the map component or its percepts.
+The component itself centrally stored all information about the map and is presented in \autoref{alg:map_javamap}.
+We distinguished three group types of exploring agents.
+
+The first group consisted only of Explorer agents.
+Their highest priority was to get vertex values by probing.
+Secondarily they used the \texttt{survey} action to explore the map only if they came across vertices which were not surveyed.
+They were not actively searching for or going to not surveyed vertices.
+Instead, they moved somewhat circular towards vertices which were not surveyed yet as further described in \autoref{alg:agentstrategies}.
+
+The second group was comprised of Saboteur agents.
+We followed a very aggressive strategy and aimed to attack and disturb the enemy as much as possible.
+Consequently, we did not want to distract our Saboteur agents by exploring the map.
+Saboteur agents would only explore the map if they did not know of an active enemy somewhere on the already explored map.
+As part of our aggressive strategy, there was one Saboteur agent which would even then not start exploring.
+Instead, it would try to increase its visibility radius to find more distant enemies.
+This is explained in more detail in \autoref{alg:agentstrategies}.
+The Saboteur agents stayed with this strategy throughout the whole simulation and not only the exploration phase.
+
+The third and last group consisted of the remaining agents, which were the Repairer agents, the Sentinel agents and the Inspector agents.
+These agents were used mainly for exploring the map.
+They were coordinated by querying the map component for the next unexplored\todo{Explain what unexplored means. A nearby unvisited vertex?} map area.
+If agents of the third group came to a vertex that had unknown edge weights to at least one neighbour vertex, they used the survey action to get the information as percepts.
+These weights were then passed to the map component and they repeated the exploring, by querying for the next not surveyed vertex and going there.
+To prevent multiple agents from going to the same vertex and exploring the same area, the map component used an internal locking mechanism.
+We were not interested in a full coverage of the map\todo{is this true or did we explore 100\%?}.
+This was due to a full map exploration would have consumed a lot more steps while bringing only little improvement to the knowledge about it as a whole.
+So we decided to remove every agent from the exploring agent team which could not be assigned a not surveyed vertex
+They were then enabled to start building zones.
+By this we prevented agents from doing nothing and just idling around\todo{this goes hand in hand with the earlier todo. I am confused why they would idle if ``[w]e did not need a full coverage of the map''? So that means they could have done things because they would still have been ``assigned [to] a not surveyed vertex''}.
+
+In the zoning phase all agents which were finished with their exploration phase, were used to build zones.
+This included the Explorer agents but excluded the Saboteur agents, because they were following their own aggressive strategy.
+A detailed description of the zoning phase is given in \autoref{alg:zoning}.
