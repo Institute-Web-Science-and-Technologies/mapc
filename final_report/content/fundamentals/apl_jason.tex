@@ -40,7 +40,9 @@ Developers can write additional internal actions in Java or any other programmin
 
 Arguably, the most important  internal action is \texttt{.send}.
 This action enables inter-agent communication as initially proposed and implemented by Vierira et al.~\cite{vieira_formal_2007}.
-It is similar to KQML performatives which had been introduced in SECTIONXYZ\todo{if we talked about KQML earlier, reference it}.
+It is structurally based on KQML and FIPA \cite{fernandez_evaluating_2010}.
+A short overview of a FIPA message has been given in \autoref{fun:apl_jadex}.
+We pass on presenting the structure of a KQML message here as both are similar and KQML is not further developed \cite{obrien_fipatowards_1998}.
 \begin{lstlisting}[caption={Parameters of the internal action \texttt{.send} and an example.}, label=lst:jason_send]
   .send(Receiver, Illocutionary_force, Message_content).%\label{l:jason_send}%
   .send([agent1, agent2], tell, ~hasCoffee(john)).%\label{l:jason_sendInstance}%
