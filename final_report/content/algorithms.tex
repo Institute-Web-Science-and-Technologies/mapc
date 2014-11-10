@@ -1,6 +1,4 @@
 \todo{Write this part}
-\subsection{General Strategy Overview}
-\todo{Write this part or leave it out depending on how much we cover in the prior section introduction.}
 This could also be an introductory text which motivates the following subsections.
 
 %%%%%%%%%%%%%%%%%%
@@ -22,7 +20,7 @@ In addition to disabling agents moving to their repairers, repairers can also mo
 The seeming special case in repairing is when one of the repairers gets disabled. However since even disabled repairer can perform repair action, we decided to use the standard procedure of assignment even to the disabled agents. The only difference is that the goal to repair have higher priority then the goal to get repaired. This helps to use all the repairers more effective and prevents the situation when all the repairers are disabled and waiting to get repaired.
 
 %%%%%%%%%%%%%%%%%%
-\subsection[Zone Forming]{Zone Forming$^\circ$}
+\subsection[Zone Forming]{Zone Forming$^\circ$}\label{alg:zoning}
 % TODO: sometimes, agents ``must'', ``will'', ``have to'' and other times they simple (actively) ``do'' things.
 Zone forming is the most important part in the MAPC Mars scenario~\cite{ahlbrecht_mapc_2014}.% p.3
 It describes the process of agents finding and occupying vertices in a way that they enclose a subgraph.
