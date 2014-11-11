@@ -1,9 +1,9 @@
-\subsubsection[Situation Calculus.]{Situation Calculus.$^\circ$}\label{fun:apl_sitCalc}
+\subsubsection[Situation Calculus]{Situation Calculus$^\circ$}\label{fun:apl_sitCalc}
 This section gives a short summary of the situation calculus, which was first introduced by McCarthy and Hayes~\cite{mccarthy_philosophical_1969}.
-The situation calculus is mainly a first-order logic but also uses second order logic to encode a dynamic world \cite{levesque_golog:_1997}. %60
-It is a theoretic concept and was consequently not under consideration to be used as an agent programming language to compete in the MAPC.
+The situation calculus is mainly a first-order logic but also uses second order logic to encode a dynamic world~\cite{levesque_golog:_1997}. %60
+It is a theoretical concept and was consequently not under consideration to be used as an agent programming language to compete in the MAPC.
 Yet, it is being presented to serve as basis for the later illustrated languages GOLOG and FLUX.
-The situation calculus consists of the three first-order terms: \emph{fluents}, \emph{actions} and \emph{situations} \cite{mccarthy_philosophical_1969,boutilier_decision_2000}. %18+,356
+The situation calculus consists of the three first-order terms: \emph{fluents}, \emph{actions} and \emph{situations}~\cite{mccarthy_philosophical_1969,boutilier_decision_2000}. %18+,356
 Fluents model properties of the world.
 Actions may change fluents and hence may modify the world.
 Every action execution creates a new situation.
@@ -12,22 +12,23 @@ There can only be one initial situation as it models the situation before any ac
 
 Fluents can be evaluated to return a result.
 As they are situation dependent, the evaluation result may change over time.
-Fluents are distinguished in \emph{relational fluents} and \emph{functional fluents}~\cite{levesque_golog:_1997}. %3
+Fluents are distinguished into \emph{relational fluents} and \emph{functional fluents}~\cite{levesque_golog:_1997}. %3
 Relational fluents can hold in situations.
 Their evaluation hence may return either true or false~\cite{boutilier_decision_2000}. %356
 An example is given in \autoref{f_hasCoffee}.
-It expresses whether or not the agent $p$ has a coffee in situation $s$.
+It expresses whether or not the agent $p$ has a cup of coffee in situation $s$.
 \begin{equation}\label{f_hasCoffee}
   \textit{hasCoffee}(p,s)
 \end{equation}
 Functional fluents return values instead~\cite{levesque_golog:_1997}. %3
-As an example, a fluent $\textit{location}(p,s)$ may return some coordinates $(x,y)$ This then expresses the agent $p$'s location in situation $s$.
+As an example, a fluent $\textit{location}(p,s)$ may return some coordinates $(x,y)$.
+This then expresses the agent $p$'s location in situation $s$.
 
 Actions also depend on situations.
 The reason for this is that certain actions may only be executed when specific fluents hold.
 As fluents are only modified by actions, their result can be determined by the history of action executions contained in the current situation.
 Describing when an action is executable is done by \emph{action precondition axioms}~\cite{lin_state_1994}. %655+
-This is expressed by the predicate $\textit{Poss}(a,s)$ with $a$ being an action.
+This is expressed by the predicate $\textit{Poss}(a,s)$, with $a$ being an action.
 As a recurring example, let us think of the ability to pour an agent $p$ coffee.
 This must only be possible when $p$ does not already have coffee.
 \autoref{a_possPourCoffee} illustrates how this can be formalised.
@@ -37,13 +38,13 @@ This must only be possible when $p$ does not already have coffee.
 
 As mentioned before, the execution of any action must alter the situation: $\textit{do}(a,s) \rightarrow s'$.
 Its effects on fluents are described by \emph{action effect axioms}.
-\autoref{a_effectPourCoffee} shows how pouring a coffee to $p$ will result in $p$ having coffee afterwards.
+\autoref{a_effectPourCoffee} shows how pouring a coffee for $p$ will result in $p$ having coffee afterwards.
 \begin{equation}\label{a_effectPourCoffee}
   \textit{Poss}(\textit{pourCoffee}(p),s) \rightarrow \textit{hasCoffee}\big(p,\textit{do}(\textit{pourCoffee}(p),s)\big)
 \end{equation}
 In \autoref{a_effectPourCoffee}, it is unclear whether other fluents are affected by the action execution.
 For example, reasoning about $location(p,s')$ would not be possible with $\textit{do}(\textit{pourCoffee}(p,s)) \rightarrow s'$.
-This is called the \emph{frame problem} (cf. Hayes~\cite{hayes_frame_1971}). %224
+This is called the \emph{frame problem} (cf.\ Hayes~\cite{hayes_frame_1971}). %224
 Defining for every fluent how every action does or does not affect it is only a theoretical solution.
 The reason for that is that the resulting complexity of $\mathcal{O}(A*F)$ would be too high even in most small worlds.
 A feasible solution to this problem was proposed by Reiter~\cite{reiter_frame_1991}.
@@ -69,4 +70,4 @@ Given \autoref{f_hasCoffee}, \ref{a_possPourCoffee}, \ref{a_effectPourCoffee} an
 \\    &\vee\ [\mathrm{hasCoffee}(p,s) \wedge a\neq \mathrm{pourCoffee}(p)]\big]
   \end{split}
 \end{equation}
-\autoref{a_sucStateAxiom} then formalises that an agent $p$ may only have coffee if it was poured coffee or if it already had coffee and the action was not to pour $p$ a coffee.
+\autoref{a_sucStateAxiom} then formalises that an agent $p$ may only have coffee if it was poured coffee or if it already had coffee and the action was not to pour $p$ coffee.
