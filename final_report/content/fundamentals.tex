@@ -5,20 +5,31 @@ I've put this section first so the later chapters can already rely on the reader
 
 \subsection{Agent Programming Concepts}
 \todo{Write this section}
-\subsubsection[BDI.]{BDI.$^\blacktriangle$}
+\subsubsection[BDI.]{BDI$^\blacktriangle$}
 \input{content/fundamentals/BDI.tex}
 
-\subsubsection[Formal Methods.]{Formal Methods.$^\diamond$}
+\subsubsection[Formal Methods.]{Formal Methods$^\diamond$}
 \input{content/fundamentals/formal_methods.tex}
 
-\subsubsection[Negotiation and Argumentation.]{Negotiation and Argumentation.$^\diamond$}
+\subsubsection[Negotiation and Argumentation.]{Negotiation and Argumentation$^\diamond$}
 \input{content/fundamentals/negotiation_argumentation.tex}
 
-\subsubsection{Agent Societies.}
+\subsubsection{Agent Societies}
 \todo{add, adapt and improve Rahul's part if it fits and is helpful for our later work}
 \subsection[Agent Programming Languages]{Agent Programming Languages$^\circ$}
-We investigated several agent programming languages against their suitability for the Mars-scenario. They were proposed by our supervisors. Our goal was to determine what language we wanted to use for multi-agent programming if any. The following sections present the basic structure of various languages together with examples. These examples are in no relation to the Mars-scenario but are simplified to a minimum to ease understanding. Using the Mars-scenario for examples instead would have meant to either make them complex or to trivialise them to a point where they become too superficial to suit the scenario.
-\autoref{fun:apl_sitCalc} first introduces the situation calculus. Although not an agent programming language, it serves as a foundation of the logic programming language GOLOG presented in \autoref{fun:apl_golog}. It also helps understanding the subsequent \autoref{fun:apl_flux} which summarises the main concepts of FLUX. FLUX is another logic programming language which was partly motivated from the flaws of GOLOG. \autoref{fun:apl_jadex} introduces a Java-based agent programming language. After that, AgentSpeak(L) is presented in \autoref{fun:apl_asl} which is another logic programming language. Jason is an interpreter for this language and is discussed in \autoref{fun:apl_jason}. The section focusses mainly on the extensions that Jason adds to AgentSpeak(L). The final \autoref{fun:apl_choice} summarises the previous sections and explains our decision for choosing Jason.
+We investigated several agent programming languages, proposed by our supervisors, for their suitability for the \enquote{Agents on Mars} scenario.
+Our goal was to determine which specialized language we wanted to use for multi-agent programming, if any.
+The following sections present the basic structure of various languages together with examples.
+These examples are unrelated to the \enquote{Agents on Mars} scenario and are kept simple for ease of understanding.
+Using the Mars-scenario for examples instead would have meant to either make them complex or to trivialise them to a point where they become too superficial to suit the scenario.
+\autoref{fun:apl_sitCalc} first introduces the situation calculus.
+Although not an agent programming language, it serves as a foundation of the logic programming language GOLOG presented in \autoref{fun:apl_golog}.
+It also helps in understanding the subsequent \autoref{fun:apl_flux} which summarises the main concepts of FLUX.
+FLUX is another logic programming language which was partly motivated by the flaws of GOLOG.
+\autoref{fun:apl_jadex} introduces a Java-based agent programming language. After that, AgentSpeak(L) is presented in \autoref{fun:apl_asl} which is another logic programming language.
+Jason is an interpreter for this language and is discussed in \autoref{fun:apl_jason}.
+The section focuses mainly on the extensions that Jason adds to AgentSpeak(L).
+The final \autoref{fun:apl_choice} summarises the previous sections and explains our decision for choosing Jason.
 
 \input{content/fundamentals/apl_sitCalc}
 
