@@ -1,4 +1,4 @@
-\subsubsection[Jason.]{Jason.$^\circ$}\label{fun:apl_jason}
+\subsubsection[Jason]{Jason$^\circ$}\label{fun:apl_jason}
 This section gives a quick overview of Jason, which is an interpreter for AgentSpeak(L).
 All information if not marked differently is taken from Bordini et al.~\cite{bordini_jason_2005}.
 Besides being an interpreter, Jason extends AgentSpeak(L) by several concepts.
@@ -29,20 +29,20 @@ Most characteristic for these actions is that they do not affect the environment
 This means they have no effect on the external world but only on the internal states of the agents as the name suggests.
 Hence, any effects of internal actions occur immediately after the action execution instead of only after the next environment processing cycle.
 As a result, internal actions can not only be used within a plan's body but also in its context. % all this information is from p. 1297
-Internal actions start with a dot followed by a library identifier, another dot and finally the action name.
+Internal actions start with a dot (.) followed by a library identifier, another dot and finally the action name.
 Bordini et al.~\cite{bordini_agentspeak_2002} implemented various internal actions which are not identified by any explicitly named library.
 These methods reside in the so called \emph{standard library} and omit the library declaration when being called.
-An example for this is \texttt{.gte(X,Y)} which returns the truth value of \texttt{X}$\geq$\texttt{Y}.
-A realisation of the same function outside the standard library could e.g. be called \texttt{.math.gte(X,Y)}.
+An example of this is \texttt{.gte(X,Y)} which returns the truth value of \texttt{X}$\geq$\texttt{Y}.
+A realisation of the same function outside the standard library could e.g.\ be called \texttt{.math.gte(X,Y)}.
 The standard library is included in Jason.
 Furthermore, Jason extends this library by various actions including multiple list operations like sorting or retrieving the minimum.
 Developers can write additional internal actions in Java or any other programming language which supports the programming framework Java Native Interface. %11
 
-Arguably, the most important  internal action is \texttt{.send}.
+Arguably, the most important internal action is \texttt{.send}.
 This action enables inter-agent communication as initially proposed and implemented by Vierira et al.~\cite{vieira_formal_2007}.
-It is structurally based on KQML and FIPA \cite{fernandez_evaluating_2010}.
+It is structurally based on KQML and FIPA~\cite{fernandez_evaluating_2010}.
 A short overview of a FIPA message has been given in \autoref{fun:apl_jadex}.
-We pass on presenting the structure of a KQML message here as both are similar and KQML is not further developed \cite{obrien_fipatowards_1998}.
+We pass on presenting the structure of a KQML message here as both are similar and KQML is not further developed~\cite{obrien_fipatowards_1998}.
 \begin{lstlisting}[caption={Parameters of the internal action \texttt{.send} and an example.}, label=lst:jason_send]
   .send(Receiver, Illocutionary_force, Message_content).%\label{l:jason_send}%
   .send([agent1, agent2], tell, ~hasCoffee(john)).%\label{l:jason_sendInstance}%
@@ -75,7 +75,7 @@ For doing so, a developer has to extend the \texttt{Environment} class and speci
 The first method must return a list of literals restricted to what the agent identified by \texttt{agentName} can perceive.
 When the second method is called, the programmer must specify how the given \texttt{action} affects the environment.
 It returns a boolean to indicate whether the execution was successful.
-Such an action can fail if for example a repairer agent would try to execute the \texttt{attack} action which it cannot according to the Mars-scenario.
+Such an action can fail if for example a Repairer agent would try to execute the \texttt{attack} action, which it cannot according to the rules specified for the \mars scenario.
 To call the \texttt{executeAction} method from an agent, all it has to do is execute e.g. \texttt{attack}.
 Jason will then call \texttt{executeAction(String agentName, Term action)} with the parameters bound to the agent's name and the \texttt{attack} action.
 For the MAPC itself, no fully simulated environment is needed.
