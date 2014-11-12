@@ -19,7 +19,7 @@ On receipt of this message, the agents become minions and move to their designat
 The coach will also have to move to its vertex, which happens to be the centre vertex of the zone.
 Furthermore, the coach will unregister itself and all its minions to indicate their unavailability to build any other zone.
 In a zone, minions serve no other purpose than to occupy their designated vertex.
-If a minion becomes disabled, it has to move towards a repairer agents.
+If a minion becomes disabled, it has to move towards a Repairer agents.
 Due to this, it has to leave its vertex.
 Therefore, the zone can no longer exist in its original form.
 In such a case, a minion has to inform its coach about its departure.
@@ -50,14 +50,14 @@ This should further ensure that zones are only proposed multiple times as best z
 We assume due to our zone calculation algorithm that a vertex within a zone will be occupied by at most one agent.
 Then, any enemy agent close to a zone endangers it.
 This is because a zone may not spread across an enemy inside of it~\cite{ahlbrecht_mapc_2014}.  % p.12
-Moreover, enemy saboteur agents can disable agents inside a zone, which similarly destroys the zone in its original form~\cite{ahlbrecht_mapc_2014}.  % p.11
+Moreover, enemy Saboteur agents can disable agents inside a zone, which similarly destroys the zone in its original form~\cite{ahlbrecht_mapc_2014}.  % p.11
 Hence, coaches check once per step whether an enemy agent is close to the zone.
-If this is the case, the coach broadcasts a message to all saboteur agents to come and defend the zone.
+If this is the case, the coach broadcasts a message to all Saboteur agents to come and defend the zone.
 Saboteur agents which are not already defending a zone bid for this.
-The saboteur agent closest to the zone's centre will win the bidding.
+The Saboteur agent closest to the zone's centre will win the bidding.
 It then moves towards the enemy to disable it.
 If the coach detects in a next step that the enemy moved away from the zone, it will cancel the zone defence.
-The coach does so by using another broadcast as it does not know which saboteur agent was selected to defend the zone.
+The coach does so by using another broadcast as it does not know which Saboteur agent was selected to defend the zone.
 
 Explorer agents will still be probing when the first agents start looking for zones.
 Therefore, the most valuable zones may change with more and more vertices being probed.

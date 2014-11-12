@@ -1,26 +1,30 @@
-\subsection[Agent Specific Strategies]{Agent Specific Strategies$^\dagger$}\label{alg:agentstrategies}
-Because each of the five different agent types (or \emph{roles}) in the MAPC scenario --- Explorers, Repairers, Saboteurs, Sentinels and Inspectors --- have different capabilities in terms of the actions they can perform, they must each act according to role-specific strategies and tactics in order for the team to perform well.
+\subsection[Agent Specific Strategies]{Agent Specific Strategies$^{\dagger,\circ}$}\label{alg:agentstrategies}
+Each of the five different agent types (or \emph{roles}) in the MAPC scenario --- Explorers, Repairers, Saboteurs, Sentinels and Inspectors --- has different capabilities in terms of the actions they can perform.
+Thus, they must each act according to role-specific strategies and tactics in order for the team to perform well.
 This section will give a short overview of how different agent types behave differently from each other.
 \begin{description}
-    \item[Explorer] agents are the only ones who can perform the \texttt{probe} action.
-        Vertices must be probed in order to learn their value, which is critical for zoning.
-        Accordingly, an Explorer agent will spend most of its time seeking out, moving towards and finally probing vertices whose value is not yet known.
-        Since there are 6 Explorer agents in a team, care must be taken to make sure that multiple Explorer agents do not move towards the same unprobed vertex, as this is generally a suboptimal usage of their time.
+    \item[Explorer] agents are the only ones who can execute the \texttt{probe} action.
+        Vertices must be probed in order to learn their value, which is critical for building zones with high scores.
+        Accordingly, an Explorer agent will spend most of its time seeking out, moving towards and finally probing vertices whose values are not yet known.
+        Having multiple explorer agents move towards the same not yet probed vertex is in most cases suboptimal.
+        Since there are 6 Explorer agents in a team, special care is taken to prevent this as described in \autoref{alg:exploration}\todo{update this reference to wherever we explain why multiple agents won't run onto the same node}.
 
-        In our implementation, we consider all vertices in the map to be \enquote{worthy} of being probed and thus to know their value.
-        However, due to the way our team performs zoning (see~\autoref{alg:zon_finding}), we prioritise vertices in a specific way which we call \enquote{cluster probing}.
-        Because our zone calculation algorithm (see~\autoref{alg:zon_calculation}) puts agents around a centre vertex in a circular manner and with a maximum distance of two edges away, and because we want the Explorer agents' probing to help us with quickly finding and establishing high-value zones, Explorer agents should avoid probing vertices in e.g.\ a straight line.
-        Rather, an Explorer agent's probing pattern should mimic the circular shape of the zone calculation algorithm.
-        Because of this, for probing we prioritise unprobed vertices first by distance, then by the number of edges they share with already probed vertices.
+        In our implementation, we are generally interested in the value of all vertices and hence would want to have all vertices probed.
+        Yet, we prioritise vertices in a specific way which we call \enquote{cluster probing}.
+        Therefore, an Explorer agent's probing will rather be circular than e.g.\ a straight line.
+        The motivation behind this is that our algorithm for zone calculation as presented in \autoref{alg:zon_calculation} puts agents around a centre vertex in a circular manner and with a maximum distance of two edges away.
+        By having cluster probing mimic the circular shape of the zones calculated by our algorithm, we enable our agents to quicker find and establish high-value zones.
+        To achieve this, our probing algorithm prioritises not yet probed vertices first by distance, then by the number of edges they share with already probed vertices.
         The result is that the Explorer agents' movement is similar to a spiral pattern, provided the Explorer agents are not disturbed by e.g.\ nearby enemy agents.
-        Explorer agents do not stop this probing pattern until they can no longer find any unprobed vertices.
+        Explorer agents do not stop this probing pattern until they can no longer find any not yet probed vertices.
+        % I've read up to here but I'll continue tomorrow.
     \item[Repairer] agents are the only agents who can perform the \texttt{repair} action for restoring health to disabled agents.
         Because the team loses out on possible points for every disabled agent in the team, to achieve a high score it is essential to quickly repair damaged agents.
         In our implementation, Repairer agents' actions are prioritised so that they will attempt to repair any disabled friendly agent in their visibility range.
-        It is the \enquote{job} of the disabled agents to find and move towards the closest friendly repairer.
+        It is the \enquote{job} of the disabled agents to find and move towards the closest friendly Repairer agent.
         If a Repairer agent is aware of a friendly disabled agent outside of its visibility range, and the Repairer agent is currently not used for zoning, however, then the Repairer agent will also move towards the disabled agent.
     \item[Saboteur] agents are the only agents that can disable enemy agents using the \texttt{attack} action.
-        In our implementation, a saboteur's role is very aggressively defined, and is prioritised thusly: if you see a non-disabled enemy, attack it; otherwise find and move towards an enemy you can attack.
+        In our implementation, a Saboteur agent's role is very aggressively defined, and is prioritised thusly: if you see a non-disabled enemy, attack it; otherwise find and move towards an enemy you can attack.
 
         Throughout most of our development phase, Saboteur agents were the only agent type we would use the \texttt{buy} action for to extend their visibility range once for every Saboteur agent because we believed that this would give us an offensive edge against other teams.
         We decided to try out other buying strategies as well, however, by having our agents play matches against copies of themselves, except that the copies used different strategies for buying upgrades.
@@ -30,7 +34,7 @@ This section will give a short overview of how different agent types behave diff
         Thus, we were able to outperform copies of our agents which were using our more conventional approach of upgrade buying.
 
         The kind of upgrade (maximum energy, visibility range, maximum health or strength) depends on the relative improvement that buying that upgrade will bring to the upgrade-specific \enquote{module}.
-        For example, if the artillery agent has a maximum health of 3 and a visbility range of 1, then increasing the maximum health to 4 would be an improvement of \SI{33}{\percent}, while increasing the visibility range from 1 to 2 would be an improvement of \SI{100}{\percent} --- so the artillery agent will choose to buy an upgrade to the latter.
+        For example, if the artillery agent has a maximum health of 3 and a visibility range of 1, then increasing the maximum health to 4 would be an improvement of \SI{33}{\percent}, while increasing the visibility range from 1 to 2 would be an improvement of \SI{100}{\percent} --- so the artillery agent will choose to buy an upgrade to the latter.
 
         We also call in Saboteur agents to defend a zone if it gets attacked by an enemy agent.
     \item[Sentinel] agents do not have a unique action that they can perform.
