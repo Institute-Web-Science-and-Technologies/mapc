@@ -359,8 +359,8 @@ public class MapAgent {
      * with the same hop distance are available.
      * 
      * @param position
-     *            the vertex to find the next unsurveyed vertex for
-     * @return the closest unsurveyed vertex
+     *            the vertex to find the next unsurveyed vertex for.
+     * @return the closest unsurveyed vertex.
      */
     public Vertex getNextUnsurveyedVertex(Vertex position) {
         Vertex vertex = position;
@@ -400,10 +400,10 @@ public class MapAgent {
 
     /**
      * @param vertex
-     *            the vertex to find nearby zones for
+     *            the vertex to find nearby zones for.
      * @param range
-     *            the search distance from the given vertex
-     * @return the list of zones within range around the vertex
+     *            the search distance from the given vertex.
+     * @return the list of zones within range around the vertex.
      */
     public ArrayList<Zone> getZonesInRange(Vertex vertex, int range) {
         ArrayList<Vertex> neighbourhood = vertex.getNeighbourhood(range);
@@ -422,7 +422,7 @@ public class MapAgent {
      * from a list of zones.
      * 
      * @param zones
-     *            the list of zones to choose the best zone from
+     *            the list of zones to choose the best zone from.
      * @return the zone with the highest zone value per agent or {@code null} if
      *         {@code zones} does not contain any zone.
      */
@@ -451,12 +451,12 @@ public class MapAgent {
      * amount of required agents.
      * 
      * @param zones
-     *            the list of zones to choose the best zone from
+     *            the list of zones to choose the best zone from.
      * 
      * @param maxAgents
-     *            the maximum number of agents for the zone
+     *            the maximum number of agents for the zone.
      * @return the zone with the highest zone value per agent and at most
-     *         maxAgents agent positions
+     *         maxAgents agent positions.
      */
     public Zone getBestZoneWithMaxAgents(ArrayList<Zone> zones, int maxAgents) {
         for (int i = zones.size() - 1; i >= 0; i--) {
@@ -600,12 +600,12 @@ public class MapAgent {
     }
 
     /**
-     * Returns the closest enemy agent from the given position. Prioritizes
-     * saboteurs.
+     * Returns the closest enemy agent from the given position. Prioritises
+     * Saboteurs.
      * 
      * @param position
-     *            the vertex to check for closest enemies from
-     * @return the closest enemy agent
+     *            the vertex to check for closest enemies from.
+     * @return the closest enemy agent.
      */
     public Agent getClosestEnemy(Vertex position) {
         Agent closestEnemy = null;
@@ -659,7 +659,7 @@ public class MapAgent {
     public List<String> getClosestAgentsToZone(Vertex center, int count) {
         ArrayList<String> closestAgents = new ArrayList<String>();
 
-        // sort agents in regard of their distance to the center of the zone
+        // sort agents in regard to their distance to the center of the zone
         TreeMap<Integer, ArrayList<String>> distanceFromZone = new TreeMap<Integer, ArrayList<String>>();
         HashSet<Agent> availableZoners = new HashSet<Agent>();
         for (Agent agent : getFriendlyAgents()) {
@@ -696,6 +696,16 @@ public class MapAgent {
         return closestAgents;
     }
 
+    /**
+     * This method destroys all information about existing zones or score
+     * vertices. If no zone can be found around {@code centre} but the
+     * {@code size} is not 1, a score vertex will be assumed.
+     * 
+     * @param center
+     *            centre vertex identifying this zone.
+     * @param size
+     *            number of agents used to build this zone.
+     */
     public void destroyZone(Vertex center, int size) {
         Zone zone = center.getZone(size);
         if (size == 1 || zone == null) {
@@ -788,8 +798,8 @@ public class MapAgent {
      * inspectors.
      * 
      * @param position
-     *            the vertex to find the closest uninspected enemy for
-     * @return the closest uninspected enemy
+     *            the vertex to find the closest uninspected enemy for.
+     * @return the closest uninspected enemy.
      */
     public Agent getClosestUninspectedEnemy(Vertex position) {
         Agent closestUninspectedEnemy = null;
@@ -850,9 +860,9 @@ public class MapAgent {
      * Retrieves the closest friendly repairer agent.
      * 
      * @param disabledAgent
-     *            the agent to find a nearby repairer for
+     *            the agent to find a nearby repairer for.
      * @return the closest, non-disabled, or the closest repairer if all the
-     *         repairers are reserved or disabled
+     *         repairers are reserved or disabled.
      */
     public Agent getClosestRepairer(Agent disabledAgent) {
         // If the disabled agent is already in our repair list just return the
@@ -895,8 +905,8 @@ public class MapAgent {
      * Retrieves the closest friendly disabled agent.
      * 
      * @param repairer
-     *            the repairer agent we want to find an agent to repair for
-     * @return the closest disabled friendly agent, or null if none is found
+     *            the repairer agent we want to find an agent to repair for.
+     * @return the closest disabled friendly agent, or null if none is found.
      */
     public Agent getClosestDisabledAgent(Agent repairer) {
         // if the repairer is already assigned to an disabled agent return this

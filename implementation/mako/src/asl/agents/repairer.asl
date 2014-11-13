@@ -4,7 +4,6 @@
 role(repairer).
 
 // If energy is not enough - recharge 
-//Todo: repairer can also repair the agent who is undisabled,and spend 2 energy    
 +!doRepair(Vehicle, VehiclePosition):
 	energy(Energy)
 	& position(MyPosition)

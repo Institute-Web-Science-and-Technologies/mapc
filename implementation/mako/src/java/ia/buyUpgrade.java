@@ -1,12 +1,12 @@
 package ia;
 
-import eis.Agent
-import eis.JasonHelper
-import eis.MapAgent
-import jason.asSemantics.DefaultInternalAction
-import jason.asSemantics.TransitionSystem
-import jason.asSemantics.Unifier
-import jason.asSyntax.Term
+import jason.asSemantics.DefaultInternalAction;
+import jason.asSemantics.TransitionSystem;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.Term;
+import eis.Agent;
+import eis.JasonHelper;
+import eis.MapAgent;
 
 /**
  * Call from AgentSpeak: buyUpgrade(Agent, *Upgrade)
