@@ -11,16 +11,17 @@ To achieve this, it is mandatory to somehow store information about the map like
 The following subsections describe our different approaches on how to store and process this information.
 In more detail, the first section, \autoref{alg:map_cartographer}, presents our initial approach with its up- and down-sides.
 After that a basic overview of our initial map building approach is given in \autoref{alg:map_dv}.
-Finally, this chapter concludes with a description of the second approach we used and finally stuck to in \autoref{alg:map_javamap}. % I'm unsure whether sticking with something is colloquial or at least too informal.
+Finally, this chapter concludes with a description of the second approach we used and finally stuck to in \autoref{alg:map_javamap}. % I'm unsure whether ``sticking to something'' is colloquial or at least too informal.
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[Cartographer Agent]{Cartographer Agent.$^\star$}\label{alg:map_cartographer}
-Very early in our development process we decided that we do not want to store the same information at different places.
-This means we did not want that each agent stores all map data in its belief base.
+Very early in our development process we decided that we wanted to store all information about the map in a central place.
+This means we were not interested in each agent storing all map data in its own belief base.
 The intention behind this decision was to reduce the effort in synchronising and maintaining data between the single agents.
-Our initial approach was to install one omniscient pseudo agent we called the ``cartographer'' agent.
-The cartographer agent represented a map and had the purpose to calculate shortest paths between given vertices and to store map information.
-These map information include data like traversing costs, edges between vertices and vertex values.
+Our initial approach was to install one additional, omniscient agent which we called the \emph{cartographer agent}.
+It was a separate agent existing in the background which was independent from our 28 agents of the simulation.
+The cartographer agent represented a map and had the purpose to calculate shortest paths between given vertices as well as storing map information.
+The map information included data like traversing costs, edges between vertices and vertex values.
 Every agent told the cartographer agent about its environment related beliefs and the cartographer agent stored these beliefs.
 Environment related beliefs are listed in the listing below:
 
@@ -67,7 +68,7 @@ The first thing it does, is to ask the cartographer agent, whether this vertex w
 After it gets the answer it surveys the vertex or asks the cartographer for the next not surveyed vertex and travels there.
 Then the whole procedure starts again.
 As one can see, there are two possible bottlenecks.
-The first one is the query for the state of an vertex and the second is the query for the next unsurveyed vertex, which includes calculating the shortest path to this vertex.
+The first one is the query for the state of an vertex and the second is the query for the next not surveyed vertex, which includes calculating the shortest path to this vertex.
 As described before the cartographer has not only to handle queries, but also handles map information input of every agent in every server cycle.
 And due to the Jason communication approach this results in the cartographer not being able to handle queries immediate.
 In our tests we saw answer times for queries around ten till twenty server cycles, which means that our agents were idle most of the time, waiting for answers from the cartographer agent.
