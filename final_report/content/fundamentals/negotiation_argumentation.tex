@@ -50,8 +50,8 @@ A counterexample is similar to appealing to prevailing practice, however in this
 Here it is assumed that the agent somehow has the access to the persuadee's past history.
 
 An appeal to past promise can be applied only when the agent is not a memoryless agent.
-This type of argument is a sort or a reminder to the previously given promise to execute an action is some particular situation.\todo{I'm not sure this sentence makes sense.}
-The algorithm of checking if this argument applies is: verify that the persuadee agent is not a memoryless agent, then check if the agent received a request from the opponent in the past with promise of a future reward and that reward was the intended action right now.
+This type of argument is a sort of a reminder to the previously given promise to execute an action in some particular situation.
+The algorithm of checking if this argument is applicable is: verify that the persuadee agent is not a memoryless agent, then check if the agent received a request from the opponent in the past with promise of a future reward and that reward was the currently intended action.
 
 An appeal to self-interest is a type of argument that convinces the opponent that the performed action will serve towards fulfilling one of its desires.
 This argument cannot be applied to a knowledgeable or reasonable agent, since it can compute the implications by itself.
@@ -75,8 +75,9 @@ In this case the weakest argument is selected first and if it will not succeed, 
 Request evaluation rules define how incoming requests will be processed by the agent.
 Request evaluation should end with a response message back to the sender stating either that the argument is accepted and the agent will perform the prescribed action, or that the argument did not persuade the agent to fulfill the request.
 Also, as was mentioned above, during the request evaluation agents' beliefs, desires, intentions or goals can be changed.
-An example of such changes in our project can be a Saboteur agent switching to zone defending after negotiation with other Saboteur agents: the beliefs about the zone it has to defend are added and the primary goal is changed to zone defending.\todo{Include cross-references to where the concepts of "zone defense" and "zone coach" are introduced.}
+An example of such changes in our project can be a Saboteur agent switching to zone defending after negotiation with other Saboteur agents: the beliefs about the zone it has to defend are added and the primary goal is changed to zone defending.
 Another example is an agent adopting a role of zone coach after negotiation about the best zone: the goal to invite other agents to the newly created zone, regularly check for enemy agents near the zone and so on.
+Zone defending and roles of agents in the zone are explained more in detail in \autoref{alg:zon_roles}.
 Request evaluation always depends on the arguments that are used, the agents participating in the negotiation and the request itself.
 
 For the implementation of negotiation procedures and making collective decisions in our project we mostly used the \emph{bidding} method described in~\cite{bordini_programming_2007}.
