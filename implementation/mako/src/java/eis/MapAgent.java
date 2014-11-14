@@ -149,7 +149,7 @@ public class MapAgent {
             vertices = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
             break;
         case "step":
-            handleStep(percept);
+            clearLists(percept);
             break;
         }
     }
@@ -195,8 +195,13 @@ public class MapAgent {
         agent.setDisabled(disabled);
     }
 
-    // @SuppressWarnings("unchecked")
-    private synchronized void handleStep(Percept percept) {
+    /**
+     * The clearLists method clears all internal lists which are used to prevent
+     * conflicts between actions of agents. These lists will be cleared once per
+     * step. Also besides clearing the internal lists, all vertices in those
+     * lists will be reset.
+     */
+    private synchronized void clearLists(Percept percept) {
         int newStep = ((Numeral) percept.getParameters().get(0)).getValue().intValue();
         if (newStep > getStep()) {
             for (Vertex vertex : reservedProbedVertices) {
@@ -213,30 +218,15 @@ public class MapAgent {
 
             moneySpentThisStep = 0;
             setStep(newStep);
-
-            // Debug output.
-            int numSeenVertices = vertexMap.size();
-            int probedVertices = 0;
-            for (Vertex vertex : vertexMap.values()) {
-                if (vertex.isProbed()) {
-                    probedVertices++;
-                }
-            }
-
-            logger.info("[Step " + getStep() + "] Total Vertices: " + vertices + ". Seen: " + numSeenVertices + "(" + numSeenVertices * 100.0 / vertices + "%) Probed: " + probedVertices + "(" + probedVertices * 100.0 / vertices + "%)");
-            logger.info("[Step " + getStep() + "] TotalEdges: " + edges + ". Visible: " + visibleEdges.size() + "(" + visibleEdges.size() * 100.0 / edges + "%) Surveyed: " + surveyedEdges.size() + "(" + surveyedEdges.size() * 100.0 / edges + "%)");
-
-            // HashSet<Vertex> unsurveyedVertices = new HashSet<Vertex>();
-            // for (Vertex vertex : vertexMap.values()) {
-            // if (!vertex.isSurveyed()) {
-            // unsurveyedVertices.add(vertex);
-            // }
-            // }
-            // logger.info("[Step " + getStep() +
-            // "] Remaining unsurveyed vertices: " + unsurveyedVertices);
         }
     }
 
+    /**
+     * The calculateRepairList method calculates a mapping of the available
+     * repairers and the current disabled agents. Each repairer gets assigned
+     * the closest not already assigned disabled agent. The method returns if
+     * all repairers have a mapping or no unassigned disabled agent exists.
+     */
     private void calculateRepairList() {
         repairList.clear();
         List<Agent> repairers = getRepairers();

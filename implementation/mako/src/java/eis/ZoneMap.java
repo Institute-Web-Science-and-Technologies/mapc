@@ -20,13 +20,17 @@ public class ZoneMap {
     }
 
     public void calculateZoneValue() {
-        logger.info("Entering zone calculation");
         // calculate agent positions
         calculateAgentPositions();
         // calculate zones
         calculateZones();
     }
 
+    /**
+     * The calculateAgentPositions method calculates the positions agents have
+     * to occupy to gain the highest score value per agent from the
+     * corresponding minimal zone.
+     */
     private void calculateAgentPositions() {
         agentPositions = new ArrayList<Vertex>();
 
@@ -34,9 +38,7 @@ public class ZoneMap {
         // vertex.
         ArrayList<Vertex> neighbours = pathMap.getNeighbours();
         ArrayList<Vertex> twoHops = pathMap.getVerticesWithHop(2);
-        logger.info("Neighbours: " + neighbours + ". Initial Two-Hops: " + twoHops);
         if (twoHops.size() == 0 && neighbours.size() == 0) {
-            logger.info("I don't know about any neighbours, aborting zone calculation");
             return;
         }
 
@@ -50,8 +52,6 @@ public class ZoneMap {
                 agentPositions.add(vertex);
             }
         }
-        logger.info("1) Agent Positions: " + agentPositions);
-        logger.info("1) Remaining Two-Hops: " + twoHops);
 
         // Remove all vertices from the two-hop list, which are connected
         // directly or indirectly (via a one-hop) to the center vertex.
@@ -67,7 +67,6 @@ public class ZoneMap {
                 twoHops.remove(vertex);
             }
         }
-        logger.info("2) Remaining Two-Hops: " + twoHops);
 
         // Add all two-hops to the agent position list, which are forming a
         // bridge over an other two-hop.
@@ -84,8 +83,6 @@ public class ZoneMap {
 
         // Add center vertex to the list of agent positions
         agentPositions.add(pathMap.getPosition());
-        logger.info("3) Agent Positions: " + agentPositions);
-        logger.info("3) Remaining Two-Hops: " + twoHops);
 
         // Check every one-hop neighbour if it is connected to at least 1 agent
         // positions and the center vertex. If not add the two-hop with highest
@@ -108,27 +105,28 @@ public class ZoneMap {
                 if (oneHopNeighboursWithNodeValues.size() > 0) {
                     Vertex possibleDisconnectedNode = oneHopNeighboursWithNodeValues.lastEntry().getValue();
                     agentPositions.add(possibleDisconnectedNode);
-                    logger.info("4) new agent position: " + possibleDisconnectedNode + " connects: " + oneHop);
                 } else {
                     optionalAgentPositions.add(oneHop);
-                    logger.info("4) new optional agent position: " + oneHop);
                 }
             }
         }
-        logger.info("4) Agent Positions: " + agentPositions);
 
         // All two-hops which are not in the agent position list, become
         // optional positions.
         optionalAgentPositions.addAll(pathMap.getVerticesWithHop(2));
         optionalAgentPositions.removeAll(agentPositions);
-        logger.info("5) Optional Agent Positions: " + optionalAgentPositions);
     }
 
+    /**
+     * The calculateZones method calculates the score of the minimal zone and
+     * all zones which can be build by extending the minimal zone by placing
+     * agents on positions which have a higher value than the minimal zone
+     * score.
+     */
     private void calculateZones() {
         ArrayList<Vertex> zonePointVertices = new ArrayList<Vertex>();
         zonePointVertices.addAll(getZoneVertices());
         zonePointVertices.removeAll(optionalAgentPositions);
-        logger.info("Zone Point Vertices: " + zonePointVertices);
 
         // calculate minimal zone value
         double zoneValue = 0.0;
@@ -136,7 +134,6 @@ public class ZoneMap {
             zoneValue += vertex.getValue();
         }
         zoneValue /= agentPositions.size();
-        logger.info("Minimal Zone Value per agent is: " + zoneValue);
 
         // create zone
         Zone zone = new Zone(pathMap.getPosition());
@@ -177,6 +174,10 @@ public class ZoneMap {
         }
     }
 
+    /**
+     * The buildBridge method returns all vertices which are needed for building
+     * a bridge in the zone calculating algorithm.
+     */
     public ArrayList<Vertex> buildBridge(Vertex vertex,
             ArrayList<Vertex> vertices) {
         ArrayList<Vertex> myOneHops = vertex.getNeighbours();

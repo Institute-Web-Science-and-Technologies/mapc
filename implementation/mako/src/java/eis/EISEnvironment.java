@@ -115,6 +115,12 @@ public class EISEnvironment extends Environment implements AgentListener {
         }
     }
 
+    /**
+     * The executeAction method translates Jason agent names into server agent
+     * names and executes agent actions by the server.To prevent executing the
+     * same action more than once per step, an action history is queried before
+     * performing the action.
+     */
     @Override
     public boolean executeAction(String agentJasonName, Structure command) {
         String agentServerName = jasonAgentMap.get(agentJasonName).getServerName();
@@ -143,11 +149,7 @@ public class EISEnvironment extends Environment implements AgentListener {
             if (stepAgentActionMap == null) {
                 stepAgentActionMap = new Hashtable<Agent, Action>();
             }
-            if (stepAgentActionMap.containsKey(agent)) {
-                Action previousAction = stepAgentActionMap.get(agent);
-                logger.info("Agent " + agent + " already wants to " + previousAction + " in step + " + step + "! Ignoring new action " + action);
-            } else {
-                logger.info("Agent " + agent + " wants to " + action + " in step " + step);
+            if (!stepAgentActionMap.containsKey(agent)) {
                 stepAgentActionMap.put(agent, action);
                 actionHistory.put(step, stepAgentActionMap);
                 environmentInterface.performAction(agentServerName, action);

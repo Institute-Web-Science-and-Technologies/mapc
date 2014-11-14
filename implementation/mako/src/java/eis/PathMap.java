@@ -19,6 +19,11 @@ public class PathMap {
         // logger = new AgentLogger(vertex + " PathMap");
     }
 
+    /**
+     * The handlePath method stores new paths in the hash table of the PathMap.
+     * If the destination of a path is already known, the method updates the
+     * weights and the costs of the path.
+     */
     public boolean handlePath(Path newPath) {
         Vertex destination = newPath.getDestination();
         // don't store paths that lead to ourselves
@@ -26,31 +31,25 @@ public class PathMap {
             return false;
         if (knownPaths.containsKey(destination)) {
             Path currentPath = knownPaths.get(destination);
-            // String oldPathInfo = "" + this.position + currentPath;
             boolean hasHopsChanged = currentPath.setPathHops(newPath.getPathHops(), newPath.getNextHopVertex());
             boolean hasCostsChanged = currentPath.setPathCosts(newPath.getPathCosts(), newPath.getNextBestCostVertex());
             if (hasHopsChanged) {
                 updateHopPaths(newPath);
             }
-
-            // if (hasHopsChanged || hasCostsChanged) {
-            // logger.info("Updated path: " + this.position + currentPath +
-            // " (was: " + oldPathInfo + ")");
-            // }
-
-            // if (hasCostsChanged) {
-            // updateCostPaths(path);
-            // }
             return hasHopsChanged || hasCostsChanged;
 
         } else {
             knownPaths.put(destination, newPath);
             updateHopPaths(newPath);
-            // logger.info("New path: " + this.position + newPath);
             return true;
         }
     }
 
+    /**
+     * The updateHopPaths method updates the mappings of hops to paths. In this
+     * method we store how far in hops every reachable destination is and which
+     * path has to be chosen.
+     */
     private void updateHopPaths(Path path) {
         int currentHop = 0;
         if (hopMapping.containsKey(path.getDestination())) {
