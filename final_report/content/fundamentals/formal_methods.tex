@@ -92,7 +92,7 @@ The interpreter continually performs the following: determine available options,
 After that, it updates the event queue and eliminates the options which have already achieved or are no longer possible.
 
 \todo{Add or leave out a caption for all listings. Currently we are not consistent with that.}
-\begin{lstlisting}
+\begin{lstlisting}[caption={An abstract BDI interpreter~\cite{Singh_92}.}]
   BDI-Interpreter
   initialise_state();
   do
@@ -113,7 +113,7 @@ Intentions in this case may be represented as hierarchically related plans.
 Getting back to the algorithm and assuming plans as options, the option generator may look like the following.
 Given a set of trigger events from the event queue, the option generator iterates through the plan library and returns those plans whose invocation condition matches the trigger event and whose preconditions are believed by the agent.
 
-\begin{lstlisting}[mathescape]
+\begin{lstlisting}[mathescape, caption={Option generation for BDI interpreter~\cite{Singh_92}.}]
   option-generator(trigger-events, B, G ,I)
   options := {};
   for trigger-event $\in$ trigger-events do
@@ -127,7 +127,7 @@ Given a set of trigger events from the event queue, the option generator iterate
 Deliberation of options should conform with the execution time constraints, therefore under certain circumstances random choice might be appropriate.
 Sometimes lengthy deliberation becomes possible by introducing meta-level plans into the plan library, which form intentions towards some particular plans.
 
-\begin{lstlisting}[mathescape]
+\begin{lstlisting}[mathescape, caption={Option deliberation for BDI interpreter~\cite{Singh_92}.}]
   deliberate(options)
   if length(options) $\leq$ 1 then return options;
   else metalevel-options :=
