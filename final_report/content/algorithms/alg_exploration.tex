@@ -158,23 +158,32 @@ At some point all information and paths are propagated through the whole network
 
 \begin{figure}
   \centering
-  \caption{Executing the Distance-Vector Routing Protocol algorithm as described in \autoref{alg:map_dv} on a small network of four nodes. Each node has a table attached, containing all accessible nodes. The first parameter is the destination node, the second one is the node to pass through and the third parameter shows the overall distance to the destination.       \label{fig:dv}}
+  \caption{Executing the Distance-Vector Routing Protocol algorithm as described in \autoref{alg:map_dv} on a small network of four nodes to calculate the shortest paths.
+           Each node has a table attached, containing all accessible nodes.
+           The first parameter is the destination node, the second one is the node to pass through and the third parameter shows the overall distance to the destination.
+           For more compact display, we left out the parameter showing the cost of the edge to the next hop.\label{fig:dv}}
     \begin{subfigure}{.45\textwidth}
         \includegraphics[width=\textwidth] {images/dv0.png}
-        \caption{Initial set of node agents with their belief base. Each node agent knows only about itself and the shortest path to itself. The travelling costs to itself are zero.}
+        \caption{Initial set of node agents with their belief base.
+                 Each node agent knows only about itself and the shortest path to itself.
+                 The travelling costs to itself are zero.}
     \end{subfigure}\quad
     \begin{subfigure}{.45\textwidth}
         \includegraphics[width=\textwidth] {images/dv1.png}
-        \caption{The node agents \texttt{v1} and \texttt{v2} are informed that they are neighbours. So they know that there must be a path to the other node agent. Because they are direct neighbours they are one hop away. \texttt{v3} and \texttt{v4} are not connected to the network right now, so they will not be informed about the path between \texttt{v1} and \texttt{v2}.}
+        \caption{The node agents \texttt{v1} and \texttt{v2} are informed that they are neighbours.
+                 So they know that there must be a path to the other node agent.
+                 Because they are direct neighbours they are one hop away. \texttt{v3} and \texttt{v4} are not connected to the network right now, so they will not be informed about the path between \texttt{v1} and \texttt{v2}.}
     \end{subfigure}
 
     \begin{subfigure}{.45\textwidth}
        \includegraphics[width=\textwidth] {images/dv2.png}
-       \caption{Now \texttt{v3} is added to the network by informing \texttt{v3} and \texttt{v1} about their neighbourhood relation. At first only \texttt{v1}  and \texttt{v3} update their belief base.}
+       \caption{Now \texttt{v3} is added to the network by informing \texttt{v3} and \texttt{v1} about their neighbourhood relation.
+                At first only \texttt{v1}  and \texttt{v3} update their belief base.}
     \end{subfigure}\quad
     \begin{subfigure}{.45\textwidth}
         \includegraphics[width=\textwidth] {images/dv3.png}
-        \caption{In the next step \texttt{v2} is informed about the path from \texttt{v1} to \texttt{v3}. \texttt{V2}  now knows that the shortest path to \texttt{v3} is by passing \texttt{v1} and that \texttt{v3} is 2 hops away.}
+        \caption{In the next step \texttt{v2} is informed about the path from \texttt{v1} to \texttt{v3}.
+                 The shortest path to \texttt{v3} from \texttt{v2} is now known to be 2 hops away, going over \texttt{v1}.}
     \end{subfigure}
 \end{figure}
 \clearpage
@@ -183,11 +192,13 @@ At some point all information and paths are propagated through the whole network
     \ContinuedFloat % continue from previous page
     \begin{subfigure}{.45\textwidth}
         \includegraphics[width=\textwidth] {images/dv4.png}
-       \caption{After that \texttt{v4} is added to the network and each node agent updates its belief base.}
+        \caption{Adding the knowledge about an edge between \texttt{v3} and \texttt{v4} will make all node agents update their belief base.}
     \end{subfigure}\quad
     \begin{subfigure}{.45\textwidth}
         \includegraphics[width=\textwidth] {images/dv5.png}
-        \caption{In the last step \texttt{v2} and \texttt{v4} are informed that they are neighbours. Because of that the shortest path between both node agents changes and is updated. The paths for the other node agents stay as is, because they can not get better. }
+        \caption{In the last step, \texttt{v2} and \texttt{v4} are informed of being neighbours.
+                 Because of that, the shortest path between both node agents changes and is updated.
+                 The paths for the other node agents stay unchanged, because they cannot improve.}
     \end{subfigure}
     \phantomcaption
 \end{figure}
@@ -198,11 +209,11 @@ Around 400 Jason agents were calculating shortest and cheapest paths in parallel
 At the same time, they received new information by the exploring agents.
 Although this information was redundant in most cases, it still had to be processed.
 This led to a high load on our system.
-To reduce the load, we would decide to prefer the shortest over the cheapest paths and henceforth only calculate the shortest paths.
+To reduce the load, we decided to prefer the shortest over the cheapest paths and henceforth only calculate the shortest paths.
 We made this decision because we found losing a step due to travelling a path with more hops was worse than having to recharge more often.
-The reason for this is that recharging would return half of the maximum energy to the agent with which it could do multiple hops most of the time.
+The reason for this is that recharging returns half of the maximum energy to the agent with which it can pass multiple hops most of the time.
 
-Next, we reduced communication between node agents and real agents.
+Next, we reduced the communication between node agents and real agents.
 At all times, the necessary map information was first received from the Java EIS Environment module\todo{I don't think, we mention this earlier}.
 Originally, the information was then blindly transmitted to the agents who perceived this information.
 They then themselves passed the information on to the node agents.
@@ -210,10 +221,10 @@ Our change here was to add a filter to this module which would only transmit new
 Since the message boxes were no longer flooded, communication between agents got a lot better.
 
 But two reasons made us discard this approach as well and change to a solution based entirely on Java.
-First we were not able to reduce the load on our system sufficiently by these changes.
-Further we observed that some beliefs were not received by the node agents.
-Even worse, over the time beliefs disappeared from node agents belief bases.
-Due to the constant high workload on our system, we saw that agents sent actions to the server too late, which led again to a lot of idle phases of our agents.
+First, we were not able to reduce the load on our system sufficiently by these changes.
+Further, we observed that some beliefs were not received by the node agents.
+Even worse, over time beliefs disappeared from node agents belief bases.
+Due to the constant high workload on our system, we saw that agents sent actions to the server too late, which led again to a lot of idle steps of our agents.
 The next section presents the solution which we used for the competition.
 
 %%%%%%%%%%%%%%%%%%
