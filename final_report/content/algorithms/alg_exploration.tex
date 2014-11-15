@@ -14,7 +14,7 @@ After that a basic overview of our initial map building approach is given in \au
 Finally, this chapter concludes with a description of the second approach we used and finally stuck to in \autoref{alg:map_javamap}.
 
 %%%%%%%%%%%%%%%%%%
-\subsubsection[Cartographer Agent]{Cartographer Agent.$^\star$}\label{alg:map_cartographer}
+\subsubsection[Cartographer Agent]{Cartographer Agent$^\star$}\label{alg:map_cartographer}
 Very early in our development process we decided that we wanted to store all information about the map in a central place.
 This means we were not interested in each agent storing all map data in its own belief base.
 The intention behind this decision was to reduce the effort in synchronising and maintaining data between the single agents.
@@ -80,7 +80,7 @@ Obviously, this would be suboptimal for the competition.
 The next section describes our second approach which tries to reduce the calculation overhead for the cartographer agent when calculating shortest paths.
 
 %%%%%%%%%%%%%%%%%%
-\subsubsection[Distance-Vector Routing Protocol]{Distance-Vector Routing-Protocol.$^\star$}\label{alg:map_dv}
+\subsubsection[Distance-Vector Routing Protocol]{Distance-Vector Routing-Protocol$^\star$}\label{alg:map_dv}
 This section presents our next approach which tried to solve the problem with repeating calculations of shortest paths.
 It was first built to work together with the cartographer agent but was later used independently.
 We decided to calculate all shortest paths as early as possible and store these paths together with other information in a network of what we called \emph{node agents}.
@@ -231,7 +231,7 @@ Due to the constant high workload on our system, we saw that agents sent actions
 The next section presents the solution which we used for the competition.
 
 %%%%%%%%%%%%%%%%%%
-\subsubsection[JavaMap]{JavaMap.$^\{star,\circ}$}\label{alg:map_javamap}
+\subsubsection[JavaMap]{JavaMap$^{\star,\circ}$}\label{alg:map_javamap}
 We decided to implement the whole map module in Java.
 This solved all of the previously described problems.
 The JavaMap module gets its map information directly from the Java EIS Environment module.

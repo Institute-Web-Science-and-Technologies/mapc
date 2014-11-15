@@ -10,6 +10,12 @@
 \usepackage[labelfont=bf]{caption} % bold labels for Table, Figure etc.
 \RequirePackage[utf8]{inputenc} % support Umlauts and special characters
 \usepackage{microtype} % use space more efficiently and hyphenate smarter: all in all looks a lot sexier
+\newcommand\blfootnote[1]{%
+    \begingroup
+    \renewcommand\thefootnote{}\footnote{#1}%
+    \addtocounter{footnote}{-1}%
+    \endgroup
+}
 \usepackage{listings} % allow source code environment
 \lstset{ % make tildes readable in lstlistings
       literate={~} {$\sim$}{1}
@@ -61,16 +67,12 @@
 \title{Research Lab \enquote{Multi-Agent Programming Contest 2014}}
 \subtitle{Final Report}
 %\titlerunning{logprog}
-\author{Artur Daudrich$^{\star}$ \and Sergey Dedukh$^{\diamond}$ \and Manuel Mittler$^{\odot}$ \and Michael Ruster$^{\circ}$ \and Michael Sewell$^{\dagger}$ \and Yuan Sun$^{\blacktriangle}$}
-\institute{University of Koblenz-Landau, Koblenz Campus}
+\author{Artur Daudrich$^{\star}$ \and Sergey Dedukh$^{\diamond}$ \and Manuel Mittler$^{\odot}$ \and Michael Ruster$^{\circ}$ \and Michael Sewell$^{\dagger}$ \and Yuan Sun$^{\blacktriangle}$\blfootnote{The symbols after the authors' names indicate who wrote which section. When there are multiple symbols, it means that the first part of author(s) wrote it and the second part significantly corrected/updated and proofread it. E.g. $^{\star/\odot,\dagger/\blacktriangle}$ would indicate $^{\star}$ and $^{\odot}$ are the authors and $^{\dagger}$ and $^{\blacktriangle}$ corrected it.}}
+\institute{University of Koblenz-Landau, Campus Koblenz}
 %
 \newcommand{\mars}{\enquote{Agents on Mars}}
 \begin{document}
 \maketitle
-\todo{The symbols after the authors' names indicate who wrote which section. When there are multiple symbols, it means that the first part of author(s) wrote it and the second part significantly corrected/updated and proofread it. E.g. $^{\star/\odot,\dagger/\blacktriangle}$ would indicate $^{\star}$ and $^{\odot}$ are the authors and $^{\dagger}$ and $^{\blacktriangle}$ corrected it.}
-\todo{@lkastler, @matthiasthimm: do we have to formally explain this in the document itself or is it sufficient if you know of this labelling?}
-\todo{Should our subsubsections really feature a trailing dot as the template suggests? At least in the TOC, I'd remove it.}
-
 \pagenumbering{roman}
 \tableofcontents
 \clearpage
