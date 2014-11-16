@@ -13,7 +13,7 @@ In AgentSpeak(L), variables are indicated by using a capital first letter wherea
   ~hasCoffee(john).
 \end{lstlisting}
 \autoref{lst:asl_initBeliefs} shows the initial beliefs of an agent in the example we just introduced.
-The tilde (\~) expresses that the agent knows that neither \texttt{john} nor \texttt{jane} has coffee.
+The tilde ($\sim$) expresses that the agent knows that neither \texttt{john} nor \texttt{jane} has coffee.
 At any given time, the sum of all current beliefs of an agent are called its \emph{belief base}~\cite{bordini_jason_2005}. % p.8
 
 Goals can be divided into \emph{achievement goals} and \emph{test goals}.
@@ -51,7 +51,7 @@ This means that the execution of a plan can be restricted to states in where cer
 \autoref{l:asl_trigger} is the triggering event of the plan.
 In this case, an agent will consider executing this plan, when it notices that someone is poured coffee.
 Hence, this plan is called a \emph{relevant plan}.
-The underscore (\_) denotes an anonymous variable similar to its use in Prolog.
+The underscore (\texttt{\_}) denotes an anonymous variable similar to its use in Prolog.
 Its meaning is that it will match any term.
 \autoref{l:asl_context} is the plan's context.
 The plan is called an \emph{applicable plan} if the context's beliefs are all known to the agent.
@@ -63,7 +63,7 @@ As its context is empty, the plan can be executed immediately and evaluates to t
 \autoref{l:asl_loop} expresses how the event of someone being poured coffee should be alternatively handled.
 As AgentSpeak(L) is interpreted from top to bottom, it will only be seen as an applicable plan, if the former relevant plan did not trigger.
 Therefore, if the agent knew that there was still someone left without coffee, it will want to achieve the \texttt{servedCoffee} goal again.
-% TODO: explain that this is a better example and hence we first deal with it instead of servedCoffee
+% TODO?: explain that this is a better example and hence we first deal with it instead of servedCoffee
 \begin{lstlisting}[firstnumber=4, caption={Events for handling someone being poured a coffee as well as the \texttt{sing} plan.}, label=lst:asl_sing]
   +hasCoffee(_):%\label{l:asl_trigger}%
       ~hasCoffee(_)%\label{l:asl_context}%
@@ -91,11 +91,6 @@ Additionally, the knowledge about \texttt{X} not having any coffee is removed in
          -~hasCoffee(X).%\label{l:asl_coffeeless}%
 \end{lstlisting}
 
-AgentSpeak(L) is suitable for multi-agent scenarios such as the \enquote{Agents on Mars} scenario.
-Especially when comparing FLUX to the components of AgentSpeak(L) plans, it becomes clear that there are many similarities.
-As FLUX' actions' precondition is similar to a plan's context and the state update axiom is implicitly included in a plan's body.
-Yet, the state in AgentSpeak(L) does not have to be manually and explicitly modified.
-Furthermore, a plan's body enables further possibilities like adding new goals.
-The main difference between FLUX and AgentSpeak(L) is that FLUX is based on fluent calculus.
-It is hence a more general approach focusing on modelling the change of fluents.
-AgentSpeak(L) on the other hand was strictly developed as an application for BDI-agents.
+As shown, AgentSpeak(L) is another logic programming language for agent programming.
+It was specifically designed for developing BDI-agents.
+In the next section, an interpreter for this language will be given, which further extends it.

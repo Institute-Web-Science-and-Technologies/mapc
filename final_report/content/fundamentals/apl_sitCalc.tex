@@ -1,7 +1,7 @@
 \subsubsection[Situation Calculus]{Situation Calculus$^\circ$}\label{fun:apl_sitCalc}
 This section gives a short summary of the situation calculus, which was first introduced by McCarthy and Hayes~\cite{mccarthy_philosophical_1969}.
 The situation calculus is mainly a first-order logic but also uses second order logic to encode a dynamic world~\cite{levesque_golog:_1997}. %60
-It is a theoretical concept and was consequently not under consideration to be used as an agent programming language to compete in the MAPC.
+It is a theoretical concept and is consequently not applicable to multi-agent scenarios without any concrete implementation.
 Yet, it is being presented to serve as basis for the later illustrated languages GOLOG and FLUX.
 The situation calculus consists of the three first-order terms: \emph{fluents}, \emph{actions} and \emph{situations}~\cite{mccarthy_philosophical_1969,boutilier_decision_2000}. %18+,356
 Fluents model properties of the world.
@@ -71,3 +71,6 @@ Given \autoref{f_hasCoffee}, \ref{a_possPourCoffee}, \ref{a_effectPourCoffee} an
   \end{split}
 \end{equation}
 \autoref{a_sucStateAxiom} then formalises that an agent $p$ may only have coffee if it was poured coffee or if it already had coffee and the action was not to pour $p$ coffee.
+
+Although the situation calculus contains further concepts, this quick introduction should suffice to get an understanding of it.
+\autoref{fun:apl_golog} shows an implementation of these concepts into an agent programming language.

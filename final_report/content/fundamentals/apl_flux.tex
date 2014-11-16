@@ -1,7 +1,7 @@
 \subsubsection[FLUX]{FLUX$^\circ$}\label{fun:apl_flux}
-This section gives a summary of the logic programming language FLUX which offers solutions to the problems pertaining to GOLOG shown earlier.
+This section gives a summary of the logic programming language FLUX.
 Except for the examples and if not specified otherwise, the information of this section is taken from Thielscher~\cite{thielscher_flux:_2005} who first introduced FLUX.
-This is done by using the \emph{fluent calculus} instead of the situation calculus.
+The language uses the \emph{fluent calculus} instead of the situation calculus.
 Both are similar but the fluent calculus adds \emph{states}.
 A state $z$ is a set of fluents $f_1,\dotsc,f_n$.
 In FLUX, it is denoted as $z = f_1 \circ\dotsc\circ f_n$.
@@ -9,17 +9,18 @@ In every situation there exists exactly one state with which the current propert
 Yet, the world can be in the same state in multiple situations.
 FLUX uses \emph{knowledge states} for representing agent knowledge.
 These are denoted through $\textit{KState}(s,z)$ meaning that an agent knows that $z$ holds in $s$.
-Knowledge states can be incomplete as opposed to knowledge in GOLOG.
+Knowledge states and states in general can be incomplete.
+This is important for modelling agents discovering unknown environments.
+Their knowledge of the environment will then become more and more complete over time.
 
 The frame problem in the fluent calculus is solved through \emph{state update axioms} as described by Thielscher~\cite{thielscher_situation_1999}.
-The axioms define the effects of an action as the difference between the state before and after the action.
+Axioms define the effects of an action as the difference between the state before and after the action.
 This is modelled with $\vartheta^-$ for negative and $\vartheta^+$ for positive effects.
 Both are simply macros for finite states.
 Due to using states, reasoning is linear in the size of the state representation.
 That is, after every action execution, the world represented by its fluent is processed.
 This is called being \emph{progression-based}.
-Therefore, FLUX can outperform GOLOG, as determining whether a property currently holds is only a matter of looking it up in the state.
-With GOLOG however, the property must be traced back to the initial situation by looking at all action executions and their effects. %\cite{thielscher_flux:_2005}
+The performance over time therefore does not worsen much as determining whether a property currently holds is only a matter of looking it up in the state.
 
 Disjunctive and negative state knowledge is modelled through constraints.
 FLUX uses a constraint solver to simplify these constraints until they are solvable.
@@ -82,7 +83,6 @@ Else, it will pour someone coffee and call the main loop again.
 \end{lstlisting}
 The initial configuration in \autoref{lst_init} is comparable to \autoref{ex_gologConfiguration} but due to Prolog interpreting from top to bottom, the result will be \texttt{Z = [hasCoffee(john), hasCoffee(jane)]}.
 
-Schiffel and Thielscher~\cite{schiffel_multi-agent_2007} successfully applied FLUX to the gold mining domain.
-It is a scenario where multiple agents with different roles work together on mining gold in an unknown terrain~\cite{schiffel_multi-agent_2007}.
-The requirements for solving the problems arising from this scenario are comparable to those appearing in the \enquote{Agents on Mars} scenario.
-Given the former short presentation and this knowledge, it can be said that FLUX could be applied to the \enquote{Agents on Mars} scenario.
+Besides GOLOG and FLUX there are other agent programming languages which are not logic programming languages.
+The next subsection presents Jadex, which allows imperative programming by using Java.
+

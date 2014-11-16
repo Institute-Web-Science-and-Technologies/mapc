@@ -14,7 +14,7 @@ This metadata can be accessed programmatically.
 The \texttt{source} annotation is the only one with its meaning predefined by Jason.
 It expresses the source of the information.
 If an agent determined something itself, the \texttt{source} is \texttt{self}.
-Did the agent receive the information as a perception of the environment, then the \texttt{source} will be \texttt{percept}.
+When the agent received the information as a perception of the environment, then the \texttt{source} will be \texttt{percept}.
 The source can also be a constant identifying a different agent if that agent is the source of this information.
 With the example given in \autoref{lst:jason_annotations}, an achievement goal \texttt{?\~{}hasCoffee(X)[reliability(Y)]} will bind \texttt{X} to \texttt{john} and \texttt{Y} to \texttt{0.3}.
 The \texttt{reliability} has no further meaning unless the value bound to \texttt{Y} is used later.
@@ -64,7 +64,10 @@ It can be:
   \item \texttt{askAll}: asks for all beliefs matching \texttt{Message\_content}.
   \item \texttt{askHow}: demand all plans a recipient has that match the triggering event given in the \texttt{Message\_content}.
 \end{itemize}
-Jason automatically processes the messages as needed when a message arrives at an agent\todo{should we explicitly talk about an agent's inbox? Compare with @adaudrich's mentioning of the inbox!}.
+Jason automatically processes the messages as needed when a message arrives at an agent.
+Every message processing takes exactly one Jason lifecycle.
+To prevent information loss, every agent has a mail box.
+If multiple messages arrive at the same time, they are added to the box queue and processed first in first out.
 A developer can override Jason's default behaviour if further or different processing is desired.
 Jason also automatically adds \texttt{source} annotations.
 This allows agents to determine the sender of any received message.
@@ -78,9 +81,6 @@ It returns a boolean to indicate whether the execution was successful.
 Such an action can fail if for example a Repairer agent would try to execute the \texttt{attack} action, which it cannot according to the rules specified for the \mars scenario.
 To call the \texttt{executeAction} method from an agent, all it has to do is execute e.g. \texttt{attack}.
 Jason will then call \texttt{executeAction(String agentName, Term action)} with the parameters bound to the agent's name and the \texttt{attack} action.
-For the MAPC itself, no fully simulated environment is needed.
-Instead, it is enough to delegate the actions to the MAPC server and process the server replies by returning the transmitted percepts to the respective agents.
-Therefore, percepts do not have to be modelled or modified in the environment developed with Jason itself.
 
 Jason also allows running multi-agent systems over networks in a distributed manner.
 Hence, the workload can be distributed over multiple machines.
@@ -92,3 +92,7 @@ Fernández et al.~\cite{fernandez_evaluating_2010} saw that with increasing comp
 This was due to the added communication cost between the two hosts although connected by Gigabit Ethernet.
 As a result, a distributed infrastructure with Jason is only advisable, if the workload cannot be handled by one host alone.
 In our case, replying in time has such an importance that trying to keeping the workload processable by one host alone would be the preferred strategy.
+
+This section's quick summary of Jason shows that it is a comprehensive agent programming language.
+Jason is not simply an AgentSpeak(L) interpreter but provides extensions to support development.
+The next section considers the suitability of the previously presented agent programming language for the \mars scenario.

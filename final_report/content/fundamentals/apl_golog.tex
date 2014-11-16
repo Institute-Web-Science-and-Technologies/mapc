@@ -1,6 +1,5 @@
 \subsubsection[GOLOG]{GOLOG$^\circ$}\label{fun:apl_golog}
 This section gives a summary of the logic programming language GOLOG.
-Moreover, its problems in context of the \enquote{Agents on Mars} scenario are shown.
 If not further specified, all information except for the examples is taken from Levesque et~al.~\cite{levesque_golog:_1997} who introduced the language.
 GOLOG builds on the situation calculus.
 To allow high-level programming, the language adds complex actions like loops, conditions, tests and non-deterministic elements.
@@ -38,22 +37,14 @@ Due to the non-determinsmic operator, there can be two different resulting situa
   \end{split}
 \end{equation}
 
-Levesque et~al.~\cite{levesque_golog:_1997} highlight multiple problems with GOLOG.
-Problems which become relevant when considering applying GOLOG to the \enquote{Agents on Mars} scenario are given in this part.
-One problem is that complete knowledge is assumed in the initial situation.
-This is not the case for the \enquote{Agents on Mars} scenario and scenarios with unknown worlds that get explored by agents in general.
+GOLOG is \emph{regression-based}.
+This means that deciding whether a property holds in a situation requires looking at all prior changes to it.
+For this, the property must be traced back to the initial situation by looking at all action executions and their effects.
+Depending on how often this needs to be done and how many actions have already been executed, reasoning can take a long time.
 
-The second problem is that GOLOG does not offer a simple solution for sensing actions and reactions of agents on sensed actions.
-Sensing actions are actions by agents that may not modify fluents but the internal knowledge of agents by detecting some properties in the world~\cite{thielscher_flux:_2005}.
-This can be seen as a side-effect of GOLOG not being developed for unknown worlds.
-Again, this would be a feature which is needed for the \enquote{Agents on Mars} scenario.
-
-A third problem is that exogenous actions cannot be handled.
-Exogenous actions are actions outside of the agent's control.
-In the \enquote{Agents on Mars} scenario, this e.g.\ could be the loss of an agent's health due to an enemy agent attacking it.
-
-Thielscher~\cite{thielscher_flux:_2005} highlights a fourth problem.
-It arises from GOLOG being \emph{regression-based}.
-This means that deciding whether an action is executable is only possible after looking at all previous actions and how they might have affected the world.
-As a result, reasoning takes exponentially longer over time and hence GOLOG does not scale.
-Due to these problems, GOLOG is unsuitable for a multiple agent-based scenario like the \enquote{Agents on Mars} scenario without considerable modifications and extensions.
+As shown, GOLOG transfers the earlier presented concepts of the situation calculus into a logic programming language.
+It enables the comfortable use of control flow statements like \texttt{while}-loops.
+These statements are macros which a GOLOG interpreter expands into solvable formulas.
+Levesque~et~al.~\cite{levesque_golog:_1997} provide such an interpreter written in Prolog in their paper.
+The next section introduces another logic programming language FLUX which is based on a different calculus.
+In the later \autoref{fun:apl_choice}, critical differences between FLUX and GOLOG for applying them to a multi-agent scenario are discussed.
