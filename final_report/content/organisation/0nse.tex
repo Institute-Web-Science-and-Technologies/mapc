@@ -1,0 +1,36 @@
+\subsection[Michael Ruster]{Michael Ruster$^{\circ}$}
+This section lists the work done by Michael Ruster.
+He was the designated project leader after he proposed himself and was approved by the rest of the team.
+His leadership followed a democratic management style.
+Hence, decisions were made by the team as a whole through majority decisions.
+This helped team creativity while still keeping a structured working process in contrast to e.g. a laissez-faire approach.
+The encouragement of creativity was of special interest due to the inexperience of the team in this field.
+It supported new ideas and approaches which could then be immediately discussed and further developed as a group.
+An autocratic style on the other hand would have needed an expert in this field for wise delegations as well as him having some means of exerting pressure.
+
+The project leader carried out the external communication with the supervisors and contest organisers.
+This includes e.g.\ the writing of the contest participation registration document.
+He ran and monitored the test simulations together with the organisers of the MAPC as well as the final simulations.
+Here, he also configured and maintained the server.
+Michael was also responsible for configuring the server and running test simulations.
+Furthermore, he regularly controlled the quality of the minutes and improved them when necessary.
+Similarly, Michael maintained the structure of the GitHub repository by introducing various folders, renaming and moving files.
+He wrote the guidelines and the table of contents of this report.
+Further, he incorporated and adapted the Springer lecture notes in computer science template\footnote{\url{https://www.springer.com/computer/lncs/lncs+authors} -- last accessed 17 November 2014} used for this report.
+In the beginning, he also started off with requirements engineering for a more formal approach to the software development.
+This effort was discarded by the team as many requirements were only discovered during the development and others changed frequently.
+
+In our development phase, Michael was first concerned with map-related tasks.
+There, he initially implemented the cartographer agent which is presented in~\autoref{alg:map_cartographer}. % cartographer @ b3122c9215265239f69f649c0ceb474718184147, Java map approach until b3122c9215265239f69f649c0ceb474718184147
+He then continued maintaining this approach together with Sergey and Manuel.
+When Artur Daudrich proposed the Distance-Vector Routing Protocol approach, Michael Ruster and Michael Sewell implemented, tested and improved the node agents
+Both are explained in~\autoref{alg:map_dv}. % 84597446622d336fa2e5926ff21d3173f9518b33 onward
+Manuel Mittler and Michael Ruster later started working on zone forming, maintenance and destruction. % 6f2874f750fe47ff3cd6546a7fa0e3f3279b2acc
+After Manuel had to take a pause due to personal matters, Michael continued implementing the zone logics as presented in~\autoref{alg:zon_finding} and \autoref{alg:zon_roles}.
+As agent plans for the zone building phase used various internal actions accessing the JavaMap shown in~\ref{alg:map_javamap}, Michael was also active in fixing bugs in the Java.
+We were not able to properly handle the end of a simulation which is indicated by the receipt of the \texttt{SIM-END} message \cite{ahlbrecht_protocol_2014}.
+The problem was that it was a complex task to fully reset our local simulation and restoring the initial state of agent knowledge.
+Here, Michael implemented a workaround.
+It made our multi-agent system shut down completely on receipt of the \texttt{SIM-END} message.
+The system was then started anew after giving the MAPC server some time to restart the simulation.
+This was done by using a bash shell script.
