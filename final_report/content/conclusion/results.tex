@@ -1,4 +1,4 @@
-\subsection[Competition Results]{Competition Results$^{\odot,\circ}$} % for now, the comma should indicate that this text has been written by @manuelmittler and has only gotten smaller updates/corrections from @0nse.
+\subsection[Competition Results]{Competition Results$^{\odot/\circ}$}
 The competition took place on two dates (15th and 17th of September) and each team had to play three simulations against all other teams\todo{if you proofread this, make sure to also proofread the next subsection and decide if there is a great overlap and whether we need to merge them.}.
 Every simulation consisted of a total of 400 steps.
 The team with the higher overall score at the end received three points for their victory.
@@ -9,7 +9,7 @@ Since the strategy of team MAKo was to extensively buy upgrades for the so-calle
 As can be seen, the achievement points of team MAKo go up and down due to the buying actions whereas the points of the other team increase constantly.
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.7\textwidth]{images/AchievementPoints.png}
+	\includegraphics[width=\textwidth]{images/AchievementPoints.png}
   \caption{Achievement points from the second match TUB against MAKo.}
 	\label{dis:achievement_points}
 \end{figure}
@@ -20,11 +20,11 @@ It was worth spending the achievement points for the purpose of attacking and di
 This was because the amount of potential zone points they would have earned without being attacked, would probably have been much higher than the amount of achievement points team MAKo spent for upgrades.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{images/ZonesScoresAndAchievementPoints.png}
+	\includegraphics[width=\textwidth]{images/ZonesScoresAndAchievementPoints.png}
   \caption{Combined achievement and zone scores from the second match TUB against MAKo.}
 	\label{dis:ZonesScoresAndAchievementPoints}
 \end{figure}
-\todo{@manuelmittler: I just wrote ``second match'' as filler in \autoref{dis:achievement_points} and \autoref{dis:ZonesScoresAndAchievementPoints}. Which match was this actually from?}
+\todo{\textbf{@manuelmittler}: I just wrote ``second match'' as filler in \autoref{dis:achievement_points} and \autoref{dis:ZonesScoresAndAchievementPoints}. Which match was this actually from?}
 At the end of the tournament team MAKo scored second with a total of 18 points.
 The winner of 2014 was, for the third time in a row, the team from the Federal University of Santa Catarina (UFSC).
 The final results are shown in~\autoref{tab:mapc2014results}.
@@ -43,7 +43,7 @@ The final results are shown in~\autoref{tab:mapc2014results}.
   \caption{The results of the 2014 MAPC. Each team played three matches against every other team, and winning a match awarded 3 points.}
   \label{tab:mapc2014results}
 \end{table}
-Statistics of all the individual games can be found in the appendix.\todo{add the references and link to the appendix}
+Statistics of all the individual games can be found in the appendix.\todo{\textbf{@manuelmittler}: add the references and link to the appendix}
 
 Our team MAKo lost every second game against all opponents.
 This was due to the repairer agents not being able to repair.
@@ -68,17 +68,17 @@ Due to the fact that zones were broken up periodically, zones with a high value 
 Furthermore, the asynchronous communication during zone finding did not work as well as hoped for.
 This was partly related to our agents being attacked and disabled by enemy agents.
 Agents which ought to form a zone unpredictably had to cancel their zoning availability and get repaired.
-Also, we did not implement an algorithm to detect articulation points.
-In the course of the matches, we saw that multiple maps favoured such an approach.
-\autoref{dis:edgeCases} shows the top left part of the graph from the third match of MAKo against GOAL-DTU.
-A single well-placed agent, here depicted as a green rectangle, could in this case create a zone over 25 vertices.
-Being able to detect articulation points would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{images/resultsEdgeCase.eps}
 	\caption{One agent alone forming a zone over 25 vertices by occupying an articulation point.}
 	\label{dis:edgeCases}
 \end{figure}
+Also, we did not implement an algorithm to detect articulation points.
+In the course of the matches, we saw that multiple maps favoured such an approach.
+\autoref{dis:edgeCases} shows the top left part of the graph from the third match of MAKo against GOAL-DTU.
+A single well-placed agent, here depicted as a green rectangle, could in this case create a zone over 25 vertices.
+Being able to detect articulation points would have enabled us to form greater zones with fewer agents than what our algorithm calculated.
 Nevertheless, the general idea regarding small zone forming proved to be a good choice.
 One big zone would have been easy to disturb.
 But having multiple small high value zones was quite effective in not providing the enemy with an easy target.
