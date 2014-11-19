@@ -10,28 +10,42 @@ These agents are divided into five roles: the Explorer agent, the Repairer agent
 As shown in \autoref{fig:fun:roles}, each role is given different values in their attributes of maximum energy, health or visibility range.
 Moreover, the saboteur agent has a strength value, because it is the only agent which can attack enemy agents.
 There are six agents of each role except the Explorer agent role of which there are four agents.
-Except for the Sentinel role, all other roles allow their correpsonding agents to execute some actions exclusive to this role.
-These role specific actions are explained later in more detail.
-First, the actions all agents are able to execute will be presented.
+Except for the Sentinel role, all other roles allow their corresponding agents to execute some actions exclusive to this role. 
+Every action has a minimal chance to fail, regardless of being an exclusive action or an special action which is only available to the specific agent. 
+Some actions can be executed on distant agents. They are called ranged actions. 
+The drawback of ranged actions is that they have a much higher failing chance if the target of the action is further afar.
+First, the actions all agents are able to execute will be presented. After that the exclusive actions of the agents will be described.
 Those actions are \texttt{skip}, \texttt{goto}, \texttt{survey}, \texttt{buy} and \texttt{recharge}.
 \begin{description}
    \item[skip] The \texttt{skip} action should be used as a last resort if there is nothing else for an agent left to do.
-               This action's only purpose is to tell the server that an agent did not time out but was not interested in executing a different action.
-               If the \texttt{skip} action is executed when an agent could have e.g. recharged instead, it can be seen as a wasted step for this particular agent.
+    This action's only purpose is to tell the server that an agent did not time out but was not interested in executing a different action.
+    If the \texttt{skip} action is executed when an agent could have e.g. recharged instead, it can be seen as a wasted step for this particular agent.
    \item[goto] The \texttt{goto} action is used to traverse over edges from one vertex to another adjacent vertex.
-               Said traversing is only possible when the costs of the edge to traverse are lower than or equal to the energy the agent currently has.
-               Else, the execution of the method will fail.
-               By successfully executing the \texttt{goto} action, the current energy of the agent is reduced by the traversing costs of the edge.
+    Said traversing is only possible when the costs of the edge to traverse are lower than or equal to the energy the agent currently has.
+    Else, the execution of the method will fail.
+    By successfully executing the \texttt{goto} action, the current energy of the agent is reduced by the traversing costs of the edge.
    \item[survey] When the ability \texttt{survey} is executed, weights of edges in the visibility range of the agent are retrieved.
-                 The count of edge weights an agent gets as percept is determined randomly based on the visibility range of the agent.
+    The count of edge weights an agent gets as percept is determined randomly based on the visibility range of the agent.
    \item[buy] With the action \texttt{buy} an agent is able to upgrade its values like maximum health and visibility range.
-              Saboteur agents can furthermore increase their strength through this action.
+    Saboteur agents can furthermore increase their strength through this action.
    \item[recharge] If an agent has a low energy level the ability \texttt{recharge} fills up the energy of the agent.
-                   By each \texttt{recharge} action the current energy is recharged by half of the maximum energy.
+    By each \texttt{recharge} action the current energy is recharged by half of the maximum energy.
 \end{description}
-\todo{Now present the role specific actions}
-% When talking about inspect, we could reuse the following sentences:
-%    Inspecting is not needed to be able to tell if an agent is disabled as one could assume from the action's name.
-%    This is because the \texttt{visibleEntity} percept includes the agent's current state.
-%%%%%%
-% The use and embodiment of these unique abilities into the agent role specific behaviour is explained in \autoref{alg:agentstrategies}.
+
+The role specific actions are explained in the following. 
+\begin{description}
+   \item[parry] The \texttt{parry} action can be used by repairer agents, sentinel agents and saboteur agents. 
+    By using the action an incoming attack can be fully neglected  and the health of the agent is preserved.
+   \item[inspect] Only inspector agents can use the \texttt{inspect} action. Inspecting is a ranged action. 
+    The action reveals the inner stats and details of the targeted agent. 
+    By inspecting it is possible to find out which role an enemy agent has. 
+    Inspecting is not needed to be able to tell if an agent is disabled as one could assume from the action's name. 
+    This is because the \texttt{visibleEntity} percept includes the agent's current state.
+   \item[repair] Repairing is an ranged action which is unique to repairer agents. The \texttt{repair} action repairs an agent of the same team. 
+    Repairing can not be executed on the agent itself.
+   \item[probe] Explorer agents are the only agents which can reveal the value of vertices with its \texttt{probe} action.
+    As long as a vertex is not probed the vertex value is calculated as 1. Probing is an ranged action and thus can be executed on distant vertices.
+   \item[attack] The \texttt{attack} action can only be executed by saboteur agents. It is used to attack an enemy agents and reduce its health by a specific amount until it gets disabled. Attacking is a ranged action.   
+\end{description}
+
+The use and embodiment of these unique abilities into the agent role specific behaviour is explained in \autoref{alg:agentstrategies}.
