@@ -240,7 +240,14 @@ Internally the JavaMap creates and manages a list of vertex-objects which are si
 Every vertex stores a list of all paths it knows and all vertex information.
 This includes the one-hop neighbourhood and the probed value of the vertex.
 During our tests we often encountered the problem that multiple agents where sent to the same node.
-To solve this, we extended the functionality of our JavaMap with a mechanism to prevent agents from traveling to the same node when exploring, probing, repairing or attacking. To do this we used internally a reservation list for each task. In this list we kept the information which agent was doing which task, e.g.\ we saved in the survey list that an agent reserves surveying a node. If another agent asks for a not already surveyed vertex, the nearest not surveyed vertex will be first checked with the reservation list. If the vertex is not in the list it will be assigned to the agent and saved to the list, otherwise the next nearest not surveyed vertex will be checked, and so on. This list is reset at the beginning of each step, so that agents can react on environment changes, like already surveyed vertices or enemies in their path to the vertex, in every step.
+To solve this, we extended the functionality of our JavaMap with a mechanism to prevent agents from traveling to the same node when exploring, probing, repairing or attacking.
+Internally, we used a reservation list for each task.
+In this list we kept the information which agent was doing which task, e.g.\ we saved in the survey list that an agent reserved a node for surveying.
+If another agent asked for a not already surveyed vertex, the nearest not surveyed vertex was first checked against the reservation list.
+When the vertex was not in the list it was assigned to the agent and the list was updated respectively.
+Otherwise, the next nearest not surveyed vertex was checked, and so on.
+The list was reset at the beginning of each step.
+This allowed agents to react to environment changes in every step like already surveyed vertices or enemies in their path to the vertex.
 
 \autoref{fig:map:com3} shows how the map percepts are now passed to the JavaMap and how Jason agents query the JavaMap.
 \begin{figure}
