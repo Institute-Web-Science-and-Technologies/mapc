@@ -1,28 +1,39 @@
-\subsection[Artur Daudrich]{Artur Daudrich$^{\star}$}
+\subsection[Artur Daudrich]{Artur Daudrich$^{\star,\circ}$}
 This section lists the work done by Artur Daudrich.
-Arturs main influence on our project was the development of ideas and strategies for our map exploration and zoning strategies.
-At the beginning he implemented the interface between the mapc server and our implementation.
-This included the passing of percepts from the server to our agents and the passing of actions from our agents to our server.
-He implemented a basic Java agent class to presave data from the server.
-This code was at first not used but later in our project again revisited.
-After implementing the server-client communication and the server interface he started working on percept reception and percept storage in the belief base of our agents.
+Artur's main influence on our project was the development of ideas and strategies for our map exploration and zoning strategies.
+At the beginning he implemented the interface between the MAPC server and our implementation.
+This included the passing of percepts from the server to our agents and the passing of actions from our agents to the server.
+He implemented a basic Java agent class to presave data from the server\todo{\textbf{@adaudrich}: What does ``presaving'' mean here? I have not seen this Java agent mentioned elsewhere. So what do we use him and these stored information for? I think, it would be enough if you explain after the next sentence, how it was reused.}.
+At first, this code was not used until it was later revisited.
+After implementing the server-client communication and the server interface, Artur started working on percept reception and percept storage in the belief base of our agents.
 He developed some basic Jason plans for exploration which execute actions like \texttt{goto}, \texttt{probe} or \texttt{survey}.
-Additionaly a first approach of reactive plans were developed by him.
-These plans reacted to situation where one of our agent has no energy to execute further actions or mets an enemy agent and needs to defend itself or attack it.
-While working on these plans we got performance issues with our first exploration approach (see \autoref{alg:exploration}).
-While a group implemented the cartographer agent approach, he adapted the current plans to this new approach.
-As the cartographer approach did not solve our performance issues Artur came up with the idea of using a Distance-Vector Routing Protocol (see \autoref{alg:map_dv}) and introduced it to the team.
-While one group tried to implement the Distance-Vector Routing Protocol in Jason, Artur and Manuel Mittler worked on improving storing and communicating agent percepts.
-They came up with the idea of bypassing the percept passing to the respective agents and sending the information from the server interface directly to the cartographer agent.
-After that Artur worked on his own on a parallel approach for the map component see(\autoref{alg:map_javamap}).
-His approach was to fully implement the map component in Java to benefit from the speed increase of pure Java.
-As this approach showed up to boost our performance a lot, the current map team which was working on the Jason map implementation was disbanded and Artur build the new map team together with Michael Sewell.
-Hence our team always worked in small groups of two or three people, Artur and Michael Sewell worked together on most of the following objectives.
-They finished the map component in Java and adapted the Jason agent to work with the new map component.
-Also they implemented a lot of internal actions to allow Jason agents to communicate with the JavaMap.
-In the meantime we started to develop ideas for our zoning approach in our weekly team meetings.
-After defining the outlines of our zoning approach, Artur and Michael Sewell implemented this approach in the JavaMap component.
-After that Artur was mainly working on the internal actions to allow Jason agents to query zoning and map details.
-In the final part of our development Arturs task was to fix bugs and implement new features which were associated with the Java part of our code.
+
+Additionally, a first approach of reactive plans was developed by him to allow agents to react on external events.
+Such plans would e.g.\ consider a nearby enemy agent, so that our agent would then either defend itself, attack it or flee\todo{Do Sentinel agents flee as they can't defend themselves? And do Androids dream of electric sheep?}.
+Or they would observe their current energy to determine whether further actions were executable.
+Whilst working on these plans we got performance issues with our first exploration approach (see \autoref{alg:exploration})\todo{\textbf{@adaudrich}: Do you mean the \emph{first} approach which was prior to the cartographer agent (using Java Vertex)? It isn't described in our document.}.
+As some team members implemented the cartographer agent approach, Artur adapted the plans to this new approach.
+
+We later realised that the cartographer agent approach alone could not solve our performance issues.
+Artur then introduced the team to the idea of using a Distance-Vector Routing Protocol as shown in \autoref{alg:map_dv}.
+While one group implemented the Distance-Vector Routing Protocol in AgentSpeak(L), Artur and Manuel Mittler worked on improving the storing and communication of agent percepts.
+They came up with the idea of bypassing the percept passing to the respective agents.
+Instead, the percepts would be sent from the server interface directly to the cartographer agent.
+
+Artur then worked on his own approach for the map component presented in \autoref{alg:map_javamap}.
+His idea was to fully implement the map component in Java to benefit from the speed increase of pure Java.
+This happened in parallel to the part of the team which further developed map related tasks in AgentSpeak(L).
+As Artur's approach boosted our performance a lot, the map team active back then was disbanded.
+Artur and Michael Sewell then formed the new map team together.
+Our team always worked in small groups of two or three people, Artur and Michael Sewell worked together on most of the following objectives.
+They finished the map component in Java and adapted the Jason agents to work with the new map component.
+Also, they implemented many internal actions to allow Jason agents to communicate with the JavaMap.
+
+In the meantime the whole team started to develop ideas for our zoning approach in our weekly team meetings.
+After defining the outlines of our zoning approach, Artur and Michael Sewell implemented the zone calculation as explained in \autoref{alg:zon_calculation}.
+Accompanied by this was the realisation of representing and storing the information about currently built zones in the JavaMap component.
+
+After that Artur was mainly working on the internal actions to allow Jason agents query zoning and map details.
+In the final part of our development Artur's task was to fix bugs and implement new features which were associated with the Java part of our code.
 This includes zoning, exploration, agents classes in Java and the interface to the server.
 In this documentation Artur wrote the sections he was mainly involved, which are \autoref{fun:mapc_roles}, \autoref{arc:simulation} and \autoref{alg:exploration}.
