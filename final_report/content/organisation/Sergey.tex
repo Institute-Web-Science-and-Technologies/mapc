@@ -1,0 +1,23 @@
+\subsection[Sergey Dedukh]{Sergey Dedukh$^{\diamond}$}
+This section lists the work done by Sergey Dedukh.
+
+Sergey's contribution to the project was mainly related to development and testing of agent behaviour and communication in Jason.
+He started his work together with Manuel Mittler and Micheal Ruster implementing the cartographer agent which is presented in~\autoref{alg:map_cartographer} of this report.
+The primary tasks completed were the correct percepts handling, communicating and correct storing of beliefs in the cartographer agent and also auxiliary functions used by another agent strategies.
+
+Continuing his work on the cartographer agent functionality he proposed and implemented the first exploring strategy based on depth first search algorithm.
+Later this algorithm was replaced by the simpler one during development of JavaMap agent, which is described in~\autoref{alg:exploration}.
+During further development of exploring strategy Sergey together with Manuel Mittler implemented and tested the bidding algorithm of communication and argumentation.
+This approach allowed stable negotiation between agents and was used later on in several other agent strategies in our project. 
+The theoretical background behind bidding algorithm is described in~\autoref{fun:negotiation}.
+
+During development of Java mapping algorithms by other team members he implemented and tested the zone defending strategy of saboteur agents.
+It used internal negotiation between saboteurs, making decision and performing zone defensive tasks.
+This strategy was used in the zoning mode of the simulation and is described in more detail in~\autoref{alg:zon_roles} of this report.
+
+After introducing the JavaMap he together with Artur Daudrich developed the repairing strategy, which included optimal assignment of repairers to disabled agents, moving towards each other and the repairing itself.
+More information on repairing strategy can be found in~\autoref{alg:repairing}.
+
+The last algorithm implemented by Sergey before the tournament was detecting the ``dead ends'' of the graph - nodes with degree of one, and then probing them remotely by explorer agents during the exploring phase. This change allowed to save several step for exploring the map and get achievement points for exploring faster, especially on sparse graphs, which were also present on the tournament.
+
+During the competition Sergey actively participated in debugging of the issues that were found while competing against other teams. 
