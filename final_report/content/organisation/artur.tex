@@ -3,15 +3,14 @@ This section lists the work done by Artur Daudrich.
 Artur's main influence on our project was the development of ideas and strategies for our map exploration and zoning strategies.
 At the beginning he implemented the interface between the MAPC server and our implementation.
 This included the passing of percepts from the server to our agents and the passing of actions from our agents to the server.
-He implemented a basic Java agent class to presave data from the server\todo{\textbf{@adaudrich}: What does ``presaving'' mean here? I have not seen this Java agent mentioned elsewhere. So what do we use him and these stored information for? I think, it would be enough if you explain after the next sentence, how it was reused.}.
-At first, this code was not used until it was later revisited.
+He implemented a basic Java agent class to presave data from the server, like information about their role, their basic energy value or their basic health value. 
+As we at first worked with beliefs in Jason we did not use that until it was later revisited and used for our implementation of the map component in Java.
 After implementing the server-client communication and the server interface, Artur started working on percept reception and percept storage in the belief base of our agents.
 He developed some basic Jason plans for exploration which execute actions like \texttt{goto}, \texttt{probe} or \texttt{survey}.
 
 Additionally, a first approach of reactive plans was developed by him to allow agents to react on external events.
-Such plans would e.g.\ consider a nearby enemy agent, so that our agent would then either defend itself, attack it or flee\todo{Do Sentinel agents flee as they can't defend themselves? And do Androids dream of electric sheep?}.
+Such plans would e.g.\ consider a nearby enemy agent, so that our agent would then either defend itself, attack it or avoid enemy agents.
 Or they would observe their current energy to determine whether further actions were executable.
-Whilst working on these plans we got performance issues with our first exploration approach (see \autoref{alg:exploration})\todo{\textbf{@adaudrich}: Do you mean the \emph{first} approach which was prior to the cartographer agent (using Java Vertex)? It isn't described in our document.}.
 As some team members implemented the cartographer agent approach, Artur adapted the plans to this new approach.
 
 We later realised that the cartographer agent approach alone could not solve our performance issues.
