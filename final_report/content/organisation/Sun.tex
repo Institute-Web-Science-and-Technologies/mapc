@@ -1,9 +1,20 @@
-\subsection[Yuan Sun]{Yuan Sun$^{\blacktriangle}$}
+\subsection[Yuan Sun]{Yuan Sun$^{\blacktriangle,\diamond}$}
 This section lists the work done by Yuan Sun.
-Yuan mainly focused on implementing actions of agents in this project. 
 
-At the beginning, she started to learn how to use Jason programming language together with Manuel Mittler and Rahul Arora. In addition, she deleted a basic Java agent class called \texttt{"ActionHandler.java"} which is used to save some basic information of agents from the server in advance. At the same time, she did the modification on the interface between the MAPC server and our implementation, so it became available to execute actions without this basic Java agent class. However, this basic Java agent class,\texttt{"ActionHandler.java"}, was decided to be reused later after some discussions in the team.
+Yuan mainly focused on implementing actions of agents in this project.At the beginning, she started to learn how to use Jason programming language together with Manuel Mittler and Rahul Arora.
 
-At the primary stage, the codes about different actions executions were written in the same file. Yuan rewrote some of the codes in different files which are named by the roles of different agents. Yuan implemented initial actions like \texttt{probe}, \texttt{attack}, \texttt{repair} and \texttt{parry} with simple strategies when the other team members working on mapping and zoning. Therefore, other team members could check their codes work or not at that time. She also improved the codes for executing these actions, for example, adding the energy limitation to all agents and adding the visibility range limitation for those agents who should execute actions in a visible range. Moreover, with the project going on, Yuan continued implementing some more complex strategies on the agents after discussing them with other team members.
+In addition, there was a Java factory class called \texttt{"ActionHandler.java"} which was used to instantiate a corresponding \texttt{Action} object according to a given identifier that is a string type. It aimed to separate the creation and representation of concrete \texttt{Action} objects. However, there were no subclasses of \texttt{Action} class, so the factory class was not necessary. Yuan deleted this Java factory class and then encapsulated the progress of object instantiation inside the \texttt{Action} constructor, which was able to return an \texttt{Action} object according to a given parameter, \texttt{"entityName"}, so that no big \texttt{"switch-case"} code block would be necessary any time a new \texttt{Action} object was needed and therefore the degree of coupling of this system was decreased. 
 
-In the final technical report, Yuan wrote the sections related to Belief-Desire-Intention model. She did a presentation about Belief-Desire-Intention model before this project starting. In the report, she did not only introduce the theory of Belief-Desire-Intention model(see \autoref{fun:BDI}), but also did some statistics to analyze the use of Belief-Desire-Intention model in our project(see \autoref{imp:BDI_AS}).
+At the beginning of the development of agent strategies in Jason, the implementation of different actions was written in a single file. 
+Yuan rewrote and reorganized some of the code in different files with names corresponding to the roles of different agents. 
+
+Yuan implemented initial actions like \texttt{probe}, \texttt{attack}, \texttt{repair} and \texttt{parry} with simple strategies when the other team members were working on mapping and zoning. 
+Therefore, other team members could faster test the work of their code at that time. 
+
+She also improved the code for executing these actions, for example, adding the energy level checking to all agents before action execution and adding the visibility range limitation for ranged actions. 
+
+Moreover, with further project development, Yuan continued implementing some more complex agent strategies after discussing them with other team members. For instance, previously, \texttt{sentinels} only did the action \texttt{parry} when they were attacked by enemies. After some discussion, Yuan implemented a better strategy for the these \texttt{sentinels}. If a \texttt{sentinel} was standing on a node which was used to build a zone, it would do the action \texttt{parry} when it saw normal enemies nearby although it was not attacked by the enemies.
+
+In the final technical report, Yuan wrote the sections related to Belief-Desire-Intention model. 
+She did a presentation about Belief-Desire-Intention model before the project start. 
+In the report, she did not only introduce the theory of Belief-Desire-Intention model(see \autoref{fun:BDI}), but also did some statistics to analyze the use of Belief-Desire-Intention model in our project(see \autoref{imp:BDI_AS}). 
