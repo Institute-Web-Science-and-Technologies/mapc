@@ -211,8 +211,9 @@ public class Agent {
     }
 
     /**
-     * Returns the best upgrade. Note that this is an experimental function that
-     * isn't being used currently.
+     * Returns the "best" upgrade for this agent. The best upgrade is
+	 * considered to be the one that leads to the highest increase
+	 * percentage-wise for its component.
      * 
      * @return the "best" upgrade for the agent (determined by looking at the %
      *         increase an upgrade would add to that part)
