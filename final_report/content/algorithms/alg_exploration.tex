@@ -1,29 +1,29 @@
 %%%%%%%%%%%%%%%%%%
 \subsection[Exploration]{Exploration$^{\star,\circ}$}\label{alg:exploration} % this indicates that it is written by @adaudrich and small adjustments have been done by @0nse.
-One precondition of the Agents on Mars Scenario is that all agents start with an empty belief base.
+One precondition of the \mars scenario is that all agents start with an empty belief base.
 No agent knows about its local or global environment.
 Every agent gets beliefs about its local environment quickly by receiving percepts from the server.
 But the agent stays unaware of the global environment.
-For our strategies it is crucial to have as much information of the overall environment as possible.
-This is necessary to e.g.\ find the shortest path from one vertex to another or to calculate a zone returning high scores.
-To achieve this, it is mandatory to somehow store information about the map like its vertices, edges between vertices, paths and agent positions.
+For our strategies, it is crucial to have as much information of the overall environment as possible.
+This is necessary to e.g.\ find the shortest path from one vertex to another or to calculate a zone with a high zone score.
+To achieve this, it is mandatory to store information about the map, such as its vertices, edges, paths and agent positions.
 
 The following subsections describe our different approaches on how to store and process this information.
-In more detail, the first section, \autoref{alg:map_cartographer}, presents our first approach with its up- and down-sides.
-After that a basic overview of our initial map building approach is given in \autoref{alg:map_dv}.
-Finally, this section concludes with a description of the second approach we used and finally stuck to in \autoref{alg:map_javamap}.
+In more detail, the first section, \autoref{alg:map_cartographer}, presents our first approach and its up- and downsides.
+After that, a basic overview of our initial map building approach is given in \autoref{alg:map_dv}.
+Finally, this section concludes with a description of the second approach we tried and ultimately decided to use in \autoref{alg:map_javamap}.
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[Cartographer Agent]{Cartographer Agent$^{\star,\circ}$}\label{alg:map_cartographer}
-Very early in our development process we decided that we wanted to store all information about the map in a central place.
+Very early in our development process, we decided that we wanted to store all information about the map in a central place.
 This means we were not interested in each agent storing all map data in its own belief base.
-The intention behind this decision was to reduce the effort in synchronising and maintaining data between the single agents.
-This section presents our initial approach which was to install one additional, omniscient agent which we called the \emph{cartographer agent}.
-It was a separate agent existing in the background and was independent from our 28 agents of the simulation.
+The intention behind this decision was to reduce the effort in synchronising and maintaining data between individual agents.
+This section presents our initial approach, which was to install one additional, omniscient agent which we called the \emph{cartographer agent}.
+It was a separate agent existing in the background and was independent from the scenario's 28 agents.
 The cartographer agent stored map information and had the task to calculate shortest paths between given vertices.
-Said map information included vertex values, edges between them and their associated traversing costs.
-Every agent told the cartographer agent about its environment related beliefs and the cartographer agent stored these beliefs.
-Environment related beliefs are given in the listing below:
+Said map information included vertex values, edges and edge costs.
+Every agent told the cartographer agent about its environment-related beliefs and the cartographer agent stored these beliefs.
+Environment-related beliefs are given in the listing below:
 \begin{lstlisting} [caption={Map exploration related beliefs}, label={lst:dv_exploration_beliefs}]
    visibleEntity(<Vehicle>, <Vertex>, <Team>, <Disabled>).
    position(<Vertex>).

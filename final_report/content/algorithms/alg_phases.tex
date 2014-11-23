@@ -34,7 +34,14 @@ They were coordinated by querying the map component for the next unexplored map 
 If agents of the third group came to a vertex that had unknown edge weights to at least one neighbour vertex, they used the survey action to get the information as percepts.
 These weights were then passed to the map component and they repeated the exploring, by querying for the next not surveyed vertex and going there.
 To prevent multiple agents from going to the same vertex and exploring the same area, the map component used an internal locking mechanism.
-For zoning we were not interested in a full coverage of the map. This was due to a full map exploration would have consumed a lot more steps while bringing only little improvement to the knowledge about it as a whole. Of course it could be that at some point during the simulation we gain a full coverage of the map, but it was not a criteria to switch to the second phase in the simulation.
+For zoning we were not interested in a full coverage of the map.
+This was because a full map exploration would have consumed a lot more steps while bringing only little improvement to the knowledge about it as a whole.
+Of course it could be that at some point during the simulation we gain a full coverage of the map, but it was not a criteria to switch to the second phase in the simulation.
 
-At some point in the simulation around step 100 there were more agents available for exploring than vertices that need to be surveyed. Responsible for this could be an almost full explored map or a bottleneck vertex which is the only connection to other parts of the map. Agents without an assigned vertex would be idle and waiting for the next step. As we assumed that our agents would always be evenly placed on the map at the beginning of the simulation, we did not pursue a solution for the bottleneck vertex. Instead we decided to remove every agent from the exploring agent team which could not be assigned a not surveyed vertex and put it in the zoning team. In the zoning phase all agents which were finished with their exploration phase, were used to build zones. This included the Explorer agents but excluded the Saboteur agents, because they were following their own aggressive strategy.
+At some point in the simulation, around step 100, there were more agents available for exploring than vertices that needed to be surveyed. Responsible for this could be an almost fully explored map or a bottleneck vertex which is the only connection to other parts of the map.
+Agents without an assigned vertex would be idle and waiting for the next step.
+As we assumed that our agents would always be evenly placed on the map at the beginning of the simulation, we did not pursue a solution for the bottleneck vertex.
+Instead, we decided to remove every agent from the exploring agent team which could not be assigned an unsurveyed vertex and put it in the zoning team.
+In the zoning phase, all agents which were finished with their exploration phase were used to build zones.
+This included the Explorer agents but excluded the Saboteur agents, because they were following their own aggressive strategy.
 A detailed description of the zoning phase is given in \autoref{alg:zoning}.
