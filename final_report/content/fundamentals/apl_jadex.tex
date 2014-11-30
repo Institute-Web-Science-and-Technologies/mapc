@@ -7,7 +7,7 @@ This section presents Jadex, which is an agent framework focused on the developm
 It aims at bringing middleware and reasoning-centred agent platforms together.
 For that purpose, Jadex adds a rational reasoning engine to existing middleware.
 The most commonly used middleware for Jadex is the \emph{Java Agent Development Framework} (short: JADE)~\cite{bellifemine_jade_2005}. %
-Jadex integrates agent theories\todo{\textbf{@manuelmittler}: Agent theories (autonomous, proactive, social) are not introduced properly in the earlier section. Update this part or extend the BDI part.} through object-oriented programming in Java and XML descriptions.
+Jadex integrates agent theories through object-oriented programming in Java and XML descriptions. What is meant by autonomous and proactive is, that an agent acts without human intervention or guidance. The term social means that agents should work together to accomplish their goals.
 Therefore, no new language is introduced.
 Jadex reuses already existing technologies instead.
 JADE provides a communication infrastructure, platform services such as agent management and a set of development and debugging tools.
@@ -70,7 +70,7 @@ An agent in Jadex consists of two components: An \emph{agent definition file} (s
 The procedural part of plans (the plan bodies) are realised in an ordinary programming language (Java) and have access to the BDI facilities of an agent through an application interface (API).
 The plan body is a standard Java class that extends a predefined Jadex framework class.
 It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Jadex Java class}, label=lst:jadex_java]
 public class ServeCoffeePlanB1 extends Plan {
    // Plan attributes.
 
@@ -85,7 +85,7 @@ public class ServeCoffeePlanB1 extends Plan {
 \end{lstlisting}
 The plan body is associated to a plan head in the ADF.
 This means that in the plan head, several properties of the plan can be specified, e.g.\ the circumstances under which it is activated and its importance in relation to other plans.
-\begin{lstlisting}
+\begin{lstlisting}[caption={Jadex XML file}, label=lst:jadex_xml]
 <agent xmlns="http://jadex.sourceforge.net/jadex-bdi"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://jadex.sourceforge.net/jadex-bdi
