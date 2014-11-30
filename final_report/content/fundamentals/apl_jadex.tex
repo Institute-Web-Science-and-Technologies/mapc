@@ -69,7 +69,7 @@ An agent in Jadex consists of two components: An \emph{agent definition file} (s
 \end{figure}
 The procedural part of plans (the plan bodies) are realised in an ordinary programming language (Java) and have access to the BDI facilities of an agent through an application interface (API).
 The plan body is a standard Java class that extends a predefined Jadex framework class.
-It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation.
+It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation.\todo{\textbf{@manuelmittler}: To be honest, I haven't looked too deep into this code part due to the verbosity of XML. But I don't think this code does anything. Implement it, so that it solves the coffee pouring problem used as an example in the other APL parts.}
 \begin{lstlisting}
 public class ServeCoffeePlanB1 extends Plan {
    // Plan attributes.
@@ -83,7 +83,7 @@ public class ServeCoffeePlanB1 extends Plan {
    }
 }
 \end{lstlisting}
-The plan body is associated to a plan head in the ADF.
+The plan body is associated to a plan head in the ADF.\todo{\textbf{@manuelmittler}: Add labels to your listings.}
 This means that in the plan head, several properties of the plan can be specified, e.g.\ the circumstances under which it is activated and its importance in relation to other plans.
 \begin{lstlisting}
 <agent xmlns="http://jadex.sourceforge.net/jadex-bdi"

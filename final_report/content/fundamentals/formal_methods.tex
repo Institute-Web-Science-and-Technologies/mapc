@@ -92,7 +92,6 @@ Based on its current state and input events, the system selects and executes opt
 The interpreter continually performs the following: determine available options, deliberate to commit to some options, update the state and execute chosen atomic actions.
 After that, it updates the event queue and eliminates the options which have already achieved or are no longer possible.
 
-\todo{Add or leave out a caption for all listings. Currently we are not consistent with that.}
 \begin{lstlisting}[caption={An abstract BDI interpreter~\cite{Singh_92}.}]
   BDI-Interpreter
   initialise_state();
@@ -114,7 +113,7 @@ Intentions in this case may be represented as hierarchically related plans.
 Getting back to the algorithm and assuming plans as options, the option generator may look like the following.
 Given a set of trigger events from the event queue, the option generator iterates through the plan library and returns those plans whose invocation condition matches the trigger event and whose preconditions are believed by the agent.
 
-\begin{lstlisting}[mathescape, caption={Option generation for BDI interpreter~\cite{Singh_92}.}]
+\begin{lstlisting}[mathescape, caption={Option generation for a BDI interpreter~\cite{Singh_92}.}]
   option-generator(trigger-events, B, G ,I)
   options := {};
   for trigger-event $\in$ trigger-events do
