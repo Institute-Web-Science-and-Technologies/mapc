@@ -28,7 +28,6 @@ Finally, you execute this plan to get water.
 
 As a theory of practical reasoning, BDI model has three attributes that are belief, desire and intention.
 
-% TODO BDI three attributes
 Beliefs represent the informational state of the agent and are updated appropriately after each sensing action.
 They may be implemented as a variable, a database, a set of logical expressions, or some other data structure~\cite{Rao_BDITheory_1995}.
 Belief means how the agent look at the world and it is the basis of BDI model.
@@ -79,7 +78,7 @@ It is necessary to keep a good balance between these different concerns.
 
 Beliefs, desires and intentions are three attributes of BDI model and constitute the foundation of BDI agents.
 While some other components building connection between beliefs, desires and intentions are also indispensable to implement BDI agents and make the BDI architecture complete.
-% TODO BDI basic architecture//pic
+
 Several basic components can be found in the following figure, which shows a brief BDI architecture.
 A variety of BDI agents have been designed to fit the unstable environment and to complete all sorts of tasks.
 Different BDI agents have different architectures, but their core ideas are the same.
@@ -87,7 +86,7 @@ Different BDI agents have different architectures, but their core ideas are the 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/BDIAr}
-  \caption{Brief BDI architecture~\cite{BDIA}}%use cite instead
+  \caption{Brief BDI architecture~\cite{BDIA}}
   \label{fig:Brief BDI architecture}
 \end{figure}
 
@@ -170,10 +169,9 @@ $I \to A $ can be treated as the process of means-ends reasoning, whose output i
 $B,D I$ are connected to function parts instead of connecting to each other directly.
 They are just databases and need rules or mechanism to help them execute actions.
 
-% TODO BDI applications (short)
 With the increasing needs of intelligent agents, more and more applications base on BDI model are applied in our life.
-For example, PRS and dMARS are both BDI-based systems for the reaction control system of the NASA Space Shuttle Discovery\todo{\textbf{@yuansun1990}: If you introduce some external technology, language, algorithm whatevs, you would normally always refer to it; giving a citation to the paper that introduced it. Or, if there is no such paper, at least link to the project homepage in a footnote. This goes for PRS, dMARS as well as for OASIS}.
-Additionally, the air-traffic management system OASIS is well-known as a BDI-based agent.
+For example, PRS~\cite{Ingrand_PRS_1992} and dMARS~\cite{Mark_dMARS_2004} are both BDI-based systems for the reaction control system of the NASA Space Shuttle Discovery.
+Additionally, the air-traffic management system OASIS~\cite{Magnus_OASIS_1992} is well-known as a BDI-based agent.
 The system architecture of OASIS is made up of one aircraft agent for each arriving aircraft and a number of global agents, including a sequencer, wind modeller coordinator and trajectory checker~\cite{Rao_BDITheory_1995}.
 Furthermore, robot soccer which is designed using BDI model becomes very popular in universities.
 We can feel that, BDI agents bring many profits to human beings, they make the life more convenient.
