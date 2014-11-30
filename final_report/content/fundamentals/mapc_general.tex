@@ -1,20 +1,40 @@
-\subsection[Multi Agent Programming Contest]{Manuel Mittler$^{\odot}$}
-The Multi-Agent Programming Contest(MAPC) is an international online competition which started in 2005 and took place every year since then. The tournament is an online event, that is, all participants run their systems locally and communicate with the contest server via Internet. The winning team is determined by each team playing against all other teams. All participants are free to chose an implementation and agent communication technology by themselves. The MAPC scenario is changing over the years. The current one is the ’"Agents on Mars’" scenario. The previous scenarios were the following:
+\subsection[Multi-Agent Programming Contest]{Multi-Agent Programming Contest$^{\odot}$}
+The Multi-Agent Programming Contest (MAPC) is an international online competition which started in 2005 and took place every year since then.
+The tournament is an online event, that is, all participants run their systems locally and communicate with the contest server via Internet.
+The winning team is determined by each team playing against all other teams.
+All participants are free to chose an implementation and agent communication technology by themselves.
+The MAPC scenario is changing over the years.
+The current one is the ’"Agents on Mars’" scenario.
+The previous scenarios were the following:
 \begin{description}
 	\item 2005: Food Gatherer
 	\item 2006-07: Goldminers
 	\item 2008-10: Cows and Cowboys
 	\item since 2011: Agents on Mars
 \end{description}
-The focus of the MAPC changed with the different scenarios, which got more and more complex. The Agents on Mars scenario is about occupying zones on Mars. A detailed description can be found in \cite{MAPC}. Briefly, mankind finally populated Mars and water wells have been found. One sub-goal is to occupy the best zones, which means the most valuable water wells, and defend them against the competing team. The environment is given by a weighted graph. Each vertex has an unique identiﬁer and is assigned with a value. Each edge has a weight, representing the costs of traversing this edge. The environment is unknown in the beginning and thus agents have to explore it. The overall goal is to maximise the team's score which is calculated by adding the zones' values and the money for each simulation step:
+The focus of the MAPC changed with the different scenarios, which got more and more complex.
+The Agents on Mars scenario is about occupying zones on Mars.
+A detailed description can be found in \cite{MAPC}.
+Briefly, mankind finally populated Mars and water wells have been found.
+One sub-goal is to occupy the best zones, which means the most valuable water wells, and defend them against the competing team.
+The environment is given by a weighted graph.
+Each vertex has an unique identiﬁer and is assigned with a value.
+Each edge has a weight, representing the costs of traversing this edge.
+The environment is unknown in the beginning and thus agents have to explore it.
+The overall goal is to maximise the team's score which is calculated by adding the zones' values and the money for each simulation step:
 \begin{equation}
-	\sum_{n=1}^steps (zones_s + money_s)
+  \sum_{n=1}^steps (\textit{zones}_s + \textit{money}_s)
 \end{equation}
-Money is rewarded for achievements like performing an action a certain number of times. Money gives a team two possibilities. It could either spend it to buy upgrades or save it in order to increase the score per step.
-\subsection[Zones]{Manuel Mittler$^{\odot}$}
-To determine the zones a graph colouring algorithm is used. The algorithm works as follows \cite{MAPC}:
+Money is rewarded for achievements like performing an action a certain number of times.
+Money gives a team two possibilities.
+It could either spend it to buy upgrades or save it in order to increase the score per step.
+
+\subsection[Zones]{Zones$^{\odot}$}
+To determine the zones a graph colouring algorithm is used.
+The algorithm works as follows \cite{MAPC}:
 \begin{description}
 	\item A vertex belongs to the team which holds the majority of agents standing on that vertex
 	\item Direct neighbours of the already coloured vertices dominated by at least two neighbours also belong to that team
-	\item All vertices that are not reachable by other teams without crossing the already coloured vertices also belong to that team. One can see it as a border that	is separating parts of the graph.
+	\item All vertices that are not reachable by other teams without crossing the already coloured vertices also belong to that team.
+    One can see it as a border that	is separating parts of the graph.
 \end{description}

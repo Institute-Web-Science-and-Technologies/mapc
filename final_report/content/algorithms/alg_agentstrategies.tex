@@ -3,7 +3,7 @@ Each of the five different agent types (or \emph{roles}) in the MAPC scenario --
 Thus, they must each act according to role-specific strategies and tactics in order for the team to perform well.
 This section will give a short overview of how different agent types behave differently from each other.
 \begin{description}
-    \item[Explorer] agents are the only ones who can execute the \texttt{probe} action.
+    \item[Explorer] agents are the only ones who can execute the \texttt{probe} action.\todo{\textbf{@msewell}: \enquote{For all assumptions or design choices you make, add a justification and hint to possible problems} - Matthias}
         Vertices must be probed in order to learn their value, which is critical for building zones with high scores.
         Accordingly, an Explorer agent will spend most of its time seeking out, moving towards and finally probing vertices whose values are not yet known.
         Having multiple explorer agents move towards the same not yet probed vertex is in most cases suboptimal.

@@ -23,7 +23,7 @@ The goal is to find for every vertex in the graph a placement of agents around t
   \item All vertices that share an edge with the centre vertex will be included in the zone.
   \item Besides the centre vertex itself, agents should only be placed on the centre vertex's two-hop neighbours.
     These are those vertices whose shortest path to the centre node has a length of two.
-    Later, we will illustrate that there are rare cases in which agents must be placed on one-hop neighbours as well\todo{I added this because $\exists A_v \nsubseteq v \cup V_{v}^{2}$ and the $A_v$ \emph{should} somewhat implied that no one-hop-vertices would be included.}.
+    Later, we will illustrate that there are rare cases in which agents must be placed on one-hop neighbours as well\todo{\textbf{@msewell}: I added this because $\exists A_v \nsubseteq v \cup V_{v}^{2}$ and the $A_v$ \emph{should} somewhat implied that no one-hop-vertices would be included.}.
   \item The constructed zone's value per agent, that is, the sum of the values of each vertex in the zone divided by the number of agents required to establish that zone, should be high.
         Ideally, it would be maximal, but the heuristic we use does not guarantee this.
 \end{itemize}
@@ -31,7 +31,7 @@ The goal is to find for every vertex in the graph a placement of agents around t
 \begin{figure}
   \centering
   \subcaptionbox{This zone was calculated for a centre vertex that only has a degree of 1, i.e.\ that is a leaf vertex.
-                 Generally, it is preferable to place an agent on the articulation point that leads to a leaf vertex rather than the leaf vertex itself, as this would establish at least a zone of equal size, and possibly larger\todo{I replaced ``cut vertex'' with ``articulation point'' for consistency. If cut vertex would be more correct for some reason, we may undo this.}.
+    Generally, it is preferable to place an agent on the articulation point that leads to a leaf vertex rather than the leaf vertex itself, as this would establish at least a zone of equal size, and possibly larger\todo{\textbf{@msewell}: I replaced ``cut vertex'' with ``articulation point'' for consistency. If cut vertex would be more correct for some reason, we may undo this.}.
                  \label{fig:zones_1}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/zone1.png}}
   \subcaptionbox{Here, the centre vertex has a degree of 3, and the calculated zone remains compact with only two additional agents used.
                  A lot of optional agent positions remain.
@@ -41,7 +41,7 @@ The goal is to find for every vertex in the graph a placement of agents around t
                  \label{fig:zones_3}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/zone3.png}}
   \subcaptionbox{A zone where the centre vertex has a degree of 7, and the zone uses a total of 9 agents.
                  \label{fig:zones_4}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/zone4.png}}
-  \caption{Four examples of zones calculated by the heuristic algorithm described in \autoref{alg:zon_calculation}\todo{it would be nice if all those graphics had the same image aspect ratio.}
+           \caption{Four examples of zones calculated by the heuristic algorithm described in \autoref{alg:zon_calculation}\todo{\textbf{@msewell}: it would be nice if all those graphics had the same image aspect ratio.}
            The green squares and triangles represent the placement of agents, where the triangle is the agent on the centre vertex.
            Vertices marked with a small green circle are optional agent positions that can be used to expand the zone if there are agents left over at the end of the zone building, as described in \autoref{alg:zon_roles}.
            The green-coloured area represents the zone that is established by the given agent placement.}
