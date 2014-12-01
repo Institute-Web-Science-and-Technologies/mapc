@@ -1,8 +1,10 @@
+\section{}%remove this
 Using cognitive modelling techniques for simulating human behaviour, and limiting people interactions can save a lot of human and other resources, time and money.
-Therefore a variety of researchers are contributing to intelligent agents field.
-Beliefs, desires and intentions (BDI) constitute the core part of an intelligent agent.
-BDI model describes the basic characteristics of agents' mental state since the BDI logic system is easy to be implemented on the computer, and has been widely applied in the field of artificial intelligence in computer science.
-In recent years, many scholars have used Java, Jason or some other programming languages to implement BDI agent model on computer.
+Therefore, a variety of researchers are contributing to intelligent agents field.
+Beliefs, desires and intentions (short: BDI) constitute the core part of an intelligent agent.
+The BDI model describes the basic characteristics of an agents' mental state.
+Since the BDI logic system is easy to implement in software agents, it has been widely used in the field of artificial intelligence in computer science.
+In recent years, many scholars have used Java, Jason or some other programming languages to implement BDI agent model on computer\todo{\textbf{@yuansun1990}: you claim a lot here but I would not be sure. Especially in the field of agent programming, I see a lot of usage of Prolog. Where do you take this information from?}.
 
 In 1987, Bratman~\cite{MICHAEL_PlansResource_1988} discussed the relationship between beliefs, desires, intentions and actions as well their important roles in agent behaviours.
 With this paper the BDI model and BDI logic were the found.
@@ -20,7 +22,7 @@ Some other affairs more or less have influences on the feasibility of achieving 
 The deliberation process is used to understand and filter what options are available, in addition, generate the set of alternatives which will be chosen as following.
 These chosen options become intentions which can be treated as the outputs of deliberation.
 For example, if you are standing in a supermarket and very thirsty, then you are faced with a decision to choose a drink.
-There are a lot of options like wine, beers, milk, water and juice, however, picking up a bottle of wine is not available to you if you are younger than 18 years old.
+There are a lot of options like wine, beers, milk, water and juice, however, picking up a bottle of wine in Germany is not allowed if you are younger than 16 years old. % Germany, sadly a proud nation of drunkards.
 After collecting all the available options, you must choose and commit to some of them which become intentions next.
 Subsequently, we need the mean-ends reasoning process to plan how to achieve these intentions.
 Furthermore, if your intention is to buy a bottle of water, then you plan to go to the shelf with water on it, and then stretch your arm to get a bottle of water on the top.
@@ -153,7 +155,7 @@ This table shows the order of using the seven components of BDI architecture as 
 If we denote $Bel$ a set of all possible beliefs, $Des$ a set of all possible desires and $Int$ a set of all possible intentions.
 Then an agent's state can be presented as $(B,D,I)$ with $B \subseteq Bel, D \subseteq  Des, I \subseteq  Int$.
 $P$ is a set of current perception which are obtained by the sensors of the agent.
-We can understand the the process of BDI agent working better through seeing this table.
+We can understand the process of BDI agent working better through seeing this table.
 Firstly, $B$ stores some beliefs which are read by BRF (belief revision function) while it getting the perception from the sensors.
 After operating BRF, some of beliefs are removed, some are added, some are modified and so on.
 So the new beliefs set $B$ built on basis of $P$ and original $B$.
@@ -203,4 +205,4 @@ Different BDI implementations show different architectures, but the in core of t
 
 With an increasing number of BDI applications coming into the human life, more challenges come up too.
 One of such challenges, which is the correctness of agents' behaviour, is described in the ~\autoref{fun:formal_methods} that follows.
-Also in the following section after introducing all the required logical operations and methods, a sample structure of an abstract BDI interpreter will be given, which also continues the topic discussed in this section.
+Also, in the following section after introducing all the required logical operations and methods, a sample structure of an abstract BDI interpreter will be given, which also continues the topic discussed in this section.
