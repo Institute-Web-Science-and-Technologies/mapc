@@ -11,7 +11,7 @@ Nowadays, the research on BDI agents are not only used in high value domains but
 There exist cases of applications of BDI agents not only in high technology industrial aspect such as airplane or space shuttle, but also in commercial field or entertainment such as robot soccer games.
 
 The BDI model is a popular and well-studied architecture of agent for intelligent agents situated in complex and dynamic environments.
-The model has its roots in philosophy found in Bratman’s theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
+The model has its roots in philosophy found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
 Practical reasoning involves two important processes: deciding what goals we want to achieve, and how we are going to achieve these goals.
 The former process is known as deliberation, the latter as means-ends reasoning~\cite{Gerhard_MultiSystem_1999}.
 When an agent is placed in an environment, it should decide what to do and how to do it.
@@ -99,21 +99,21 @@ The belief revision function is used to keep the beliefs set updated to fit the 
 
 The beliefs set contains information about the current environment which the agent has.
 The data in beliefs set may consist of sentences, rules or some other manifestations.
-In the AGM (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985} approach, an agent’s beliefs are modeled by a deductively closed set of formulas called a beliefs set~\cite{James_revise_2011}.
+In the AGM (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985} approach, an agent's beliefs are modeled by a deductively closed set of formulas called a beliefs set~\cite{James_revise_2011}.
 If the current set of beliefs is represented by a deductively closed set of logical formulae $K$ called belief base, and the new piece of information is a logical formula $P$, then revision may be represented as a binary operator * that takes as its operands the current beliefs and the new information, and produces as a result a belief base representing the result of the revision~\cite{M_Belief}.
 The AGM approach is broadly used in belief revision research.
 The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
-It determines the desires depending on the agent’s current beliefs and current intentions.
+It determines the desires depending on the agent's current beliefs and current intentions.
 The desires set contains desires, which are the possible courses of actions available to the agent.
 These desires can be achievable or not.
-The filter determines the agent’s intentions depending on current beliefs, desires, and intentions.
+The filter determines the agent's intentions depending on current beliefs, desires, and intentions.
 It needs to reason about more situations than the functions in previous steps.
 Desires will become more rational after filtering.
 
-The intentions set stores the agent’s current focus - the actions, which are going to be executed or committed to be executed at some point of time.
+The intentions set stores the agent's current focus - the actions, which are going to be executed or committed to be executed at some point of time.
 Once an intention is adopted, it should not be immediately dropped out because of the commitment.
 But in some situations the intentions should be given up.
-There are three commitment strategies proposed in Rao and Georgeff’s work: blind, single minded and open minded.
+There are three commitment strategies proposed in Rao and Georgeff's work: blind, single minded and open minded.
 A blindly committed agent is an agent who maintains his intentions until he believes that he has achieved them.
 A single minded committed agent is an agent who maintains his intentions as long as he believes that they are still options.
 An open minded committed agent is an agent who maintains his intentions as long as they are still goals~\cite{Roberto_BDIATL_2005}.
@@ -133,15 +133,15 @@ For understanding the relationships between the seven main components of BDI age
     \hline
     Beliefs set & Information about the current environment which the agent has & B \\
     \hline
-    Belief revision function & determines a new set of beliefs depending on perceptual inputs and the agent’s current beliefs & B \times P \to B\\
+    Belief revision function & determines a new set of beliefs depending on perceptual inputs and the agent's current beliefs & B \times P \to B\\
     \hline
-    Options & determines desires depending on the agent’s current beliefs & B \times I \to D \\
+    Options & determines desires depending on the agent's current beliefs & B \times I \to D \\
     \hline
     Desires set & possible courses of actions available to the agent & D \\
     \hline
-    Filter & determines the agent’s intentions depending on current beliefs, desires, and intentions & B \times I \times D \to I \\
+    Filter & determines the agent's intentions depending on current beliefs, desires, and intentions & B \times I \times D \to I \\
     \hline
-    Intentions set & the agent’s current focus & I \\
+    Intentions set & the agent's current focus & I \\
     \hline
     Action selection function & determines an action to perform depending on current intentions & I \to A  \\
     \hline
