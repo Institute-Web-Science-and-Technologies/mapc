@@ -12,6 +12,9 @@
 # Vim swap files
 *.swp
 
+# Dia swap files
+*.dia~
+
 # Log files (also generated with LaTeX)
 *.log
 *.1

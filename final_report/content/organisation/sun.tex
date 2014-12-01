@@ -1,0 +1,30 @@
+\subsection[Yuan Sun]{Yuan Sun$^{\blacktriangle,\diamond/\circ}$}\label{org:sun}
+This section lists the work done by Yuan Sun.
+Yuan mainly focused on implementing actions of agents in this project.
+At the beginning, she started to learn how to use Jason programming language together with Manuel Mittler and Rahul Arora.
+Rahul later left the research lab. % I mention this here because this is probably the only time this person is mentioned in this document.
+
+In addition, there was a Java factory class called \texttt{ActionHandler} which was used to instantiate a corresponding \texttt{Action} object according to a given identifier of type string.
+It aimed to separate the creation and representation of concrete \texttt{Action} objects.
+However, the actions represented as objects were not diverse enough to justify the creation of subclasses per each action.
+Hence, a dedicated factory class was not necessary.
+Yuan deleted this Java factory class and then encapsulated the progress of object instantiation inside the \texttt{Action} constructor.
+The constructor was able to return an \texttt{Action} object according to a given parameter, \texttt{entityName}, so that no complex switch statement would be necessary every time a new \texttt{Action} object was needed.
+Therefore, the degree of coupling of the system was decreased.
+
+In the beginning of agent strategies development in Jason, the implementation of different actions was done in a single file.
+Yuan rewrote and reorganised some of the code in different files with names corresponding to the roles of different agents.
+
+Yuan implemented initial actions like \texttt{probe}, \texttt{attack}, \texttt{repair} and \texttt{parry} with simple strategies while the other team members were working on map and zone related tasks.
+This enabled the other team members sooner to monitor and analyse the functioning of their code.
+She also improved the contexts of plans which lead to the execution of these actions.
+For example, she added the checks to determine a sufficiently high energy level to all agents before action execution as well as checks for the visibility range limitation for ranged actions.
+
+Moreover, with further project development, Yuan continued implementing some more complex agent strategies after discussing them with other team members.
+For instance, previously, sentinel agents only executed the \texttt{parry} action when they were attacked by enemies.
+After some discussion, Yuan implemented a better strategy for the these sentinel agents.
+If a sentinel agent was occupying a node in order to form a zone, it would execute the \texttt{parry} action when it saw enemies nearby although it had not yet been attacked by the enemies.
+
+In the final technical report, Yuan wrote the sections related to the Belief-Desire-Intention model.
+She did a presentation about Belief-Desire-Intention model before the project start.
+In the report, she did not only introduce the theory of the Belief-Desire-Intention model (see \autoref{fun:BDI}), but also did some statistics to analyse the use of the Belief-Desire-Intention model in our project (see \autoref{imp:BDI_AS}).
