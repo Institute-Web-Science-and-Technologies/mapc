@@ -1,17 +1,16 @@
-\section{}%remove this
 Using cognitive modelling techniques for agent development enable autonomous behaviour and reasoning for automised problem solving.
 This also allows the analysation of real world behaviour through simulations with agents.
 Problems can hence be automatically solved through self-organised groups of agents and new knowledge can be drawn from such simulations.
 The beliefs, desires and intentions (short: \emph{BDI}) model, is a widespread software model for developing intelligent agents.
 There, the basic characteristics of an agents' mental state are expressed through with beliefs, desires and intentions which are explained in more detail later in this section.
 Since the BDI logic system is easy to implement in software agents, it has been widely used in the field of artificial intelligence in computer science.
-In recent years, many scholars have used Java, Jason or some other programming languages to implement BDI agent model on computer\todo{\textbf{@yuansun1990}: you claim a lot here but I would not be sure. Especially in the field of agent programming, I see a lot of usage of Prolog. Where do you take this information from?}.\todo{This section is missing its introduction, explaining what the reader will get to know here.}
+In recent years, many scholars have used some programming languages to implement BDI agent model on computer.
 
 In 1987, Bratman~\cite{MICHAEL_PlansResource_1988} discussed the relationship between beliefs, desires, intentions and actions as well their roles in agent behaviours.
 This can be seen as the introduction of the BDI model which was adapted in 1991 by Rao and Georgeff~\cite{rao_modeling_1991}.
-They modelled the BDI agent behaviour and treated beliefs, desires and intentions as three modal operators and at the end applied BDI agent in airline traffic management\todo{\textbf{@yuansun1990}: I am really not sure what Bratman ended up with and how Rao and Georgeff worked on this. Honestly, I currently am not interested in reading both papers. Could you summarise it? Because reading these two, three sentences doesn't make it clear to the reader}.
-Nowadays, the research on BDI agents are not only used in high value domains but also in daily lives.
-There exist cases of BDI agents applications in high technology industrial areas such as airplane or space shuttle\todo{\textbf{@yuansun1990}: Airplane and space shuttle what? Engineering? Development? Simulation?}, but also in commercial fields and entertainment such as robot soccer games\todo{\textbf{@yuansun1990}: Is this really everyday life? Maybe you know of things that I don't. But I am just aware of scientific competitions which are not planned to entertain your everyday life.}.
+They modelled the BDI agent behaviour and treated beliefs, desires and intentions as three modal operators and then applied BDI agent in the airline traffic management field.
+Nowadays, the research on BDI agents are not only used in high value domains.
+There exist cases of BDI agents applications in high technology industrial areas such as doing fault diagnosis on the space shuttle, but also in commercial fields and entertainment such as robot soccer games.
 
 The BDI model is a popular and well-studied architecture of agent for intelligent agents situated in complex and dynamic environments.
 The model has its roots in philosophy found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
@@ -45,12 +44,12 @@ Beliefs are just the state believed by agents but no one can ensure what their b
 Simply saying, knowledge is true belief.
 
 Desires represent the motivational state of the agent~\cite{Rao_BDITheory_1995}.
-They represent objectives or situations that the agent would like to accomplish or bring about.
+In other words, desires represent objectives or situations that the agent would like to accomplish or bring about.
 They are states of affairs that the agent would wish to bring about or to keep.
 Desires may be achieved or never achieved, and it is not necessary to believe that desires must be achieved.
-Desires are different from goals although they look pretty similar.
+Moreover, desires should be distinguished from goals although they look pretty similar.
 Desires can be inconsistent and the agent doesn't need to know the means of achieving these desires.
-Desires have the tendency to 'tug' the agent in different directions.
+In addition, desires have the tendency to 'tug' the agent in different directions.
 They are inputs to the agent's deliberation process, which results in the agent choosing a subset of desires that are both consistent and achievable.
 Such consistent and achievable desires are usually called goals~\cite{Gerhard_MultiSystem_1999}.
 For example, sleeping and working may be both my desires, but they can not be my goals at the same time because they have conflicts.
@@ -103,7 +102,8 @@ The belief revision function is used to keep the beliefs set updated to fit the 
 The beliefs set contains information about the current environment which the agent has.
 The data in beliefs set may consist of sentences, rules or some other manifestations.
 In the AGM (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985} approach, an agent's beliefs are modeled by a deductively closed set of formulas called a beliefs set~\cite{James_revise_2011}.
-If the current set of beliefs is represented by a deductively closed set of logical formulae $K$ called belief base, and the new piece of information is a logical formula $P$, then revision may be represented as a binary operator * that takes as its operands the current beliefs and the new information, and produces as a result a belief base representing the result of the revision~\cite{M_Belief}.
+An epistemic state $K$ effectively encodes information regarding how the revision function itself changes under a revision, and the new piece of information is a logical formula $P$.
+A revision operator * then maps a belief state $K$ and formula $P$ to a revised belief state $K$ * $P$.~\cite{James_revise_2011}.
 The AGM approach is broadly used in belief revision research.
 The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
 It determines the desires depending on the agent's current beliefs and current intentions.
