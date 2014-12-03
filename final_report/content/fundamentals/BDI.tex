@@ -1,110 +1,108 @@
-Using cognitive modelling techniques for agent development enable autonomous behaviour and reasoning for automised problem solving.
-This also allows the analysation of real world behaviour through simulations with agents.
+\subsubsection[BDI]{BDI$^{\blacktriangle,\diamond}$}\label{fun:BDI}
+Using cognitive modelling techniques for agent development enable autonomous behaviour and reasoning for automated problem solving.
+This also allows the analysis of real world behaviour through simulations with agents.
 Problems can hence be automatically solved through self-organised groups of agents and new knowledge can be drawn from such simulations.
-The beliefs, desires and intentions (short: \emph{BDI}) model, is a widespread software model for developing intelligent agents.
-There, the basic characteristics of an agents' mental state are expressed through with beliefs, desires and intentions which are explained in more detail later in this section.
-Since the BDI logic system is easy to implement in software agents, it has been widely used in the field of artificial intelligence in computer science.
-In recent years, many scholars have used some programming languages to implement BDI agent model on computer.
+The beliefs, desires and intentions (short: \emph{BDI}) model, is a widespread software model for developing intelligent agents situated in complex and dynamic environments.
+There, the basic characteristics of an agents' mental state are expressed through beliefs, desires and intentions which are explained in more detail later in this section.
+The BDI logic system is quite easy to implement in software agents and to some extent promises human-like reasoning behaviour.
+Hence, it has been widely used in the field of artificial intelligence in computer science.
+This section begins with the roots of the BDI model by mentioning the scientific papers that led to it.
+It then continues with an explanation of practical reasoning after which the components of the BDI model are presented in greater detail.
+% TODO if there is more to come, I will add it here. I still haven't made it through this text.
 
 In 1987, Bratman~\cite{MICHAEL_PlansResource_1988} discussed the relationship between beliefs, desires, intentions and actions as well their roles in agent behaviours.
-This can be seen as the introduction of the BDI model which was adapted in 1991 by Rao and Georgeff~\cite{rao_modeling_1991}.
-They modelled the BDI agent behaviour and treated beliefs, desires and intentions as three modal operators and then applied BDI agent in the airline traffic management field.
-Nowadays, the research on BDI agents are not only used in high value domains.
-There exist cases of BDI agents applications in high technology industrial areas such as doing fault diagnosis on the space shuttle, but also in commercial fields and entertainment such as robot soccer games.
+This can be seen as the introduction of the BDI model which was revised in 1991 by Rao and Georgeff~\cite{rao_modeling_1991}.
+They formalised the model to a first order logic and treated beliefs, desires and intentions as three modal operators while giving intentions equal importance compared to beliefs and desires.
+Rao and Georgeff then continued to apply this theoretical foundation to concrete BDI agents, applying them in an airline traffic management application~\cite{Rao_BDITheory_1995}.
+Nowadays, BDI agents are deployed in high technology industrial areas such as fault diagnosis on space shuttles, but also in commercial fields and entertainment such as robot soccer games.
 
-The BDI model is a popular and well-studied architecture of agent for intelligent agents situated in complex and dynamic environments.
-The model has its roots in philosophy found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
-Practical reasoning involves two important processes: deciding what goals we want to achieve, and how we are going to achieve these goals.
-The former process is known as deliberation, the latter as means-ends reasoning~\cite{Gerhard_MultiSystem_1999}.
-When an agent is placed in an environment, it should decide what to do and how to do it.
-There are a lot of options of affairs states, but not all of them are good choices.
-Some other affairs more or less have influences on the feasibility of achieving these goals.
-The deliberation process is used to understand and filter what options are available, in addition, generate the set of alternatives which will be chosen as following.
-These chosen options become intentions which can be treated as the outputs of deliberation.
-For example, if you are standing in a supermarket and very thirsty, then you are faced with a decision to choose a drink.
-There are a lot of options like wine, beers, milk, water and juice, however, picking up a bottle of wine in Germany is not allowed if you are younger than 16 years old. % Germany, sadly a proud nation of drunkards.
+The BDI model has its roots in philosophy as found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
+Practical reasoning involves two important processes: deciding what goals should be achieved, and how they should be achieved.
+The former process is known as \emph{deliberation}, the latter as \emph{means-ends reasoning}~\cite{Gerhard_MultiSystem_1999}\todo{\textbf{yuansun1990}: Although you mention it here, you don't explain means-end reasoning. But you have to do so.}.
+When an agent is placed in an environment, it should autonomously decide what to do and how to do it.
+In general, an agent could execute many different actions but maybe only a few of them would have a desired effect on the environment.
+Various external properties can have influence on the feasibility of achieving the agent's goals\todo{\textbf{@yuansun1990}: this part confused me a bit. I don't think, \enquote{affairs} was the right word here. Please check if I still understood what you wanted to say.}.
+The deliberation process filters what options are actually possible in the current state.
+It then determines which of these options will become intentions.
+For example, if you are thirsty and standing in a supermarket, then you might be faced with the decision to choose a drink.
+There can be a lot of options like wine, beer, water, lemonade or juice.
+However, picking up a bottle of wine or beer is not allowed in Germany for people under the age of 16. % Germany, sadly a proud nation of drunkards.
 After collecting all the available options, you must choose and commit to some of them which become intentions next.
 Subsequently, we need the mean-ends reasoning process to plan how to achieve these intentions.
-Furthermore, if your intention is to buy a bottle of water, then you plan to go to the shelf with water on it, and then stretch your arm to get a bottle of water on the top.
-Finally, you execute this plan to get water.
+If your intention is to buy a bottle of water, you may then plan to go to the shelf with water on it, reach for such a bottle, take it to the checkout counter and pay for it.
+Finally, you have to execute this plan to buy the bottle of water.
 
-As a theory of practical reasoning, BDI model has three attributes that are belief, desire and intention.
+The BDI model, as an applicable theory of practical reasoning, consists of three components which are beliefs, desires and intentions.
+These are subsequently explained each.
 
-Beliefs represent the informational state of the agent and are updated appropriately after each sensing action.
-They may be implemented as a variable, a database, a set of logical expressions, or some other data structure~\cite{Rao_BDITheory_1995}.
-Belief means how the agent look at the world and it is the basis of BDI model.
-Belief includes the information about environment, other agents and itself.
-An agent needs to be allowed to update its beliefs at any time.
-Updating information comes from the perception of the environment, and the execution of intentions.
-An agent can use sensors to perceive the environment to get signals to believe.
-In addition, after executing some intentions, they become the information believed by the agent.
-Belief is not the same concept as knowledge.
-Beliefs are only required to provide information on the likely state of the environment, but knowledge is the realisation of a fact.
-Beliefs are just the state believed by agents but no one can ensure what their beliefs are true.
-Simply saying, knowledge is true belief.
+Beliefs represent the informational state of the agent\todo{\textbf{@yuansun1990}: YOU ARE QUOTING WIKIPEDIA WITHOUT ANY CITATIONS. THIS IS UNACCEPTABLE!} and are updated appropriately after each sensing action.
+They may be implemented as a variable, a database, a set of logical expressions or some other data structure~\cite{Rao_BDITheory_1995}.
+Beliefs model the agent's look at the world.
+They can express information about the environment, other agents or the agent itself.
+An agent may update its beliefs at any time.
+Agents receive new information from the perception of the environment and the execution of intentions.
+An agent can use sensors to perceive the environment and store their output as beliefs.
+Beliefs are not the same concept as knowledge.
+Knowledge is the realisation of a fact whereas a belief models \enquote{knowledge} which is believed by the agent.
+Beliefs do not necessarily have to be true from a global perspective.
+But from the agent's perspective, they are.
+Hence, beliefs can be seen as local knowledge.
+Likewise, beliefs can be global knowledge when they are true in a global sense.
 
 Desires represent the motivational state of the agent~\cite{Rao_BDITheory_1995}.
 In other words, desires represent objectives or situations that the agent would like to accomplish or bring about.
-They are states of affairs that the agent would wish to bring about or to keep.
-Desires may be achieved or never achieved, and it is not necessary to believe that desires must be achieved.
-Moreover, desires should be distinguished from goals although they look pretty similar.
-Desires can be inconsistent and the agent doesn't need to know the means of achieving these desires.
-In addition, desires have the tendency to 'tug' the agent in different directions.
+Desires can be but do not need to be achieved.
+% Although similar, desires can be distinguished from goals.
+Multiple desires can be inconsistent with each other and the agent does not need to know the means of achieving these desires.
 They are inputs to the agent's deliberation process, which results in the agent choosing a subset of desires that are both consistent and achievable.
-Such consistent and achievable desires are usually called goals~\cite{Gerhard_MultiSystem_1999}.
-For example, sleeping and working may be both my desires, but they can not be my goals at the same time because they have conflicts.
+Such consistent and achievable desires are usually called \emph{goals}~\cite{Gerhard_MultiSystem_1999}.
+For example, sleeping and working may be both one's desires, but they can not both be one's goals at the same time because they conflict with each other.
 
-Intentions are desires or actions that the agent has committed to achieve~\cite{Alejandro_LearnBDI_2004}.
-Intentions are stronger than desires.
-Desires are just wishes that may be achieved or may be not, but intentions to an extent are decided to be achieved.
-Michael Wooldridge~\cite{Gerhard_MultiSystem_1999} concluded four roles of intentions in practical reasoning.
-The roles are: intentions drive means-ends reasoning; intentions constrain future deliberation; intentions persist and intentions influence beliefs upon which future practical reasoning is based.
-Intentions driving means-ends reasoning means that intentions have decisive influences on actions the agent will execute.
-Agents are expected to determine ways of achieving intentions.
-Intentions constraining future deliberation means that options that are inconsistent with this intention will not be considered.
-Intentions persisting means that intentions will never be given up unless the reason is rational.
-As we know, intentions are committed desires which can not be easily abandoned.
-For if I immediately drop my intentions without devoting resources to achieving them, then I will never achieve anything~\cite{Gerhard_MultiSystem_1999}.
-But when a good reason exists, I still can drop intentions instead of persisting them for a long time without achievement.
-If it is very clear that the intentions will never been achieved, then there is no need to keep them.
-Similarly, if the reason for intention is no longer true, then intentions should be given up.
-Another reason of dropping intentions is the intentions have been achieved already.
-Intentions influencing beliefs upon which future practical reasoning is based means that believed intentions will be achieved.
-If I adopt an intention, then I can plan for the future on the assumption that I will achieve the intention.
-For if I intend to achieve some state of affairs while simultaneously believing that I will not achieve it, then I am being irrational~\cite{Gerhard_MultiSystem_1999}.
-Agents should believe that they believe there is at least some way that the intentions could be brought about and believe that under "normal circumstances" agents will succeed with the intentions, or say it in another way, agents do not believe they will not bring about their intentions.
-Generally speaking, intentions are not random ideas, but the wants to a reasonable extent.
-It plays an important role in BDI model that leading to actions, constraining future deliberation and influencing future beliefs.
-Specifically, the agents should drop off some intentions at times to avoid resource wasting.
-It is necessary to keep a good balance between these different concerns.
+Intentions are desires or actions that an agent committed itself to achieve~\cite{Alejandro_LearnBDI_2004}.
+Their meaning is stronger than that of desires.
+Desires are merely wishes that may be achieved or may be not, but intentions are decided to be achieved to a reasonable extent.
+Michael Wooldridge~\cite{Gerhard_MultiSystem_1999} concluded four functions of intentions in practical reasoning:
+\begin{itemize}
+  \item Intentions drive means-ends reasoning meaning that intentions have decisive influences on the actions which the agent will execute.
+    Agents are expected to determine ways of achieving intentions.
+  \item Intentions constrain future deliberation.
+    This means that options which would be in conflict with an already chosen intention will not be considered.
+  \item Intentions persist means that intentions will not be given up unless there is a rational reason to do so.
+    This is important because if an agent immediately dropped its intentions without devoting resources to achieving them, it will never achieve anything~\cite{Gerhard_MultiSystem_1999}.
+    Hence, intentions are committed desires which can not be easily abandoned.
+    A reason to drop an intention nevertheless could be e.g. when an external event made the intention impossible or a lot more difficult to achieve.
+  \item Intentions influence beliefs upon which future practical reasoning is based.
+    This expresses that an intention is believed to be eventually achieved under \enquote{normal circumstances}.
+    Practically, after deciding on an intention, the agent will add the intention as a belief.
+    This allows the agent to plan for the future on the assumption that the intention will be achieved.
+\end{itemize}
+Intentions play an important role in the BDI model as they lead to actions and influence future beliefs and intention selection.
 
-Beliefs, desires and intentions are three attributes of BDI model and constitute the foundation of BDI agents.
-While some other components building connection between beliefs, desires and intentions are also indispensable to implement BDI agents and make the BDI architecture complete.
-
-Several basic components can be found in the following figure, which shows a brief BDI architecture.
-A variety of BDI agents have been designed to fit the unstable environment and to complete all sorts of tasks.
-Different BDI agents have different architectures, but their core ideas are the same.
-
+Beliefs, desires and intentions are the foundation of BDI agents.
+Yet, further components are needed to build the connection between these three components and thereby implement BDI agents.
+Naturally, the architecture of BDI agents differs in detail depending on their tasks.
+However, they all share a core architecture which is depicted in \autoref{fig:bdi_architecture}.
+Its components are explained in the following paragraphs.
+% TODO we will have to place this somewhere else as it contains elements like BRF which are explained waaay later.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/BDIAr}
   \caption{Brief BDI architecture~\cite{BDIA}}
-  \label{fig:Brief BDI architecture}
+  \label{fig:bdi_architecture}
 \end{figure}
 
-The sensors of the BDI agent perceive the environment and convert the perceptions to signals as the inputs to the belief revision function.
-It will collect the perceptions from outside as well as the beliefs which are stored in the beliefs set.
-After mapping the information, computing and revising using belief revision function, the new beliefs will be added into the beliefs set.
-The belief revision function prefers minimal change rather than modifying a lot.
-There are not big differences between the revised beliefs set and the previous one, as much information as possible is preserved by the change~\cite{Antje_SpatialBelief_2011}.
-The belief revision function is used to keep the beliefs set updated to fit the changing environment, on the other hand, it can help to avoid the inconsistent situations, e.g.\ when the agent believes in what it does not believe.
+The sensors of a BDI agent perceive the environment and convert the perceptions to signals as inputs for the belief revision function (short: \emph{BRF}).
+This function collects the external perceptions as well as the beliefs which are already stored in the beliefs.
+It then processes the information and updates the beliefs accordingly.
+The belief revision function prefers minimal change over modifying a lot and hence tries to preserve as much information as possible~\cite{Antje_SpatialBelief_2011}.
+While processing the new and old information, the BRF will also solves inconsistencies, e.g.\ when an agent perceives information which contradicts a belief it has.
 
-The beliefs set contains information about the current environment which the agent has.
-The data in beliefs set may consist of sentences, rules or some other manifestations.
-In the AGM (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985} approach, an agent's beliefs are modeled by a deductively closed set of formulas called a beliefs set~\cite{James_revise_2011}.
-An epistemic state $K$ effectively encodes information regarding how the revision function itself changes under a revision, and the new piece of information is a logical formula $P$.
-A revision operator * then maps a belief state $K$ and formula $P$ to a revised belief state $K$ * $P$~\cite{James_revise_2011}.
+The belief set's data may be modelled as sentences, rules or some other manifestations.
+In the \emph{AGM approach} (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985}, an agent's beliefs are modeled by a deductively closed set of formulas called a \emph{beliefs set}~\cite{James_revise_2011}.
+An epistemic state $K$ encodes information regarding how the revision function itself changes under a revision and the new piece of information is a logical formula $P$.
+A revision operator * then maps a belief state $K$ and a formula $P$ to a revised belief state $K$ * $P$~\cite{James_revise_2011}\todo{\textbf{@yuansun1990}: For me, it is unclear, why this is needed or what will change. Is $K_n:=K_{n-1}*P_i$? How does the revision function change?}.
 The AGM approach is broadly used in belief revision research.
+
 The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
 It determines the desires depending on the agent's current beliefs and current intentions.
 The desires set contains desires, which are the possible courses of actions available to the agent.
@@ -152,7 +150,7 @@ For understanding the relationships between the seven main components of BDI age
   \caption{Components of brief BDI agent architecture}
 \end{table}
 
-This table shows the order of using the seven components of BDI architecture as well as giving the formulas for each function.
+\autoref{tab:BDIC} shows the order of using the seven components of BDI architecture as well as giving the formulas for each function.
 If we denote $Bel$ a set of all possible beliefs, $Des$ a set of all possible desires and $Int$ a set of all possible intentions.
 Then an agent's state can be presented as $(B,D,I)$ with $B \subseteq Bel, D \subseteq  Des, I \subseteq  Int$.
 $P$ is a set of current perception which are obtained by the sensors of the agent.
