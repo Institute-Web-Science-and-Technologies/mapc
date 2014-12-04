@@ -65,7 +65,7 @@ Their meaning is stronger than that of desires.
 Desires are merely wishes that may be achieved or may be not, but intentions are decided to be achieved to a reasonable extent.
 Michael Wooldridge~\cite{Gerhard_MultiSystem_1999} concluded four functions of intentions in practical reasoning:
 \begin{itemize}
-  \item Intentions drive means-ends reasoning meaning that intentions have decisive influences on the actions which the agent will execute.
+  \item Intentions driving means-ends reasoning means that intentions have decisive influences on the actions which the agent will execute.
     Agents are expected to determine ways of achieving intentions.
   \item Intentions constrain future deliberation.
     This means that options which would be in conflict with an already chosen intention will not be considered.
@@ -103,7 +103,7 @@ The belief set's data may be modelled as sentences, rules or some other manifest
 In the \emph{AGM approach} (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985}, an agent's beliefs are modeled by a deductively closed set of formulas called a \emph{beliefs set}~\cite{James_revise_2011}. 
 This approach is broadly used in belief revision research.
 It makes several postulates for one revision operator which mapping each belief set and one sentence of beliefs to generate new beliefs.
-Meanwhile, these postulates allows the belief revision process to retain as many previous beliefs as possible to reduce the amount of change.
+Meanwhile, these postulates allows the belief revision process to retain as much as previous beliefs to reduce the amount of change.
 
 The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
 It determines the desires depending on the agent's current beliefs and current intentions.
@@ -126,7 +126,7 @@ Normally, there is a plan library of mappings between the intentions and actions
 The intentions go through the planner until the actions which mapped to the corresponding intentions are found.
 Finally, a plan of how to achieve the intentions come out and the agent will execute these actions.
 
-For understanding the relationships between the seven main components of BDI agent architecture, one table is presented as follows:
+For understanding the relationships between the seven main components of BDI agent architecture, one table~\footnote{This table summarizes the content of BDI model architecture which from Michael Wooldridge's work\cite{Gerhard_MultiSystem_1999}} is presented as follows:
 
 \begin{table}[!hbp]
   \label{tab:BDIC}
@@ -138,7 +138,7 @@ For understanding the relationships between the seven main components of BDI age
     \hline
     Belief revision function & determines a new set of beliefs depending on perceptual inputs and the agent's current beliefs & B \times P \to B\\
     \hline
-    Options & determines desires depending on the agent's current beliefs & B \times I \to D \\
+    Options & determines desires depending on the agent's current beliefs and current intentions & B \times I \to D \\
     \hline
     Desires set & possible courses of actions available to the agent & D \\
     \hline
@@ -154,7 +154,7 @@ For understanding the relationships between the seven main components of BDI age
 
 \autoref{tab:BDIC} shows the order of using the seven components of BDI architecture as well as giving the formulas for each function.
 If we denote $Bel$ a set of all possible beliefs, $Des$ a set of all possible desires and $Int$ a set of all possible intentions.
-Then an agent's state can be presented as $(B,D,I)$ with $B \subseteq Bel, D \subseteq  Des, I \subseteq  Int$.
+Then an agent's state can be presented as $(B,D,I)$ with $B \subseteq Bel, D \subseteq  Des, I \subseteq  Int$~\cite{Gerhard_MultiSystem_1999}.
 $P$ is a set of current perception which are obtained by the sensors of the agent.
 We can understand the process of BDI agent working better through seeing this table.
 Firstly, $B$ stores some beliefs which are read by BRF (belief revision function) while it getting the perception from the sensors.
@@ -181,7 +181,7 @@ We can feel that, BDI agents bring many profits to human beings, they make the l
 However, there is still space for development in this field.
 
 Although the BDI model is developed during about 30 years, some obstacles are not overcome and some challenges are still there.
-Most BDI implementations do not have an explicit representation of goals.
+The goals of most BDI implementations are not explicit.
 The agents should reason about the goals from the current beliefs and intentions.
 Besides, the BDI model contains three attributes: beliefs, desires and intentions.
 In some situations, not all the three attributes are needed.
