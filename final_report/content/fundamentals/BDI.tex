@@ -20,7 +20,8 @@ The BDI model has its roots in philosophy as found in Bratman's theory of practi
 Practical reasoning involves two important processes: deciding what goals should be achieved, and how they should be achieved.
 The former process is known as \emph{deliberation}, the latter as \emph{means-ends reasoning}~\cite{Gerhard_MultiSystem_1999}.
 Means-ends reasoning is a method to make plans for achieving goals based on current states.
-The idea of means-ends reasoning is to reduce the difference between the current state and a goal, furthermore, the method is applied recursively.
+The idea of means-ends reasoning is to reduce the difference between the current state and the state where a goal is achieved.
+For this purpose, the method is applied recursively.
 When an agent is placed in an environment, it should autonomously decide what to do and how to do it.
 In general, an agent could execute many different actions but maybe only a few of them would have a desired effect on the environment.
 Various external properties can have influence on the feasibility of achieving the agent's goals\todo{\textbf{@yuansun1990}: this part confused me a bit. I don't think, \enquote{affairs} was the right word here. Please check if I still understood what you wanted to say.}.
@@ -37,7 +38,7 @@ Finally, you have to execute this plan to buy the bottle of water.
 The BDI model, as an applicable theory of practical reasoning, consists of three components which are beliefs, desires and intentions.
 These are subsequently explained each.
 
-Beliefs represent the informational state of the agent~\cite{Rao_BDITheory_1995} and are updated appropriately after each sensing action.
+Beliefs represent the informational part of the agent~\cite{Rao_BDITheory_1995} and are updated appropriately after each sensing action.
 They may be implemented as a variable, a database, a set of logical expressions or some other data structure~\cite{Rao_BDITheory_1995}.
 Beliefs model the agent's look at the world.
 They can express information about the environment, other agents or the agent itself.
@@ -51,7 +52,7 @@ But from the agent's perspective, they are.
 Hence, beliefs can be seen as local knowledge.
 Likewise, beliefs can be global knowledge when they are true in a global sense.
 
-Desires represent the motivational state of the agent~\cite{Rao_BDITheory_1995}.
+Desires represent the motivational part of the agent~\cite{Rao_BDITheory_1995}.
 In other words, desires represent objectives or situations that the agent would like to accomplish or bring about.
 Desires can be but do not need to be achieved.
 % Although similar, desires can be distinguished from goals.
@@ -85,7 +86,6 @@ Yet, further components are needed to build the connection between these three c
 Naturally, the architecture of BDI agents differs in detail depending on their tasks.
 However, they all share a core architecture which is depicted in \autoref{fig:bdi_architecture}.
 Its components are explained in the following paragraphs.
-% TODO we will have to place this somewhere else as it contains elements like BRF which are explained waaay later.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{images/BDIAr}
@@ -100,10 +100,10 @@ The belief revision function prefers minimal change over modifying a lot and hen
 While processing the new and old information, the BRF will also solves inconsistencies, e.g.\ when an agent perceives information which contradicts a belief it has.
 
 The belief set's data may be modelled as sentences, rules or some other manifestations.
-In the \emph{AGM approach} (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985}, an agent's beliefs are modeled by a deductively closed set of formulas called a \emph{beliefs set}~\cite{James_revise_2011}. 
+In the \emph{AGM approach} (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985}, an agent's beliefs are modeled by a deductively closed set of formulas called a \emph{belief set}~\cite{James_revise_2011}.
 This approach is broadly used in belief revision research.
 It makes several postulates for one revision operator which mapping each belief set and one sentence of beliefs to generate new beliefs.
-Meanwhile, these postulates allows the belief revision process to retain as many previous beliefs as possible to reduce the amount of change.
+Meanwhile, these postulates allow the belief revision process to retain as many previous beliefs as possible to reduce the amount of change.
 
 The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
 It determines the desires depending on the agent's current beliefs and current intentions.
@@ -126,15 +126,14 @@ Normally, there is a plan library of mappings between the intentions and actions
 The intentions go through the planner until the actions which mapped to the corresponding intentions are found.
 Finally, a plan of how to achieve the intentions come out and the agent will execute these actions.
 
-For understanding the relationships between the seven main components of BDI agent architecture, one table~\footnote{This table summarizes the content of BDI model architecture which from Michael Wooldridge's work\cite{Gerhard_MultiSystem_1999}} is presented as follows:
-
+\autoref{tab:BDIC} summarises the BDI agent architecture as described by Michael Wooldridge~\cite{Gerhard_MultiSystem_1999}.
 \begin{table}[!hbp]
   \label{tab:BDIC}
   \begin{tabularx}{\textwidth}{|l|p{5cm}| >{$}X<{$} |}
   \hline
   \textbf{Component} & \textbf{Meaning} & \textbf{Formalisation} \\
     \hline
-    Beliefs set & Information about the current environment which the agent has & B \\
+    Belief set & Information about the current environment which the agent has & B \\
     \hline
     Belief revision function & determines a new set of beliefs depending on perceptual inputs and the agent's current beliefs & B \times P \to B\\
     \hline
@@ -159,7 +158,7 @@ $P$ is a set of current perception which are obtained by the sensors of the agen
 We can understand the process of BDI agent working better through seeing this table.
 Firstly, $B$ stores some beliefs which are read by BRF (belief revision function) while it getting the perception from the sensors.
 After operating BRF, some of beliefs are removed, some are added, some are modified and so on.
-So the new beliefs set $B$ built on basis of $P$ and original $B$.
+So the new belief set $B$ built on basis of $P$ and original $B$.
 Subsequently, Options use the new $B$ and current intentions set $I$ to determine the desires set $D$ and store it.
 Moreover, the filter select intentions by referencing $B,D,I$, then the new intentions set comes out.
 Finally, the action selection function makes a plan to execute actions to achieve $I$.
