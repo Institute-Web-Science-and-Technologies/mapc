@@ -18,7 +18,9 @@ Nowadays, BDI agents are deployed in high technology industrial areas such as fa
 
 The BDI model has its roots in philosophy as found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
 Practical reasoning involves two important processes: deciding what goals should be achieved, and how they should be achieved.
-The former process is known as \emph{deliberation}, the latter as \emph{means-ends reasoning}~\cite{Gerhard_MultiSystem_1999}\todo{\textbf{yuansun1990}: Although you mention it here, you don't explain means-end reasoning. But you have to do so.}.
+The former process is known as \emph{deliberation}, the latter as \emph{means-ends reasoning}~\cite{Gerhard_MultiSystem_1999}.
+Means-ends reasoning is a method to make plans for achieving goals based on current states.
+The idea of means-ends reasoning is to reduce the difference between the current state and a goal, furthermore, the method is applied recursively.
 When an agent is placed in an environment, it should autonomously decide what to do and how to do it.
 In general, an agent could execute many different actions but maybe only a few of them would have a desired effect on the environment.
 Various external properties can have influence on the feasibility of achieving the agent's goals\todo{\textbf{@yuansun1990}: this part confused me a bit. I don't think, \enquote{affairs} was the right word here. Please check if I still understood what you wanted to say.}.
@@ -35,7 +37,7 @@ Finally, you have to execute this plan to buy the bottle of water.
 The BDI model, as an applicable theory of practical reasoning, consists of three components which are beliefs, desires and intentions.
 These are subsequently explained each.
 
-Beliefs represent the informational state of the agent\todo{\textbf{@yuansun1990}: YOU ARE QUOTING WIKIPEDIA WITHOUT ANY CITATIONS. THIS IS UNACCEPTABLE!} and are updated appropriately after each sensing action.
+Beliefs represent the informational state of the agent~\cite{Rao_BDITheory_1995} and are updated appropriately after each sensing action.
 They may be implemented as a variable, a database, a set of logical expressions or some other data structure~\cite{Rao_BDITheory_1995}.
 Beliefs model the agent's look at the world.
 They can express information about the environment, other agents or the agent itself.
@@ -98,10 +100,10 @@ The belief revision function prefers minimal change over modifying a lot and hen
 While processing the new and old information, the BRF will also solves inconsistencies, e.g.\ when an agent perceives information which contradicts a belief it has.
 
 The belief set's data may be modelled as sentences, rules or some other manifestations.
-In the \emph{AGM approach} (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985}, an agent's beliefs are modeled by a deductively closed set of formulas called a \emph{beliefs set}~\cite{James_revise_2011}.
-An epistemic state $K$ encodes information regarding how the revision function itself changes under a revision and the new piece of information is a logical formula $P$.
-A revision operator * then maps a belief state $K$ and a formula $P$ to a revised belief state $K$ * $P$~\cite{James_revise_2011}\todo{\textbf{@yuansun1990}: For me, it is unclear, why this is needed or what will change. Is $K_n:=K_{n-1}*P_i$? How does the revision function change?}.
-The AGM approach is broadly used in belief revision research.
+In the \emph{AGM approach} (named after their proponents, Alchourrón, Gärdenfors, and Makinson)~\cite{alchourron_revision_1985}, an agent's beliefs are modeled by a deductively closed set of formulas called a \emph{beliefs set}~\cite{James_revise_2011}. 
+This approach is broadly used in belief revision research.
+It makes several postulates for one revision operator which mapping each belief set and one sentence of beliefs to generate new beliefs.
+Meanwhile, these postulates allows the belief revision process to retain as much as previous beliefs to reduce the amount of change.
 
 The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
 It determines the desires depending on the agent's current beliefs and current intentions.
