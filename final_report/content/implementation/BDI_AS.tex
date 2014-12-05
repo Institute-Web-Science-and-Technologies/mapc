@@ -1,11 +1,11 @@
 \subsection[BDI in AgentSpeak(L) and Jason]{BDI in AgentSpeak(L) and Jason$^{\blacktriangle,\circ}$}
 The BDI agent architecture has been a central theme in the multi-agent systems literature since the early 1990's.
-AgentSpeak(L) is an agent-oriented programming language inspired by the work on the BDI architecture and BDI logics as well as on practical implementations of BDI systems~\cite{rafael_BDIAgent_2005}.
-% TODO introduction to this section
-
-It is a programming language based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}.
+AgentSpeak(L) is an agent-oriented programming language inspired by the work on the BDI architecture and BDI logics as well as on practical implementations of BDI systems~\cite{rafael_BDIAgent_2005}. % TODO citation?
+It is a programming language based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}. % TODO citation?
 The behaviour of an agent such as the interaction of that agent with the environment is implemented in AgentSpeak(L).
 In other words, AgentSpeak(L) encodes beliefs, desires, and intentions in a way processable by an agent.
+This section presents the interpretation cycle of an AgentSpeak(L) program as implemented in Jason.
+It shows a more extensive picture on the reasoning process of a Jason BDI agent.
 
 As explained by Rao~\cite{anand_AgentSpeak_1996} beliefs model the current state of an agent, expressing its knowledge.
 They may be modified on environment changes due to some internal or external events.
@@ -32,68 +32,33 @@ The external beliefs describe the current states of each agent such as its energ
 These beliefs are not immutable and can be used and modified in plans.
 
 In the interpretation cycle shows that events also play an important role.
-After the selection of the events by the \emph{event selection function} $S_E$ the events will be unified with the triggering events in the head of the plans from the plan library.
-%There are two types of events: \emph{internal events} and \emph{external events}.
-%They are distinguished by their origin.
-%If an event has the annotation \texttt{source[self]}, it is called an internal event.
-%Else, it is an external event and was most probably not part of the initial beliefs nor has it been added by the agent itself but was perceived from the environment.
-%and an external event is generated from belief updates as a result of perceiving the environment~\cite{rafael_Javabased_2007}.
-We have $88$ events in total in our program and two of them are presented as follow:
+After the selection of the events by the \emph{event selection function} $\mathcal{S_E}$ the events will be unified with the triggering events in the head of the plans from the plan library.
+In our system, there are $184$ plans in total.
+We have $88$ plans with discrete triggering events meaning that our own plans handle $88$ different events.
 
-Desires in the BDI model are always treated as goals which used in plans.
-A goal of AgentSpeak(L) has two types: achievement goal and test goal.
-When the associated atomic formula is true, and the agent wants to achieve a state of the world, it is stated as an achievement goal with being formed by an atomic formula prefixed with the \texttt{!}.
-On the other hand, a test goal which is prefixed with the \texttt{?} operator states that the agent wants to test whether the associated atomic formula is (or can be unified with) one of its beliefs~\cite{rafael_BDIAgent_2005}.
-We mostly implement achievement goals in our program, because achieving some states are always wanted.
-For example, \texttt{!doParry.} is an achievement goal that will execute the \texttt{parry} action when some events are triggered.
-Although achievement goals occupy about 99 percent of the goals, we still implement three test goals such as \texttt{?maxRange(MaxRange)} which checks the current range is maximum or not when finding the best zone for agents.
-All of these three test goals are implemented in zone building, and all the remaining goals are achievement goals.
+Desires in AgentSpeak(L) are expressed through test or achievement goals.
+We explicitly implemented achievement goals in our program.
+For example, \texttt{!doParry} is an achievement goal that will lead to the execution of the \texttt{parry} action when a certain plan matches the event.
+However, querying the belief base in the context of a plan is converted by Jason into an achievement goal automatically.
 
-With beliefs, trigger events and goals, we can make plans for each agent.
-An AgentSpeak(L) plan consists of a head which is formed from a triggering event, a conjunction of belief literals representing a context, and a body which is a sequence of basic actions or goals that the agent has to achieve when the plan is triggered~\cite{rafael_BDIAgent_2005}.
-In our program, there are 184 plans in total.
-101 of them have the head of internal trigger events as well as 83 plans are with the head of external trigger events.
-The plans with internal trigger events are 18 more than those with external events, that means when plans are made, we add or delete goals which generated from the agent's own execution of a plan much more than adding or deleting beliefs based on the perception.
-
-Different plans can ensure to complete different tasks which are required to be done by several kinds of agents.
-In this multi-agent system, several actions are already defined before starting this program.
-What required to do is to make good plans to let different agents implement these actions well so that good points can be acquired.
-For example, 6 out of 28 agents are allowed to execute the \texttt{attack} action.
-When we try to make plans for the agents who can attack, a variety of situations should be considered of; like when the enemy stands on the neighbour vertex of our agents, or when our agents do not find any enemies nearby, laying different plans is necessary.
-Of course, the allocation of plans' quantity can not be the same for executing different actions, because strategies for executing various actions differ under different circumstances.
-Building zones occupies 39 percent of the plans and the second largest part is contributed by the basic beliefs storing.
-However, all the plans for storing basic beliefs are with external trigger events meanwhile they are very fundamental.
-For instance, \texttt{+health(Numeral)[source(percept)] <- +health(Numeral)[source(self)].} is just to store the health updating every step.
-Therefore, basic beliefs storing can be ignored in this comparison.
-Zone building uses more plans than others.
-It is easy to know that building a zone is more complex than other action executing.
-Zone building will be affected by the maps given in the contest, the position where the agents of other teams occupy and many other situations as well.
-Additionally, building a good zone will get a lot of scores so more plans focusing on zone building is reasonable.
-Compared with zone building, the plan for the action \texttt{buy} is easy.
-When the specified saboteur agent does not see any enemy agents nearby, it will buy more health and increase its visibility range.
-The action \texttt{attack} uses a little more plans than other remaining actions since the strategy is designed offensively.
-Making agents from other teams disabled is our purpose, moreover the attack action should be executed rapidly and effectively.
-Consequently, in contrast, more plans are adopted by the attack action.
-
-Now we have relevant plans that unified with the selected events and plans.
-However, these relevant plans can not be executed at this time, because the beliefs from the belief base also should be unified in the plans.
-After this, the option selection function $S_O$ selects one applicable plan and puts it into the intentions.
-
-Intentions are particular courses of actions to which an agent has committed in order to handle certain events~\cite{rafael_BDIAgent_2005}.
-Each intention is a stack of partially instantiated plans~\cite{rafael_Javabased_2007}.
-The execution of plans may be started off by their trigger events.
-As mentioned above, trigger events can be external when coming from the perception of the changing environment, or be internal when generated from the sub-goals.
-We know that, applicable plans were chosen and putted into the intention stack.
-If the chosen plan is for an internal event, it will be pushed on top of that intention.
-Otherwise, if the chosen plan has a head with an external trigger event, it will create a new intention and be stored in the intention stack.
-The allocations of this two types of plans are different for various agents.
-According to a rough statistic, we can find the differences in the following figures.
+For some tasks, we have multiple plans as there are many different contexts to consider.
+As an example, attacking is covered in many plans as the strategy is complex.
+A variety of situations must be considered before attacking like determining if there is an enemy nearby, if the agent should move towards the enemy, if it has enough energy, what to do if there is no enemy and so on.
+Similarly, $39$ percent of all plans are associated with building zones.
+The reason for this is mainly due to the complexity of communication between agents and many special cases to consider.
+On the other hand, other actions do not need excessive planning like the \texttt{buy} action.
+When the specified Saboteur agent does not see any enemy agents nearby, it will upgrade its visibility range and health without considering more than just its energy and the available money.
+\autoref{fig:plan_allocation} illustrates the amount of plans used for different actions.
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{images/BDI_plan_distribution_action}
   \caption{Plan distribution for actions.}
   \label{fig:plan_allocation}
 \end{figure}
+Similarly, the amount of plans executable only if the agent has a particular role vary a lot.
+\autoref{fig:baselinex} illustrates this and shows that the Saboteur agent had more role-specific plans than e.g.\ for the Sentinel agent.
+The reason for this is that we have a complex, offensive strategy for our Saboteur agents but there are not even Sentinel-exclusive actions.
+This figure does not count plans executable by all roles such as going to another vertex.
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{images/BDI_plan_distribution_role}
@@ -101,35 +66,21 @@ According to a rough statistic, we can find the differences in the following fig
   \label{fig:baselinex}
 \end{figure}
 
-In \autoref{fig:plan_allocation} we can see that all plans used by storing basic beliefs are with external trigger events as mentioned above.
-Besides that, only zone building and execution of action "attack" adopt plans with external trigger events.
-The other remaining actions use few plans with external trigger events.
-In general, internal trigger events are more often used in plans.
-After calculating, about 41 percent of plans for zone building are with external trigger events but 23 percent of plans for execution of "attack" are with external trigger events.
-So more zone building plans are triggered by the perception of the agent's environment than that for "attack".
-In this program, plans with internal trigger events which generated from the agent's own execution of a plan are adopted widely.
-Therefore, the execution of the previous plan makes more sense to the current plan of agents than the perception of the environment's impact.
-
-Agents in this multi-agent system are divided into five classes by their roles---explorer, saboteur, repairer, sentinel, and inspector.
-They have various tasks to do to achieve points in the contest, moreover, the number of plans adopted by them are definitely different which can be seen in \autoref{fig:baselinex}.
-It is notable that what this figure presenting has removed the plans which available to be used by all kinds of agents such as going to another vertex, and presenting particular plans that only used by their relevant agents.
-Similar as the plan distribution for different actions, most plans are with internal triggered events.
-Just "saboteur" which the only role of agents can do action "attack" use the plans with external trigger events and this kind of plans do not occupy a big part.
-Furthermore, saboteurs using most plans is in accordance with our offensive strategy.
-Explorers, repairers and inspectors use about the same amount of plans, however, few plans are for sentinels.
-This is reasonable in view of there is not any actions only available for sentinels.
+All those plans are loaded into the plan library.
+To determine when which plan is actually applicable, the \emph{option selection function} $\mathcal{S_O}$ is needed.
+It receives the plans whose triggering event matches matched against the belief base.
+This ensures that it only reasons about plans which are executable in the current situation by inspecting their context.
+As a result, $\mathcal{S_O}$ draws an applicable plan for an intention.
+The plans for the intentions are stored with new plans creating a new intention.
+Subgoals, triggered from other plans, are added to existing intentions.
+As the drawn plans match the contexts, they can be seen as partially instantiated~\cite{rafel_Javabased_2007}.
 
 Beliefs, desires and intentions are introduced above, but many agent languages contain all these three.
-One of the reasons to choose Jason as programming language is that Jason can either provide a library of essential internal actions, or be straightforward extensible by user-defined internal actions, which are programmed in Java~\cite{rafael_Javabased_2007}.
-Implementing internal actions provides the means for programmers to do important things for BDI-inspired programming, such as checking and dropping the agent's own
-desires/intentions~\cite{rafael_overviewjason_2006}.
-Besides the original internal actions like \texttt{.print} or \texttt{.send}, 32 internal actions defined by our own are programmed in Java.
-Most of these internal actions are devoted to control the map, such as calculating the distance between two agents or searching the nearest position to the current Vertex and so on.
-These internal actions run internally by the agent resulting in saving the commuting time.
+One of the reasons to choose Jason as programming language was that Jason provides an already implemented set of internal actions and is extensible by user-defined internal actions, which are programmed in Java~\cite{rafael_Javabased_2007}.
+Besides the original internal actions like \texttt{.print} or \texttt{.send}, we developed $32$ internal actions.
+Most of these internal actions are devoted to receiving information about the map, such as finding high value vertices.
+They hence do not play a big part in our development from a BDI perspective.
 
-Although Jason is a kind of new language for our team members, it is considered as the best agent speak language chosen for this multi-agent system after we trying to learning it.
-In our program, BDI model is clearly described, meanwhile beliefs, desires and intentions are arranged reasonably.
-In addition, the features of Jason such as user-defined internal actions are great used to improve communication process in our program.
-All our effort contributes in acquiring the second place in this contest.
-However, not familiar with Jason also makes some problems, some functions are not implemented completely, or some strategy is not the most reasonable.
-There is still room for improvement and many things need to be perfect.
+This section gave a more in-depth overview of the reasoning in Jason in the context of the BDI model.
+Jason's and AgentSpeak(L)'s implementation of the BDI agent architecture manage to close the gap between the theoretic model and a practically suitable language for multi-agent development.
+Nevertheless, we faced several problems during implementation which are further discussed in \autoref{con:learned}.
