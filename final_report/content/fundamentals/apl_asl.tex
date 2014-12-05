@@ -29,8 +29,10 @@ Achievement goals are comparable to desires. % 45
 \end{lstlisting}
 
 \emph{Events} are introduced to allow agents to react on changes in their own knowledge or the world.
-They can be distinguished into the addition and removal of beliefs or goals.
-Additions are denoted by a plus (+) and removals by using a minus (-) sign in front of the goal or belief:
+If they receive new information from other agents or as a perception of the environment, an \emph{external event} is triggered.
+\emph{Internal events} are triggered when agents add knowledge or goals by themselves.
+Events in general can be distinguished into the addition and removal of beliefs or goals.
+Additions are denoted by a plus (\texttt{+}) and removals by using a minus (\texttt{-}) sign in front of the goal or belief:
 \begin{itemize}
   \item \texttt{+hasCoffee(p)}: an agent is informed that \texttt{p} now has coffee.
   \item \texttt{-hasCoffee(p)}: an agent is informed that \texttt{p} no longer has coffee.

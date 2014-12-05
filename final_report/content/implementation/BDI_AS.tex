@@ -1,15 +1,19 @@
+\subsection[BDI in AgentSpeak(L) and Jason]{BDI in AgentSpeak(L) and Jason$^{\blacktriangle,\circ}$}
 The BDI agent architecture has been a central theme in the multi-agent systems literature since the early 1990's.
-AgentSpeak is an agent-oriented programming language inspired by the work on the BDI architecture and BDI logics as well as on practical implementations of BDI systems~\cite{rafael_BDIAgent_2005}.
+AgentSpeak(L) is an agent-oriented programming language inspired by the work on the BDI architecture and BDI logics as well as on practical implementations of BDI systems~\cite{rafael_BDIAgent_2005}.
+% TODO introduction to this section
 
-AgentSpeak(L) is a programming language based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}.
-What was written in AgentSpeak(L) decides the behaviour of an agent, such like the agent's interactions with the environment.
-In other words, we can design the beliefs, desires, and intentions of the agent by writing these notions in AgentSpeak(L) instead of representing them as model formulas explicitly.
+It is a programming language based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}.
+The behaviour of an agent such as the interaction of that agent with the environment is implemented in AgentSpeak(L).
+In other words, AgentSpeak(L) encodes beliefs, desires, and intentions in a way processable by an agent.
 
-Beliefs are the current states of the agent which are not immutable but updated when the environment changes or some events that can affect agents' beliefs are triggered; states which the agent wants to bring about based on its external or internal stimuli can be viewed as desires; and the adoption of programs to satisfy such stimuli can be viewed as intentions~\cite{anand_AgentSpeak_1996}.
+As explained by Rao~\cite{anand_AgentSpeak_1996} beliefs model the current state of an agent, expressing its knowledge.
+They may be modified on environment changes due to some internal or external events.
+Rao furthermore describes states the agent wants to reach are desires as in the earlier presented BDI approach.
+Analogously, he continues to define intentions as an agent's attempt to reach such a state by the commitment to concrete plans.
 
-Jason is a Java-based platform that can interpret for an extended version of AgentSpeak(L)~\cite{rafael_Javabased_2007} and it makes AgentSpeak(L) language practically suitable for multi-agent systems, therefore we implement Jason for this multi-agent system programming.
-Some details on the functioning of an AgentSpeak(L) interpreter is presented below:
-
+As Jason is an interpreter for AgentSpeak(L) with Java-base extensions~\cite{rafael_Javabased}, it becomes practically suitable for multi-agent systems.
+Some details on the functioning of an AgentSpeak(L) interpreter are presented in \autoref{fig:ASL_interpreter}.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{images/BDI_ASL_interpreter}
@@ -17,35 +21,26 @@ Some details on the functioning of an AgentSpeak(L) interpreter is presented bel
   \label{fig:ASL_interpreter}
 \end{figure}
 
-An AgentSpeak(L) agent is defined by a set of beliefs giving the initial state of the agent's belief base, which is a set of ground (first-order) atomic formula, and a set of plans which form its plan library~\cite{rafael_BDIAgent_2005}.
-We can see that clearly from this figure, the beliefs stored in belief base do not only come from the perceptions of the environment but also can be added by the agent itself from the execution of a plan.
+An AgentSpeak(L) agent consists of its initial knowledge which is encoded in its belief and a plan library~\cite{rafael_BDIAgent_2005}.
+\autoref{fig:ASL_interpreter} does not visualise the source of the beliefs in the belief base properly.
+The beliefs do not only come from external perceptions of the environment. % TODO we could improve that graphic by adding this
+Instead, they can also be the result of plan executions by the agents which only have internal effects.
+The beliefs from perceptions are annotated by \texttt{source(percept)}.
+In our implementation, there are $34$ perceptions received from the server, which an agent would store as a belief.
+Initial beliefs and generally all internal beliefs are annotated with \texttt{source(self)}.
+The external beliefs describe the current states of each agent such as its energy or its role.
+These beliefs are not immutable and can be used and modified in plans.
 
-The beliefs from perceptions are annotated by \texttt{[source(percept)]}, and in our multi-agent programming, 34 this kind of beliefs are stored.
-While, some internal beliefs which from previous execution of plans are also used in our codes, which are with annotations like \texttt{[source(self)]}.
-Beliefs describe basic current states of each agent such as the name of an agent, the energy, the role and so on.
-These beliefs are not immutable and can be used in writing plans and goals.
+In the interpretation cycle shows that events also play an important role.
+After the selection of the events by the \emph{event selection function} $S_E$ the events will be unified with the triggering events in the head of the plans from the plan library.
+%There are two types of events: \emph{internal events} and \emph{external events}.
+%They are distinguished by their origin.
+%If an event has the annotation \texttt{source[self]}, it is called an internal event.
+%Else, it is an external event and was most probably not part of the initial beliefs nor has it been added by the agent itself but was perceived from the environment.
+%and an external event is generated from belief updates as a result of perceiving the environment~\cite{rafael_Javabased_2007}.
+We have $88$ events in total in our program and two of them are presented as follow:
 
-In the interpretation cycle, we see events also playing an important role.
-After the selection of the events by $S_E$, which is the event selection function, the event should be unified by the interpreter with the trigger events in the head of plans.
-An event has two types: internal event and external event.
-An event is internal when a sub-goal needs to be achieved and an external event is generated from belief updates as a result of perceiving the environment~\cite{rafael_Javabased_2007}.
-We have 88 events in total in our program and two of them are presented as follow:
-
-\begin{lstlisting}[caption={Internal Trigger Event.},label={lst:inTrigger}]
-  +!doParry:
-    energy(Energy)
-    & Energy < 2
-    <- recharge.
-\end{lstlisting}
-
-\begin{lstlisting}[caption={External Trigger Event.},label={lst:exTrigger}]
-  +lastActionResult(failed_status)
-    <- -+health(0)[source(self)]
-\end{lstlisting}\todo{\textbf{@yuansun1990}: All your listings need captions!}
-
-In \autoref{lst:inTrigger}, we see the internal trigger event \texttt{+!doParry} which is for achieving the goal \texttt{doParry}, on the other hand, in \autoref{lst:exTrigger}, the trigger event \texttt{+lastActionResult(failed\_status)} is external which means when the belief \texttt{ lastActionResult} is \texttt{failed\_status} has been added, it will execute what is shown in the body of this plan.
-
-Desires in BDI model are always treated as goals which used in plans.
+Desires in the BDI model are always treated as goals which used in plans.
 A goal of AgentSpeak(L) has two types: achievement goal and test goal.
 When the associated atomic formula is true, and the agent wants to achieve a state of the world, it is stated as an achievement goal with being formed by an atomic formula prefixed with the \texttt{!}.
 On the other hand, a test goal which is prefixed with the \texttt{?} operator states that the agent wants to test whether the associated atomic formula is (or can be unified with) one of its beliefs~\cite{rafael_BDIAgent_2005}.
