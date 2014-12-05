@@ -1,7 +1,6 @@
 \subsection[BDI in AgentSpeak(L) and Jason]{BDI in AgentSpeak(L) and Jason$^{\blacktriangle,\circ}$}
-The BDI agent architecture has been a central theme in the multi-agent systems literature since the early 1990's.
-AgentSpeak(L) is an agent-oriented programming language inspired by the work on the BDI architecture and BDI logics as well as on practical implementations of BDI systems~\cite{rafael_BDIAgent_2005}. % TODO citation?
-It is a programming language based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}. % TODO citation?
+AgentSpeak(L) is an agent-oriented programming language which taking the inspiration from the work on the BDI model and BDI implementations~\cite{rafael_BDIAgent_2005}.
+This language is based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}.
 The behaviour of an agent such as the interaction of that agent with the environment is implemented in AgentSpeak(L).
 In other words, AgentSpeak(L) encodes beliefs, desires, and intentions in a way processable by an agent.
 This section presents the interpretation cycle of an AgentSpeak(L) program as implemented in Jason.
@@ -42,9 +41,9 @@ For example, \texttt{!doParry} is an achievement goal that will lead to the exec
 However, querying the belief base in the context of a plan is converted by Jason into an achievement goal automatically.
 
 For some tasks, we have multiple plans as there are many different contexts to consider.
-As an example, attacking is covered in many plans as the strategy is complex.
+As an example, attacking is covered in more plans as the strategy is complex.
 A variety of situations must be considered before attacking like determining if there is an enemy nearby, if the agent should move towards the enemy, if it has enough energy, what to do if there is no enemy and so on.
-Similarly, $39$ percent of all plans are associated with building zones.
+Similarly, $31$ percent of all plans are associated with building zones.
 The reason for this is mainly due to the complexity of communication between agents and many special cases to consider.
 On the other hand, other actions do not need excessive planning like the \texttt{buy} action.
 When the specified Saboteur agent does not see any enemy agents nearby, it will upgrade its visibility range and health without considering more than just its energy and the available money.
