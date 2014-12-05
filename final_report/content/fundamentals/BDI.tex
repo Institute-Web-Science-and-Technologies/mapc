@@ -16,7 +16,7 @@ Rao and Georgeff then continued to apply this theoretical foundation to concrete
 Nowadays, BDI agents are deployed in high technology industrial areas such as space shuttle development.
 For example, PRS~\cite{Ingrand_PRS_1992} and dMARS~\cite{Mark_dMARS_2004} are both BDI-based systems for the reaction control system of the NASA Space Shuttle Discovery.
 
-The BDI model has its roots in philosophy as found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
+The philosophical views of the BDI model can be found in Bratman's theory of practical reasoning~\cite{Sebastian_Hierarchical_2006}.
 Practical reasoning involves two important processes: deciding what goals should be achieved, and how they should be achieved.
 The former process is known as \emph{deliberation}, the latter as \emph{means-ends reasoning}~\cite{Gerhard_MultiSystem_1999}.
 Means-ends reasoning is a method to make plans for achieving goals based on current states.
@@ -25,7 +25,7 @@ The idea of means-ends reasoning is to reduce the difference between the current
 For this purpose, the method is applied recursively.
 When an agent is placed in an environment, it should autonomously decide what to do and how to do it.
 In general, an agent could execute many different actions but maybe only a few of them would have a desired effect on the environment.
-Various external properties can have influence on the feasibility of achieving the agent's goals\todo{\textbf{@yuansun1990}: this part confused me a bit. I don't think, \enquote{affairs} was the right word here. Please check if I still understood what you wanted to say.}.
+Various external properties can have influence on the feasibility of achieving the agent's goals.
 The deliberation process filters what options are actually possible in the current state.
 It then determines which of these options will become intentions.
 For example, if you are thirsty and standing in a supermarket, then you might be faced with the decision to choose a drink.
@@ -58,8 +58,7 @@ In other words, desires represent objectives or situations that the agent would 
 Desires can be but do not need to be achieved.
 % Although similar, desires can be distinguished from goals.
 Multiple desires can be inconsistent with each other and the agent does not need to know the means of achieving these desires.
-They are inputs to the agent's deliberation process, which results in the agent choosing a subset of desires that are both consistent and achievable.
-Such consistent and achievable desires are usually called \emph{goals}~\cite{Gerhard_MultiSystem_1999}.
+These desires are filtered within the agent's deliberation process, therefore a subset of both consistent and achievable desires which usually called \emph{goals} are chosen by the agent~\cite{Gerhard_MultiSystem_1999}.
 For example, sleeping and working may be both one's desires, but they can not both be one's goals at the same time because they conflict with each other.
 
 Intentions are desires or actions that an agent committed itself to achieve~\cite{Alejandro_LearnBDI_2004}.
@@ -150,18 +149,9 @@ $I \to A$ can be treated as the process of means-ends reasoning as the differenc
 $B,D$ and $I$ are connected through functions instead of being connected directly.
 This is because they are treated simply as functionless databases on which algorithms may work.
 
-%With the increasing needs of intelligent agents, more and more applications base on BDI model are applied in our life.
-
-%Additionally, the air-traffic management system OASIS~\cite{Magnus_OASIS_1992} is well-known as a BDI-based agent.
-%The system architecture of OASIS is made up of one aircraft agent for each arriving aircraft and a number of global agents, including a sequencer, wind modeller coordinator and trajectory checker~\cite{Rao_BDITheory_1995}.
-%Furthermore, robot soccer which is designed using BDI model becomes very popular in universities.
-%We can feel that, BDI agents bring many profits to human beings, they make the life more convenient.
-%However, there is still space for development in this field.
-
 Although the BDI model has been introduced about 30 years ago, it is still a field of on-going development.
 The BDI model restricts itself to the three main components: beliefs, desires and intentions.
 In some situations, not all the three attributes are needed.
-Sometimes, an agent collects the beliefs and jumps to intentions directly without desires.%TODO add cf \cite{} if you have a paper where desires where left out
 However, for some distributed multi-agents, only three attributes may not be sufficient.
 One problem here is for example that the BDI model does not capture communication between agents or interaction between them.
 
