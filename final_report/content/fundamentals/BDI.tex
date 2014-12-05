@@ -20,6 +20,7 @@ The BDI model has its roots in philosophy as found in Bratman's theory of practi
 Practical reasoning involves two important processes: deciding what goals should be achieved, and how they should be achieved.
 The former process is known as \emph{deliberation}, the latter as \emph{means-ends reasoning}~\cite{Gerhard_MultiSystem_1999}.
 Means-ends reasoning is a method to make plans for achieving goals based on current states.
+A \emph{plan} is a strict order of actions needed to be executed to achieve a goal.
 The idea of means-ends reasoning is to reduce the difference between the current state and the state where a goal is achieved.
 For this purpose, the method is applied recursively.
 When an agent is placed in an environment, it should autonomously decide what to do and how to do it.
@@ -105,21 +106,20 @@ This approach is broadly used in belief revision research.
 It makes several postulates for one revision operator which mapping each belief set and one sentence of beliefs to generate new beliefs.
 Meanwhile, these postulates allow the belief revision process to retain as many previous beliefs as possible to reduce the amount of change.
 
-The option generator reads the beliefs information and returns a list of options, which are current desires, into the desires set.
+The option generator commits a list of desires into the desire set.
 It determines the desires depending on the agent's current beliefs and current intentions.
-The desires set contains desires, which are the possible courses of actions available to the agent.
-These desires can be achievable or not.
-The filter determines the agent's intentions depending on current beliefs, desires, and intentions.
-It needs to reason about more situations than the functions in previous steps.
-Desires will become more rational after filtering.
+The desire set contains desires, which express the agent's wishes it wants to achieve.
+Next, the filter determines the agent's intentions depending on the current beliefs, desires, and intentions.
+Only achievable and rational desires will then become intentions.
 
-The intentions set stores the agent's current focus - the actions, which are going to be executed or committed to be executed at some point of time.
-Once an intention is adopted, it should not be immediately dropped out because of the commitment.
-But in some situations the intentions should be given up.
-There are three commitment strategies proposed in Rao and Georgeff's work: blind, single minded and open minded.
-A blindly committed agent is an agent who maintains his intentions until he believes that he has achieved them.
-A single minded committed agent is an agent who maintains his intentions as long as he believes that they are still options.
-An open minded committed agent is an agent who maintains his intentions as long as they are still goals~\cite{Roberto_BDIATL_2005}.
+The intention set stores the agent's current focus, which is accompanied by a concrete plan.
+Once an intention is adopted, hence stored in the intention set, the agent will pick and commit to one intention in order to achieve it.
+There are three commitment strategies proposed by Rao and Georgeff~\cite{rao_modeling_1991}: \emph{blind}, \emph{single minded} and \emph{open minded}.
+\begin{enumerate}
+  \item A blindly committed agent is an agent who maintains his intentions until he believes that he has achieved them.
+  \item A single minded committed agent is an agent who maintains his intentions as long as he believes that they are still options.
+  \item An open minded committed agent is an agent who maintains his intentions as long as they are still goals. %TODO all these sentences quote ~\cite{Roberto_BDIATL_2005} without being marked as such.
+\end{enumerate}
 The action selection function determines the actions to perform depending on current intentions.
 We would achieve nothing if we just have intentions instead of knowing how to do it.
 Normally, there is a plan library of mappings between the intentions and actions.
