@@ -1,9 +1,5 @@
 \subsubsection[Jadex]{Jadex$^{\odot,\circ}$}\label{fun:apl_jadex}
-Currently, multiple agent frameworks are available for developing multi-agent applications.
-An overview of existing tools and techniques is given by the European co-ordination action for agent-based computing, AgentLink~\cite{Mangina}. % TODO maybe this fits better in the general part (parent section) – btw, this is nearly a quote to the original's papers abstract… -> that's why i put a citation there -> lol her name is Mangina
 This section presents Jadex, which is an agent framework focused on the development of goal-oriented agents following the belief-desire-intention model.
-% TODO @manuelmittler I haven't read all the related papers so I am not sure which information is from what source. Please add citations accordingly. You can look at my other APL sections to see how I handled it by explaining that everything following is from $SOURCE_1 except when noted differently. -> i think citation is correct
-% TODO @manuelmittler you seem to like to use brackets for additional information. Please refer to the guidelines which advise against using them. -> i don't see why that's an issue? where did you get those guidelines from or did you just set them up by your own?
 It aims at bringing middleware and reasoning-centred agent platforms together.
 For that purpose, Jadex adds a rational reasoning engine to existing middleware.
 The most commonly used middleware for Jadex is the \emph{Java Agent Development Framework} (short: JADE)~\cite{bellifemine_jade_2005}. %
@@ -11,7 +7,7 @@ Jadex integrates agent theories through object-oriented programming in Java and 
 Therefore, no new language is introduced.
 Jadex reuses already existing technologies instead.
 JADE provides a communication infrastructure, platform services such as agent management and a set of development and debugging tools.
-It enables the development and execution of peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social). % TODO I am not sure whether we are talking about this before. I hope so but else, we need to explain those terms. Also, build another sentence if needed but don't just add some buzzwords into brackets. -> y not?
+It enables the development and execution of peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social). % TODO We do not talk about this before. If you think, it is mandatory to mention agent paradigms here, you have to explain them. Also, build another sentence if needed but don't just add some buzzwords into brackets.
 
 Agents are identified by a unique name and provide a set of services.
 They can register and modify their services and/or search for agents providing given services.
@@ -24,7 +20,7 @@ A FIPA ACL message has a certain structure and contains five mandatory parameter
 The first is the type of the communicative act which tells the recipient how to react on the message.
 Next, the participants in the communication, namely sender and receiver, are specified.
 The third parameter contains the actual content of the message.
-As a fourth parameter, there is the description ofthe  content which denotes the language of the content and its encoding.
+As a fourth parameter, there is the description of the content which denotes the language of the content and its encoding.
 The last parameter is called control of conversation and contains, amongst other things, a conversation identifier.
 Its purpose is to associate a message with a specific conversation and to chronologically sort it in said conversation.
 
@@ -32,12 +28,12 @@ Its purpose is to associate a message with a specific conversation and to chrono
 	\centering
 	\includegraphics[width=300px]{images/Jadex_agent.png}
 	\caption{Jadex abstract agent~\cite{pokahr_jadex_2005}}
-	\label{fig2} % *really*? fig2?
+	\label{fig:apl_jadex1}
 \end{figure}
-\autoref{fig2} depicts an abstract view of a Jadex agent.
+\autoref{fig:apl_jadex1} depicts an abstract view of a Jadex agent.
 Every agent may receive messages which trigger internal events that can change his internal knowledge, plans or goals.
 Interactions with the \enquote{outside}, like the environment or other agents, happens through the sending of messages. % TODO @manuelmittler I removed the quote as I did not find it to be necessary here. Am I correct that modifications in the environment are also done through messages? These modifications are nothing we have in our scenario but in many others, agents' actions effect the world they are active in.
-In more detail, beliefs are single facts stored as Java objects which represent the knowledge of an agent. % TODO @manuelmittler should I know, what a fact is? Because I honestly don't.. -> Didn't you attend some logic lectures?
+In more detail, beliefs are single facts stored as Java objects which represent the knowledge of an agent.
 They are stored as key-value pairs.
 The advantage of storing information as facts is that the programmer has a central place for the knowledge and can query the agent's beliefs. % TODO @manuelmittler or do you mean that there is an advantage by storing them as Java Objects? -> yes
 Monitoring of the beliefs is possible too.
