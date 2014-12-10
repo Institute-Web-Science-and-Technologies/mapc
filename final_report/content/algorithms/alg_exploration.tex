@@ -34,7 +34,7 @@ Environment-related beliefs are given in the listing below:
 \end{lstlisting}
 
 If an agent needed to know a shortest path, it queried the cartographer agent and got the shortest path as an answer.
-The agent could also query the cartographer agent for getting to know whether a vertex was already probed or surveyed.
+The agent could also query the cartographer agent to know whether a vertex was already probed or surveyed.
 See \autoref{fig:map:com1} for the communication process of our first approach.
 \autoref{fig:map:comp1} shows the distribution of the single components related to map exploration.
 \begin{figure}
@@ -52,46 +52,46 @@ See \autoref{fig:map:com1} for the communication process of our first approach.
 \end{figure}
 
 Shortly after implementing this approach, we encountered two major problems, which both resulted in serious performance issues.
-One problem came from our implementation of the pathfinding to determine the shortest path between two vertices.
-Although we used the Dijkstra's algorithm, which is an efficient algorithm for this task, we encountered performance issues.
-The reason was that the pathfinding algorithm was executed every time an agent asked for a shortest path.
-This led to a lot of redundant calculations and processing in the cartographer agent.
+One problem came from our implementation of the pathfinding algorithm to determine the shortest path between two vertices.
+Although we used Dijkstra's algorithm, which is an efficient algorithm for this kind of task, we encountered performance issues.
+This was because the pathfinding algorithm had to be executed every time an agent asked for a shortest path, which led to a lot of redundant calculations and processing by the cartographer agent.
 
-The second problem was related to communication between agents.
-To understand the latter problem, one needs to know that Jason uses a mail box system for communication between agents.
+The second problem was related to the communication between agents.
+To understand this problem, one needs to know that Jason uses a mailbox system for inter-agent communication.
 This means that every message by an agent is queued in the receiver's message inbox.
-In every Jason lifecycle only one message is processed.
-Although a Jason lifecycle is a lot shorter than a server step, after some execution time the cartographer agent processed fewer messages than it received.
-Both issues resulted in blocked agents, which had been waiting for the response to their queries for several steps.
+Only one message gets processed per Jason reasoning cycle.
+Although a single Jason reasoning cycle is a lot shorter in terms of time than the server-side simulation step, we found that the cartographer agent's mailbox received more messages than it was able to process, resulting in a significantly delayed response to these messages.
+Both of these issues resulted in blocked agents, which had to wait for responses to their queries for several steps.
 
-The following example should illustrate this problem.
-An exploring agent comes to an unvisited vertex.
-The first thing it does, is to ask the cartographer agent, whether this vertex was surveyed in the meantime.
-After it gets the answer it surveys the vertex or asks the cartographer agent for the next not surveyed vertex and travels there.
-Then the whole procedure starts again.
-As one can see, at least two messages are needed each time and hence there are two possible bottlenecks.
-The first one is the query for the state of a vertex and the second is the query for the next not surveyed vertex, which includes calculating the shortest path to this vertex.
-If the agent surveyed the vertex, it will additionally have to inform the cartographer agent about the new information.
-This information is received and will be forwarded by the respective agent when the next step begins.
-Due to the Jason communication approach this results in the cartographer not being able to handle queries immediately.
-In our tests we saw answer times for queries around ten till twenty server steps.
-This lead to our agents being idle most of the time, waiting for answers from the cartographer agent.
-Obviously, this would be suboptimal for the competition.
-The next section describes our second approach which tries to reduce the calculation overhead for the cartographer agent when calculating shortest paths.
+The following example serves to illustrate this problem.
+An exploring agent reaches an unvisited vertex.
+At that point, the agent asks the cartographer agent, whether this vertex has been surveyed at some point.
+Once the agents receives an answer, it either surveys the vertex if has not been surveyed before or asks the cartographer agent for the closest unsurveyed vertex, which will become the agent's next destination.
+Once the agent reaches this vertex, this process starts over.
+Ascan be seen, at least two messages are needed each time a new vertex is reached and hence there are two possible bottlenecks.
+The first one is the query for the state of a vertex and the second is the query for the next unsurveyed vertex, which includes calculating the shortest path to this vertex.
+If the agent surveyed the vertex, it will additionally have to inform the cartographer agent about any new information.
+This information is received and will be forwarded by the respective agent at the beginning of the next step.
+Due to the way inter-agent communication is handled in Jason, this results in the cartographer agent not being able to handle queries immediately.
+In our tests, we saw query response times of up to ten to twenty server steps.
+This lead to our agents idling most of the time, waiting for answers from the cartographer agent.
+With the agents being idle most of the time, continuing with this approach would obviously have led to poor scoring during the competition.
+
+The next section describes our second approach, which reduces the calculation overhead for the cartographer agent when calculating shortest paths.
 
 %%%%%%%%%%%%%%%%%%
 \subsubsection[Distance-Vector Routing Protocol]{Distance-Vector Routing-Protocol$^{\star,\circ}$}\label{alg:map_dv}
-This section presents our next approach which tried to solve the problem with repeating calculations of shortest paths.
-It was first built to work together with the cartographer agent but was later used independently.
+This section presents our next approach, which tried to solve the problem of repeated shortest path calculations.
+This approach was first intended to work in tandem with the cartographer agent, but later came to be used independently.
 We decided to calculate all shortest paths as early as possible and store these paths together with other information in a network of what we called \emph{node agents}.
-A node agent is an agent representing one vertex of the scenario map and storing information about this vertex.
-All percepts perceived by our 28 agents were passed on to the node agents.
-To make it easier to address node agents, we named node agents like the vertex they represented.
+A node agent is an agent representing one vertex of the scenario map and stores information about this vertex.
+All percepts perceived by our 28 regular agents were passed on to the node agents.
+To make it easier to address node agents, we named node agents after the vertex they represented.
 Node agents stored all their neighbours in a neighbour-list belief \texttt{neighbours([<ListOfNeighbours>])}.
 Additionally, they stored all available paths to other vertices as shortest path beliefs \texttt{minStepsPath(<Destination>, <NextHop>, <Hops>, <CostToNextHop>)}.
 Similarly, they stored all available paths to other vertices as cheapest path beliefs \texttt{minCostPath(<Destination>, <NextHop>, <TotalCosts>, <CostToNextHop>)}.
-The addition of a cheapest path belief would allow an agent to travel towards a destination vertex while having to use the fewest energy.
-Hence, the agent would be able to travel to a vertex with recharging more seldom at the expense of possibly needing more hops to reach it.
+The addition of a cheapest path belief would allow an agent to travel towards a destination vertex while using the least amount of energy.
+The idea behind this was to allow an agent to travel to a destination vertex while reducing the amount of times the \texttt{recharge} action had to be performed by the agent, at the cost of possibly needing more in-between hops (and thus server steps) to reach the destination vertex.
 In regard to exploration and zoning, we decided that a node agent also had to store the probed value of the vertex, and whether it had already been probed or surveyed.
 
 At first, we changed the cartographer agent's tasks, so that it only had to create the node agents at runtime and redirect queries.
