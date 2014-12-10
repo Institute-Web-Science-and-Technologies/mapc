@@ -23,7 +23,7 @@ The goal is to find for every vertex in the graph a placement of agents around t
   \item All vertices that share an edge with the centre vertex will be included in the zone.
   \item Besides the centre vertex itself, agents should only be placed on the centre vertex's two-hop neighbours.
     These are those vertices whose shortest path to the centre node has a length of two.
-    Later, we will illustrate that there are rare cases in which agents must be placed on one-hop neighbours as well\todo{\textbf{@msewell}: I added this because $\exists A_v \nsubseteq v \cup V_{v}^{2}$ and the $A_v$ \emph{should} somewhat implied that no one-hop-vertices would be included.}.
+    Later, we will illustrate that there are rare cases in which agents must be placed on one-hop neighbours as well.
   \item The constructed zone's value per agent, that is, the sum of the values of each vertex in the zone divided by the number of agents required to establish that zone, should be high.
         Ideally, it would be maximal, but the heuristic we use does not guarantee this.
 \end{itemize}
@@ -31,7 +31,7 @@ The goal is to find for every vertex in the graph a placement of agents around t
 \begin{figure}
   \centering
   \subcaptionbox{This zone was calculated for a centre vertex that only has a degree of 1, i.e.\ that is a leaf vertex.
-    Generally, it is preferable to place an agent on the articulation point that leads to a leaf vertex rather than the leaf vertex itself, as this would establish at least a zone of equal size, and possibly larger\todo{\textbf{@msewell}: I replaced ``cut vertex'' with ``articulation point'' for consistency. If cut vertex would be more correct for some reason, we may undo this.}.
+    Generally, it is preferable to place an agent on the articulation point that leads to a leaf vertex rather than the leaf vertex itself, as this would establish at least a zone of equal size, and possibly larger.
                  \label{fig:zones_1}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/zone1.png}}
   \subcaptionbox{Here, the centre vertex has a degree of 3, and the calculated zone remains compact with only two additional agents used.
                  A lot of optional agent positions remain.
@@ -41,14 +41,14 @@ The goal is to find for every vertex in the graph a placement of agents around t
                  \label{fig:zones_3}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/zone3.png}}
   \subcaptionbox{A zone where the centre vertex has a degree of 7, and the zone uses a total of 9 agents.
                  \label{fig:zones_4}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/zone4.png}}
-           \caption{Four examples of zones calculated by the heuristic algorithm described in \autoref{alg:zon_calculation}\todo{\textbf{@msewell}: it would be nice if all those graphics had the same image aspect ratio.}
+           \caption{Four examples of zones calculated by the heuristic algorithm described in \autoref{alg:zon_calculation}.
            The green squares and triangles represent the placement of agents, where the triangle is the agent on the centre vertex.
            Vertices marked with a small green circle are optional agent positions that can be used to expand the zone if there are agents left over at the end of the zone building, as described in \autoref{alg:zon_roles}.
            The green-coloured area represents the zone that is established by the given agent placement.}
   \label{fig:zones}
 \end{figure}
 Internally, every vertex in the graph is represented by a Java \lstinline{Vertex} object, and the calculated zone is stored as a field of that object.
-The steps of the algorithm are easiest illustrated graphically, as in \autoref{fig:coloring}\todo{should we put this into the appendix? Currently it appears around two pages later}.
+The steps of the algorithm are easiest illustrated graphically, as in \autoref{fig:coloring}.
 \begin{definition}
   Let $V$ be the set of vertices and $E$ the set of edges that the system knows about.
   For any $v \in V$, which we will use to denote the vertex that a zone is centred on, let $V_v^1 \subseteq V$ be the set of one-hop neighbours of $v$, that is, the set of vertices that share an edge with $v$: $V_v^1= \left\{w \middle|\left(v,w \right ) \in E\right\}$.
@@ -113,7 +113,7 @@ A_v := A_v \cup \left\{w\right\} &\textup{else} &
                  \label{fig:coloring3}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/coloring3.png}}
   \subcaptionbox{After zone calculation.
                  \label{fig:coloring4}}[.49\linewidth]{\includegraphics[width=.49\linewidth]{images/coloring4.png}}
-  \caption{The zone calculation algorithm shown in four steps\todo{we might should push it into the appendix. In my most recent compilation, it appears five pages after its section.}
+  \caption{The zone calculation algorithm shown in four steps.
            Vertices are coloured differently according to their current state as the algorithm progresses.
            Green vertices are vertices that an agent must be placed on, so those in $A_v$.
            Red vertices are those where placing an agent would be redundant because it does not help with the goal of including all one-hop neighbours $V_v^1$ in the zone.
