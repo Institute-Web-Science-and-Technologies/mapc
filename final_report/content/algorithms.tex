@@ -34,23 +34,28 @@ This allows the system to adapt to constantly changing situations, such as when 
 The assignment itself is done based on the hop distances between agents.
 First, all the distances between all disabled agents and all Repairer agents are calculated.
 Then, the paths with the shortest distance are selected and the agents belonging to these paths are assigned to each other.
-If all repairers are assigned and there are still some unassigned disabled agents, they get assigned to the closest to them repairers. This assigning approach in most of the cases led to fast and effective repairing.
+If all Repairer agents are assigned and there are still some unassigned disabled agents, they get assigned to the closest Repairer agent, even though that Repairer agent is already assigned to another disabled agent.
+his assigning approach in most of the cases led to fast and effective repairing.
 
-In addition to disabling agents moving to their repairers, repairers can also move towards the assigned to them disabled agents. This behaviour is only possible during the exploration phase of the simulation, because in zoning mode repairers moving somewhere in most of the cases will also mean the zone breakup, which we would like to avoid. We implemented this by making repairers explore the map in the direction of the assigned to them disabled agents, i.e. if the vertex is not surveyed, they survey, otherwise just go to the assigned disabled agent.
+In addition to disabled agents moving towards their assigned Repairer agents, Repairer agents can also move towards their assigned disabled agents.
+This behaviour is only possible during the exploration phase of the simulation, because in zoning mode Repairer agents moving will often to lead to the zone they help maintain being broken up, which we would like to avoid.
+We implemented this by making Repairer agents explore the map in the direction of their assigned disabled agents, i.e.\ if the vertex the Repairer currently occupies on the way towards its assigned disabled agent is not surveyed, they survey it, otherwise they will continue on their path towards their assigned disabled agent.
 
-The seeming special case in repairing is when one of the repairers gets disabled. However since even disabled repairer can perform repair action, we decided to use the standard procedure of assignment even to the disabled agents. The only difference is that the goal to repair have higher priority then the goal to get repaired. This helps to use all the repairers more effective and prevents the situation when all the repairers are disabled and waiting to get repaired.
+What happens if a Repairer agent becomes disabled?
+We decided to not treat this as a special case, but instead use the standard procedure of disabled agent to Repairer agent assignment.
+For this to work, for Repairer agents the goal of repairing a disabled agent is higher on their priority list than waiting to get repaired themselves.
+This helps to use all the repairers more effective and prevents the situation when all the Repairer agents are disabled and waiting to get repaired.
 
-%%%%%%%%%%%%%%%%%%
 \subsection[Zone Forming]{Zone Forming$^\circ$}\label{alg:zoning}
 % TODO: sometimes, agents ``must'', ``will'', ``have to'' and other times they simple (actively) ``do'' things.
-Zone forming is the most important part in the MAPC Mars scenario~\cite{ahlbrecht_mapc_2014}.% p.3
+Zone forming is the most important part in the \mars scenario~\cite{ahlbrecht_mapc_2014}.% p.3
 It describes the process of agents finding and occupying vertices in a way that they enclose a subgraph.
 We called this process zoning.
 For our approach, zoning takes place after the map exploration phase.
 This should ensure that enough information about the graph has been gathered to calculate high valuable zones close to the agents' current positions.
 The algorithm for calculating zones and determining which agents have to occupy which vertices is presented in \autoref{alg:zon_calculation}.
 Said algorithm is used in the process of finding and negotiating a zone to build, which is described in \autoref{alg:zon_finding}.
-After a zone that can be build has been found, agents get assigned dedicated roles.
+After a zone that can be built has been found, agents are assigned dedicated roles.
 These roles determine the agents' duties and tasks throughout the lifecycle of a zone which they are part of.
 The lifecycle of a zone includes its creation, defence and destruction.
 Both roles and the lifecycle are featured in the last \autoref{alg:zon_roles}.

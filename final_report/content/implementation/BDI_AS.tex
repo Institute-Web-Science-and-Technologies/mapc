@@ -11,7 +11,7 @@ They may be modified on environment changes due to some internal or external eve
 Rao furthermore describes states the agent wants to reach are desires as in the earlier presented BDI approach.
 Analogously, he continues to define intentions as an agent's attempt to reach such a state by the commitment to concrete plans.
 
-As Jason is an interpreter for AgentSpeak(L) with Java-base extensions~\cite{rafael_Javabased}, it becomes practically suitable for multi-agent systems.
+As Jason is an interpreter for AgentSpeak(L) with Java-base extensions~\cite{rafael_Javabased}, it it suitable for practical multi-agent systems.
 Some details on the functioning of an AgentSpeak(L) interpreter are presented in \autoref{fig:ASL_interpreter}.
 \begin{figure}[h]
   \centering
@@ -20,12 +20,12 @@ Some details on the functioning of an AgentSpeak(L) interpreter are presented in
   \label{fig:ASL_interpreter}
 \end{figure}
 
-An AgentSpeak(L) agent consists of its initial knowledge which is encoded in its belief and a plan library~\cite{rafael_BDIAgent_2005}.
+An AgentSpeak(L) agent consists of its initial knowledge which is encoded in its belief base and a plan library~\cite{rafael_BDIAgent_2005}.
 \autoref{fig:ASL_interpreter} does not visualise the source of the beliefs in the belief base properly.
 The beliefs do not only come from external perceptions of the environment. % TODO we \emph{could} improve that graphic by adding this
 Instead, they can also be the result of plan executions by the agents which only have internal effects.
 The beliefs from perceptions are annotated by \texttt{source(percept)}.
-In our implementation, there are $34$ perceptions received from the server, which an agent would store as a belief.
+In our implementation, there are $34$ different types of perceptions received from the server, which an agent would store as beliefs.
 Initial beliefs and generally all internal beliefs are annotated with \texttt{source(self)}.
 The external beliefs describe the current states of each agent such as its energy or its role.
 These beliefs are not immutable and can be used and modified in plans.

@@ -3,7 +3,7 @@ This subsection describes the two roles exclusive to zone building.
 It covers the roles' associated tasks and duties throughout the lifecycle of a zone as well as the lifecycle itself.
 These roles are those of a \emph{coach} and a \emph{minion}.
 Each zone is built by one coach and a varying amount of minions.
-Minions are agents which are dedicated to build a zone by obeying their coach's orders.
+Minions are agents which are dedicated to building a zone by obeying their coach's orders.
 Every agent may only be part of one zone at a time.
 % The last sentence is probably redundant.
 The roles are assigned when the zone finding process has ended and a concrete zone is about to be built.
@@ -19,7 +19,7 @@ On receipt of this message, the agents become minions and move to their designat
 The coach will also have to move to its vertex, which happens to be the centre vertex of the zone.
 Furthermore, the coach will unregister itself and all its minions to indicate their unavailability to build any other zone.
 In a zone, minions serve no other purpose than to occupy their designated vertex.
-If a minion becomes disabled, it has to move towards a Repairer agents.
+If a minion becomes disabled, it has to move towards a Repairer agent.
 Due to this, it has to leave its vertex.
 Therefore, the zone can no longer exist in its original form.
 In such a case, a minion has to inform its coach about its departure.
@@ -40,7 +40,7 @@ Said coach will then have to inform all its minions that its zone is not going t
 
 Besides coaches and minions, there are also other agents who might be looking for a zone but will not be part of the one which will be built.
 Such an agent will have to start a new zone finding process.
-Prior to that though, it will look for any highly valuable vertex in its surrounding which is not yet occupied by anyone and move there.
+Prior to that though, it will look for any highly valuable vertex in its surroundings which is not yet occupied by anyone and move there.
 The range to look for such a vertex is the same as the range for finding a zone in the agent's neighbourhood presented in \autoref{alg:zon_calculation}.
 It is increased after every zone finding process which does not result in a zone where the agent is part of.
 The idea is that with a wider range, the probability to find a highly valuable zone increases.
@@ -61,10 +61,10 @@ The coach does so by using another broadcast as it does not know which Saboteur 
 
 Explorer agents will still be probing when the first agents start looking for zones.
 Therefore, the most valuable zones may change with more and more vertices being probed.
-To prevent that agents build a zone once and stay there for ever if no agents attack them, zones will be split up periodically.
+To prevent that agents build a zone once and stay there forever if no agents attack them, zones will be split up periodically.
 The periodic trigger is linked to the overall steps of the simulation and not the lifetime of each zone respectively.
 Consequently, agents from different zones will have to restart looking for a zone at the same time.
-In addition to allowing new zones to be build which take the information of the newly probed vertices into account, this also allows for agents to start the zone finding process in a less asynchronous fashion.
+In addition to allowing new zones to be built which take the information of the newly probed vertices into account, this also allows for agents to start the zone finding process in a less asynchronous fashion.
 
 Although the zone calculation algorithm was able to calculate additional zone spots to place agents, we did not make use of it.
 The main reason was because we changed the strategy of zoning agents.
@@ -73,7 +73,7 @@ They would be able to do so when an enemy agent was nearby or when a repair agen
 In these cases, being able to extend zones by more agents would have been beneficial to keeping up the zone.
 If an agent on an optional zone vertex would have to leave, the zone would still be kept up.
 But if an agent on a mandatory zone vertex would have to leave, an agent on an optional zone vertex could quickly take its place as it is already nearby.
-Changing the strategies so that no agent forming a zone would ever leave its vertex unless it got disabled, made these additional zone spots less relevant.
+Changing the strategies so that no agent forming a zone would ever leave its vertex unless it got disabled made these additional zone spots less relevant.
 Lastly, we decided to abandoned the concept of extending zones by placing agents on optional zone spots.
 This was because it seemed more promising to make idle agents which were not able to build a zone just now move onto a highly valuable vertex in their neighbourhood.
 It was also simpler to realise than dealing with all edge cases extending a zone and holding it would bring.

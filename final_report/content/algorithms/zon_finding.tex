@@ -13,14 +13,14 @@ Furthermore, zones can be broken up at any time forcing the agents to start look
 As a result, the zone finding process is in fact asynchronous.
 Problems arising from this are mainly dealt with throughout the actual building of zones which is illustrated in \autoref{alg:zon_roles}.
 
-In the beginning, all agents have to centrally register themselves when they are ready for zone building to indicate this availability.
+In the beginning, all agents have to centrally register themselves when they are ready for zone building to indicate their availability.
 Next, each agent uses the algorithm presented in \autoref{alg:zon_calculation} to determine the best zone in its neighbourhood.
 The algorithm will only return zones which need at most as many agents to be built as there are registered agents.
 This is to ensure that agents will not try to build zones for which there are not sufficiently many agents available.
 The algorithm further uses a range parameter $k$.
 It indicates the $k$-hop-neighbourhood up to which the algorithm will look for the best not yet built zone.
 This range starts at $1$ and is incremented every time the agent finishes a zone finding process without being part of a zone afterwards.
-As a result, it is more probable for an agent to find a zone with a high per agent score which has not been build yet.
+As a result, it is more probable for an agent to find a zone with a high per agent score which has not been built yet.
 Thus, it is also likelier for the agent to be part of a zone, because throughout every zone finding process only the most valuable zone is going to be built.
 The range has a maximum to ensure that an agent will not look for zones too far away from it.
 When a zone is broken up, the range will be reset, which is covered by \autoref{alg:zon_roles}.
