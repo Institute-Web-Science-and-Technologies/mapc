@@ -11,12 +11,30 @@ This could also be an introductory text which motivates the following subsection
 \input{content/algorithms/alg_exploration} %DSDV, Exploration and Map Generation
 
 %%%%%%%%%%%%%%%%%%
-\subsection[Repairing]{Repairing$^\diamond$}\label{alg:repairing}
-As was already mentioned in scenario description, any agent can get disabled after being attacked by the enemy saboteur. To get disabled in the scenario means to loose all the health points. Naturally, we have implemented several supporting algorithms of avoiding enemy saboteurs when possible and parry when there is a saboteur nearby. However following these algorithms cannot guarantee that the agent will never get disabled, mostly because there not always exists an escape route and not all agents can perform parry action. When an agent gets disabled it looses most of its functionalities: only skip, recharge and goto actions remain active. Additionally repairers even being disabled can perform a repair action, but it costs more energy in this case. Disabled agents also cannot occupy a vertex and therefore cannot participate in zone building, which is a vital part of getting score points.
+\subsection[Repairing]{Repairing$^\diamond^\dagger$}\label{alg:repairing}
+As was already mentioned in the scenario description, any agent can become disabled after being attacked by an enemy Saboteur agent.
+To become disabled in the scenario means to lose all of the agent's health points.
+Naturally, we have implemented several supporting strategies for avoiding enemy Saboteur agents when possible and parry when there is a Saboteur agent nearby.
+However, following these strategies does not guarantee that the agent will never become disabled, mostly because an \enquote{escape route} that would put an agent out of the attack range of an enemy Saboteur agent does not always exist and not all agents are able to perform the \texttt{parry} action.
+When an agent becomes disabled, it loses most of its functionality: only the \texttt{skip}, \texttt{recharge} and \texttt{goto} actions can be performed.
+Repairer agents can also perform the \texttt{repair} action when disabled, although repairing costs more energy to perform when disabled.
+Disabled agents also do not count towards establishing team ownership of a map vertex, and thus do not contribute to zone scoring.
 
-In~\autoref{alg:agentstrategies} it was said that the primary task of repairer agents is to repair others and they should perform a repair action whenever they see a disabled friendly agent. But the question is how to get the disabled agent to the repairer. In our implementation, every time an agent gets disabled, it sets a high priority goal \emph{getRepaired}. Following the plan of this goal, an agent requests the available repairer and its position from the \emph{MapAgent}. If the returned repairer position is the same the agent's position, then the agents only recharges and waits to get repaired, otherwise the agent simply moves toward the returned repairer position. If there is no repairer available in the reachability range, it means that the graph is not sufficiently explored and the agents then tries to expand the known subgraph by moving to unvisited vertices.
+In~\autoref{alg:agentstrategies} it was said that the primary task of Repairer agents is to repair others, and that they should prioritize the \texttt{repair} action whenever they see a disabled friendly agent within their visibility range.
+It is important that disabled agents are repaired quickly, and for this to happen the disabled agent needs to be brought within repairing distance of a Repairer agent.
+In our implementation, every time an agent becomes disabled, it receives the high priority goal \emph{getRepaired}.
+Following the plan of this goal, an agent requests an available Repairer agent and its position from the \emph{MapAgent}.
+If the returned Repairer agent position is the same the disabled agent's position, then the disabled agent only recharges and waits to get repaired.
+Otherwise, the disabled agent simply moves towards the returned Repairer agent position.
+If there is no Repairer agent available within the part of the map that the disabled agent knows how to reach, i.e.\ the explored subgraph the disabled agent is currently on, the disabled agent will instead attempt to expand the knowledge of the map by moving towards the closest unexplored vertex.
 
-Assignment of agents to their repairers is done inside our Java MapAgent. To be more flexible we decided to perform such assignment on every step. This allows to adapt to constantly changing situation, when agents are moving, some new agent get disabled and some agents get repaired. The assignment itself is done based on the hop distances between agents. First, all the distances between all disabled agents and all repairers is calculated. Then the closest distances are picked and the agents which have this distance between them are assigned to each other. If all repairers are assigned and there are still some unassigned disabled agents, they get assigned to the closest to them repairers. This assigning approach in most of the cases led to fast and effective repairing.
+Assignment of agents to their Repairer agents is done inside our Java MapAgent.
+To be more flexible, we decided to perform these assignments on every step.
+This allows the system to adapt to constantly changing situations, such as when agents are moving, some other agent becomes disabled or a previously disabled agents is repaired, freeing up a previously agent Repairer agent.
+The assignment itself is done based on the hop distances between agents.
+First, all the distances between all disabled agents and all Repairer agents are calculated.
+Then, the paths with the shortest distance are selected and the agents belonging to these paths are assigned to each other.
+If all repairers are assigned and there are still some unassigned disabled agents, they get assigned to the closest to them repairers. This assigning approach in most of the cases led to fast and effective repairing.
 
 In addition to disabling agents moving to their repairers, repairers can also move towards the assigned to them disabled agents. This behaviour is only possible during the exploration phase of the simulation, because in zoning mode repairers moving somewhere in most of the cases will also mean the zone breakup, which we would like to avoid. We implemented this by making repairers explore the map in the direction of the assigned to them disabled agents, i.e. if the vertex is not surveyed, they survey, otherwise just go to the assigned disabled agent.
 
