@@ -1,17 +1,20 @@
 \subsection[Manuel Mittler]{Manuel Mittler$^{\odot}$}
 This section lists the work done by Manuel Mittler.
-He started in th project, together with Rahul and Sun, to get familiar with the Jason programming language and to implement initial actions like \texttt{survey} and \texttt{probe}.
-Afterwards simple plans were developed to execute the actions.
-Additionally he came up with the idea of following an aggressive strategy.
-The next thing he looked into was inter-agent-communication to exchange information and to delegate tasks.
-This insight was used during the development of the cartographer agent together with Micheal and Sergey.
+He started in the project, together with Rahul and Sun, by familiarising himself with the Jason programming language and to implement initial actions like \texttt{survey} and \texttt{probe}.
+Afterwards, simple plans were developed to execute the actions.
+Additionally, he came up with the idea of following an aggressive strategy.
+The next thing he looked into was inter-agent communication to exchange information and to delegate tasks.
+This insight was used during the development of the cartographer agent together with Michael Ruster and Sergey.
 Also some effort was put into the map exploration task.
-Following this, Manuel worked together with Artur on improving the storing and allocating of agent percepts, because the team encountered that percepts frequently weren't in the belief base of agents that should have been there. They came up with the idea of bypassing the map related percepts to the respective agents. Instead of forwarding the percepts from one agent to another, they were sent from the server interface directly to the cartographer agent.
-The next problem that Artur and Manuel tackled was that agents didn't always perform an action in every step. A hierarchy of actions for every agent type and fall back plans were developed that are executed if the agent is not capable to execute the designated plan, e.g. because of a lack of required information like waiting for a reply from another agent.
-After running into troubles when we started to communicate and negotiate between agents a lot, especially when it comes to zone building, Manuel proposed to switch to another approach.
+Following this, Manuel worked together with Artur on improving the storing and allocating of agent percepts, because the team encountered that percepts frequently weren't in the belief base of agents that should have been there.
+They came up with the idea of bypassing the map-related percepts to the respective agents.
+Instead of forwarding the percepts from one agent to another, they were sent from the server interface directly to the cartographer agent.
+The next problem that Artur and Manuel tackled was that agents didn't always perform an action in every step.
+A hierarchy of actions for every agent type and fallback plans were developed that are executed if the agent is not capable to execute the designated plan, e.g. because of a lack of required information like waiting for a reply from another agent.
+After encountering issues when we started to communicate and negotiate between agents a lot, especially when it came to zone building, Manuel proposed to switch to another approach.
 He suggested to let the JavaMap class decide/calculate which are the best zones and then assign the agents to these zones instead of letting the agents find the best zones by themselves with a lot of negotiation.
-Best in this regard means simply the best ratio of potential zone score over the number of agents which are necessary to build that zone.
+Best in this context means simply the best ratio of potential zone score to the number of agents which are necessary to build that zone.
 When he found out that disabled agents can still move, Manuel proposed to let the disabled agent move towards the repairer.
 This is beneficial in case the repairer agent is already involved in building a zone, because this zone would then not be destroyed.
-Later on he and Michael Ruster started working on zone forming, maintenance and destruction.
-Manuel, together with Michael, also worked on the slides for our final presentation which was held by both together.
+Later on, he and Michael Ruster started working on zone forming, maintenance and destruction.
+Manuel, together with Michael Ruster, also prepared and presented the final presentation.

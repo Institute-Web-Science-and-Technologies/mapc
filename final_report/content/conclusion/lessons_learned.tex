@@ -1,9 +1,9 @@
 \subsection[Lessons Learned]{Lessons Learned$^{\odot/\circ}$}\label{con:learned}
 This final section gives an overview on the insights and knowledge we gained from this research lab.
-None of the MAKo team member had experience with Jason as a programming language before the research lab.
+None of the MAKo team members had anu experience with Jason as a programming language before the research lab.
 Similarly, we had little experience with logic programming.
 Hence, getting into programming in AgentSpeak(L) was difficult at first.
-Most of the time, we felt that logic programming cost us more time than if we would have implemented the same in an imperative way.
+Most of the time, we felt that logic programming cost us more time than if we would have implemented the same in an imperatively programmed way.
 
 Second, we found Jason to be quite slow when it comes to communication between agents.
 In our earlier approaches, agents often needed some information from others and could not continue with their reasoning until this information was given.
@@ -13,8 +13,8 @@ Consequently, we decided not to make agents share all their knowledge with each 
 Instead, the most complete information about the graph should be available in one place.
 Our first approach here was to introduce a cartographer agent as illustrated in \autoref{alg:map_cartographer}.
 It was an additional agent in the background which was sent all the information about the map which all 28 agents perceived.
-The drawback of this approach revealed when it came to querying the cartographer agent for information.
-Agents needed to do this frequently for instance when they wanted to know if a vertex was already surveyed or how a given vertex could be reached.
+The drawback of this approach was revealed when it came to querying the cartographer agent for information.
+Agents needed to do this frequently, for instance when they wanted to know if a vertex was already surveyed or how a given vertex could be reached.
 As mentioned before, processing the received messages is quite slow.
 Together with calculating paths multiple times, the cartographer agent was not able to process messages in time and agents were idle waiting for replies.
 As described in \autoref{alg:map_dv}, dividing the cartographer's work load onto our so-called node agents did not solve our performance issues.
@@ -26,18 +26,18 @@ We observed this during our first match against a team that had a dash in its na
 So instead of handling \texttt{GOAL-DTU1} as a literal identifying an enemy agent, our agents tried to subtract \texttt{DTU1} from \texttt{GOAL} which lead to exceptions.
 The result was that every reasoning which considered the name of an enemy agent failed.
 Accordingly, we lost all three matches against GOAL-DTU.
-Luckily, the GOAL-DTU team agreed on a rematch on the subsequent matchday leaving us enough time to solve this problem.
+Luckily, the GOAL-DTU team agreed on a rematch on the subsequent day, leaving us enough time to solve this problem.
 Furthermore, the organisers rescheduled the matches.
 Else, we would have played against SMADAS-UFSC on the same day and would have lost as well.
 
-When we started programming, we found the mixture between logic programming for agents following the concept of BDI and imperative programming with Java appealing.
-Over the course of our development though, we came to know that all our major problems were somehow connected to Jason.
-In the end, we maybe would have profited from starting from scratch rather than working with Jason.
-But all in all, we definitely learned a lot in terms of logic programming, multi-agent systems and their development and of course Jason in particular.
-Throughout our development, we quickly tried to store the shared graph information in a central place.
-Although there were still problems caused by communication overhead, we learned that this was easier manageable than having agents communicate graph information among themselves.
+When we started the programming for this project, we found the mixture between logic programming for agents following the concept of BDI and imperative programming with Java appealing.
+Over the course of our development though, we came to the conclusion that all our major problems were somehow connected to Jason.
+In the end, it is the opinion of the team that we  would have profited from starting from scratch using e.g.\ an entirely Java-based approach rather than working with Jason.
+But in the end, we definitely learned a lot in terms of logic programming, multi-agent systems and their development and of course Jason in particular.
+Throughout the development phase, we quickly tried to store the shared graph information in a central place.
+Although there were still problems caused by communication overhead, we learned that this was easier to manage than having agents communicate graph information amongst themselves.
 
-Considering the Mars scenario, we saw that our aggressive strategy featuring the artillery agent was effective.
+Considering the \mars scenario, we saw that our aggressive attacking strategy featuring the artillery agent was effective.
 Furthermore, we realised that a completely different zoning approach could have been taken if we had focused on exploiting articulation points.
 In the end, we are happy with our result in the competition and the gathered experience.
 \todo{This section is mostly negative/Jason specific. If you have some more ideas what to talk about here, add it. Also, s/o who proofreads this, should check if it does not overlap too much with the results.}

@@ -6,16 +6,16 @@ Rahul later left the research lab. % I mention this here because this is probabl
 
 In addition, there was a Java factory class called \texttt{ActionHandler} which was used to instantiate a corresponding \texttt{Action} object according to a given identifier of type string.
 It aimed to separate the creation and representation of concrete \texttt{Action} objects.
-However, the actions represented as objects were not diverse enough to justify the creation of subclasses per each action.
+However, the actions represented as objects were not diverse enough to justify the creation of subclasses for each action.
 Hence, a dedicated factory class was not necessary.
 Yuan deleted this Java factory class and then encapsulated the progress of object instantiation inside the \texttt{Action} constructor.
 The constructor was able to return an \texttt{Action} object according to a given parameter, \texttt{entityName}, so that no complex switch statement would be necessary every time a new \texttt{Action} object was needed.
 Therefore, the degree of coupling of the system was decreased.
 
-In the beginning of agent strategies development in Jason, the implementation of different actions was done in a single file.
+In the initial phase of agent strategy development in Jason, the implementation of different actions was done in a single file.
 Yuan rewrote and reorganised some of the code in different files with names corresponding to the roles of different agents.
 
-Yuan implemented initial actions like \texttt{probe}, \texttt{attack}, \texttt{repair} and \texttt{parry} with simple strategies while the other team members were working on map and zone related tasks.
+Yuan implemented initial actions like \texttt{probe}, \texttt{attack}, \texttt{repair} and \texttt{parry} with simple strategies while the other team members were working on map- and zone-related tasks.
 This enabled the other team members sooner to monitor and analyse the functioning of their code.
 She also improved the contexts of plans which lead to the execution of these actions.
 For example, she added the checks to determine a sufficiently high energy level to all agents before action execution as well as checks for the visibility range limitation for ranged actions.

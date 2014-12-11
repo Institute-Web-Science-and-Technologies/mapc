@@ -2,10 +2,10 @@
 This section lists the work done by Sergey Dedukh.
 
 Sergey's contribution to the project was mainly related to development and testing of agent behaviour and communication in Jason.
-He started his work together with Manuel Mittler and Micheal Ruster implementing the cartographer agent which is presented in~\autoref{alg:map_cartographer} of this report.
-He primarily worked on the tasks related to correct percepts handling, communicating and secure storing of beliefs in the cartographer agent and also development of auxiliary functions used in another agent strategies.
+He started his work together with Manuel Mittler and Michael Ruster implementing the cartographer agent which is presented in~\autoref{alg:map_cartographer} of this report.
+He primarily worked on the tasks related to correct percept handling, communicating and secure storing of beliefs in the cartographer agent and also development of auxiliary functions used in other agent strategies.
 
-Continuing his work on the cartographer agent functionality he proposed and implemented the first exploring strategy based on depth first search algorithm.
+Continuing his work on the cartographer agent functionality he proposed and implemented the first exploring strategy based on a depth-first search algorithm.
 Later this algorithm was replaced by a Distance-Vector Routing algorithm during the development of the JavaMap agent, which is described in~\autoref{alg:exploration}.
 During further development of exploring strategies Sergey together with Manuel Mittler implemented and tested the bidding algorithm of communication and argumentation.
 This approach allowed stable negotiation between agents and was used later on in several other agent strategies in our project.
@@ -18,6 +18,7 @@ This strategy was used in the zoning mode of the simulation and is described in 
 After introducing the JavaMap, together with Artur Daudrich, he developed the repairing strategy, which included optimal assignment of repairers to disabled agents, moving towards each other and the repairing itself.
 More information on repairing strategy can be found in~\autoref{alg:repairing}.
 
-The last algorithm implemented by Sergey before the tournament, was detecting the ``dead ends'' of the graph (nodes with degree of one), and then probing them remotely by explorer agents during the exploring phase. This change allowed to save several steps for exploring the map and get achievement points for exploring faster, especially on sparse graphs, which were also present on the tournament.
+The last algorithm implemented by Sergey before the tournament, was detecting the \enquote{dead ends} of the graph (nodes with degree of one), and then probing them remotely by explorer agents during the exploring phase.
+This change allowed to save several steps for exploring the map and get achievement points for exploring faster, especially on sparse graphs, which were also present during the tournament.
 
-During the competition Sergey actively participated in debugging of the issues that were found while competing against other teams. 
+During the competition Sergey actively participated in debugging of the issues that were found while competing against other teams.
