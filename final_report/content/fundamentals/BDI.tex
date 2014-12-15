@@ -120,7 +120,6 @@ This function draws its knowledge from a plan library which is not depicted in \
 Finally, the matching plan is inspected for the next action $A$ to be executed by the agent.
 
 \begin{table}[!hbp]
-  \label{tab:BDIC}
   \begin{tabularx}{\textwidth}{|l|p{5cm}| >{$}X<{$} |}
   \hline
   \textbf{Component} & \textbf{Meaning} & \textbf{Formalisation} \\
@@ -140,7 +139,8 @@ Finally, the matching plan is inspected for the next action $A$ to be executed b
     Action selection function & Determines an action to perform depending on current intentions & I \to A  \\
     \hline
   \end{tabularx}
-  \caption{Meaning and formalisation of the components of the BDI agent architecture}
+  \caption{Meaning and formalisation of the components of the BDI agent architecture.}
+  \label{tab:BDIC}
 \end{table}
 \autoref{tab:BDIC} summarises the BDI agent architecture as described by Michael Wooldridge~\cite{Gerhard_MultiSystem_1999}.
 The process of $B \times P \to B$, $B \times I \to D$ and $B \times I \times D \to I$ belongs to deliberation.

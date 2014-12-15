@@ -78,7 +78,7 @@ For doing so, a developer has to extend the \texttt{Environment} class and speci
 The first method must return a list of literals restricted to what the agent identified by \texttt{agentName} can perceive.
 When the second method is called, the programmer must specify how the given \texttt{action} affects the environment.
 It returns a boolean to indicate whether the execution was successful.
-Such an action can fail if for example a Repairer agent would try to execute the \texttt{attack} action, which it cannot according to the rules specified for the \mars scenario.
+Such an action can fail if for example a Repairer agent would try to execute the \texttt{attack} action, which it cannot according to the rules specified for the \mars{}.
 To call the \texttt{executeAction} method from an agent, all it has to do is execute e.g. \texttt{attack}.
 Jason will then call \texttt{executeAction(String agentName, Term action)} with the parameters bound to the agent's name and the \texttt{attack} action.
 
@@ -95,4 +95,4 @@ In our case, replying in time has such an importance that trying to keeping the 
 
 This section's quick summary of Jason shows that it is a comprehensive agent programming language.
 Jason is not simply an AgentSpeak(L) interpreter but provides extensions to support development.
-The next section considers the suitability of the previously presented agent programming language for the \mars scenario.
+The next section considers the suitability of the previously presented agent programming language for the \mars{}.

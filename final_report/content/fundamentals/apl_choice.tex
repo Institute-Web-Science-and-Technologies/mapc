@@ -5,17 +5,17 @@ We decided against this idea because of our inexperience with agent programming 
 The fear was to overlook difficulties in the beginning which would later force us to spend more time on fixing early mistakes than on the actual agent development.
 To prevent this, we were interested in using an already developed and approved agent programming language.
 
-Given the \mars scenario, Jason can be used to implement a suitable multi-agent system.
+Given the \mars{}, Jason can be used to implement a suitable multi-agent system.
 In fact, two teams successfully participated in the 2013 Multi-Agent Programming Contest by using Jason~\cite{ahlbrecht_multi_2013}. % p.367
 Yet, there was no competing team using GOLOG, FLUX, Jadex or pure AgentSpeak(L).
 This is of interest because the scenario of 2013 is comparable to the scenario of 2014~\cite{ahlbrecht_mapc_2014}. % p.1,9
 
 Schiffel and Thielscher~\cite{schiffel_multi-agent_2007} successfully applied FLUX to the gold mining domain.
 It is a scenario where multiple agents with different roles work together on mining gold in an unknown terrain~\cite{schiffel_multi-agent_2007}.
-The requirements for solving the problems arising from this scenario are comparable to those appearing in the \mars scenario.
-Given the former short presentation and this knowledge, it can be said that FLUX could be applied to the \mars scenario.
+The requirements for solving the problems arising from this scenario are comparable to those appearing in the \mars{}.
+Given the former short presentation and this knowledge, it can be said that FLUX could be applied to the \mars{}.
 
-AgentSpeak(L) is suitable for multi-agent scenarios such as the \mars scenario as well.
+AgentSpeak(L) is suitable for multi-agent scenarios such as the \mars{} as well.
 Especially when comparing FLUX to the components of AgentSpeak(L) plans, it becomes clear that there are many similarities.
 As FLUX' actions' precondition is similar to a plan's context and the state update axiom is implicitly included in a plan's body.
 Yet, the state in AgentSpeak(L) does not have to be manually and explicitly modified.
@@ -29,16 +29,16 @@ As Jason is merely an interpreter and extension of AgentSpeak(L), we ruled out a
 Levesque et~al.~\cite{levesque_golog:_1997} highlight multiple problems with GOLOG.
 All other agent programming languages under consideration are capable of modelling incomplete knowledge.
 One problem is that complete knowledge is assumed in the initial situation.
-This is not the case for the \mars scenario and scenarios with unknown worlds that get explored by agents in general.
+This is not the case for the \mars{} and scenarios with unknown worlds that get explored by agents in general.
 
 The second problem is that GOLOG does not offer a simple solution for sensing actions and reactions of agents on sensed actions.
 Sensing actions are actions by agents that may not modify fluents but the internal knowledge of agents by detecting some properties in the world~\cite{thielscher_flux:_2005}.
 This can be seen as a side-effect of GOLOG not being developed for unknown worlds.
-Again, this would be a feature which is needed for the \mars scenario and is supported by the other languages under consideration.
+Again, this would be a feature which is needed for the \mars{} and is supported by the other languages under consideration.
 
 A third problem is that exogenous actions cannot be handled.
 Exogenous actions are actions outside of the agent's control.
-In the \mars scenario, this e.g.\ could be the loss of an agent's health due to an enemy agent attacking it.
+In the \mars{}, this e.g.\ could be the loss of an agent's health due to an enemy agent attacking it.
 The other programming languages do not face this problem.
 
 Thielscher~\cite{thielscher_flux:_2005} highlights a fourth problem.
@@ -48,12 +48,12 @@ As a result, reasoning takes exponentially longer over time and hence it does no
 FLUX on the other hand is progression-based meaning that such a decision only requires a lookup in the current state.
 There was no indication that the reasoning would become more complex over time in Jadex and Jason.
 
-Due to these problems, GOLOG is unsuitable for a multiple agent-based scenario like the \mars scenario without considerable modifications and extensions.
+Due to these problems, GOLOG is unsuitable for a multiple agent-based scenario like the \mars{} without considerable modifications and extensions.
 This lead us to discard this option as we were not willing to invest time into extending a programming language just to be able to use it.
 
 FLUX and Jadex do not assist the developer in modelling the environment like Jason does.
 In general, this could be an important argument for using Jason.
-But for the \mars scenario itself, no fully simulated environment is needed.
+But for the \mars{} itself, no fully simulated environment is needed.
 Instead, it is enough to delegate the actions to the MAPC server and process the server replies by returning the transmitted percepts to the respective agents.
 Therefore, percepts do not have to be modelled or modified in the environment itself.
 %Jason's support for environments allowed us to focus more on agent programming.
@@ -73,7 +73,7 @@ Moreover, the plan's signature is given in XML and its execution code is program
 Although not an exclusion criterion, we found the overhead of XML due to the verbosity of its syntax to be a downside to Jadex.
 
 Summarised, we quickly decided against the use of GOLOG and FLUX.
-As illustrated, GOLOG had multiple problems which made it unsuitable for the \mars scenario.
+As illustrated, GOLOG had multiple problems which made it unsuitable for the \mars{}.
 Although these problems were not present in FLUX, we favoured being able to program in Java and using the official contest Java library.
 This allowed us to focus on the development of agent strategies over having to invest time for implementing the communication with the MAPC server.
 In the end, we decided for using Jason over Jadex due to Jason being already proven to be successfully applicable to the Mars scenario.

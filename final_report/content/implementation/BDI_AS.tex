@@ -1,17 +1,17 @@
-\subsection[BDI in AgentSpeak(L) and Jason]{BDI in AgentSpeak(L) and Jason$^{\blacktriangle,\circ}$}
+This section presents the interpretation cycle of an AgentSpeak(L) program as implemented in Jason.
+It shows a more extensive picture on the reasoning process of a Jason BDI agent also with regard to our implementation.
+
 AgentSpeak(L) is an agent-oriented programming language built around the BDI model~\cite{rafael_BDIAgent_2005}.
 This language is based on a restricted first-order language with events and actions~\cite{anand_AgentSpeak_1996}.
 The behaviour of an agent such as the interaction of that agent with the environment is implemented in AgentSpeak(L).
 In other words, AgentSpeak(L) encodes beliefs, desires, and intentions in a way processable by an agent.
-This section presents the interpretation cycle of an AgentSpeak(L) program as implemented in Jason.
-It shows a more extensive picture on the reasoning process of a Jason BDI agent also with regard to our implementation.
 
 As explained by Rao~\cite{anand_AgentSpeak_1996} beliefs model the current state of an agent, expressing its knowledge.
 They may be modified on environment changes due to some internal or external events.
 Rao furthermore describes states the agent wants to reach are desires as in the earlier presented BDI approach.
 Analogously, he continues to define intentions as an agent's attempt to reach such a state by the commitment to concrete plans.
 
-As Jason is an interpreter for AgentSpeak(L) with Java-base extensions~\cite{rafael_Javabased}, it it suitable for practical multi-agent systems.
+As Jason is an interpreter for AgentSpeak(L) with Java-base extensions~\cite{rafael_Javabased_2007}, it it suitable for practical multi-agent systems.
 Some details on the functioning of an AgentSpeak(L) interpreter are presented in \autoref{fig:ASL_interpreter}.
 \begin{figure}[h]
   \centering
@@ -73,7 +73,7 @@ This ensures that it only reasons about plans which are executable in the curren
 As a result, $\mathcal{S_O}$ draws an applicable plan for an intention.
 The plans for the intentions are stored as a new intention if the plan was drawn as a first reaction to an event.
 Subgoals, triggered from within the bodies of other plans, are added to existing intentions.
-As the drawn plans match the contexts, they can be seen as partially instantiated~\cite{rafel_Javabased_2007}.
+As the drawn plans match the contexts, they can be seen as partially instantiated~\cite{rafael_Javabased_2007}.
 
 Beliefs, desires and intentions have been introduced above in context of the Jason interpretation cycle.
 There are various agent languages implementing the BDI model.

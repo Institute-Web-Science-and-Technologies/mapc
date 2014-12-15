@@ -11,7 +11,7 @@ This could also be an introductory text which motivates the following subsection
 \input{content/algorithms/alg_exploration} %DSDV, Exploration and Map Generation
 
 %%%%%%%%%%%%%%%%%%
-\subsection[Repairing]{Repairing$^\diamond^\dagger$}\label{alg:repairing}
+\subsection[Repairing]{Repairing$^{\diamond,\dagger}$}\label{alg:repairing}
 As was already mentioned in the scenario description, any agent can become disabled after being attacked by an enemy Saboteur agent.
 To become disabled in the scenario means to lose all of the agent's health points.
 Naturally, we have implemented several supporting strategies for avoiding enemy Saboteur agents when possible and parry when there is a Saboteur agent nearby.
@@ -48,7 +48,7 @@ This helps to use all the repairers more effective and prevents the situation wh
 
 \subsection[Zone Forming]{Zone Forming$^\circ$}\label{alg:zoning}
 % TODO: sometimes, agents ``must'', ``will'', ``have to'' and other times they simple (actively) ``do'' things.
-Zone forming is the most important part in the \mars scenario~\cite{ahlbrecht_mapc_2014}.% p.3
+Zone forming is the most important part in the \mars{}~\cite{ahlbrecht_mapc_2014}.% p.3
 It describes the process of agents finding and occupying vertices in a way that they enclose a subgraph.
 We called this process zoning.
 For our approach, zoning takes place after the map exploration phase.

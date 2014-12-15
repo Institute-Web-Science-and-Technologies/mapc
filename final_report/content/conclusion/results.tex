@@ -1,17 +1,19 @@
-\subsection[Competition Results]{Competition Results$^{\odot/\circ}$}
+\subsection[Competition Results]{Competition Results$^{\odot/\circ}$}\label{con:competition}
+This section focuses on the actual competition and presents its setup as well as its results.
 The 2014 MAPC took place on the 15th and 17th of September.
 Each team had to play three simulations against all other teams\todo{if you proofread this, make sure to also proofread the next subsection and decide if there is a great overlap and whether we need to merge them.}.
 Every simulation ran for a total of 400 steps.
 The team with the higher overall score at the end received three points for their victory.
 Said overall score is the sum of all 400 step scores.
 The score per step is composed of points for zones plus achievement points.
+
 Since the strategy of team MAKo was to extensively buy upgrades for the so-called artillery agent, most of the earned achievement points were consumed and therefore did not count towards the step score.
 \autoref{dis:achievement_points} shows the progress of achievement points over time.
 As can be seen, the achievement points of team MAKo go up and down due to the buying actions whereas the points of the other team increase constantly.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{images/AchievementPoints.png}
-  \caption{Achievement points from the third match TUB against MAKo.}
+  \caption{Achievement points from the third match TUB against MAKo.\todo{As Matthias commented: you can't see a thing on this graphic! Redo it or improve it.}}
 	\label{dis:achievement_points}
 \end{figure}
 On first sight, one could assume that this strategy was a drawback because achievement points earned at some point count into every future step score.
@@ -22,7 +24,7 @@ This was because the amount of potential zone points they would have earned with
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{images/ZonesScoresAndAchievementPoints.png}
-  \caption{Combined achievement and zone scores from the third match TUB against MAKo.}
+  \caption{Combined achievement and zone scores from the third match TUB against MAKo.\todo{As Matthias commented: you can't see a thing on this graphic! Redo it or improve it.}}
 	\label{dis:ZonesScoresAndAchievementPoints}
 \end{figure}
 At the end of the tournament team MAKo scored second with a total of 18 points.
@@ -71,7 +73,7 @@ Agents which ought to form a zone unpredictably had to cancel their zoning avail
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{images/resultsEdgeCase.eps}
-	\caption{One agent alone forming a zone over 25 vertices by occupying an articulation point.}
+  \caption{One agent alone forming a zone over 25 vertices by occupying an articulation point.\todo{the reference to this is not working.}}
 	\label{dis:edgeCases}
 \end{figure}
 Also, we did not implement an algorithm to detect articulation points.
