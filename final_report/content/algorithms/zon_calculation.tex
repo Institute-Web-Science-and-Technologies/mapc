@@ -55,7 +55,7 @@ The steps of the algorithm are easiest illustrated graphically, as in \autoref{f
   Similarly, $V_v^2$ denotes the set of two-hop neighbours of $v$, i.e.\ the set of vertices that includes exactly those vertices that share an edge with any vertex in $V_v^1$, excluding those in $V_v^1$ and $v$ itself: $V_v^2= \left\{u \middle|\left(v,w \right ) \in E, \left(w,u \right ) \in E, u \notin V_v^1\cup\{v\}\right\}$.
   Let $V_v^{2+}$ denote the entire two-hop neighbourhood of $v$: $V_{v}^{2+} = \{v\} \cup V_v^1 \cup V_v^2$.
   Additionally, let $A_v$ be an initially empty set that we will use to remember vertices we want to place agents on.
-  A zone and its zone value are defined as specified by the graph colouring algorithm in~\cite{ahlbrecht_mapc_2014}\todo{If we happen to explain this roughly in the MAPC section, we can further refer to that one}.
+  A zone and its zone value are defined as specified by the graph colouring algorithm which was briefly introduced in \autoref{fun:mapc_general}.
   Then, the goal of the zone calculation algorithm is to find, for every $v \in V$ in the graph, a set of agent positions $A_v \subseteq V_{v}^{2+}$ that establish a zone around $v$ so that the zone's value \emph{per agent} is high according to the heuristic used by the algorithm.
 \end{definition}
 Note that although $V_v^1$ and $V_v^2$ start off as defined above, by abuse of notation we will remove vertices from those sets as the algorithm progresses.

@@ -11,12 +11,15 @@ He was responsible for writing a lot of the JavaDoc documentation for the Java-b
 Artur and MS were also mostly responsible for thinking of and implementing the node-based zone calculation heuristic described in~\autoref{alg:zon_calculation}.
 
 Besides the paired programming tasks, MS wrote many of the basic AgentSpeak plans used by agents, such as the parrying, repairing, attacking, and exploring-related actions.
-He also noticed and fixed issues that were related to Jason's inadequacies, such as that sometimes due to the Jason cycles taking too long, not only would agents sometimes miss out on sending an action to the server for a given step, but instead send multiple actions (the action for the previous and this turn) in one step, which would cause the MAKo team's agents to be \enquote{out of sync} with the server.
-He also decided on much of the order of the AgentSpeak plans in the \texttt{agent.asl} and other AgentSpeak files that define the agent behaviour, prioritizing such actions as getting repaired and moving away from enemy saboteur agents.
-MS implemented all inspecting-related behaviour for the Inspector agents, and was responsible for implementing the aggressive saboteur attacking behaviour used by the MAKo team.
-MS was also responsible for the MAKo team's agent upgrade buying behaviour, trying out different upgrade buying strategies by having the MAKo agents play against each other.
-During these matches, restricting the buying of upgrades to a single saboteur agent (the artillery agent) seemed to outperform any other approaches in terms of the final score, and this upgrade buying strategy is the one that made it into the final implementation used in the competition phase.
-During the actual tournament phase, the MAKo team was faced with a number of critical bugs that only became apparent when playing against other teams, such as an issue caused by dashes in enemy team names, which would cause AgentSpeak to interpret any enemy-related strings as arithmetic expressions.
-MS managed to fix many of these issues in the short time in-between matches, which ultimately allowed the MAKo team to score as well as it did.
+He also noticed and fixed issues that were related to Jason's inadequacies.
+For example, sometimes due to the Jason cycles taking too long, agents would not simply irregularly miss out on sending an action to the server for a given step, but instead send multiple actions (the action for the previous and the current turn) in one step.
+The result before fixing was that it caused the our team's agents to be \enquote{out of sync} with the server.
+He also decided on much of the order of the AgentSpeak plans in the \texttt{agent.asl} and other AgentSpeak files that define the agent behaviour, prioritising such actions as getting repaired and moving away from enemy saboteur agents.
+MS implemented all inspecting-related behaviour for the Inspector agents, and was responsible for implementing the aggressive saboteur attacking behaviour used by our team.
+MS was also responsible for the our team's agent upgrade buying behaviour, trying out different upgrade buying strategies by having our agents play against each other.
+During these matches, restricting the buying of upgrades to a single saboteur agent (the artillery agent) seemed to outperform any other approaches in terms of the final score.
+This upgrade buying strategy is the one that made it into the final implementation used in the competition phase.
+During the actual tournament phase, our team was faced with a number of critical bugs that only became apparent when playing against other teams, such as an issue caused by dashes in enemy team names, which would cause AgentSpeak to interpret any enemy-related strings as arithmetic expressions.
+MS managed to fix many of these issues in the short time in-between matches, which ultimately allowed our team to score as well as it did.
 
 In the preparation of this document, MS was responsible for primary or secondary proof-reading of most sections, in addition to writing the sections indicated by the $\dagger$ sign.
