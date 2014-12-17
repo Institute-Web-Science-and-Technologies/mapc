@@ -12,10 +12,13 @@ As shown in \autoref{fig:fun:roles}, each role is given different values in thei
 Moreover, the saboteur agent has a strength value, because it is the only agent which can attack enemy agents.
 There are six agents of each role except the Explorer agent role of which there are four agents.
 Except for the Sentinel role, all other roles allow their corresponding agents to execute some actions exclusive to this role.
-Every action has a minimal chance to fail, regardless of being an exclusive action or an special action which is only available to the specific agent.
-Some actions can be executed on distant agents. They are called ranged actions.
-The drawback of ranged actions is that they have a much higher failing chance if the target of the action is further afar.
-First, the actions all agents are able to execute will be presented. After that the exclusive actions of the agents will be described.
+Every action has a minimal chance to fail, regardless of being a role-specific action or a \enquote{regular} one.
+Some actions can be executed to affect agents which are not located on the same vertex.
+These are called \emph{ranged actions}.
+The drawback of ranged actions is that the chance to fail increases rapidly the greater the distance between the two agents is.
+
+First, the actions all agents are able to execute are presented.
+After that the role-specific actions are described.
 Those actions are \texttt{skip}, \texttt{goto}, \texttt{survey}, \texttt{buy} and \texttt{recharge}.
 \begin{description}
    \item[skip] The \texttt{skip} action should be used as a last resort if there is nothing else for an agent left to do.
@@ -35,18 +38,25 @@ Those actions are \texttt{skip}, \texttt{goto}, \texttt{survey}, \texttt{buy} an
 
 The role specific actions are explained in the following.
 \begin{description}
-   \item[parry] The \texttt{parry} action can be used by repairer agents, sentinel agents and saboteur agents.
-    By using the action an incoming attack can be fully neglected  and the health of the agent is preserved.
-   \item[inspect] Only inspector agents can use the \texttt{inspect} action. Inspecting is a ranged action.
+   \item[parry] The \texttt{parry} action can be used by Repairer, Sentinel and Saboteur agents.
+    By executing the action, an incoming attack can be fully neglected and the health of the attacked agent is preserved.
+   \item[inspect] Only Inspector agents can use the \texttt{inspect} action.
+    Inspecting is a ranged action.
     The action reveals the inner stats and details of the targeted agent.
     By inspecting it is possible to find out which role an enemy agent has.
     Inspecting is not needed to be able to tell if an agent is disabled as one could assume from the action's name.
-    This is because the \texttt{visibleEntity} percept includes the agent's current state.
-   \item[repair] Repairing is an ranged action which is unique to repairer agents. The \texttt{repair} action repairs an agent of the same team.
+    This is because the \texttt{visibleEntity} percept already includes the agent's current state.
+    Said percept is received every step for all agents in the agent's visibility range.
+   \item[repair] Repairing is a ranged action which is unique to Repairer agents.
+    The \texttt{repair} action restores the health of an agent of the same team.
     Repairing can not be executed on the agent itself.
    \item[probe] Explorer agents are the only agents which can reveal the value of vertices by using the \texttt{probe} action.
-    As long as a vertex is not probed the vertex value is calculated as 1. Probing is an ranged action and thus can be executed on distant vertices.
-   \item[attack] The \texttt{attack} action can only be executed by saboteur agents. It is used to attack an enemy agents and reduce its health by a specific amount until it gets disabled. Attacking is a ranged action.
+    As long as a vertex is not probed the vertex value used to calculate the team score is assumed to be $1$.
+    Probing is a ranged action and thus can be executed on distant vertices.
+   \item[attack] The \texttt{attack} action can only be executed by Saboteur agents.
+     It is used to attack an enemy agent and reduce its health by a specific amount.
+     If an enemy agent gets attacked multiple times, it can become disabled.
+     Attacking is a ranged action.
 \end{description}
 
-The use and embodiment of these unique abilities into the agent role specific behaviour is explained in \autoref{alg:agentstrategies}.
+Our use and embodiment of these unique abilities into the agent role specific behaviour is explained in \autoref{alg:agentstrategies}.
