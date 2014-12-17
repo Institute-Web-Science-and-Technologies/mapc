@@ -1,26 +1,15 @@
-\subsubsection[Multi-Agent Programming Contest]{Multi-Agent Programming Contest$^{\odot,\circ}$}\label{fun:mapc_general}
-The Multi-Agent Programming Contest (short: MAPC) is an international online competition which started in 2005 and took place every year since then.
-This tournament is held as an online event in the sense that all participants run their systems locally and communicate with the contest server via Internet.
-The winning team is determined by each team playing against all other teams three times.
-All participants are free to choose which technologies and implementations they want to use for building their multi-agent system upon.
-The scenario of the MAPC has changed several times over the years:
-\begin{itemize}
-	\item 2005: Food Gatherers
-	\item 2006-07: Gold miners
-	\item 2008-10: Cows and Cowboys
-  \item Since 2011: Agents on Mars
-\end{itemize}
-The scenarios became more and more complex as the agents' features were extended and heterogeneous agent roles were added~\cite{behrens_multi-agent_2012}. % 113
-
-A detailed description of the \mars{} can be found in Ahlbrecht et~al.~\cite{ahlbrecht_mapc_2014}.
+\subsubsection[The \mars{}]{The \mars{}$^{\odot,\circ}$}\label{fun:mapc_general}
+This section presents the \mars{}.
+A detailed description of it can be found in Ahlbrecht et~al.~\cite{ahlbrecht_mapc_2014}.
 Briefly, mankind finally populated Mars and water wells have been found.
-One sub-goal is to occupy the best zones, which means the most valuable water wells, and defend them against the competing team.
+One sub-goal is to occupy the most valuable water wells, and defend them against the competing team.
 The environment is represented as a weighted graph.
 Each vertex has a unique identifier and a positive number indicating the value of the well.
 Edges have a weight each which represent the costs of traversing this edge.
 The environment is unknown in the beginning and thus agents have to explore it.
 
-Zones are determined by using a graph colouring algorithm on the server side which is presented in more detail in Ahlbrecht et~al.~\cite{ahlbrecht_mapc_2014}.
+\emph{Zones} are regions over one or multiple vertices which express the successful occupation of water wells by a team.
+They are determined by using a graph colouring algorithm on the server side which is presented in more detail in Ahlbrecht et~al.~\cite{ahlbrecht_mapc_2014}.
 Essentially, a zone is identified as follows:
 \begin{enumerate}
 	\item A vertex belongs to the team which holds the majority of agents standing on that vertex.
