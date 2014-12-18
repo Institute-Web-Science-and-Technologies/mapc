@@ -1,5 +1,12 @@
-\todo{Write this part}
-This could also be an introductory text which motivates the following subsections.
+In this section algorithms and strategies we used in our impementation of the multi agent system are described.
+We decided to split up our match strategy in two phases.
+The first subsection, \autoref{arc:simulation}, describes our match strategy from a high level point of view.
+It further shows how we formed different groups of agents to fulfil this strategy.
+The following section, \autoref{alg:agentstrategies}, describes the role-specific strategies we used for each of the different agent types.
+After that in \autoref{alg:exploration} our map exploration strategy is described with the evolution from our first Jason-based approach to the final implementation in Java.
+The next subsection, \autoref{alg:repairing} describes the repairing strategy from a more general point of view, with both the repairing agent and the to-be-repaired agent in mind.
+The last subsection, \autoref{alg:zoning}, describes our strategy for building zones on the map.
+This includes calculating zones scores, finding valuable zones, and to organize our agents to occupy these zones.
 
 %%%%%%%%%%%%%%%%%%
 \input{content/algorithms/alg_phases}
