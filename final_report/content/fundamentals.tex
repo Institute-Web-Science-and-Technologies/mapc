@@ -1,7 +1,16 @@
-\subsection[The Multi-Agent Programming Contest]{The Multi-Agent Programming Contest$^{\odot/\circ}$}
+In this section we discuss the existing technologies, algorithms and approaches that we took into account while developing this project. 
+In the first subsection \autoref{fun:mapc}, the Multi-Agent Programming Contest is briefly described. 
+This will introduce the primary task that we had to solve in our research lab as well as the basic rules of the tournament we were participating in with our solution.
+In the following \autoref{fun:apc} we describe the basic theoretical concepts used for modeling multi-agent systems.
+Starting with the model of a single agent using the concepts of beliefs, desires and intentions, we then discuss the communication and decision making principles in multi-agent environments.
+In the last subsection \autoref{fun:apl} of this section the review of existing agent programming languages is given.
+The general syntax overview as well as the basic architecture description of each language is presented. 
+And as the conclusion we justify our choice of agent programming language for the project.
+
+\subsection[The Multi-Agent Programming Contest]{The Multi-Agent Programming Contest$^{\odot/\circ}$}\label{fun:mapc}
 \input{content/fundamentals/mapc.tex}
 
-\subsection{Agent Programming Concepts}
+\subsection{Agent Programming Concepts}\label{fun:apc}
 \todo{Write this part!}
 
 \input{content/fundamentals/BDI.tex}
@@ -12,7 +21,7 @@
 \subsubsection[Negotiation and Argumentation]{Negotiation and Argumentation$^\diamond$}\label{fun:negotiation}
 \input{content/fundamentals/negotiation_argumentation.tex}
 
-\subsection[Agent Programming Languages]{Agent Programming Languages$^\circ$}
+\subsection[Agent Programming Languages]{Agent Programming Languages$^\circ$}\label{fun:apl}
 Currently, multiple agent frameworks are available for developing multi-agent applications.
 % An overview of existing tools and techniques is given by Mangina~\cite{Mangina} in the context of the European Network of Excellence for Agent-Based Computing. % TODO maybe this fits better in the general part (parent section) – btw, this is nearly a quote to the original's papers abstract… -> that's why i put a citation there -> lol her name is Mangina -> I really laughed at this one. I've left this sentence out for now because it does not mention anything we are discussing but JADE.
 We investigated several agent programming languages, for their suitability for the \mars{}.
