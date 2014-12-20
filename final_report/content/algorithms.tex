@@ -1,12 +1,12 @@
-In this section algorithms and strategies we used in our impementation of the multi agent system are described.
+In this section algorithms and strategies we used in our impementation of the multi-agent system are described.
 We decided to split up our match strategy in two phases.
 The first subsection, \autoref{arc:simulation}, describes our match strategy from a high level point of view.
 It further shows how we formed different groups of agents to fulfill this strategy.
 The following section, \autoref{alg:agentstrategies}, describes the role-specific strategies we used for each of the different agent types.
-After that in \autoref{alg:exploration} our map exploration strategy is described with the evolution from our first Jason-based approach to the final implementation in Java.
-The next subsection, \autoref{alg:repairing} describes the repairing strategy from a more general point of view, with both the repairing agent and the to-be-repaired agent in mind.
-The last subsection, \autoref{alg:zoning}, describes our strategy for building zones on the map.
-This includes calculating zones scores, finding valuable zones, and to organize our agents to occupy these zones.
+After that, \autoref{alg:exploration} presents our map exploration strategy with the evolution from our first Jason-based approach to the final implementation in Java.
+The next subsection, \autoref{alg:repairing} describes the repairing strategy from a more general point of view, with both the repairing agent and the disabled agent in mind.
+In the last subsection, \autoref{alg:zoning}, our strategy for building zones is described.
+This includes calculating zone scores, finding valuable zones, the organisation of our agents to occupy and break up these zones as well as defending them.
 
 %%%%%%%%%%%%%%%%%%
 \input{content/algorithms/alg_phases}
@@ -27,7 +27,7 @@ When an agent becomes disabled, it loses most of its functionality: only the \te
 Repairer agents can also perform the \texttt{repair} action when disabled, although repairing costs more energy to perform when disabled.
 Disabled agents also do not count towards establishing team ownership of a map vertex, and thus do not contribute to zone scoring.
 
-In~\autoref{alg:agentstrategies} it was said that the primary task of Repairer agents is to repair others, and that they should prioritize the \texttt{repair} action whenever they see a disabled friendly agent within their visibility range.
+In~\autoref{alg:agentstrategies} it was said that the primary task of Repairer agents is to repair others, and that they should prioritise the \texttt{repair} action whenever they see a disabled friendly agent within their visibility range.
 It is important that disabled agents are repaired quickly, and for this to happen the disabled agent needs to be brought within repairing distance of a Repairer agent.
 In our implementation, every time an agent becomes disabled, it receives the high priority goal \emph{getRepaired}.
 Following the plan of this goal, an agent requests an available Repairer agent and its position from the \emph{MapAgent}.
