@@ -65,17 +65,17 @@ An agent in Jadex consists of two components: An \emph{agent definition file} (s
 \end{figure}
 The procedural part of plans (the plan bodies) are realised in an ordinary programming language (Java) and have access to the BDI facilities of an agent through an application interface (API).
 The plan body is a standard Java class that extends a predefined Jadex framework class.
-It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation.
+It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation. To stick to the previous used coffee example, the Java code for this Plan has to be imlpemented in the corresponding method. The body of the \texttt{public ServeCoffeePlan()} method in \autoref{lst:jadex_java} is left blank because the focus in this section is on Jadex and not on some ordinary Java code. 
 \begin{lstlisting}[caption={Jadex Java class}, label=lst:jadex_java]
 public class ServeCoffeePlanB1 extends Plan {
    // Plan attributes.
 
-   public ServeCoffeePlanB1() {
-       // Initialisation code.
+   public ServeCoffeePlan() {
+       // Code for plan "ServeCoffeePlan".
    }
 
    public void body() {
-       // Plan code.
+       // Initialisation code.
    }
 }
 \end{lstlisting}
@@ -90,7 +90,7 @@ This means that in the plan head, several properties of the plan can be specifie
 
  <plans>
    <plan name="serve">
-     <body class="ServeCoffeePlanB1"/>
+     <body class="ServeCoffeePlan"/>
      <waitqueue>
        <messageevent ref="request_serving"/>
      </waitqueue>
