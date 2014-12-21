@@ -7,7 +7,7 @@ This section will give a short overview of how different agent types behave diff
         Vertices must be probed in order to learn their value, which is critical for building zones with high scores.
         Accordingly, an Explorer agent will spend most of its time seeking out, moving towards and finally probing vertices whose values are not yet known.
         Having multiple explorer agents move towards the same not yet probed vertex is in most cases suboptimal.
-        Since there are 6 Explorer agents in a team, special care is taken to prevent this as described in \autoref{alg:exploration}\todo{update this reference to wherever we explain why multiple agents won't run onto the same node}.
+        Since there are 6 Explorer agents in a team, special care is taken to prevent this as described in \autoref{alg:map_javamap}.
 
         In our implementation, we are generally interested in the value of all vertices and hence would want to have all vertices probed.
         Yet, we prioritise vertices in a specific way which we call \emph{cluster probing}.
