@@ -3,11 +3,13 @@ This section presents Jadex, which is an agent framework focused on the developm
 It aims at bringing middleware and reasoning-centred agent platforms together.
 For that purpose, Jadex adds a rational reasoning engine to existing middleware.
 The most commonly used middleware for Jadex is the \emph{Java Agent Development Framework} (short: JADE)~\cite{bellifemine_jade_2005}. %
-Jadex integrates agent theories through object-oriented programming in Java and XML descriptions. What is meant by autonomous and proactive is, that an agent acts without human intervention or guidance. The term social means that agents should work together to accomplish their goals.
+Jadex integrates agent theories through object-oriented programming in Java and XML descriptions.
 Therefore, no new language is introduced.
 Jadex reuses already existing technologies instead.
 JADE provides a communication infrastructure, platform services such as agent management and a set of development and debugging tools.
 It enables the development and execution of peer-to-peer applications which are based on the agent paradigm (autonomous, proactive and social). % TODO We do not talk about this before. If you think, it is mandatory to mention agent paradigms here, you have to explain them. Also, build another sentence if needed but don't just add some buzzwords into brackets.
+Autonomous and proactive mean, that an agent acts without human intervention or guidance.
+Social here means that agents should work together to accomplish their goals.
 
 Agents are identified by a unique name and provide a set of services.
 They can register and modify their services and/or search for agents providing given services.
@@ -61,17 +63,19 @@ An agent in Jadex consists of two components: An \emph{agent definition file} (s
 	\centering
 	\includegraphics[height=200px]{images/jadexagentadf.png}
   \caption{Jadex top level ADF elements \cite{ActiveComponents}}
-	\label{fig3}
+	\label{fig:jadex_active_components}
 \end{figure}
 The procedural part of plans (the plan bodies) are realised in an ordinary programming language (Java) and have access to the BDI facilities of an agent through an application interface (API).
 The plan body is a standard Java class that extends a predefined Jadex framework class.
-It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation. To stick to the previous used coffee example, the Java code for this Plan has to be imlpemented in the corresponding method. The body of the \texttt{public ServeCoffeePlan()} method in \autoref{lst:jadex_java} is left blank because the focus in this section is on Jadex and not on some ordinary Java code. 
-\begin{lstlisting}[caption={Jadex Java class}, label=lst:jadex_java]
+It must at least implement the abstract \texttt{body()} method which is invoked after plan instantiation.
+To stick to the previously used coffee example, the Java code for this Plan has to be implemented in the corresponding method.
+The body of the methods in \autoref{lst:jadex_java} is intentionally left blank because the focus of this section is set on Jadex instead of ordinary Java code.
+\begin{lstlisting}[caption={Jadex Java class.}, label=lst:jadex_java]
 public class ServeCoffeePlanB1 extends Plan {
    // Plan attributes.
 
    public ServeCoffeePlan() {
-       // Code for plan "ServeCoffeePlan".
+       // Java code for plan "ServeCoffeePlan".
    }
 
    public void body() {
@@ -81,7 +85,7 @@ public class ServeCoffeePlanB1 extends Plan {
 \end{lstlisting}
 The plan body is associated to a plan head in the ADF.
 This means that in the plan head, several properties of the plan can be specified, e.g.\ the circumstances under which it is activated and its importance in relation to other plans.
-\begin{lstlisting}[caption={Jadex XML file}, label=lst:jadex_xml]
+\begin{lstlisting}[caption={Jadex XML file.}, label=lst:jadex_xml]
 <agent xmlns="http://jadex.sourceforge.net/jadex-bdi"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://jadex.sourceforge.net/jadex-bdi
@@ -133,10 +137,10 @@ The execution model for Jadex looks like the following:
 \begin{figure}
 	\centering
 	\includegraphics[width=300px]{images/Jadex_execution_model.png}
-	\label{fig4}
 	\caption{Jadex execution model \cite{pokahr_jadex_2005}}
+	\label{fig:jadex_execution_model}
 \end{figure}
-\newline
+
 When an agent receives a message, it is placed on a message queue.
 In the next step, the message has to be assigned to a capability which can handle the message.
 A suitable capability is found by matching the message against the event templates defined in the event base of each capability.
@@ -148,4 +152,4 @@ The execution of plans is performed by a scheduler, which selects plans from the
 
 In summary, Jadex is a powerful framework that supports easy agent construction with XML-based agent description and procedural plans in Java.
 Additionally, it offers tool support for debugging during development.
-For example, it comes with a BDI-Viewer that allows observing and modifying the internal state of an agent and a logger agent that collects log-outputs of any agent.
+For example, it comes with a graphical BDI viewer that allows observing and modifying the internal state of an agent and a logger agent that collects log-outputs of any agent.
