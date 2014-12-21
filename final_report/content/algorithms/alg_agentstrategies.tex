@@ -23,7 +23,7 @@ This section will give a short overview of how different agent types behave diff
         So to achieve a high score it is essential to quickly repair damaged agents.
         In our implementation, Repairer agents' actions are prioritised so that they will attempt to repair any disabled friendly agent in their visibility range.
         It is the \enquote{job} of the disabled agents to find and move towards the closest friendly Repairer agent.
-        If a Repairer agent is aware of a friendly disabled agent outside of its visibility range, and the Repairer agent is currently not used for zoning, however, then the Repairer agent will also move towards the disabled agent\todo{\textbf{@sdedukh}, \textbf{@msewell}: \autoref{alg:repairing} says, this is only the case throughout exploration phase. Code-wise, I did not find any clue that repairers would move towards disabled agents at any time. What's correct here? Update both sections accordingly.}.
+        If a Repairer agent is aware of a friendly disabled agent outside of its visibility range, and the Repairer agent is currently not used for zoning, however, then the Repairer agent will also move towards the disabled agent.
         More detail on the process of repairing is given in \autoref{alg:repairing}.
     \item[Saboteur] agents are the only agents that can disable enemy agents using the \texttt{attack} action.
         In our implementation, a Saboteur agent's role is very aggressively defined.
