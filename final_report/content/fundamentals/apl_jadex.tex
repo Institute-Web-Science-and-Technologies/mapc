@@ -57,7 +57,7 @@ The plan body provides a predefined course of action, given in a procedural lang
 This course of action is to be executed by the agent, when the plan is selected for execution, and may contain actions provided by the system API, such as sending messages, manipulating beliefs, or creating sub-goals (cf.~\cite{braubach_jadex_2004})
 
 Jadex is not based on a new agent programming language but chooses a hybrid approach instead.
-It distinguishes explicitly between the language used for static agent type specification and the language for defining the dynamic agent behaviour.
+It distinguishes explicitly between the language used for static agent type specification as shown in \autoref{fig:jadex_active_components} and the language for defining the dynamic agent behaviour.
 An agent in Jadex consists of two components: An \emph{agent definition file} (short: ADF) for the specification of beliefs, goals, and plans as well as their initial values and on the other hand procedural plan code.
 \begin{figure}
 	\centering
@@ -84,7 +84,7 @@ public class ServeCoffeePlanB1 extends Plan {
 }
 \end{lstlisting}
 The plan body is associated to a plan head in the ADF.
-This means that in the plan head, several properties of the plan can be specified, e.g.\ the circumstances under which it is activated and its importance in relation to other plans.
+This means that in the plan head, several properties of the plan can be specified, e.g.\ the circumstances under which it is activated and its importance in relation to other plans as shwon in \autoref{lst:jadex_xml}.
 \begin{lstlisting}[caption={Jadex XML file.}, label=lst:jadex_xml]
 <agent xmlns="http://jadex.sourceforge.net/jadex-bdi"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -133,7 +133,7 @@ For this kind of plan the triggering event and goals must be specified in the ag
 When an agent receives an event, the BDI reasoning engine builds up the so-called applicable plan list which contains all plans that can handle the current event or goal.
 The candidates are selected and instantiated for execution.
 
-The execution model for Jadex looks like the following:
+The execution model for Jadex looks like it is shown in \autoref{fig:jadex_execution_model} following:
 \begin{figure}
 	\centering
 	\includegraphics[width=300px]{images/Jadex_execution_model.png}
