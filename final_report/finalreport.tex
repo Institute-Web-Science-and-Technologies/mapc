@@ -4,7 +4,6 @@
 \usepackage{amsmath} % use equations
 \usepackage{amssymb} % Let Sun have a black triangle
 \usepackage{graphicx} % allow PNGs as graphics
-\usepackage{epstopdf} % Call epstopdf "on the fly"
 \usepackage{tabularx} % adds X alignment and allows \textwidth width for tables
 \def\arraystretch{1.5} % add some padding to table cells
 \usepackage[labelfont=bf]{caption} % bold labels for Table, Figure etc.
@@ -41,10 +40,10 @@
 \usepackage{subcaption} % Support for sub-captions
 \usepackage{csquotes} % Context sensitive quotation facilities
 \usepackage{booktabs} % Publication quality tables in LaTeX
-\usepackage{todonotes} % Mark­ing things to do in a LaTeX doc­u­ment
+\usepackaga[disable]{todonotes} % Mark­ing things to do in a LaTeX doc­u­ment
 \usepackage[backend=biber,url=false]{biblatex} % Bibliographies in LaTeX using BibTeX for sorting only
 \addbibresource{content/sources.bib}
-\usepackage[pdfdisplaydoctitle,linkcolor=theblue,citecolor=theblue,urlcolor=thered]{hyperref} % Extensive support for hypertext in LaTeX (load last)
+\usepackage[pdfdisplaydoctitle,hidelinks]{hyperref} % Extensive support for hypertext in LaTeX (load last)
 \RequirePackage[hyphenbreaks]{breakurl} % allow hyphenation in URLs
 \usepackage{cleveref} % Intelligent cross-referencing, load after hyperref
 % Make autoref talk about lines in lstlistings:
